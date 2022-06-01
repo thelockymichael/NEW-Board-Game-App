@@ -56,8 +56,8 @@ android {
         applicationId "com.milhelstudios.board.game.friends"
         minSdkVersion 21
         targetSdkVersion flutter.targetSdkVersion
-        versionCode flutterVersionCode.toInteger()
-        // versionCode 36
+        // versionCode flutterVersionCode.toInteger()
+        versionCode 42
         versionName flutterVersionName
     }
 

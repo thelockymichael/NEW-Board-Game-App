@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/provider/card_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class TinderCard extends StatefulWidget {
   final AppUser? user;
@@ -11,13 +12,13 @@ class TinderCard extends StatefulWidget {
   final AppUser? myUser;
   final bool isFront;
 
-  const TinderCard(
-      {Key? key,
-      required this.user,
-      required this.resetState,
-      required this.myUser,
-      required this.isFront})
-      : super(key: key);
+  const TinderCard({
+    Key? key,
+    required this.user,
+    required this.resetState,
+    required this.myUser,
+    required this.isFront,
+  }) : super(key: key);
 
   @override
   _TinderCardState createState() => _TinderCardState();

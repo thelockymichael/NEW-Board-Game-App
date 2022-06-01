@@ -1,0 +1,65 @@
+name: Flutter CI/CD # disable this to save storage
+  
+on:
+  push:
+    tags: 
+      - "v*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env: 
+      KEY_JKS: ${{ secrets.KEY_JKS }}
+      KEY_PATH: "upload-keystore.jks"
+      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
+      SECRETS_FILE_CONTENT: ${{ secrets.SECRETS_FILE_CONTENT }}
+      KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
+      GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
+      FASTLANE_SERVICES: ${{ secrets.FASTLANE_SERVICES }}
+      FASTFILE: ${{ secrets.FASTFILE }}
+    steps: 
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '12.x'
+      - name: Create key file
+        run: |
+          echo $KEY_JKS | base64 -di > upload-keystore.jks
+      - name: Decode base64 secrets
+        run: |
+          echo $SECRETS_FILE_CONTENT | base64 -di > lib/secrets.dart
+          echo $GOOGLE_SERVICES | base64 -di > android/app/google-services.json
+          echo $FASTLANE_SERVICES | base64 -di > android/fastlane-service-account.json
+          echo $KEY_PROPERTIES | base64 -di > android/key.properties
+          echo $FASTFILE | base64 -di > android/fastlane/Fastfile
+      - uses: subosito/flutter-action@v1
+        with: 
+          flutter-version: '2.10.5'
+      - run: flutter pub get
+      - run: flutter build apk --release --split-per-abi
+      - run: flutter build apk --debug
+      - run: flutter build appbundle    
+      - name: Create Github artifact release # Disable this to save storage
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/app/outputs/apk/release/*.apk,build/app/outputs/bundle/release/app-release.aab"
+          token: ${{ secrets.GITHUB_TOKEN }}  # This is automatically provided by Github
+      - name: Upload app bundle artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: appbundle
+          path: build/app/outputs/bundle/release/app-release.aab
+      - name: Run Fastlane
+        uses: maierj/fastlane-action@v1.4.0
+        with: 
+          lane: closed_beta
+          subdirectory: android
+      - name: Run Firebase App Distribution
+        uses: maierj/fastlane-action@v1.4.0
+        with: 
+          lane: upload_firebase
+          subdirectory: android

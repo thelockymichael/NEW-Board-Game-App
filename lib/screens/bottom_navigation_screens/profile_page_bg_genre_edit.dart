@@ -67,7 +67,7 @@ class _ProfilePageBgGenreEditState extends State<ProfilePageBgGenreEdit> {
         4,
         false));
     itemList.add(FavGenreItem(
-        "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/board_game_genres%2Fparty_games.jpg?alt=media&token=0ac34bd6-78b1-418e-b5d8-fe1e9121e2af",
+        "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/board_game_genres%2Fthematic_game.jpg?alt=media&token=21ce6eac-9f08-40e6-9a0a-d8e56046977c",
         "Thematic Games",
         5,
         true));
@@ -132,7 +132,7 @@ class _ProfilePageBgGenreEditState extends State<ProfilePageBgGenreEdit> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.grey,
+        backgroundColor: Colors.white,
         appBar: getAppBar(_userSnapshot, _scaffoldKey),
         key: _scaffoldKey,
         body: Container(
@@ -151,8 +151,8 @@ class _ProfilePageBgGenreEditState extends State<ProfilePageBgGenreEdit> {
                                 SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 3,
                                     childAspectRatio: 0.56,
-                                    crossAxisSpacing: 4,
-                                    mainAxisSpacing: 2),
+                                    crossAxisSpacing: 0,
+                                    mainAxisSpacing: 0),
                             itemBuilder: (context, index) {
                               return GridItem(
                                 item: itemList[index],
@@ -190,10 +190,12 @@ class _ProfilePageBgGenreEditState extends State<ProfilePageBgGenreEdit> {
   }
 
   getAppBar(AppUser? userSnapshot, errorScaffoldKey) {
+    var itemText = selectedList.length > 1 ? "items" : "item";
+
     return AppBar(
       title: Text(selectedList.length < 1
           ? "Select favourite genres"
-          : "${selectedList.length} item selected"),
+          : "${selectedList.length} $itemText selected"),
       actions: <Widget>[
         selectedList.length < 1
             ? Container()

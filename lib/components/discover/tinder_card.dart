@@ -94,16 +94,16 @@ class _TinderCardState extends State<TinderCard> {
             decoration: BoxDecoration(
                 gradient: LinearGradient(
                     colors: [Colors.transparent, Colors.black],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
                     stops: [0.7, 1])),
             padding: EdgeInsets.all(20),
             child: Column(
               children: [
-                Spacer(),
                 buildName(),
                 SizedBox(height: 8),
                 buildBGGName(),
+                Spacer(),
                 SizedBox(height: 8),
                 buildFavGameGenres(),
                 SizedBox(height: 16),
@@ -148,6 +148,8 @@ class _TinderCardState extends State<TinderCard> {
 
   Widget buildName() => Row(
         children: [
+          Icon(Icons.check_circle, color: Colors.blue),
+          const SizedBox(width: 8),
           Text(widget.user!.name,
               style: TextStyle(
                   fontSize: 32,
@@ -167,7 +169,7 @@ class _TinderCardState extends State<TinderCard> {
 
   Widget buildBGGName() => Row(
         children: [
-          Icon(Icons.check_circle, color: Colors.blue),
+          Icon(Icons.gamepad_rounded, color: Colors.black),
           const SizedBox(width: 8),
           Text(
             "Zuxi",

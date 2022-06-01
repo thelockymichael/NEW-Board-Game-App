@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_demo_01/db/entity/GridItem.dart';
 import 'package:flutter_demo_01/db/entity/chat.dart';
 import 'package:flutter_demo_01/db/entity/FavGenreItem.dart';
 import 'package:flutter_demo_01/db/entity/match.dart';

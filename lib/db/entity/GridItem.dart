@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/db/entity/FavGenreItem.dart';
 import 'package:flutter_demo_01/utils/constants.dart';
@@ -29,38 +31,10 @@ class _GridItemState extends State<GridItem> {
       onTap: () {
         setState(() {
           // isSelected = widget.item.isSelected;
-
           isSelected = !isSelected;
           widget.isSelected(isSelected);
-          print("IS SELECTUS ${isSelected}");
         });
       },
-      /**
-Stack(children: <Widget>[
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            image: DecorationImage(
-              fit: BoxFit.fill,
-              image: AssetImage(
-                'images/bg.jpg',
-              ),
-            ),
-          ),
-          height: 350.0,
-        ),
-        Container(
-          height: 350.0,
-          decoration: BoxDecoration(
-              color: Colors.white,
-              gradient: LinearGradient(
-                  begin: FractionalOffset.topCenter,
-                  end: FractionalOffset.bottomCenter,
-                  colors: [Colors.grey.withOpacity(0.0),Colors.black,
-                  ],stops: [
-                    0.0,
-                    1.0
-       */
       child: Stack(
         children: <Widget>[
           Stack(
@@ -68,25 +42,14 @@ Stack(children: <Widget>[
               Container(
                   height: 350.0,
                   decoration: BoxDecoration(
-                      // gradient: LinearGradient(
-                      //     begin: FractionalOffset.topCenter,
-                      //     end: FractionalOffset.bottomCenter,
-                      //     colors: [Colors.grey.withOpacity(0.0), Colors.black],
-                      //     stops: [0.0, 1.0]),
-                      // gradient: LinearGradient(
-                      //     begin: Alignment.topCenter,
-                      //     end: Alignment.bottomCenter,
-                      //     colors: [Colors.red.shade200, Colors.black]),
                       image: DecorationImage(
                           image: NetworkImage(widget.item.imageUrl),
                           fit: BoxFit.cover))),
               Container(
                 decoration: BoxDecoration(
                     gradient: LinearGradient(
-                        // begin: Alignment.topCenter,
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                        // end: Alignment.bottomCenter,
                         colors: [
                       Colors.grey.withOpacity(0.0),
                       Colors.black.withOpacity(0.6),

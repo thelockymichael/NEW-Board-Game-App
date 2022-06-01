@@ -58,7 +58,7 @@ class _DiscoverCard extends State<DiscoverCard> {
                       alignment: Alignment.center,
                       padding: EdgeInsets.all(16),
                       child: Column(children: [
-                        buildLogo(),
+                        // buildLogo(),
                         const SizedBox(height: 16),
                         Expanded(child: buildCards()),
                         const SizedBox(height: 16),
@@ -68,24 +68,22 @@ class _DiscoverCard extends State<DiscoverCard> {
           );
   }
 
-  Widget buildLogo() => Row(
-        children: [
-          Icon(
-            Icons.gamepad_rounded,
-            color: Colors.white,
-            size: 36,
-          ),
-          const SizedBox(width: 4),
-          Text(
-            'Board Game Friends',
-            style: TextStyle(
-              fontSize: 36,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          )
-        ],
-      );
+  // Widget buildLogo() => Row(
+  //       children: [
+  //         const SizedBox(width: 4),
+  //         FittedBox(
+  //           fit: BoxFit.fitWidth,
+  //           child: Text(
+  //             'Board Game Friends',
+  //             style: TextStyle(
+  //               fontSize: 36,
+  //               fontWeight: FontWeight.bold,
+  //               color: Colors.white,
+  //             ),
+  //           ),
+  //         )
+  //       ],
+  //     );
 
   Widget buildCards() {
     return Stack(

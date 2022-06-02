@@ -59,16 +59,8 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.grey,
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text('Edit'),
-        ),
         key: _scaffoldKey,
         body: Container(
-          padding: EdgeInsets.symmetric(
-            vertical: 42.0,
-          ),
-          margin: EdgeInsets.only(bottom: 40),
           child:
               Consumer<UserProvider>(builder: (context, userProvider, child) {
             print("is userprovider ${userProvider != null ? "yes" : "no"}");
@@ -82,203 +74,227 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
                     inAsyncCall:
                         userProvider.user == null || userProvider.isLoading,
                     child: userSnapshot.hasData
-                        ? Column(
-                            children: [
-                              getProfileImage(userSnapshot.data!, userProvider),
-                              SizedBox(height: 40),
-                              Column(children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    print("Tapped a Container");
-                                    _basicInfoEditModalBottomSheet(
-                                        context, userSnapshot.data!);
-                                  },
-                                  child: Container(
-                                      margin: EdgeInsets.fromLTRB(0, 0, 0, 12),
-                                      color: Colors.white,
-                                      width: double.infinity,
-                                      child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 20, vertical: 20),
-                                              child: Column(
-                                                children: [
-                                                  Align(
-                                                      alignment:
-                                                          Alignment.topLeft,
-                                                      child: Text(
-                                                          "${userSnapshot.data?.name}, ${userSnapshot.data?.age}",
-                                                          style: TextStyle(
-                                                              fontSize: 32,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold))),
-                                                  Align(
-                                                      alignment:
-                                                          Alignment.topLeft,
-                                                      child: Text(
-                                                          "${userSnapshot.data?.gender}, ${userSnapshot.data?.currentLocation}",
-                                                          style: TextStyle(
-                                                            fontSize: 20,
-                                                          )))
-                                                ],
-                                              ),
-                                            ),
-                                          ])),
+                        ? CustomScrollView(
+                            slivers: <Widget>[
+                              SliverAppBar(
+                                pinned: true,
+                                flexibleSpace: FlexibleSpaceBar(
+                                  title: Text('Edit'),
                                 ),
-                                GestureDetector(
-                                    onTap: () {
-                                      print("Tapped a Container");
-                                      Navigator.of(context).push(
-                                        PageRouteBuilder(
-                                          pageBuilder: (context, animation1,
-                                                  animation2) =>
-                                              ProfilePageBgGenreEdit(
-                                                  userSnapshot:
-                                                      userSnapshot.data!,
-                                                  notifyParent: refresh),
-                                          transitionDuration: Duration.zero,
-                                          reverseTransitionDuration:
-                                              Duration.zero,
-                                        ),
-                                      );
-                                    },
-                                    child: Container(
-                                        margin:
-                                            EdgeInsets.fromLTRB(0, 0, 0, 12),
-                                        color: Colors.white,
-                                        width: double.infinity,
-                                        child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 20,
-                                                    vertical: 20),
-                                                child: Column(
-                                                  children: [
-                                                    Align(
-                                                        alignment:
-                                                            Alignment.topLeft,
-                                                        child: Text(
-                                                            "Favourite Game Genres",
-                                                            style: TextStyle(
-                                                                fontSize: 32,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold))),
-                                                    Align(
-                                                      alignment:
-                                                          Alignment.centerLeft,
-                                                      child: Wrap(
-                                                        children: userSnapshot
-                                                            .data!
-                                                            .favBoardGameGenres
-                                                            .map((gameGenre) {
-                                                          return Container(
-                                                            margin:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    right: 10,
-                                                                    top: 10),
-                                                            padding:
-                                                                EdgeInsets.all(
-                                                                    8),
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color:
-                                                                  Colors.green,
-                                                              borderRadius: BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          12.0)),
-                                                            ),
-                                                            child: Text(
-                                                              gameGenre,
+                              ),
+                              SliverList(
+                                  delegate: SliverChildListDelegate([
+                                getProfileImage(
+                                    userSnapshot.data!, userProvider),
+                                SizedBox(height: 40),
+                                Column(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        print("Tapped a Container");
+                                        _basicInfoEditModalBottomSheet(
+                                            context, userSnapshot.data!);
+                                      },
+                                      child: Container(
+                                          margin:
+                                              EdgeInsets.fromLTRB(0, 0, 0, 12),
+                                          color: Colors.white,
+                                          width: double.infinity,
+                                          child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 20,
+                                                      vertical: 20),
+                                                  child: Column(
+                                                    children: [
+                                                      Align(
+                                                          alignment:
+                                                              Alignment.topLeft,
+                                                          child: Text(
+                                                              "${userSnapshot.data?.name}, ${userSnapshot.data?.age}",
                                                               style: TextStyle(
-                                                                  fontSize: 20,
+                                                                  fontSize: 32,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold))),
+                                                      Align(
+                                                          alignment:
+                                                              Alignment.topLeft,
+                                                          child: Text(
+                                                              "${userSnapshot.data?.gender}, ${userSnapshot.data?.currentLocation}",
+                                                              style: TextStyle(
+                                                                fontSize: 20,
+                                                              )))
+                                                    ],
+                                                  ),
+                                                ),
+                                              ])),
+                                    ),
+                                    GestureDetector(
+                                        onTap: () {
+                                          print("Tapped a Container");
+                                          Navigator.of(context).push(
+                                            PageRouteBuilder(
+                                              pageBuilder: (context, animation1,
+                                                      animation2) =>
+                                                  ProfilePageBgGenreEdit(
+                                                      userSnapshot:
+                                                          userSnapshot.data!,
+                                                      notifyParent: refresh),
+                                              transitionDuration: Duration.zero,
+                                              reverseTransitionDuration:
+                                                  Duration.zero,
+                                            ),
+                                          );
+                                        },
+                                        child: Container(
+                                            margin: EdgeInsets.fromLTRB(
+                                                0, 0, 0, 12),
+                                            color: Colors.white,
+                                            width: double.infinity,
+                                            child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 20,
+                                                            vertical: 20),
+                                                    child: Column(
+                                                      children: [
+                                                        Align(
+                                                            alignment: Alignment
+                                                                .topLeft,
+                                                            child: Text(
+                                                                "Favourite Game Genres",
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        32,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold))),
+                                                        Align(
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          child: Wrap(
+                                                            children: userSnapshot
+                                                                .data!
+                                                                .favBoardGameGenres
+                                                                .map(
+                                                                    (gameGenre) {
+                                                              return Container(
+                                                                margin:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        right:
+                                                                            10,
+                                                                        top:
+                                                                            10),
+                                                                padding:
+                                                                    EdgeInsets
+                                                                        .all(8),
+                                                                decoration:
+                                                                    BoxDecoration(
                                                                   color: Colors
-                                                                      .white),
-                                                            ),
-                                                          );
-                                                        }).toList(),
-                                                      ),
+                                                                      .green,
+                                                                  borderRadius:
+                                                                      BorderRadius.all(
+                                                                          Radius.circular(
+                                                                              12.0)),
+                                                                ),
+                                                                child: Text(
+                                                                  gameGenre,
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          20,
+                                                                      color: Colors
+                                                                          .white),
+                                                                ),
+                                                              );
+                                                            }).toList(),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ]))),
-                                GestureDetector(
-                                    onTap: () {
-                                      print("Tapped a Container");
-                                      Navigator.of(context)
-                                          .push(PageRouteBuilder(
-                                        pageBuilder: (
-                                          BuildContext context,
-                                          Animation<double> animation,
-                                          Animation<double> secondaryAnimation,
-                                        ) =>
-                                            ProfilePageBgBioEdit(
-                                                userSnapshot:
-                                                    userSnapshot.data!,
-                                                notifyParent: refresh),
-                                        transitionsBuilder: (
-                                          BuildContext context,
-                                          Animation<double> animation,
-                                          Animation<double> secondaryAnimation,
-                                          Widget child,
-                                        ) =>
-                                            SlideTransition(
-                                          position: Tween<Offset>(
-                                            begin: const Offset(0, 1),
-                                            end: Offset.zero,
-                                          ).animate(animation),
-                                          child: child,
-                                        ),
-                                      ));
-                                    },
-                                    child: Container(
-                                        margin:
-                                            EdgeInsets.fromLTRB(0, 0, 0, 12),
-                                        color: Colors.white,
-                                        width: double.infinity,
-                                        child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 20,
-                                                    vertical: 20),
-                                                child: Column(
-                                                  children: [
-                                                    Align(
-                                                        alignment: Alignment
-                                                            .centerLeft,
-                                                        child: Text("Bio",
-                                                            style: TextStyle(
-                                                                fontSize: 32,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold))),
-                                                    Align(
-                                                      alignment:
-                                                          Alignment.centerLeft,
-                                                      child: Text(
-                                                          "${userSnapshot.data!.bio}",
-                                                          style: TextStyle(
-                                                            fontSize: 20,
-                                                          )),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            ])))
-                              ]),
+                                                  ),
+                                                ]))),
+                                    GestureDetector(
+                                        onTap: () {
+                                          print("Tapped a Container");
+                                          Navigator.of(context)
+                                              .push(PageRouteBuilder(
+                                            pageBuilder: (
+                                              BuildContext context,
+                                              Animation<double> animation,
+                                              Animation<double>
+                                                  secondaryAnimation,
+                                            ) =>
+                                                ProfilePageBgBioEdit(
+                                                    userSnapshot:
+                                                        userSnapshot.data!,
+                                                    notifyParent: refresh),
+                                            transitionsBuilder: (
+                                              BuildContext context,
+                                              Animation<double> animation,
+                                              Animation<double>
+                                                  secondaryAnimation,
+                                              Widget child,
+                                            ) =>
+                                                SlideTransition(
+                                              position: Tween<Offset>(
+                                                begin: const Offset(0, 1),
+                                                end: Offset.zero,
+                                              ).animate(animation),
+                                              child: child,
+                                            ),
+                                          ));
+                                        },
+                                        child: Container(
+                                            margin: EdgeInsets.fromLTRB(
+                                                0, 0, 0, 12),
+                                            color: Colors.white,
+                                            width: double.infinity,
+                                            child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 20,
+                                                            vertical: 20),
+                                                    child: Column(
+                                                      children: [
+                                                        Align(
+                                                            alignment: Alignment
+                                                                .centerLeft,
+                                                            child: Text("Bio",
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        32,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold))),
+                                                        Align(
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          child: Text(
+                                                              "${userSnapshot.data!.bio}",
+                                                              style: TextStyle(
+                                                                fontSize: 20,
+                                                              )),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ])))
+                                  ],
+                                )
+                              ]))
                             ],
                           )
                         : Container());
@@ -485,6 +501,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
     return Stack(
       children: [
         Container(
+          alignment: Alignment.bottomCenter,
           child: CircleAvatar(
             backgroundImage: NetworkImage(user.profilePhotoPath),
             radius: 75,
@@ -495,8 +512,9 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
           ),
         ),
         Positioned(
-            right: 0.0,
-            bottom: 0.0,
+            left: 0.8,
+            right: 1.0,
+            bottom: 1.0,
             child: RoundedIconButton(
               onPressed: () async {
                 final pickedFile =

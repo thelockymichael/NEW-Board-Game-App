@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/provider/card_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class TinderCard extends StatefulWidget {
   final AppUser? user;
@@ -167,17 +169,38 @@ class _TinderCardState extends State<TinderCard> {
         ],
       );
 
-  Widget buildBGGName() => Row(
-        children: [
-          Icon(Icons.gamepad_rounded, color: Colors.black),
-          const SizedBox(width: 8),
-          Text(
-            "Zuxi",
-            style: TextStyle(
-                fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-        ],
-      );
+  inform(String bggName) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => BggWebView(
+                "https://boardgamegeek.com/collection/user/Zuxi?rated=1&subtype=boardgame&ff=1")));
+  }
+
+  Widget buildBGGName() {
+    if (widget.user!.bggName.isEmpty) {
+      return Container();
+    }
+
+    return GestureDetector(
+        onTap: () {
+          inform(widget.user!.bggName);
+          print("Haloota");
+        },
+        child: Row(
+          children: [
+            Icon(Icons.gamepad_rounded, color: Colors.black),
+            const SizedBox(width: 8),
+            Text(
+              widget.user!.bggName,
+              style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold),
+            ),
+          ],
+        ));
+  }
 
   Widget buildStatus() => Row(children: [
         Container(
@@ -252,5 +275,28 @@ class _TinderCardState extends State<TinderCard> {
                   style: TextStyle(
                       color: color, fontSize: 48, fontWeight: FontWeight.bold),
                 ))));
+  }
+}
+
+class BggWebView extends StatelessWidget {
+  String url;
+  BggWebView(this.url);
+
+  final Completer<WebViewController> _controller =
+      Completer<WebViewController>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Board Game Geek"),
+      ),
+      body: Builder(builder: (BuildContext context) {
+        return WebView(
+          javascriptMode: JavascriptMode.unrestricted,
+          initialUrl: url,
+        );
+      }),
+    );
   }
 }

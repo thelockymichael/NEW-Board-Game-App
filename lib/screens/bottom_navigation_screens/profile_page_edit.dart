@@ -51,6 +51,10 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
     );
   }
 
+  refresh() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,17 +106,24 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
                                                   horizontal: 20, vertical: 20),
                                               child: Column(
                                                 children: [
-                                                  Text(
-                                                      "${userSnapshot.data?.name}, ${userSnapshot.data?.age}",
-                                                      style: TextStyle(
-                                                          fontSize: 32,
-                                                          fontWeight:
-                                                              FontWeight.bold)),
-                                                  Text(
-                                                      "${userSnapshot.data?.gender}, ${userSnapshot.data?.currentLocation}",
-                                                      style: TextStyle(
-                                                        fontSize: 20,
-                                                      ))
+                                                  Align(
+                                                      alignment:
+                                                          Alignment.topLeft,
+                                                      child: Text(
+                                                          "${userSnapshot.data?.name}, ${userSnapshot.data?.age}",
+                                                          style: TextStyle(
+                                                              fontSize: 32,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold))),
+                                                  Align(
+                                                      alignment:
+                                                          Alignment.topLeft,
+                                                      child: Text(
+                                                          "${userSnapshot.data?.gender}, ${userSnapshot.data?.currentLocation}",
+                                                          style: TextStyle(
+                                                            fontSize: 20,
+                                                          )))
                                                 ],
                                               ),
                                             ),
@@ -127,7 +138,8 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
                                                   animation2) =>
                                               ProfilePageBgGenreEdit(
                                                   userSnapshot:
-                                                      userSnapshot.data!),
+                                                      userSnapshot.data!,
+                                                  notifyParent: refresh),
                                           transitionDuration: Duration.zero,
                                           reverseTransitionDuration:
                                               Duration.zero,
@@ -149,13 +161,53 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
                                                     vertical: 20),
                                                 child: Column(
                                                   children: [
-                                                    Text(
-                                                        "Favourite Game Genres",
-                                                        style: TextStyle(
-                                                            fontSize: 32,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold)),
+                                                    Align(
+                                                        alignment:
+                                                            Alignment.topLeft,
+                                                        child: Text(
+                                                            "Favourite Game Genres",
+                                                            style: TextStyle(
+                                                                fontSize: 32,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold))),
+                                                    Align(
+                                                      alignment:
+                                                          Alignment.centerLeft,
+                                                      child: Wrap(
+                                                        children: userSnapshot
+                                                            .data!
+                                                            .favBoardGameGenres
+                                                            .map((gameGenre) {
+                                                          return Container(
+                                                            margin:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    right: 10,
+                                                                    top: 10),
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    8),
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color:
+                                                                  Colors.green,
+                                                              borderRadius: BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          12.0)),
+                                                            ),
+                                                            child: Text(
+                                                              gameGenre,
+                                                              style: TextStyle(
+                                                                  fontSize: 20,
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                          );
+                                                        }).toList(),
+                                                      ),
+                                                    ),
                                                   ],
                                                 ),
                                               ),
@@ -171,8 +223,9 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
                                           Animation<double> secondaryAnimation,
                                         ) =>
                                             ProfilePageBgBioEdit(
-                                          userSnapshot: userSnapshot.data!,
-                                        ),
+                                                userSnapshot:
+                                                    userSnapshot.data!,
+                                                notifyParent: refresh),
                                         transitionsBuilder: (
                                           BuildContext context,
                                           Animation<double> animation,

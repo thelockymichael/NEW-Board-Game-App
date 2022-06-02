@@ -8,9 +8,10 @@ import 'package:provider/provider.dart';
 
 class ProfilePageBgGenreEdit extends StatefulWidget {
   static const String id = 'profile_page_bg_genre_edit';
+  final Function() notifyParent;
   final AppUser? userSnapshot;
 
-  const ProfilePageBgGenreEdit({this.userSnapshot});
+  const ProfilePageBgGenreEdit({this.userSnapshot, required this.notifyParent});
 
   @override
   _ProfilePageBgGenreEditState createState() => _ProfilePageBgGenreEditState();
@@ -38,12 +39,6 @@ class _ProfilePageBgGenreEditState extends State<ProfilePageBgGenreEdit> {
   loadList() {
     itemList = [];
     selectedList = [];
-
-    // if (_userSnapshot.favBoardGameGenres.contains(itemList[i].name)) {
-    //   print("${itemList[i].name}");
-
-    //   selectedList.add(itemList[i]);
-    // }
 
     itemList.add(FavGenreItem(
         "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/board_game_genres%2Ffamily_game.jpg?alt=media&token=cd082d8c-a6d7-4720-a569-6c63d7853ecb",
@@ -203,6 +198,8 @@ class _ProfilePageBgGenreEditState extends State<ProfilePageBgGenreEdit> {
                 onTap: () {
                   _userProvider.updateFavouriteBoardGameGenres(
                       userSnapshot!, selectedList, errorScaffoldKey);
+
+                  widget.notifyParent();
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),

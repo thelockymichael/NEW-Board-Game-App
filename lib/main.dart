@@ -5,6 +5,7 @@ import 'package:flutter_demo_01/navigation/bottom_navigation_bar.dart';
 import 'package:flutter_demo_01/provider/card_provider.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page_bg_genre_edit.dart';
+import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page_bio_edit.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page_edit.dart';
 import 'package:flutter_demo_01/screens/chat_screen.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/discover_page.dart';
@@ -45,7 +46,8 @@ class MyApp extends StatelessWidget {
             DiscoverPage.id: (context) => DiscoverPage(),
             ProfilePage.id: (context) => ProfilePage(),
             ProfilePageEdit.id: (context) => ProfilePageEdit(),
-            ProfilePageBgGenreEdit.id: (context) => ProfilePageBgGenreEdit(),
+            // ProfilePageBgGenreEdit.id: (context) => ProfilePageBgGenreEdit(),
+            // ProfilePageBgBioEdit.id: (context) => ProfilePageBgBioEdit(),
             SettingsPage.id: (context) => SettingsPage(),
             RegisterPage.id: (context) => RegisterPage(),
             MainNavigation.id: (context) => MainNavigation(),

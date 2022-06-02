@@ -10,9 +10,10 @@ import 'package:provider/provider.dart';
 
 class ProfilePageBgBioEdit extends StatefulWidget {
   static const String id = 'profile_page_bio_edit';
+  final Function() notifyParent;
   final AppUser? userSnapshot;
 
-  const ProfilePageBgBioEdit({this.userSnapshot});
+  const ProfilePageBgBioEdit({this.userSnapshot, required this.notifyParent});
 
   @override
   _ProfilePageBgBioEditState createState() => _ProfilePageBgBioEditState();
@@ -132,6 +133,7 @@ class _ProfilePageBgBioEditState extends State<ProfilePageBgBioEdit> {
                                           _scaffoldKey)
                                       .then((response) {
                                     if (response is Success) {
+                                      widget.notifyParent();
                                       print("Great success");
                                     }
                                   });

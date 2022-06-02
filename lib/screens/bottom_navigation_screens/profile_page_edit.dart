@@ -7,6 +7,7 @@ import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/model/user_profile_edit.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page_bg_genre_edit.dart';
+import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page_bio_edit.dart';
 import 'package:flutter_demo_01/screens/login_page.dart';
 import 'package:flutter_demo_01/screens/settings_page.dart';
 import 'package:flutter_demo_01/utils/constants.dart';
@@ -155,10 +156,71 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
                                                             fontWeight:
                                                                 FontWeight
                                                                     .bold)),
-                                                    Text("",
-                                                        style: TextStyle(
-                                                          fontSize: 20,
-                                                        ))
+                                                  ],
+                                                ),
+                                              ),
+                                            ]))),
+                                GestureDetector(
+                                    onTap: () {
+                                      print("Tapped a Container");
+                                      Navigator.of(context)
+                                          .push(PageRouteBuilder(
+                                        pageBuilder: (
+                                          BuildContext context,
+                                          Animation<double> animation,
+                                          Animation<double> secondaryAnimation,
+                                        ) =>
+                                            ProfilePageBgBioEdit(
+                                          userSnapshot: userSnapshot.data!,
+                                        ),
+                                        transitionsBuilder: (
+                                          BuildContext context,
+                                          Animation<double> animation,
+                                          Animation<double> secondaryAnimation,
+                                          Widget child,
+                                        ) =>
+                                            SlideTransition(
+                                          position: Tween<Offset>(
+                                            begin: const Offset(0, 1),
+                                            end: Offset.zero,
+                                          ).animate(animation),
+                                          child: child,
+                                        ),
+                                      ));
+                                    },
+                                    child: Container(
+                                        margin:
+                                            EdgeInsets.fromLTRB(0, 0, 0, 12),
+                                        color: Colors.white,
+                                        width: double.infinity,
+                                        child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 20,
+                                                    vertical: 20),
+                                                child: Column(
+                                                  children: [
+                                                    Align(
+                                                        alignment: Alignment
+                                                            .centerLeft,
+                                                        child: Text("Bio",
+                                                            style: TextStyle(
+                                                                fontSize: 32,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold))),
+                                                    Align(
+                                                      alignment:
+                                                          Alignment.centerLeft,
+                                                      child: Text(
+                                                          "${userSnapshot.data!.bio}",
+                                                          style: TextStyle(
+                                                            fontSize: 20,
+                                                          )),
+                                                    )
                                                   ],
                                                 ),
                                               ),

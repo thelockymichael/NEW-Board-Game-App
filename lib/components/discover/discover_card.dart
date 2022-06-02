@@ -10,7 +10,6 @@ import 'package:flutter_demo_01/provider/card_provider.dart';
 import 'package:flutter_demo_01/screens/matched_screen.dart';
 import 'package:flutter_demo_01/utils/utils.dart';
 import 'package:provider/provider.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 class DiscoverCard extends StatefulWidget {
   final List<AppUser> people;

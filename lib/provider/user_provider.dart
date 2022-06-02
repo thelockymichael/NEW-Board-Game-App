@@ -8,6 +8,7 @@ import 'package:flutter_demo_01/db/remote/firebase_storage_source.dart';
 import 'package:flutter_demo_01/db/remote/response.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/model/chat_with_user.dart';
+import 'package:flutter_demo_01/model/user_bio_edit.dart';
 import 'package:flutter_demo_01/model/user_profile_edit.dart';
 import 'package:flutter_demo_01/model/user_registration.dart';
 import 'package:flutter_demo_01/utils/fire_auth.dart';
@@ -201,6 +202,39 @@ class UserProvider extends ChangeNotifier {
         bio: userSnapshot.bio,
         email: userSnapshot.email,
         favBoardGameGenres: mappedGenres,
+        profilePhotoPath: userSnapshot.profilePhotoPath);
+
+    Response<dynamic> response = await _databaseSource.updateUser(user);
+
+    if (response is Success<String>) {
+      print("Response is successful");
+
+      return Response.success(user);
+    }
+
+    if (response is Error) showSnackBar(errorScaffoldKey, response.message);
+    return response;
+  }
+
+  // Future<Response> updateUserBasicInfo(UserProfileEdit userProfile,
+  Future<Response> updateUserBio(AppUser userSnapshot, UserBioEdit userBioEdit,
+      GlobalKey<ScaffoldState> errorScaffoldKey) async {
+    // print("userProfile ${userProfile.name}");
+    // print("userProfile ${userProfile.bggName}");
+    // print("userProfile ${userProfile.birthDay}");
+    // print("userProfile ${userProfile.currentLocation}");
+    // print("userProfile ${userProfile.gender}");
+
+    AppUser user = AppUser(
+        id: userSnapshot.id,
+        name: userSnapshot.name,
+        bggName: userSnapshot.bggName,
+        currentLocation: userSnapshot.currentLocation,
+        gender: userSnapshot.gender,
+        age: userSnapshot.age,
+        bio: userBioEdit.bio,
+        email: userSnapshot.email,
+        favBoardGameGenres: userSnapshot.favBoardGameGenres,
         profilePhotoPath: userSnapshot.profilePhotoPath);
 
     Response<dynamic> response = await _databaseSource.updateUser(user);

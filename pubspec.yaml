@@ -46,6 +46,7 @@ dependencies:
   firebase_storage_web: ^3.2.16
   uuid: ^3.0.6
   webview_flutter: ^3.0.4
+  cloud_functions: ^3.2.16
 
 dev_dependencies:
   flutter_test:

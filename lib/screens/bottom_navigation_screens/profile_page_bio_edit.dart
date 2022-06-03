@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
-import 'package:flutter_demo_01/db/entity/GridItem.dart';
 import 'package:flutter_demo_01/db/entity/FavGenreItem.dart';
 import 'package:flutter_demo_01/db/remote/response.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
@@ -13,7 +12,9 @@ class ProfilePageBgBioEdit extends StatefulWidget {
   final Function() notifyParent;
   final AppUser? userSnapshot;
 
-  const ProfilePageBgBioEdit({this.userSnapshot, required this.notifyParent});
+  const ProfilePageBgBioEdit(
+      {Key? key, this.userSnapshot, required this.notifyParent})
+      : super(key: key);
 
   @override
   _ProfilePageBgBioEditState createState() => _ProfilePageBgBioEditState();
@@ -28,14 +29,12 @@ class _ProfilePageBgBioEditState extends State<ProfilePageBgBioEdit> {
   late List<FavGenreItem> selectedList;
 
   late UserProvider _userProvider;
-  late AppUser _userSnapshot;
 
   final _bioFormKey = GlobalKey<FormState>();
   bool _isProcessing = false;
 
   @override
   void initState() {
-    _userSnapshot = widget.userSnapshot!;
     _userProvider = Provider.of<UserProvider>(context, listen: false);
 
     super.initState();
@@ -46,39 +45,35 @@ class _ProfilePageBgBioEditState extends State<ProfilePageBgBioEdit> {
     return Scaffold(
         backgroundColor: Colors.white,
         key: _scaffoldKey,
-        body: Container(
-          child:
-              Consumer<UserProvider>(builder: (context, userProvider, child) {
-            return FutureBuilder<AppUser>(
-              future: userProvider.user,
-              builder: (context, userSnapshot) {
-                return CustomModalProgressHUD(
-                    inAsyncCall:
-                        userProvider.user == null || userProvider.isLoading,
-                    child: userSnapshot.hasData
-                        ? CustomScrollView(
-                            slivers: <Widget>[
-                              SliverAppBar(),
-                              SliverList(
-                                delegate: SliverChildListDelegate([
-                                  bioEditForm(context, userSnapshot.data!),
-                                  // tripDetails(),
-                                  // CalculatorWidget(trip: widget.trip),
-                                  // totalBudgetCard(),
-                                  // daysOutCard(),
-                                  // notesCard(context),
-                                  Container(
-                                    height: 200,
-                                  )
-                                ]),
-                              )
-                            ],
-                          )
-                        : Container());
-              },
-            );
-          }),
-        ));
+        body: Consumer<UserProvider>(builder: (context, userProvider, child) {
+          return FutureBuilder<AppUser>(
+            future: userProvider.user,
+            builder: (context, userSnapshot) {
+              return CustomModalProgressHUD(
+                  inAsyncCall: userProvider.isLoading,
+                  child: userSnapshot.hasData
+                      ? CustomScrollView(
+                          slivers: <Widget>[
+                            const SliverAppBar(),
+                            SliverList(
+                              delegate: SliverChildListDelegate([
+                                bioEditForm(context, userSnapshot.data!),
+                                // tripDetails(),
+                                // CalculatorWidget(trip: widget.trip),
+                                // totalBudgetCard(),
+                                // daysOutCard(),
+                                // notesCard(context),
+                                Container(
+                                  height: 200,
+                                )
+                              ]),
+                            )
+                          ],
+                        )
+                      : Container());
+            },
+          );
+        }));
   }
 
   Widget bioEditForm(context, AppUser userSnapshot) {
@@ -86,12 +81,12 @@ class _ProfilePageBgBioEditState extends State<ProfilePageBgBioEdit> {
 
     final _focusBio = FocusNode();
     return Container(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Write about your board game hobby",
+            const Text("Write about your board game hobby",
                 textAlign: TextAlign.center, style: TextStyle(fontSize: 32)),
             Form(
               key: _bioFormKey,
@@ -104,7 +99,7 @@ class _ProfilePageBgBioEditState extends State<ProfilePageBgBioEdit> {
                     labelText: "Don't be shy!",
                     errorBorder: UnderlineInputBorder(
                       borderRadius: BorderRadius.circular(6.0),
-                      borderSide: BorderSide(
+                      borderSide: const BorderSide(
                         color: Colors.red,
                       ),
                     ),
@@ -114,7 +109,7 @@ class _ProfilePageBgBioEditState extends State<ProfilePageBgBioEdit> {
                   maxLength: 500,
                 ),
                 _isProcessing
-                    ? CircularProgressIndicator()
+                    ? const CircularProgressIndicator()
                     : Row(
                         children: [
                           Expanded(
@@ -134,7 +129,6 @@ class _ProfilePageBgBioEditState extends State<ProfilePageBgBioEdit> {
                                       .then((response) {
                                     if (response is Success) {
                                       widget.notifyParent();
-                                      print("Great success");
                                     }
                                   });
 
@@ -147,7 +141,7 @@ class _ProfilePageBgBioEditState extends State<ProfilePageBgBioEdit> {
                                   });
                                 }
                               },
-                              child: Text("Save",
+                              child: const Text("Save",
                                   style: TextStyle(color: Colors.white)),
                             ),
                           )

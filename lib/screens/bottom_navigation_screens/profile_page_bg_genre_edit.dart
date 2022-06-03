@@ -11,7 +11,9 @@ class ProfilePageBgGenreEdit extends StatefulWidget {
   final Function() notifyParent;
   final AppUser? userSnapshot;
 
-  const ProfilePageBgGenreEdit({this.userSnapshot, required this.notifyParent});
+  const ProfilePageBgGenreEdit(
+      {Key? key, this.userSnapshot, required this.notifyParent})
+      : super(key: key);
 
   @override
   _ProfilePageBgGenreEditState createState() => _ProfilePageBgGenreEditState();
@@ -130,69 +132,55 @@ class _ProfilePageBgGenreEditState extends State<ProfilePageBgGenreEdit> {
         backgroundColor: Colors.white,
         appBar: getAppBar(_userSnapshot, _scaffoldKey),
         key: _scaffoldKey,
-        body: Container(
-          child:
-              Consumer<UserProvider>(builder: (context, userProvider, child) {
-            return FutureBuilder<AppUser>(
-              future: userProvider.user,
-              builder: (context, userSnapshot) {
-                return CustomModalProgressHUD(
-                    inAsyncCall:
-                        userProvider.user == null || userProvider.isLoading,
-                    child: userSnapshot.hasData
-                        ? GridView.builder(
-                            itemCount: itemList.length,
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 3,
-                                    childAspectRatio: 0.56,
-                                    crossAxisSpacing: 0,
-                                    mainAxisSpacing: 0),
-                            itemBuilder: (context, index) {
-                              return GridItem(
-                                item: itemList[index],
-                                // selectedItem: selectedList[index],
-                                isSelected: (bool value) {
-                                  setState(() {
-                                    if (value) {
-                                      print("VALUE $value");
-                                      print("itemList[index] $index");
-                                      print(
-                                          "itemList[index] ${itemList[index].imageUrl}");
-                                      print(
-                                          "itemList[index] ${itemList[index].name}");
-                                      print(
-                                          "itemList[index] ${itemList[index].rank}");
-                                      print("------------------");
-
-                                      selectedList.add(itemList[index]);
-                                      itemList[index].isSelected = true;
-                                    } else {
-                                      selectedList.remove(itemList[index]);
-                                      itemList[index].isSelected = false;
-                                    }
-                                  });
-                                },
-                                key: Key(itemList[index].rank.toString()),
-                              );
-                            },
-                          )
-                        : Container());
-              },
-            );
-          }),
-        ));
+        body: Consumer<UserProvider>(builder: (context, userProvider, child) {
+          return FutureBuilder<AppUser>(
+            future: userProvider.user,
+            builder: (context, userSnapshot) {
+              return CustomModalProgressHUD(
+                  inAsyncCall: userProvider.isLoading,
+                  child: userSnapshot.hasData
+                      ? GridView.builder(
+                          itemCount: itemList.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  childAspectRatio: 0.56,
+                                  crossAxisSpacing: 0,
+                                  mainAxisSpacing: 0),
+                          itemBuilder: (context, index) {
+                            return GridItem(
+                              item: itemList[index],
+                              // selectedItem: selectedList[index],
+                              isSelected: (bool value) {
+                                setState(() {
+                                  if (value) {
+                                    selectedList.add(itemList[index]);
+                                    itemList[index].isSelected = true;
+                                  } else {
+                                    selectedList.remove(itemList[index]);
+                                    itemList[index].isSelected = false;
+                                  }
+                                });
+                              },
+                              itemKey: Key(itemList[index].rank.toString()),
+                            );
+                          },
+                        )
+                      : Container());
+            },
+          );
+        }));
   }
 
   getAppBar(AppUser? userSnapshot, errorScaffoldKey) {
     var itemText = selectedList.length > 1 ? "items" : "item";
 
     return AppBar(
-      title: Text(selectedList.length < 1
+      title: Text(selectedList.isEmpty
           ? "Select favourite genres"
           : "${selectedList.length} $itemText selected"),
       actions: <Widget>[
-        selectedList.length < 1
+        selectedList.isEmpty
             ? Container()
             : InkWell(
                 onTap: () {
@@ -201,8 +189,8 @@ class _ProfilePageBgGenreEditState extends State<ProfilePageBgGenreEdit> {
 
                   widget.notifyParent();
                 },
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                child: const Padding(
+                  padding: EdgeInsets.all(8.0),
                   // child: Icon(Icons.select),
                   child: Center(
                       child: Text(

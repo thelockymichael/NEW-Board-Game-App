@@ -5,7 +5,7 @@ import 'package:flutter_demo_01/utils/constants.dart';
 class ChatTopBar extends StatelessWidget {
   final AppUser user;
 
-  ChatTopBar({required this.user});
+  const ChatTopBar({Key? key, required this.user}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class ChatTopBar extends StatelessWidget {
             )
           ],
         ),
-        SizedBox(width: 10),
+        const SizedBox(width: 10),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

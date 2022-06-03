@@ -10,11 +10,13 @@ class ChatListTile extends StatelessWidget {
   final Function onLongPress;
   final String myUserId;
 
-  ChatListTile(
-      {required this.chatWithUser,
+  const ChatListTile(
+      {Key? key,
+      required this.chatWithUser,
       required this.onTap,
       required this.onLongPress,
-      required this.myUserId});
+      required this.myUserId})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,7 @@ class ChatListTile extends StatelessWidget {
         onTap();
       },
       onLongPress: () {},
-      child: Container(
+      child: SizedBox(
         height: 60,
         child: Row(
           children: [
@@ -40,7 +42,7 @@ class ChatListTile extends StatelessWidget {
             ),
             Expanded(
                 child: Padding(
-              padding: EdgeInsets.only(left: 8, top: 8, bottom: 8),
+              padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [getTopRow(), getBottomRow()],
@@ -73,17 +75,16 @@ class ChatListTile extends StatelessWidget {
             chatWithUser.user.name,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(fontSize: 16),
+            style: const TextStyle(fontSize: 16),
           ),
         ),
-        Container(
-            child: Text(
-                chatWithUser.chat.lastMessage == null
-                    ? ''
-                    : convertEpochMsToDateTime(
-                        chatWithUser.chat.lastMessage!.epochTimeMs),
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12))),
+        Text(
+            chatWithUser.chat.lastMessage == null
+                ? ''
+                : convertEpochMsToDateTime(
+                    chatWithUser.chat.lastMessage!.epochTimeMs),
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 12)),
       ],
     );
   }
@@ -102,7 +103,7 @@ class ChatListTile extends StatelessWidget {
                       chatWithUser.chat.lastMessage!.text),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: 14),
+              style: const TextStyle(fontSize: 14),
             ),
           ),
         ),
@@ -113,7 +114,7 @@ class ChatListTile extends StatelessWidget {
                 ? Container(
                     width: 8,
                     height: 8,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                         color: kAccentColor, shape: BoxShape.circle),
                   )
                 : null)

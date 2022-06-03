@@ -16,11 +16,13 @@ class MatchedScreen extends StatelessWidget {
   final String otherUserProfilePhotoPath;
   final String otherUserId;
 
-  MatchedScreen(
-      {required this.myProfilePhotoPath,
+  const MatchedScreen(
+      {Key? key,
+      required this.myProfilePhotoPath,
       required this.myUserId,
       required this.otherUserProfilePhotoPath,
-      required this.otherUserId});
+      required this.otherUserId})
+      : super(key: key);
 
   void sendMessagePressed(BuildContext context) async {
     AppUser user = await Provider.of<UserProvider>(context, listen: false).user;
@@ -42,23 +44,20 @@ class MatchedScreen extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Container(
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             vertical: 42.0,
             horizontal: 18.0,
           ),
-          margin: EdgeInsets.only(bottom: 40),
+          margin: const EdgeInsets.only(bottom: 40),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Image.asset('images/tinder_icon.png', width: 40),
-              Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Portrait(imageUrl: myProfilePhotoPath),
-                    Portrait(imageUrl: otherUserProfilePhotoPath)
-                  ],
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Portrait(imageUrl: myProfilePhotoPath),
+                  Portrait(imageUrl: otherUserProfilePhotoPath)
+                ],
               ),
               Column(
                 children: [
@@ -68,7 +67,7 @@ class MatchedScreen extends StatelessWidget {
                       sendMessagePressed(context);
                     },
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   RoundedOutlinedButton(
                       text: 'KEEP SWIPING',
                       onPressed: () {

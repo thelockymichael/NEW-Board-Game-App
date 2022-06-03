@@ -5,15 +5,18 @@ class RoundedOutlinedButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
 
-  RoundedOutlinedButton({required this.text, required this.onPressed});
+  const RoundedOutlinedButton(
+      {Key? key, required this.text, required this.onPressed})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
         width: double.infinity,
+        // ignore: deprecated_member_use
         child: OutlineButton(
           highlightedBorderColor: kAccentColor,
-          borderSide: BorderSide(color: kSecondaryColor, width: 2.0),
+          borderSide: const BorderSide(color: kSecondaryColor, width: 2.0),
           child: Text(text, style: Theme.of(context).textTheme.button),
           onPressed: onPressed,
           shape: RoundedRectangleBorder(

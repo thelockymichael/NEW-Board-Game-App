@@ -1,36 +1,27 @@
-import 'dart:developer';
+// ignore_for_file: prefer_function_declarations_over_variables
 
-import 'package:uuid/uuid.dart';
-import 'package:uuid/uuid_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/components/discover/discover_card.dart';
-import 'package:flutter_demo_01/components/discover/tinder_card.dart';
 import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
-import 'package:flutter_demo_01/components/widgets/rounded_icon_button.dart';
-import 'package:flutter_demo_01/components/widgets/swipe_card.dart';
 import 'package:flutter_demo_01/db/entity/chat.dart';
 import 'package:flutter_demo_01/db/entity/match.dart';
 import 'package:flutter_demo_01/db/entity/swipe.dart';
 import 'package:flutter_demo_01/db/remote/firebase_database_source.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
-import 'package:flutter_demo_01/provider/card_provider.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/screens/matched_screen.dart';
-import 'package:flutter_demo_01/utils/constants.dart';
 import 'package:flutter_demo_01/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class DiscoverPage extends StatefulWidget {
   static const String id = 'discover_page';
 
+  const DiscoverPage({Key? key}) : super(key: key);
+
   @override
   _DiscoverPage createState() => _DiscoverPage();
 }
-
-// TODO 1. Get userId of logged in user [], ignoreid in loadPerson [x]
-// TODO
-// TODO
 
 class _DiscoverPage extends State<DiscoverPage> {
   final FirebaseDatabaseSource _databaseSource = FirebaseDatabaseSource();
@@ -59,9 +50,9 @@ class _DiscoverPage extends State<DiscoverPage> {
     var res = await _databaseSource.getPersonsToMatchWith(2, _ignoreSwipeIds);
 
     if (res.docs.isNotEmpty) {
-      res.docs.forEach((element) {
+      for (var element in res.docs) {
         _userList.add(AppUser.fromSnapshot(element));
-      });
+      }
 
       return _userList.reversed.toList();
     }
@@ -83,11 +74,6 @@ class _DiscoverPage extends State<DiscoverPage> {
         // var chatId = uuid.v4();
         // BACKUP
         String chatId = compareAndCombineIds(myUser.id, otherUser.id);
-
-        print("new Chatid ${chatId}");
-
-        print("new firstUserId ${myUser.id}");
-        print("new secondUserId ${otherUser.id}");
 
         // var uuid = uu();
         _databaseSource.addChat(Chat(chatId, myUser.id, otherUser.id, null));
@@ -125,18 +111,15 @@ class _DiscoverPage extends State<DiscoverPage> {
 
   @override
   Widget build(BuildContext buildContext) {
-    print("Doing something...");
-
     return Scaffold(
         key: _scaffoldKey,
-        body: Container(child: Consumer<UserProvider>(
+        body: Consumer<UserProvider>(
           builder: (context, userProvider, child) {
             return FutureBuilder<AppUser>(
               future: userProvider.user,
               builder: (context, userSnapshot) {
                 return CustomModalProgressHUD(
-                  inAsyncCall:
-                      userProvider.user == null || userProvider.isLoading,
+                  inAsyncCall: userProvider.isLoading,
                   child: (userSnapshot.hasData)
                       ? FutureBuilder<List<AppUser>?>(
                           future: loadPerson(userSnapshot.data!),
@@ -147,11 +130,9 @@ class _DiscoverPage extends State<DiscoverPage> {
                                     ConnectionState.done &&
                                 !snapshot.hasData) {
                               return Center(
-                                child: Container(
-                                    child: Text('No more users to swipe',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline4)),
+                                child: Text('No more users to swipe',
+                                    style:
+                                        Theme.of(context).textTheme.headline4),
                               );
                             }
                             if (!snapshot.hasData) {
@@ -175,17 +156,17 @@ class _DiscoverPage extends State<DiscoverPage> {
               },
             );
           },
-        )));
+        ));
   }
 
   Widget buildLogo() => Row(
-        children: [
+        children: const [
           Icon(
             Icons.gamepad_rounded,
             color: Colors.white,
             size: 36,
           ),
-          const SizedBox(width: 4),
+          SizedBox(width: 4),
           Text(
             'Board Game Buddy',
             style: TextStyle(
@@ -213,7 +194,7 @@ class _DiscoverPage extends State<DiscoverPage> {
       Color color, Color colorPressed, bool force) {
     final getBorder = (Set<MaterialState> states) {
       if (force || states.contains(MaterialState.pressed)) {
-        return BorderSide(color: Colors.transparent);
+        return const BorderSide(color: Colors.transparent);
       } else {
         return BorderSide(color: color, width: 2);
       }

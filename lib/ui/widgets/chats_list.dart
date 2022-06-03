@@ -8,10 +8,12 @@ class ChatsList extends StatefulWidget {
   final Function(ChatWithUser) onChatWithUserTap;
   final String myUserId;
 
-  ChatsList(
-      {required this.chatWithUserList,
+  const ChatsList(
+      {Key? key,
+      required this.chatWithUserList,
       required this.onChatWithUserTap,
-      required this.myUserId});
+      required this.myUserId})
+      : super(key: key);
 
   @override
   _ChatsListState createState() => _ChatsListState();
@@ -27,6 +29,7 @@ class _ChatsListState extends State<ChatsList> {
     _chatsObserver.startObservers(chatUpdated);
   }
 
+  @override
   @mustCallSuper
   @protected
   void dispose() {
@@ -46,9 +49,9 @@ class _ChatsListState extends State<ChatsList> {
 
   @override
   Widget build(BuildContext context) {
-    return new ListView.separated(
+    return ListView.separated(
       separatorBuilder: (BuildContext context, int index) =>
-          Divider(color: Colors.grey),
+          const Divider(color: Colors.grey),
       itemCount: widget.chatWithUserList.length,
       itemBuilder: (BuildContext _, int index) => ChatListTile(
         chatWithUser: widget.chatWithUserList[index],

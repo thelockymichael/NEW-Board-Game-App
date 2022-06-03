@@ -8,6 +8,8 @@ import 'package:flutter_demo_01/ui/widgets/chats_list.dart';
 import 'package:provider/provider.dart';
 
 class ChatsScreen extends StatefulWidget {
+  const ChatsScreen({Key? key}) : super(key: key);
+
   @override
   _ChatsScreenState createState() => _ChatsScreenState();
 }
@@ -26,15 +28,14 @@ class _ChatsScreenState extends State<ChatsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
         child: Consumer<UserProvider>(
           builder: (context, userProvider, child) {
             return FutureBuilder<AppUser>(
               future: userProvider.user,
               builder: (context, userSnapshot) {
                 return CustomModalProgressHUD(
-                  inAsyncCall:
-                      userProvider.user == null || userProvider.isLoading,
+                  inAsyncCall: userProvider.isLoading,
                   child: (userSnapshot.hasData)
                       ? FutureBuilder<List<ChatWithUser>>(
                           future: userProvider
@@ -48,11 +49,10 @@ class _ChatsScreenState extends State<ChatsScreen> {
                             } else {
                               return chatWithUsersSnapshot.data!.isEmpty
                                   ? Center(
-                                      child: Container(
-                                          child: Text('No matches',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headline4)),
+                                      child: Text('No matches',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline4),
                                     )
                                   : ChatsList(
                                       chatWithUserList:

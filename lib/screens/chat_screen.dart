@@ -9,7 +9,7 @@ import 'package:flutter_demo_01/ui/widgets/message_bubble.dart';
 import 'package:flutter_demo_01/utils/constants.dart';
 
 class ChatScreen extends StatelessWidget {
-  final ScrollController _scrollController = new ScrollController();
+  final ScrollController _scrollController = ScrollController();
   final FirebaseDatabaseSource _databaseSource = FirebaseDatabaseSource();
   final messageTextController = TextEditingController();
 
@@ -20,9 +20,11 @@ class ChatScreen extends StatelessWidget {
   final String otherUserId;
 
   ChatScreen(
-      {required this.chatId,
+      {Key? key,
+      required this.chatId,
       required this.myUserId,
-      required this.otherUserId});
+      required this.otherUserId})
+      : super(key: key);
 
   void checkAndUpdateLastMessageSeen(
       Message lastMessage, String messageId, String myUserId) {
@@ -38,13 +40,11 @@ class ChatScreen extends StatelessWidget {
   bool shouldShowTime(Message currMessage, Message messageBefore) {
     int halfHourInMilli = 1800000;
 
-    if (messageBefore != null) {
-      if ((messageBefore.epochTimeMs - currMessage.epochTimeMs).abs() >
-          halfHourInMilli) {
-        return true;
-      }
+    if ((messageBefore.epochTimeMs - currMessage.epochTimeMs).abs() >
+        halfHourInMilli) {
+      return true;
     }
-    return messageBefore == null;
+    return false;
   }
 
   @override
@@ -65,15 +65,16 @@ class ChatScreen extends StatelessWidget {
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) return Container();
                     List<Message> messages = [];
-                    snapshot.data?.docs.forEach((element) {
+                    for (var element in snapshot.data!.docs) {
                       messages.add(Message.fromSnapshot(element));
-                    });
+                    }
                     if (snapshot.data!.docs.isNotEmpty) {
                       checkAndUpdateLastMessageSeen(
                           messages.first, snapshot.data!.docs[0].id, myUserId);
                     }
-                    if (_scrollController.hasClients)
+                    if (_scrollController.hasClients) {
                       _scrollController.jumpTo(0.0);
+                    }
 
                     List<bool> showTimeList =
                         List.filled(messages.length, true, growable: true);
@@ -130,7 +131,7 @@ class ChatScreen extends StatelessWidget {
         ),
       ),
       child: Padding(
-        padding: EdgeInsets.only(left: 8),
+        padding: const EdgeInsets.only(left: 8),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -138,16 +139,17 @@ class ChatScreen extends StatelessWidget {
               child: TextField(
                 controller: messageTextController,
                 textCapitalization: TextCapitalization.sentences,
-                style: TextStyle(color: kSecondaryColor),
+                style: const TextStyle(color: kSecondaryColor),
                 decoration: InputDecoration(
                     labelText: 'Message',
                     labelStyle:
                         TextStyle(color: kSecondaryColor.withOpacity(0.5)),
-                    contentPadding: EdgeInsets.all(0)),
+                    contentPadding: const EdgeInsets.all(0)),
               ),
             ),
+            // ignore: deprecated_member_use
             RaisedButton(
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               highlightElevation: 0,
               elevation: 0,
               shape: RoundedRectangleBorder(

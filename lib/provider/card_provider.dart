@@ -1,20 +1,16 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:flutter/material.dart";
-import 'package:flutter_demo_01/db/entity/chat.dart';
 import 'package:flutter_demo_01/db/entity/match.dart';
 import 'package:flutter_demo_01/db/entity/swipe.dart';
 import 'package:flutter_demo_01/db/remote/firebase_database_source.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
-import 'package:flutter_demo_01/screens/matched_screen.dart';
-import 'package:flutter_demo_01/utils/utils.dart';
-import 'package:uuid/uuid.dart';
 
 enum CardStatus { like, dislike, superLike }
 
 class CardProvider extends ChangeNotifier {
   final FirebaseDatabaseSource _databaseSource = FirebaseDatabaseSource();
-  late List<String> _ignoreSwipeIds = <String>[];
+  late final List<String> _ignoreSwipeIds = <String>[];
 
   bool _isDragging = false;
   double _angle = 0;
@@ -159,7 +155,7 @@ class CardProvider extends ChangeNotifier {
   }
 
   double getStatusOpacity() {
-    final delta = 100;
+    const delta = 100;
     final pos = max(_position.dx.abs(), _position.dy.abs());
     final opacity = pos / delta;
 
@@ -192,6 +188,7 @@ class CardProvider extends ChangeNotifier {
         return CardStatus.dislike;
       }
     }
+    return null;
   }
 
   // void like(BuildContext context, AppUser myUser) {
@@ -209,9 +206,6 @@ class CardProvider extends ChangeNotifier {
     _angle = -20;
     _position -= Offset(2 * _screenSize.width, 0);
     _nextCard();
-
-    // TODO Dislike swipe / match
-    // TODO Load next person
 
     notifyListeners();
   }

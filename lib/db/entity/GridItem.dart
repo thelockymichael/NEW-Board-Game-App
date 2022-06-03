@@ -1,16 +1,20 @@
-import 'dart:ui';
+// ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/db/entity/FavGenreItem.dart';
-import 'package:flutter_demo_01/utils/constants.dart';
 import "package:flutter_demo_01/utils/utils.dart";
 
 class GridItem extends StatefulWidget {
-  final Key key;
+  final Key itemKey;
   final FavGenreItem item;
   final ValueChanged<bool> isSelected;
 
-  GridItem({required this.item, required this.isSelected, required this.key});
+  const GridItem(
+      {Key? key,
+      required this.item,
+      required this.isSelected,
+      required this.itemKey})
+      : super(key: key);
 
   @override
   _GridItemState createState() => _GridItemState();
@@ -55,7 +59,7 @@ class _GridItemState extends State<GridItem> {
                       Colors.grey.withOpacity(0.0),
                       Colors.black.withOpacity(0.6),
                     ],
-                        stops: [
+                        stops: const [
                       0.0,
                       1.0
                     ])),
@@ -68,7 +72,7 @@ class _GridItemState extends State<GridItem> {
                   Center(
                       child: Text(widget.item.name.capitalize(),
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 20)))
@@ -77,10 +81,10 @@ class _GridItemState extends State<GridItem> {
             ],
           ),
           widget.item.isSelected
-              ? Align(
+              ? const Align(
                   alignment: Alignment.bottomRight,
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: EdgeInsets.all(8.0),
                     child: Icon(
                       Icons.check_circle,
                       color: Colors.blue,

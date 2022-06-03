@@ -6,7 +6,7 @@ import 'package:flutter_demo_01/utils/constants.dart';
 class SwipeCard extends StatefulWidget {
   final AppUser? person;
 
-  SwipeCard({required this.person});
+  const SwipeCard({Key? key, required this.person}) : super(key: key);
 
   @override
   _SwipeCardState createState() => _SwipeCardState();
@@ -19,7 +19,7 @@ class _SwipeCardState extends State<SwipeCard> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Container(
+        SizedBox(
           height: MediaQuery.of(context).size.height * 0.725,
           width: MediaQuery.of(context).size.width * 0.85,
           child: ClipRRect(
@@ -34,17 +34,16 @@ class _SwipeCardState extends State<SwipeCard> {
           bottom: 0,
           left: 0,
           right: 0,
-          child: Container(
-            child: Column(
-              children: [
-                Padding(
-                    padding: showInfo
-                        ? EdgeInsets.symmetric(horizontal: 8, vertical: 4)
-                        : EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-                    child: getUserContent(context)),
-                showInfo ? getBottomInfo() : Container(),
-              ],
-            ),
+          child: Column(
+            children: [
+              Padding(
+                  padding: showInfo
+                      ? const EdgeInsets.symmetric(horizontal: 8, vertical: 4)
+                      : const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 24),
+                  child: getUserContent(context)),
+              showInfo ? getBottomInfo() : Container(),
+            ],
           ),
         ),
       ],
@@ -64,11 +63,12 @@ class _SwipeCardState extends State<SwipeCard> {
               children: <TextSpan>[
                 TextSpan(
                   text: widget.person?.name,
-                  style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 36, fontWeight: FontWeight.bold),
                 ),
                 TextSpan(
                     text: '  ${widget.person?.age}',
-                    style: TextStyle(fontSize: 20)),
+                    style: const TextStyle(fontSize: 20)),
               ],
             )),
           ],
@@ -90,14 +90,14 @@ class _SwipeCardState extends State<SwipeCard> {
   Widget getBottomInfo() {
     return Column(
       children: [
-        Divider(
+        const Divider(
           color: kAccentColor,
           thickness: 1.5,
           height: 0,
         ),
         Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
               bottomLeft: Radius.circular(25),
               bottomRight: Radius.circular(25),
             ),

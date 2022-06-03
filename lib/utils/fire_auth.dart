@@ -1,9 +1,7 @@
 // ignore_for_file: avoid_print
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_demo_01/db/remote/response.dart';
-import 'package:flutter_demo_01/model/app_user.dart';
 
 class FireAuth {
   // Firestore

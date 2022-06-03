@@ -18,6 +18,8 @@ import "package:flutter_demo_01/utils/utils.dart";
 class ProfilePageEdit extends StatefulWidget {
   static const String id = 'profile_page_edit';
 
+  const ProfilePageEdit({Key? key}) : super(key: key);
+
   @override
   _ProfilePageEditState createState() => _ProfilePageEditState();
 }
@@ -46,7 +48,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
   void navigateToSettings(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => SettingsPage(),
+        builder: (context) => const SettingsPage(),
       ),
     );
   }
@@ -60,44 +62,91 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
     return Scaffold(
         backgroundColor: Colors.grey,
         key: _scaffoldKey,
-        body: Container(
-          child:
-              Consumer<UserProvider>(builder: (context, userProvider, child) {
-            print("is userprovider ${userProvider != null ? "yes" : "no"}");
-            print("usr provider ${userProvider}");
-            print("context provider ${context}");
-
-            return FutureBuilder<AppUser>(
-              future: userProvider.user,
-              builder: (context, userSnapshot) {
-                return CustomModalProgressHUD(
-                    inAsyncCall:
-                        userProvider.user == null || userProvider.isLoading,
-                    child: userSnapshot.hasData
-                        ? CustomScrollView(
-                            slivers: <Widget>[
-                              SliverAppBar(
-                                pinned: true,
-                                flexibleSpace: FlexibleSpaceBar(
-                                  title: Text('Edit'),
-                                ),
+        body: Consumer<UserProvider>(builder: (context, userProvider, child) {
+          return FutureBuilder<AppUser>(
+            future: userProvider.user,
+            builder: (context, userSnapshot) {
+              return CustomModalProgressHUD(
+                  inAsyncCall: userProvider.isLoading,
+                  child: userSnapshot.hasData
+                      ? CustomScrollView(
+                          slivers: <Widget>[
+                            const SliverAppBar(
+                              pinned: true,
+                              flexibleSpace: FlexibleSpaceBar(
+                                title: Text('Edit'),
                               ),
-                              SliverList(
-                                  delegate: SliverChildListDelegate([
-                                getProfileImage(
-                                    userSnapshot.data!, userProvider),
-                                SizedBox(height: 40),
-                                Column(
-                                  children: [
-                                    GestureDetector(
+                            ),
+                            SliverList(
+                                delegate: SliverChildListDelegate([
+                              getProfileImage(userSnapshot.data!, userProvider),
+                              const SizedBox(height: 40),
+                              Column(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      _basicInfoEditModalBottomSheet(
+                                          context, userSnapshot.data!);
+                                    },
+                                    child: Container(
+                                        margin: const EdgeInsets.fromLTRB(
+                                            0, 0, 0, 12),
+                                        color: Colors.white,
+                                        width: double.infinity,
+                                        child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 20,
+                                                        vertical: 20),
+                                                child: Column(
+                                                  children: [
+                                                    Align(
+                                                        alignment:
+                                                            Alignment.topLeft,
+                                                        child: Text(
+                                                            "${userSnapshot.data?.name.capitalize()}, ${userSnapshot.data?.age}",
+                                                            style: const TextStyle(
+                                                                fontSize: 32,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold))),
+                                                    Align(
+                                                        alignment:
+                                                            Alignment.topLeft,
+                                                        child: Text(
+                                                            "${userSnapshot.data?.gender.capitalize()}, ${userSnapshot.data?.currentLocation.capitalize()}",
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 20,
+                                                            )))
+                                                  ],
+                                                ),
+                                              ),
+                                            ])),
+                                  ),
+                                  GestureDetector(
                                       onTap: () {
-                                        print("Tapped a Container");
-                                        _basicInfoEditModalBottomSheet(
-                                            context, userSnapshot.data!);
+                                        Navigator.of(context).push(
+                                          PageRouteBuilder(
+                                            pageBuilder: (context, animation1,
+                                                    animation2) =>
+                                                ProfilePageBgGenreEdit(
+                                                    userSnapshot:
+                                                        userSnapshot.data!,
+                                                    notifyParent: refresh),
+                                            transitionDuration: Duration.zero,
+                                            reverseTransitionDuration:
+                                                Duration.zero,
+                                          ),
+                                        );
                                       },
                                       child: Container(
-                                          margin:
-                                              EdgeInsets.fromLTRB(0, 0, 0, 12),
+                                          margin: const EdgeInsets.fromLTRB(
+                                              0, 0, 0, 12),
                                           color: Colors.white,
                                           width: double.infinity,
                                           child: Column(
@@ -105,204 +154,144 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Padding(
-                                                  padding: EdgeInsets.symmetric(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
                                                       horizontal: 20,
                                                       vertical: 20),
                                                   child: Column(
                                                     children: [
-                                                      Align(
+                                                      const Align(
                                                           alignment:
                                                               Alignment.topLeft,
                                                           child: Text(
-                                                              "${userSnapshot.data?.name.capitalize()}, ${userSnapshot.data?.age}",
+                                                              "Favourite Game Genres",
                                                               style: TextStyle(
                                                                   fontSize: 32,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold))),
                                                       Align(
-                                                          alignment:
-                                                              Alignment.topLeft,
-                                                          child: Text(
-                                                              "${userSnapshot.data?.gender.capitalize()}, ${userSnapshot.data?.currentLocation.capitalize()}",
-                                                              style: TextStyle(
-                                                                fontSize: 20,
-                                                              )))
+                                                        alignment: Alignment
+                                                            .centerLeft,
+                                                        child: Wrap(
+                                                          children: userSnapshot
+                                                              .data!
+                                                              .favBoardGameGenres
+                                                              .map((gameGenre) {
+                                                            return Container(
+                                                              margin:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      right: 10,
+                                                                      top: 10),
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8),
+                                                              decoration:
+                                                                  const BoxDecoration(
+                                                                color: Colors
+                                                                    .green,
+                                                                borderRadius: BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            12.0)),
+                                                              ),
+                                                              child: Text(
+                                                                gameGenre
+                                                                    .capitalize(),
+                                                                style: const TextStyle(
+                                                                    fontSize:
+                                                                        20,
+                                                                    color: Colors
+                                                                        .white),
+                                                              ),
+                                                            );
+                                                          }).toList(),
+                                                        ),
+                                                      ),
                                                     ],
                                                   ),
                                                 ),
-                                              ])),
-                                    ),
-                                    GestureDetector(
-                                        onTap: () {
-                                          print("Tapped a Container");
-                                          Navigator.of(context).push(
-                                            PageRouteBuilder(
-                                              pageBuilder: (context, animation1,
-                                                      animation2) =>
-                                                  ProfilePageBgGenreEdit(
-                                                      userSnapshot:
-                                                          userSnapshot.data!,
-                                                      notifyParent: refresh),
-                                              transitionDuration: Duration.zero,
-                                              reverseTransitionDuration:
-                                                  Duration.zero,
-                                            ),
-                                          );
-                                        },
-                                        child: Container(
-                                            margin: EdgeInsets.fromLTRB(
-                                                0, 0, 0, 12),
-                                            color: Colors.white,
-                                            width: double.infinity,
-                                            child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 20,
-                                                            vertical: 20),
-                                                    child: Column(
-                                                      children: [
-                                                        Align(
-                                                            alignment: Alignment
-                                                                .topLeft,
-                                                            child: Text(
-                                                                "Favourite Game Genres",
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        32,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold))),
-                                                        Align(
+                                              ]))),
+                                  GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(context)
+                                            .push(PageRouteBuilder(
+                                          pageBuilder: (
+                                            BuildContext context,
+                                            Animation<double> animation,
+                                            Animation<double>
+                                                secondaryAnimation,
+                                          ) =>
+                                              ProfilePageBgBioEdit(
+                                                  userSnapshot:
+                                                      userSnapshot.data!,
+                                                  notifyParent: refresh),
+                                          transitionsBuilder: (
+                                            BuildContext context,
+                                            Animation<double> animation,
+                                            Animation<double>
+                                                secondaryAnimation,
+                                            Widget child,
+                                          ) =>
+                                              SlideTransition(
+                                            position: Tween<Offset>(
+                                              begin: const Offset(0, 1),
+                                              end: Offset.zero,
+                                            ).animate(animation),
+                                            child: child,
+                                          ),
+                                        ));
+                                      },
+                                      child: Container(
+                                          margin: const EdgeInsets.fromLTRB(
+                                              0, 0, 0, 12),
+                                          color: Colors.white,
+                                          width: double.infinity,
+                                          child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal: 20,
+                                                      vertical: 20),
+                                                  child: Column(
+                                                    children: [
+                                                      const Align(
                                                           alignment: Alignment
                                                               .centerLeft,
-                                                          child: Wrap(
-                                                            children: userSnapshot
-                                                                .data!
-                                                                .favBoardGameGenres
-                                                                .map(
-                                                                    (gameGenre) {
-                                                              return Container(
-                                                                margin:
-                                                                    const EdgeInsets
-                                                                            .only(
-                                                                        right:
-                                                                            10,
-                                                                        top:
-                                                                            10),
-                                                                padding:
-                                                                    EdgeInsets
-                                                                        .all(8),
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  color: Colors
-                                                                      .green,
-                                                                  borderRadius:
-                                                                      BorderRadius.all(
-                                                                          Radius.circular(
-                                                                              12.0)),
-                                                                ),
-                                                                child: Text(
-                                                                  gameGenre
-                                                                      .capitalize(),
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          20,
-                                                                      color: Colors
-                                                                          .white),
-                                                                ),
-                                                              );
-                                                            }).toList(),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ]))),
-                                    GestureDetector(
-                                        onTap: () {
-                                          print("Tapped a Container");
-                                          Navigator.of(context)
-                                              .push(PageRouteBuilder(
-                                            pageBuilder: (
-                                              BuildContext context,
-                                              Animation<double> animation,
-                                              Animation<double>
-                                                  secondaryAnimation,
-                                            ) =>
-                                                ProfilePageBgBioEdit(
-                                                    userSnapshot:
-                                                        userSnapshot.data!,
-                                                    notifyParent: refresh),
-                                            transitionsBuilder: (
-                                              BuildContext context,
-                                              Animation<double> animation,
-                                              Animation<double>
-                                                  secondaryAnimation,
-                                              Widget child,
-                                            ) =>
-                                                SlideTransition(
-                                              position: Tween<Offset>(
-                                                begin: const Offset(0, 1),
-                                                end: Offset.zero,
-                                              ).animate(animation),
-                                              child: child,
-                                            ),
-                                          ));
-                                        },
-                                        child: Container(
-                                            margin: EdgeInsets.fromLTRB(
-                                                0, 0, 0, 12),
-                                            color: Colors.white,
-                                            width: double.infinity,
-                                            child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 20,
-                                                            vertical: 20),
-                                                    child: Column(
-                                                      children: [
-                                                        Align(
-                                                            alignment: Alignment
-                                                                .centerLeft,
-                                                            child: Text("Bio",
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        32,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold))),
-                                                        Align(
-                                                          alignment: Alignment
-                                                              .centerLeft,
-                                                          child: Text(
-                                                              "${userSnapshot.data!.bio}",
+                                                          child: Text("Bio",
                                                               style: TextStyle(
-                                                                fontSize: 20,
-                                                              )),
-                                                        )
-                                                      ],
-                                                    ),
+                                                                  fontSize: 32,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold))),
+                                                      Align(
+                                                        alignment: Alignment
+                                                            .centerLeft,
+                                                        child: Text(
+                                                            userSnapshot
+                                                                .data!.bio,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 20,
+                                                            )),
+                                                      )
+                                                    ],
                                                   ),
-                                                ])))
-                                  ],
-                                )
-                              ]))
-                            ],
-                          )
-                        : Container());
-              },
-            );
-          }),
-        ));
+                                                ),
+                                              ])))
+                                ],
+                              )
+                            ]))
+                          ],
+                        )
+                      : Container());
+            },
+          );
+        }));
   }
 
   void _basicInfoEditModalBottomSheet(context, AppUser userSnapshot) {
@@ -339,7 +328,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Basic info",
+                  const Text("Basic info",
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 32)),
                   Form(
@@ -356,7 +345,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
                           hintText: "Name",
                           errorBorder: UnderlineInputBorder(
                             borderRadius: BorderRadius.circular(6.0),
-                            borderSide: BorderSide(
+                            borderSide: const BorderSide(
                               color: Colors.red,
                             ),
                           ),
@@ -374,7 +363,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
                           hintText: "BGG Name",
                           errorBorder: UnderlineInputBorder(
                             borderRadius: BorderRadius.circular(6.0),
-                            borderSide: BorderSide(
+                            borderSide: const BorderSide(
                               color: Colors.red,
                             ),
                           ),
@@ -392,7 +381,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
                           hintText: "Birthday",
                           errorBorder: UnderlineInputBorder(
                             borderRadius: BorderRadius.circular(6.0),
-                            borderSide: BorderSide(
+                            borderSide: const BorderSide(
                               color: Colors.red,
                             ),
                           ),
@@ -410,7 +399,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
                           hintText: "Gender",
                           errorBorder: UnderlineInputBorder(
                             borderRadius: BorderRadius.circular(6.0),
-                            borderSide: BorderSide(
+                            borderSide: const BorderSide(
                               color: Colors.red,
                             ),
                           ),
@@ -428,7 +417,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
                           hintText: "Current location",
                           errorBorder: UnderlineInputBorder(
                             borderRadius: BorderRadius.circular(6.0),
-                            borderSide: BorderSide(
+                            borderSide: const BorderSide(
                               color: Colors.red,
                             ),
                           ),
@@ -436,7 +425,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
                         keyboardType: TextInputType.name,
                       ),
                       _isProcessing
-                          ? CircularProgressIndicator()
+                          ? const CircularProgressIndicator()
                           : Row(
                               children: [
                                 Expanded(
@@ -470,9 +459,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
                                           .updateUserBasicInfo(userSnapshot,
                                               _userProfileEdit, _scaffoldKey)
                                           .then((response) {
-                                        if (response is Success) {
-                                          print("Great success");
-                                        }
+                                        if (response is Success) {}
                                       });
 
                                       setState(() {
@@ -484,7 +471,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
                                       });
                                     }
                                   },
-                                  child: Text(
+                                  child: const Text(
                                     "Save",
                                     style: TextStyle(color: Colors.white),
                                   ),

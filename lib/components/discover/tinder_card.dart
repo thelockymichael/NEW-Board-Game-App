@@ -1,4 +1,5 @@
-import 'dart:async';
+// ignore_for_file: must_be_immutable
+
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -93,22 +94,22 @@ class _TinderCardState extends State<TinderCard> {
             alignment: const Alignment(-0.3, 0),
           )),
           child: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
                 gradient: LinearGradient(
                     colors: [Colors.transparent, Colors.black],
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
                     stops: [0.7, 1])),
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             child: Column(
               children: [
                 buildName(),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 buildBGGName(),
-                Spacer(),
-                SizedBox(height: 8),
+                const Spacer(),
+                const SizedBox(height: 8),
                 buildFavGameGenres(),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 buildStatus()
               ],
             ),
@@ -118,8 +119,6 @@ class _TinderCardState extends State<TinderCard> {
 
   Widget buildFavGameGenres() {
     final favBoardGameGenres = widget.user!.favBoardGameGenres;
-
-// TODO Change color if same interest as user
 
     if (favBoardGameGenres.isEmpty) {
       return Container();
@@ -131,16 +130,16 @@ class _TinderCardState extends State<TinderCard> {
             children: widget.user!.favBoardGameGenres.map((gameGenre) {
           return Container(
             margin: const EdgeInsets.only(right: 10, top: 10),
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: widget.myUser!.favBoardGameGenres.contains(gameGenre)
                   ? Colors.green
                   : Colors.black,
-              borderRadius: BorderRadius.all(Radius.circular(12.0)),
+              borderRadius: const BorderRadius.all(Radius.circular(12.0)),
               // border: Border.all(width: 2, color: Colors.red)
             ),
             child: Text(gameGenre,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 20,
                   color: Colors.white,
                 )),
@@ -150,21 +149,21 @@ class _TinderCardState extends State<TinderCard> {
 
   Widget buildName() => Row(
         children: [
-          Icon(Icons.check_circle, color: Colors.blue),
+          const Icon(Icons.check_circle, color: Colors.blue),
           const SizedBox(width: 8),
           Text(widget.user!.name,
-              style: TextStyle(
+              style: const TextStyle(
                   fontSize: 32,
                   color: Colors.white,
                   fontWeight: FontWeight.bold)),
-          Text(
+          const Text(
             ',',
             style: TextStyle(fontSize: 32, color: Colors.white),
           ),
           const SizedBox(width: 16),
           Text(
-            '${widget.user!.age}',
-            style: TextStyle(fontSize: 32, color: Colors.white),
+            widget.user!.age,
+            style: const TextStyle(fontSize: 32, color: Colors.white),
           ),
         ],
       );
@@ -185,15 +184,14 @@ class _TinderCardState extends State<TinderCard> {
     return GestureDetector(
         onTap: () {
           inform(widget.user!.bggName);
-          print("Haloota");
         },
         child: Row(
           children: [
-            Icon(Icons.gamepad_rounded, color: Colors.black),
+            const Icon(Icons.gamepad_rounded, color: Colors.black),
             const SizedBox(width: 8),
             Text(
               widget.user!.bggName,
-              style: TextStyle(
+              style: const TextStyle(
                   fontSize: 20,
                   color: Colors.white,
                   fontWeight: FontWeight.bold),
@@ -205,12 +203,12 @@ class _TinderCardState extends State<TinderCard> {
   Widget buildStatus() => Row(children: [
         Container(
           decoration:
-              BoxDecoration(shape: BoxShape.circle, color: Colors.green),
+              const BoxDecoration(shape: BoxShape.circle, color: Colors.green),
           width: 12,
           height: 12,
         ),
         const SizedBox(width: 8),
-        Text('Recently Active',
+        const Text('Recently Active',
             style: TextStyle(fontSize: 20, color: Colors.white))
       ]);
 
@@ -265,7 +263,7 @@ class _TinderCardState extends State<TinderCard> {
         child: Transform.rotate(
             angle: angle,
             child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: color, width: 4)),
@@ -278,13 +276,15 @@ class _TinderCardState extends State<TinderCard> {
   }
 }
 
-class BggWebView extends StatelessWidget {
+class BggWebView extends StatefulWidget {
   String url;
-  BggWebView(this.url);
+  BggWebView(this.url, {Key? key}) : super(key: key);
 
-  final Completer<WebViewController> _controller =
-      Completer<WebViewController>();
+  @override
+  State<BggWebView> createState() => _BggWebViewState();
+}
 
+class _BggWebViewState extends State<BggWebView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -294,7 +294,7 @@ class BggWebView extends StatelessWidget {
       body: Builder(builder: (BuildContext context) {
         return WebView(
           javascriptMode: JavascriptMode.unrestricted,
-          initialUrl: url,
+          initialUrl: widget.url,
         );
       }),
     );

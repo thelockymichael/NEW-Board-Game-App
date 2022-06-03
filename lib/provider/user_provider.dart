@@ -33,15 +33,9 @@ class UserProvider extends ChangeNotifier {
       GlobalKey<ScaffoldState> errorScaffoldKey) async {
     Response<dynamic> response = await _authSource.signIn(email, password);
 
-    print("987-asd ${response.toString()}");
-
-    print("987-asd");
     if (response is Success<UserCredential>) {
-      print("alaa-asd");
-
       String id = response.value.user!.uid;
 
-      print("alaa-asd ${id}");
       SharedPreferencesUtil.setUserId(id);
     } else if (response is Error) {
       showSnackBar(errorScaffoldKey, response.message);
@@ -50,25 +44,15 @@ class UserProvider extends ChangeNotifier {
     return response;
   }
 
-  // TODO
   // RegisterUser
   Future<Response> registerUser(UserRegistration userRegistration,
       GlobalKey<ScaffoldState> errorScaffoldKey) async {
     Response<dynamic> response = await _authSource.register(
         userRegistration.email, userRegistration.password);
 
-    print("usr reg email ${userRegistration.email}");
-    print("usr reg password ${userRegistration.password}");
-
     if (response is Success<UserCredential>) {
-      print("response is Success<UserCredential> ${response}");
       String id = (response).value.user!.uid;
 
-      print("String id ${(response).value.user!.uid}");
-
-      print("response is ID ${id}");
-
-      print("What is going on ???");
       AppUser user = AppUser(
           id: id,
           name: userRegistration.name,
@@ -76,10 +60,6 @@ class UserProvider extends ChangeNotifier {
           profilePhotoPath:
               "https://metropolia.imgix.net/tinder-profile-imgs/man_board_game.jpeg",
           favBoardGameGenres: []);
-
-      print("id $id");
-      print("id ${userRegistration.name}");
-      print("id ${userRegistration.age}");
 
       _databaseSource.addUser(user);
 
@@ -95,8 +75,6 @@ class UserProvider extends ChangeNotifier {
     await SharedPreferencesUtil.removeUserId();
   }
 
-  // TODO
-  // Need to return snapshot ==> .fromSnapshot
   Future<AppUser> _getUser() async {
     String? id = await SharedPreferencesUtil.getUserId();
 
@@ -146,12 +124,6 @@ class UserProvider extends ChangeNotifier {
       AppUser userSnapshot,
       UserProfileEdit userProfile,
       GlobalKey<ScaffoldState> errorScaffoldKey) async {
-    print("userProfile ${userProfile.name}");
-    print("userProfile ${userProfile.bggName}");
-    print("userProfile ${userProfile.birthDay}");
-    print("userProfile ${userProfile.currentLocation}");
-    print("userProfile ${userProfile.gender}");
-
     AppUser user = AppUser(
         id: userSnapshot.id,
         name: userProfile.name,
@@ -167,8 +139,6 @@ class UserProvider extends ChangeNotifier {
     Response<dynamic> response = await _databaseSource.updateUser(user);
 
     if (response is Success<String>) {
-      print("Response is successful");
-
       return Response.success(user);
     }
 
@@ -180,12 +150,6 @@ class UserProvider extends ChangeNotifier {
       AppUser userSnapshot,
       List<FavGenreItem> favBoardGameGenres,
       GlobalKey<ScaffoldState> errorScaffoldKey) async {
-    print("userSnapshot ${userSnapshot.name}");
-    print("userSnapshot ${userSnapshot.bggName}");
-    print("userSnapshot ${userSnapshot.age}");
-    print("userSnapshot ${userSnapshot.currentLocation}");
-    print("userSnapshot ${userSnapshot.gender}");
-
     final mappedGenres = <String>[];
 
     for (var element in favBoardGameGenres) {
@@ -207,8 +171,6 @@ class UserProvider extends ChangeNotifier {
     Response<dynamic> response = await _databaseSource.updateUser(user);
 
     if (response is Success<String>) {
-      print("Response is successful");
-
       return Response.success(user);
     }
 
@@ -240,8 +202,6 @@ class UserProvider extends ChangeNotifier {
     Response<dynamic> response = await _databaseSource.updateUser(user);
 
     if (response is Success<String>) {
-      print("Response is successful");
-
       return Response.success(user);
     }
 

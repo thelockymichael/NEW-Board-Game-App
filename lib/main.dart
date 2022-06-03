@@ -4,8 +4,6 @@ import 'package:flutter_demo_01/firebase_options.dart';
 import 'package:flutter_demo_01/navigation/bottom_navigation_bar.dart';
 import 'package:flutter_demo_01/provider/card_provider.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
-import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page_bg_genre_edit.dart';
-import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page_bio_edit.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page_edit.dart';
 import 'package:flutter_demo_01/screens/chat_screen.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/discover_page.dart';
@@ -41,16 +39,16 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           initialRoute: SplashScreen.id,
           routes: {
-            SplashScreen.id: (context) => SplashScreen(),
-            LoginPage.id: (context) => LoginPage(),
-            DiscoverPage.id: (context) => DiscoverPage(),
-            ProfilePage.id: (context) => ProfilePage(),
-            ProfilePageEdit.id: (context) => ProfilePageEdit(),
+            SplashScreen.id: (context) => const SplashScreen(),
+            LoginPage.id: (context) => const LoginPage(),
+            DiscoverPage.id: (context) => const DiscoverPage(),
+            ProfilePage.id: (context) => const ProfilePage(),
+            ProfilePageEdit.id: (context) => const ProfilePageEdit(),
             // ProfilePageBgGenreEdit.id: (context) => ProfilePageBgGenreEdit(),
             // ProfilePageBgBioEdit.id: (context) => ProfilePageBgBioEdit(),
-            SettingsPage.id: (context) => SettingsPage(),
-            RegisterPage.id: (context) => RegisterPage(),
-            MainNavigation.id: (context) => MainNavigation(),
+            SettingsPage.id: (context) => const SettingsPage(),
+            RegisterPage.id: (context) => const RegisterPage(),
+            MainNavigation.id: (context) => const MainNavigation(),
             MatchedScreen.id: (context) => MatchedScreen(
                   myProfilePhotoPath: (ModalRoute.of(context)
                       ?.settings

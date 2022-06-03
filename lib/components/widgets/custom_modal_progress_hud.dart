@@ -1,8 +1,9 @@
-import 'package:flutter/cupertino.dart';
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/utils/constants.dart';
 
-class CustomModalProgressHUD extends StatelessWidget {
+class CustomModalProgressHUD extends StatefulWidget {
   final bool inAsyncCall;
   final double opacity;
   final Color color;
@@ -21,35 +22,39 @@ class CustomModalProgressHUD extends StatelessWidget {
     this.offset,
     this.dismissible = false,
     required this.child,
-  })  : assert(child != null),
-        assert(inAsyncCall != null),
-        super(key: key);
+  }) : super(key: key);
 
+  @override
+  State<CustomModalProgressHUD> createState() => _CustomModalProgressHUDState();
+}
+
+class _CustomModalProgressHUDState extends State<CustomModalProgressHUD> {
   @override
   Widget build(BuildContext context) {
     List<Widget> widgetList = [];
-    widgetList.add(child);
-    if (inAsyncCall) {
+    widgetList.add(widget.child);
+    if (widget.inAsyncCall) {
       Widget layOutProgressIndicator;
-      if (offset == null)
-        layOutProgressIndicator = Center(child: progressIndicator);
-      else {
+      if (widget.offset == null) {
+        layOutProgressIndicator = Center(child: widget.progressIndicator);
+      } else {
         layOutProgressIndicator = Positioned(
-          child: progressIndicator,
-          left: offset?.dx,
-          top: offset?.dy,
+          child: widget.progressIndicator,
+          left: widget.offset?.dx,
+          top: widget.offset?.dy,
         );
       }
       final modal = [
-        new Opacity(
-          child: new ModalBarrier(dismissible: dismissible, color: color),
-          opacity: opacity,
+        Opacity(
+          child: ModalBarrier(
+              dismissible: widget.dismissible, color: widget.color),
+          opacity: widget.opacity,
         ),
         layOutProgressIndicator
       ];
       widgetList += modal;
     }
-    return new Stack(
+    return Stack(
       children: widgetList,
     );
   }

@@ -5,12 +5,13 @@ import 'package:flutter_demo_01/db/remote/response.dart';
 import 'package:flutter_demo_01/navigation/bottom_navigation_bar.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/screens/register_page.dart';
-import 'package:flutter_demo_01/utils/fire_auth.dart';
 import 'package:flutter_demo_01/utils/validator.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   static const String id = 'login_screen';
+
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -38,8 +39,6 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<FirebaseApp> _initializeFirebase() async {
     FirebaseApp firebaseApp = await Firebase.initializeApp();
-
-    User? user = FirebaseAuth.instance.currentUser;
 
     return firebaseApp;
   }
@@ -151,8 +150,7 @@ class _LoginPageState extends State<LoginPage> {
                                         },
                                         child: const Text(
                                           'Sign In',
-                                          style: const TextStyle(
-                                              color: Colors.white),
+                                          style: TextStyle(color: Colors.white),
                                         ),
                                       ),
                                     ),
@@ -163,14 +161,13 @@ class _LoginPageState extends State<LoginPage> {
                                           Navigator.of(context).push(
                                             MaterialPageRoute(
                                               builder: (context) =>
-                                                  RegisterPage(),
+                                                  const RegisterPage(),
                                             ),
                                           );
                                         },
                                         child: const Text(
                                           'Register',
-                                          style: const TextStyle(
-                                              color: Colors.white),
+                                          style: TextStyle(color: Colors.white),
                                         ),
                                       ),
                                     ),
@@ -185,7 +182,7 @@ class _LoginPageState extends State<LoginPage> {
             }
 
             return const Center(
-              child: const CircularProgressIndicator(),
+              child: CircularProgressIndicator(),
             );
           },
         ),

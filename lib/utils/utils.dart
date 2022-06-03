@@ -1,4 +1,5 @@
-import 'package:flutter/cupertino.dart';
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -29,10 +30,14 @@ String convertEpochMsToDateTime(int epochMs) {
 
 extension StringExtension on String {
   String capitalize() {
-    List<String> strArr = this.split(' ');
+    List<String> strArr = split(' ');
+
+    if (isEmpty) {
+      return this;
+    }
 
     if (strArr.length == 1) {
-      return "${this[0].toUpperCase()}${this.substring(1).toLowerCase()}";
+      return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
     } else {
       List<String> moreThanOneStr = [];
 

@@ -8,24 +8,26 @@ class MessageBubble extends StatelessWidget {
   final bool isSenderMyUser;
   final bool includeTime;
 
-  MessageBubble(
-      {required this.epochTimeMs,
+  const MessageBubble(
+      {Key? key,
+      required this.epochTimeMs,
       required this.text,
       required this.isSenderMyUser,
-      required this.includeTime});
+      required this.includeTime})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(10.0),
       child: Column(
         crossAxisAlignment:
             isSenderMyUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: <Widget>[
-          this.includeTime
+          includeTime
               ? Opacity(
                   opacity: 0.4,
-                  child: Container(
+                  child: SizedBox(
                     child: Text(convertEpochMsToDateTime(epochTimeMs),
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.bodyText1?.copyWith(
@@ -34,7 +36,7 @@ class MessageBubble extends StatelessWidget {
                   ),
                 )
               : Container(),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Container(
             constraints: BoxConstraints(
                 maxWidth: MediaQuery.of(context).size.width * 0.75),
@@ -43,7 +45,8 @@ class MessageBubble extends StatelessWidget {
               elevation: 5.0,
               color: isSenderMyUser ? kAccentColor : kSecondaryColor,
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                padding: const EdgeInsets.symmetric(
+                    vertical: 10.0, horizontal: 20.0),
                 child: Text(
                   text,
                   style: Theme.of(context).textTheme.bodyText1?.copyWith(

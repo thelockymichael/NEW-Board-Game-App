@@ -12,7 +12,7 @@ class ChatsObserver {
   ChatsObserver(this.chatsList);
 
   void startObservers(Function onChatUpdated) {
-    chatsList.forEach((element) {
+    for (var element in chatsList) {
       StreamSubscription<DocumentSnapshot> chatSubscription =
           _databaseSource.observeChat(element.chat.id).listen((event) {
         Chat updatedChat = Chat.fromSnapshot(event);
@@ -27,7 +27,7 @@ class ChatsObserver {
       });
 
       subscriptionList.add(chatSubscription);
-    });
+    }
   }
 
   void removeObservers() async {

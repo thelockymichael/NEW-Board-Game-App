@@ -21,7 +21,6 @@ FutureOr<void> makeLowercase(
 
   final snapshot = change.after;
 
-  // if (snapshot.data.getString("name") == null) {
   var originalName = snapshot.data.getString("name");
   var originalCurrentLocation = snapshot.data.getString("currentLocation");
   var originalGender = snapshot.data.getString("gender");

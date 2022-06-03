@@ -1,5 +1,3 @@
-import 'package:intl/intl.dart';
-
 class UserProfileEdit {
   String name = '';
   String bggName = '';

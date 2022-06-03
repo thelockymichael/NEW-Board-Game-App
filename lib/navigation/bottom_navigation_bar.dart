@@ -1,14 +1,12 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_demo_01/model/app_user.dart';
-import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/chats_screen.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/discover_page.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page.dart';
-import 'package:provider/provider.dart';
 
 class MainNavigation extends StatefulWidget {
   static const String id = 'main_navigation_page';
+
+  const MainNavigation({Key? key}) : super(key: key);
 
   @override
   _MainNavigation createState() => _MainNavigation();
@@ -24,10 +22,10 @@ class _MainNavigation extends State<MainNavigation> {
 
     // 4 Different Tab Screens
     screens = [
-      DiscoverPage(),
-      Center(child: Text("Feed", style: TextStyle(fontSize: 60))),
-      ChatsScreen(),
-      ProfilePage()
+      const DiscoverPage(),
+      const Center(child: Text("Feed", style: TextStyle(fontSize: 60))),
+      const ChatsScreen(),
+      const ProfilePage()
     ];
   }
 
@@ -38,7 +36,7 @@ class _MainNavigation extends State<MainNavigation> {
       bottomNavigationBar: BottomNavigationBar(
           currentIndex: currentIndex,
           onTap: (index) => setState(() => currentIndex = index),
-          items: [
+          items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
               label: 'Home',

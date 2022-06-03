@@ -1,14 +1,14 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/screens/login_page.dart';
-import 'package:flutter_demo_01/utils/fire_auth.dart';
 import 'package:provider/provider.dart';
 
 class SettingsPage extends StatefulWidget {
   static const String id = 'settings_page';
+
+  const SettingsPage({Key? key}) : super(key: key);
 
   @override
   _SettingsPageState createState() => _SettingsPageState();
@@ -17,7 +17,6 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  bool _isSendingVerification = false;
   bool _isSigningOut = false;
 
   void logoutPressed(UserProvider userProvider, BuildContext context) async {
@@ -30,24 +29,23 @@ class _SettingsPageState extends State<SettingsPage> {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text('Settings'),
+          title: const Text('Settings'),
         ),
         key: _scaffoldKey,
         body: Center(
             child: Container(
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             vertical: 42.0,
             horizontal: 18.0,
           ),
-          margin: EdgeInsets.only(bottom: 40),
+          margin: const EdgeInsets.only(bottom: 40),
           child:
               Consumer<UserProvider>(builder: (context, userProvider, child) {
             return FutureBuilder<AppUser>(
               future: userProvider.user,
               builder: (context, userSnapshot) {
                 return CustomModalProgressHUD(
-                    inAsyncCall:
-                        userProvider.user == null || userProvider.isLoading,
+                    inAsyncCall: userProvider.isLoading,
                     child: userSnapshot.hasData
                         ? Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -56,25 +54,25 @@ class _SettingsPageState extends State<SettingsPage> {
                                 'ID: ${userSnapshot.data?.id}',
                                 style: Theme.of(context).textTheme.bodyText1,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 16.0,
                               ),
                               Text(
                                 'NAME: ${userSnapshot.data?.name}',
                                 style: Theme.of(context).textTheme.bodyText1,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 16.0,
                               ),
                               Text(
                                 'EMAIL: ${userSnapshot.data?.email}',
                                 style: Theme.of(context).textTheme.bodyText1,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 16.0,
                               ),
                               _isSigningOut
-                                  ? CircularProgressIndicator()
+                                  ? const CircularProgressIndicator()
                                   : ElevatedButton(
                                       onPressed: () async {
                                         setState(() {
@@ -82,7 +80,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                         });
                                         logoutPressed(userProvider, context);
                                       },
-                                      child: Text("Sign Out",
+                                      child: const Text("Sign Out",
                                           style:
                                               TextStyle(color: Colors.white)))
                             ],

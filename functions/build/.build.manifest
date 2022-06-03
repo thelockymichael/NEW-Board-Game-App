@@ -1,11 +1,8 @@
 .dart_tool/package_config.json
 .packages
-node/filter.dart
-node/filter.js
 node/index.dart
 node/index.dart.js
 node/index.dart.js.map
-node/users.dart
 packages/$sdk/_internal/strong.sum
 packages/$sdk/dev_compiler/kernel/amd/dart_sdk.js
 packages/$sdk/dev_compiler/kernel/amd/require.js

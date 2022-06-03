@@ -1,14 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// ignore_for_file: prefer_function_declarations_over_variables, must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/components/discover/tinder_card.dart';
-import 'package:flutter_demo_01/db/entity/chat.dart';
-import 'package:flutter_demo_01/db/entity/match.dart';
-import 'package:flutter_demo_01/db/entity/swipe.dart';
-import 'package:flutter_demo_01/db/remote/firebase_database_source.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/provider/card_provider.dart';
-import 'package:flutter_demo_01/screens/matched_screen.dart';
-import 'package:flutter_demo_01/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class DiscoverCard extends StatefulWidget {
@@ -19,20 +14,19 @@ class DiscoverCard extends StatefulWidget {
   late Function resetState;
 
   DiscoverCard({
+    Key? key,
     required this.people,
     required this.myUser,
     required this.ignoreSwipeIds,
     required this.personSwiped,
     required this.resetState,
-  });
+  }) : super(key: key);
 
   @override
   _DiscoverCard createState() => _DiscoverCard();
 }
 
 class _DiscoverCard extends State<DiscoverCard> {
-  final FirebaseDatabaseSource _databaseSource = FirebaseDatabaseSource();
-
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<CardProvider>(context, listen: false);
@@ -41,9 +35,8 @@ class _DiscoverCard extends State<DiscoverCard> {
 
     return provider.users.isEmpty
         ? Center(
-            child: Container(
-                child: Text('No more users to swipe',
-                    style: Theme.of(context).textTheme.headline4)),
+            child: Text('No more users to swipe',
+                style: Theme.of(context).textTheme.headline4),
           )
         : Container(
             decoration: BoxDecoration(
@@ -56,7 +49,7 @@ class _DiscoverCard extends State<DiscoverCard> {
                 body: SafeArea(
                   child: Container(
                       alignment: Alignment.center,
-                      padding: EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(16),
                       child: Column(children: [
                         // buildLogo(),
                         const SizedBox(height: 16),
@@ -111,8 +104,8 @@ class _DiscoverCard extends State<DiscoverCard> {
       children: [
         ElevatedButton(
           style: ButtonStyle(
-              shape: MaterialStateProperty.all(CircleBorder()),
-              minimumSize: MaterialStateProperty.all(Size.square(80)),
+              shape: MaterialStateProperty.all(const CircleBorder()),
+              minimumSize: MaterialStateProperty.all(const Size.square(80)),
               elevation: MaterialStateProperty.all(8),
               foregroundColor: getColor(Colors.red, Colors.white, isDislike),
               backgroundColor: getColor(Colors.white, Colors.red, isDislike),
@@ -125,12 +118,12 @@ class _DiscoverCard extends State<DiscoverCard> {
             widget.personSwiped(
                 users, widget.myUser, widget.people.last, false);
           },
-          child: Icon(Icons.clear, size: 46),
+          child: const Icon(Icons.clear, size: 46),
         ),
         ElevatedButton(
           style: ButtonStyle(
-              shape: MaterialStateProperty.all(CircleBorder()),
-              minimumSize: MaterialStateProperty.all(Size.square(80)),
+              shape: MaterialStateProperty.all(const CircleBorder()),
+              minimumSize: MaterialStateProperty.all(const Size.square(80)),
               elevation: MaterialStateProperty.all(8),
               foregroundColor: getColor(Colors.blue, Colors.white, isSuperLike),
               backgroundColor: getColor(Colors.white, Colors.blue, isSuperLike),
@@ -138,12 +131,12 @@ class _DiscoverCard extends State<DiscoverCard> {
           onPressed: () {
             provider.superLike();
           },
-          child: Icon(Icons.star, size: 46),
+          child: const Icon(Icons.star, size: 46),
         ),
         ElevatedButton(
           style: ButtonStyle(
-              shape: MaterialStateProperty.all(CircleBorder()),
-              minimumSize: MaterialStateProperty.all(Size.square(80)),
+              shape: MaterialStateProperty.all(const CircleBorder()),
+              minimumSize: MaterialStateProperty.all(const Size.square(80)),
               elevation: MaterialStateProperty.all(8),
               foregroundColor: getColor(Colors.teal, Colors.white, isLike),
               backgroundColor: getColor(Colors.white, Colors.teal, isLike),
@@ -157,7 +150,7 @@ class _DiscoverCard extends State<DiscoverCard> {
 
             widget.personSwiped(users, widget.myUser, widget.people.last, true);
           },
-          child: Icon(Icons.favorite, size: 46),
+          child: const Icon(Icons.favorite, size: 46),
         )
       ],
     );
@@ -179,7 +172,7 @@ class _DiscoverCard extends State<DiscoverCard> {
       Color color, Color colorPressed, bool force) {
     final getBorder = (Set<MaterialState> states) {
       if (force || states.contains(MaterialState.pressed)) {
-        return BorderSide(color: Colors.transparent);
+        return const BorderSide(color: Colors.transparent);
       } else {
         return BorderSide(color: color, width: 2);
       }

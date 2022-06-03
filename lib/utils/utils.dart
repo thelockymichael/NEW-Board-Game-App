@@ -26,3 +26,24 @@ String convertEpochMsToDateTime(int epochMs) {
     return DateFormat.jm().format(date);
   }
 }
+
+extension StringExtension on String {
+  String capitalize() {
+    List<String> strArr = this.split(' ');
+
+    if (strArr.length == 1) {
+      return "${this[0].toUpperCase()}${this.substring(1).toLowerCase()}";
+    } else {
+      List<String> moreThanOneStr = [];
+
+      for (var element in strArr) {
+        moreThanOneStr.add(
+            "${element[0].toUpperCase()}${element.substring(1).toLowerCase()}");
+      }
+
+      final joinedName = moreThanOneStr.join(" ");
+
+      return joinedName;
+    }
+  }
+}

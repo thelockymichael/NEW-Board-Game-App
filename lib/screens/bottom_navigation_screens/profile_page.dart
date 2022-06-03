@@ -10,6 +10,7 @@ import 'package:flutter_demo_01/screens/settings_page.dart';
 import 'package:flutter_demo_01/utils/constants.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import "package:flutter_demo_01/utils/utils.dart";
 
 class ProfilePage extends StatefulWidget {
   static const String id = 'profile_page';
@@ -91,7 +92,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               getProfileImage(userSnapshot.data!, userProvider),
                               SizedBox(height: 20),
                               Text(
-                                  '${userSnapshot.data?.name}, ${userSnapshot.data?.age}',
+                                  '${userSnapshot.data?.name.capitalize()}, ${userSnapshot.data?.age}',
                                   style: Theme.of(context).textTheme.headline4),
                               SizedBox(height: 40),
                             ],

@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:firebase_functions_interop/firebase_functions_interop.dart';
 
-import "users.dart";
-
 void main() {
   // Users.handle();
   functions['logAuth'] = functions.auth.user().onCreate(logAuth);
@@ -19,37 +17,31 @@ void logAuth(UserRecord data, EventContext context) {
 // Example Firestore
 FutureOr<void> makeLowercase(
     Change<DocumentSnapshot> change, EventContext content) {
+  var newFavBgGenres = <String>[];
+
   final snapshot = change.after;
 
-  if (snapshot.data.getString("uppercasedName") == null) {
-    var original = snapshot.data.getString("name");
-    print("Uppercasing $original");
+  // if (snapshot.data.getString("name") == null) {
+  var originalName = snapshot.data.getString("name");
+  var originalCurrentLocation = snapshot.data.getString("currentLocation");
+  var originalGender = snapshot.data.getString("gender");
+  var origFavBgGenres = snapshot.data.getList("favBoardGameGenres");
+  print("Lowercasing $originalName");
+  print("Lowercasing $originalCurrentLocation");
+  print("Lowercasing $originalGender");
 
-    UpdateData newData = new UpdateData();
-    newData.setString("uppercasedName", original.toUpperCase());
+  UpdateData newData = new UpdateData();
 
-    return snapshot.reference.updateData(newData);
+  if (origFavBgGenres.isNotEmpty) {
+    origFavBgGenres.forEach((element) {
+      newFavBgGenres.add(element.toString().toLowerCase());
+    });
+    newData.setList("favBoardGameGenres", newFavBgGenres);
   }
 
-  return null;
-} 
+  newData.setString("name", originalName.toLowerCase());
+  newData.setString("currentLocation", originalCurrentLocation.toLowerCase());
+  newData.setString("gender", originalGender.toLowerCase());
 
-
-// /// Example Realtime Database function.
-// FutureOr<void> makeLowercase(
-//     Change<DocumentSnap<String>> snap, EventContext context) {
-//   try {
-//     // final firestore = snap.firestore;
-
-
-//     snap.
-//   } catch (e) {
-//     print("Error logged: ${e}");
-//   }
-//   // final DataSnapshot<String> snapshot = change.after;
-//   // var original = snapshot.val();
-//   // var pushId = context.params['testId'];
-//   // print('Uppercasing $original');
-//   // var uppercase = pushId.toString() + ': ' + original.toUpperCase();
-//   // return snapshot.ref.parent.child('uppercase').setValue(uppercase);
-// }
+  return snapshot.reference.updateData(newData);
+}

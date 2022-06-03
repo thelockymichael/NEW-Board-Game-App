@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
-import 'package:flutter_demo_01/components/widgets/rounded_button.dart';
 import 'package:flutter_demo_01/components/widgets/rounded_icon_button.dart';
 import 'package:flutter_demo_01/db/remote/response.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
@@ -14,6 +13,7 @@ import 'package:flutter_demo_01/utils/constants.dart';
 import 'package:flutter_demo_01/utils/validator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import "package:flutter_demo_01/utils/utils.dart";
 
 class ProfilePageEdit extends StatefulWidget {
   static const String id = 'profile_page_edit';
@@ -114,7 +114,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
                                                           alignment:
                                                               Alignment.topLeft,
                                                           child: Text(
-                                                              "${userSnapshot.data?.name}, ${userSnapshot.data?.age}",
+                                                              "${userSnapshot.data?.name.capitalize()}, ${userSnapshot.data?.age}",
                                                               style: TextStyle(
                                                                   fontSize: 32,
                                                                   fontWeight:
@@ -124,7 +124,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
                                                           alignment:
                                                               Alignment.topLeft,
                                                           child: Text(
-                                                              "${userSnapshot.data?.gender}, ${userSnapshot.data?.currentLocation}",
+                                                              "${userSnapshot.data?.gender.capitalize()}, ${userSnapshot.data?.currentLocation.capitalize()}",
                                                               style: TextStyle(
                                                                 fontSize: 20,
                                                               )))
@@ -207,7 +207,8 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
                                                                               12.0)),
                                                                 ),
                                                                 child: Text(
-                                                                  gameGenre,
+                                                                  gameGenre
+                                                                      .capitalize(),
                                                                   style: TextStyle(
                                                                       fontSize:
                                                                           20,

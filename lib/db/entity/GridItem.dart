@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/db/entity/FavGenreItem.dart';
 import 'package:flutter_demo_01/utils/constants.dart';
+import "package:flutter_demo_01/utils/utils.dart";
 
 class GridItem extends StatefulWidget {
   final Key key;
@@ -65,7 +66,7 @@ class _GridItemState extends State<GridItem> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Center(
-                      child: Text(widget.item.name,
+                      child: Text(widget.item.name.capitalize(),
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: Colors.white,

@@ -42,38 +42,38 @@ class _ProfilePageBgGenreEditState extends State<ProfilePageBgGenreEdit> {
 
     itemList.add(FavGenreItem(
         "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/board_game_genres%2Ffamily_game.jpg?alt=media&token=cd082d8c-a6d7-4720-a569-6c63d7853ecb",
-        "Family Games",
+        "family games",
         1,
         false));
     itemList.add(FavGenreItem(
         "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/board_game_genres%2Fdexterity_games.jpg?alt=media&token=f1ec1bf1-6af1-4290-8bde-46819674ea0c",
-        "Dexterity Games",
+        "dexterity games",
         2,
         false));
 
     itemList.add(FavGenreItem(
         "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/board_game_genres%2Fparty_games.jpg?alt=media&token=0ac34bd6-78b1-418e-b5d8-fe1e9121e2af",
-        "Party Games",
+        "party games",
         3,
         false));
     itemList.add(FavGenreItem(
         "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/board_game_genres%2Fabstract_game.jpg?alt=media&token=e020dc6f-99d0-4a93-b0cc-e59d969219a2",
-        "Abstracts",
+        "abstracts",
         4,
         false));
     itemList.add(FavGenreItem(
         "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/board_game_genres%2Fthematic_game.jpg?alt=media&token=21ce6eac-9f08-40e6-9a0a-d8e56046977c",
-        "Thematic Games",
+        "thematic games",
         5,
-        true));
+        false));
     itemList.add(FavGenreItem(
         "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/board_game_genres%2Feurogame_game.jpg?alt=media&token=e38e0cc7-c9a4-4525-8c91-378c8444b51a",
-        "Eurogames",
+        "eurogames",
         6,
         false));
     itemList.add(FavGenreItem(
         "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/board_game_genres%2Fwargame.jpg?alt=media&token=e342eed7-1ca0-4fdc-b95a-560024c3b1fe",
-        "Wargames",
+        "wargames",
         7,
         false));
 

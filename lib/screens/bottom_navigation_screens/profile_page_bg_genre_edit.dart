@@ -86,44 +86,6 @@ class _ProfilePageBgGenreEditState extends State<ProfilePageBgGenreEdit> {
         selectedList.add(itemList[i]);
       }
     }
-
-    // itemList.add(Item("Dexterity Games", 2));
-    // itemList.add(Item("Party Games", 3));
-    // itemList.add(Item("Abstracts Games", 4));
-    // itemList.add(Item("Thematic Games", 5));
-    // itemList.add(Item("Eurogames Games", 6));
-    // itemList.add(Item("Wargames", 7));
-    // itemList.add(Item("Abstracts", 8));
-
-    // for (var i = 0; i < itemList.length; i++) {
-    //   if (_userSnapshot.favBoardGameGenres.contains(itemList[i].name)) {
-    //     print("${itemList[i].name}");
-
-    //     selectedList.add(itemList[i]);
-    //   }
-    // }
-
-    // for (var i = 0; i < itemList.length; i++) {
-    //   if (_userSnapshot.favBoardGameGenres.contains(itemList[i].name)) {
-    //     print("${itemList[i].name}");
-
-    //     selectedList.add(itemList[i]);
-    //   }
-    // }
-
-    // setState(() {});
-
-    // _userSnapshot.favBoardGameGenres.forEach((element) {
-    //   // if (itemList.(element)) {
-
-    //   if (itemList.contains(element)) {
-    //     print("jes");
-    //   }
-
-    //   // IF favBoardGames has board game that is in list
-    //   // then => add board game to selectedList
-    //   //
-    // });
   }
 
   @override

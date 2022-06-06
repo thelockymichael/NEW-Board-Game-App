@@ -13,6 +13,7 @@ class AppUser {
   late String profilePhotoPath;
   late String bio;
   late List<String> favBoardGameGenres;
+  late List<String> favBgMechanics;
 
   AppUser(
       {required this.id,
@@ -24,7 +25,8 @@ class AppUser {
       this.age = "",
       this.profilePhotoPath = "",
       this.bio = "",
-      required this.favBoardGameGenres});
+      required this.favBoardGameGenres,
+      required this.favBgMechanics});
 
   AppUser.fromSnapshot(DocumentSnapshot snapshot) {
     id = snapshot["id"];
@@ -37,6 +39,7 @@ class AppUser {
     profilePhotoPath = snapshot["profilePhotoPath"] ?? '';
     bio = snapshot["bio"] ?? '';
     favBoardGameGenres = List<String>.from(snapshot["favBoardGameGenres"]);
+    favBgMechanics = List<String>.from(snapshot["favBgMechanics"]);
   }
 
   Map<String, dynamic> toMap() => {
@@ -49,7 +52,8 @@ class AppUser {
         "age": age,
         "profilePhotoPath": profilePhotoPath,
         "bio": bio,
-        "favBoardGameGenres": favBoardGameGenres
+        "favBoardGameGenres": favBoardGameGenres,
+        "favBgMechanics": favBgMechanics
       };
 
   factory AppUser.fromMap(Map<String, dynamic> map) {
@@ -64,6 +68,7 @@ class AppUser {
       profilePhotoPath: map["profilePhotoPath"] ?? "",
       bio: map["bio"] ?? "",
       favBoardGameGenres: List<String>.from(map["favBoardGameGenres"]),
+      favBgMechanics: List<String>.from(map["favBgMechanics"]),
     );
   }
 

@@ -1,7 +1,13 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:flutter_demo_01/model/bg_mechanic.dart';
 import 'package:intl/intl.dart';
+
+class Utils {
+  static int ascendingSort(BgMechanic c1, BgMechanic c2) =>
+      c1.name.compareTo(c2.name);
+}
 
 void showSnackBar(GlobalKey<ScaffoldState> globalKey, String message) {
   final snackBar = SnackBar(content: Text(message));

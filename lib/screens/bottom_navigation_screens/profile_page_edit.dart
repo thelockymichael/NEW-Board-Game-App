@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
 import 'package:flutter_demo_01/components/widgets/rounded_icon_button.dart';
 import 'package:flutter_demo_01/db/remote/response.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
+import 'package:flutter_demo_01/model/bg_mechanic.dart';
 import 'package:flutter_demo_01/model/user_profile_edit.dart';
+import 'package:flutter_demo_01/provider/bg_mechanic_provider.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page_bg_genre_edit.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page_bio_edit.dart';
 import 'package:flutter_demo_01/screens/login_page.dart';
 import 'package:flutter_demo_01/screens/settings_page.dart';
+import 'package:flutter_demo_01/ui/widgets/bg_mechanic_list_tile_widget.dart';
 import 'package:flutter_demo_01/utils/constants.dart';
 import 'package:flutter_demo_01/utils/validator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import "package:flutter_demo_01/utils/utils.dart";
+
+import '../../model/bg_mechanic.dart';
 
 class ProfilePageEdit extends StatefulWidget {
   static const String id = 'profile_page_edit';
@@ -35,14 +39,19 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
   bool _isProcessing = false;
 
   late UserProvider _userProvider;
+  late BgGameMechanicProvider _bgMechanicProvider;
 
-  // Board Game Interest Tabs
-
+  /**  Board Game Interest Tabs */
+  late final bool _isMultiSelection;
+  List<BgMechanic> selectedBgMechanics = [];
   // late TabController _controller;
+
+  /** END Board Game Interests */
 
   @override
   void initState() {
     super.initState();
+    _isMultiSelection = true;
     // _controller = TabController(vsync: this, length: 2);
     _userProvider = Provider.of<UserProvider>(context, listen: false);
   }
@@ -66,6 +75,9 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
 
   @override
   Widget build(BuildContext context) {
+    _bgMechanicProvider =
+        Provider.of<BgGameMechanicProvider>(context, listen: false);
+
     return Scaffold(
         backgroundColor: Colors.grey,
         key: _scaffoldKey,
@@ -292,34 +304,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                               ]))),
                                   GestureDetector(
                                       onTap: () {
-                                        //   Navigator.of(context)
-                                        //       .push(PageRouteBuilder(
-                                        //     pageBuilder: (
-                                        //       BuildContext context,
-                                        //       Animation<double> animation,
-                                        //       Animation<double>
-                                        //           secondaryAnimation,
-                                        //     ) =>
-                                        //         ProfilePageBgBioEdit(
-                                        //             userSnapshot:
-                                        //                 userSnapshot.data!,
-                                        //             notifyParent: refresh),
-                                        //     transitionsBuilder: (
-                                        //       BuildContext context,
-                                        //       Animation<double> animation,
-                                        //       Animation<double>
-                                        //           secondaryAnimation,
-                                        //       Widget child,
-                                        //     ) =>
-                                        //         SlideTransition(
-                                        //       position: Tween<Offset>(
-                                        //         begin: const Offset(0, 1),
-                                        //         end: Offset.zero,
-                                        //       ).animate(animation),
-                                        //       child: child,
-                                        //     ),
-                                        //   ));
-                                        // },
                                         _bgInterestsEditModalBottomSheet(
                                             context, userSnapshot.data!);
                                       },
@@ -566,6 +550,70 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
             ));
   }
 
+  String text = '';
+
+  bool containsSearchText(BgMechanic bgMechanic) {
+    final name = bgMechanic.name;
+    final textLower = text.toLowerCase();
+    final countryLower = name.toLowerCase();
+
+    return countryLower.contains(textLower);
+  }
+
+  List<BgMechanic> getPrioritizedBgMechanics(List<BgMechanic> bgMechanics) {
+    final notSelectedBgMechanics = List.of(bgMechanics)
+      ..removeWhere((BgMechanic) => selectedBgMechanics.contains(BgMechanic));
+
+    return [
+      ...List.of(selectedBgMechanics)..sort(Utils.ascendingSort),
+      ...notSelectedBgMechanics,
+    ];
+  }
+
+  void selectBgMechanic(BgMechanic bgMechanic) {
+    print("Is multiselection ${_isMultiSelection}");
+
+    if (_isMultiSelection) {
+      print("Is multiselection");
+
+      print("selectedBgMechanics, ${selectedBgMechanics.length}");
+      final isSelected = selectedBgMechanics.contains(bgMechanic);
+      setState(() => isSelected
+          ? selectedBgMechanics.remove(bgMechanic)
+          : selectedBgMechanics.add(bgMechanic));
+    } else {
+      Navigator.pop(context, bgMechanic);
+    }
+  }
+
+  Widget buildSelectButton(BuildContext context, AppUser userSnapshot) {
+    final label = _isMultiSelection
+        ? 'Select ${selectedBgMechanics.length} Countries'
+        : 'Continue';
+    final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+      color: Theme.of(context).primaryColor,
+      child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            shape: StadiumBorder(),
+            minimumSize: Size.fromHeight(40),
+            primary: Colors.white,
+          ),
+          child: Text(
+            label,
+            style: TextStyle(color: Colors.black, fontSize: 16),
+          ),
+          onPressed: () {
+            _userProvider.updateFavouriteBgMechanics(
+                userSnapshot, selectedBgMechanics, _scaffoldKey);
+
+            // widget.notifyParent();
+          }),
+    );
+  }
+
   void _bgInterestsEditModalBottomSheet(context, AppUser userSnapshot) {
     final _nameTextController = TextEditingController(text: userSnapshot.name);
     final _bggNameTextController =
@@ -583,6 +631,23 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
     final _focusGender = FocusNode();
     final _focusCurrentLocation = FocusNode();
 
+    // final provider =
+    //     Provider.of<BgGameMechanicProvider>(context, listen: false);
+
+    print("before ${_bgMechanicProvider.bgMechanics.length}");
+    final allBgMechanics =
+        getPrioritizedBgMechanics(_bgMechanicProvider.bgMechanics);
+    final bgMechanics = allBgMechanics.where(containsSearchText).toList();
+
+    print("bgMechanics ${bgMechanics.length}");
+
+    for (var i = 0; i < userSnapshot.favBgMechanics.length; i++) {
+      final favBgMechanic = userSnapshot.favBgMechanics[i];
+
+      selectedBgMechanics.add(BgMechanic(name: favBgMechanic));
+    }
+    // selectedBgMechanics = userSnapshot.favBgMechanics.cast<BgMechanic>();
+
     showModalBottomSheet(
         backgroundColor: Colors.transparent,
         context: context,
@@ -595,7 +660,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                   builder: (BuildContext context, StateSetter setState) {
                 return Container(
                   width: MediaQuery.of(context).size.width,
-                  height: 282,
+                  height: 600,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
@@ -618,11 +683,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                   "Game Mechanics",
                                   style: TextStyle(color: Colors.black),
                                 ),
-
-                                //     icon: Icon(
-                                //   Icons.directions_car,
-                                //   color: Colors.black,
-                                // )
                               ),
                               Tab(
                                   child: Text(
@@ -638,33 +698,39 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                       textAlign: TextAlign.center,
                                       style: TextStyle(fontSize: 24)),
                                   SizedBox(height: 26),
-                                  Container(
-                                    height: 73,
-                                    width:
-                                        MediaQuery.of(context).size.width - 24,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                        color: kAccentColor,
-                                        border: Border.all(
-                                            width: 0.5,
-                                            color: Colors.redAccent)),
-                                    child: Align(
-                                      alignment: Alignment.center,
-                                      child: TextField(
-                                        maxLength: 30,
-                                        enableInteractiveSelection: false,
-                                        keyboardType: TextInputType.number,
-                                        style: TextStyle(height: 1.6),
-                                        cursorColor: Colors.green[800],
-                                        textAlign: TextAlign.center,
-                                        autofocus: false,
-                                        decoration: InputDecoration(
-                                            border: InputBorder.none,
-                                            hintText: "Internet",
-                                            counterText: ""),
-                                      ),
+                                  Expanded(
+                                    child: ListView(
+                                      children: bgMechanics.map((bgMechanic) {
+                                        final isSelected = selectedBgMechanics
+                                            .contains(bgMechanic);
+
+                                        return BgMechanicListTileWidget(
+                                          bgMechanic: bgMechanic,
+                                          isSelected: isSelected,
+                                          onSelectedBgMechanic:
+                                              selectBgMechanic,
+                                        );
+                                      }).toList(),
                                     ),
-                                  )
+
+                                    // child: Align(
+                                    //   alignment: Alignment.center,
+                                    //   child: TextField(
+                                    //     maxLength: 30,
+                                    //     enableInteractiveSelection: false,
+                                    //     keyboardType: TextInputType.number,
+                                    //     style: TextStyle(height: 1.6),
+                                    //     cursorColor: Colors.green[800],
+                                    //     textAlign: TextAlign.center,
+                                    //     autofocus: false,
+                                    //     decoration: InputDecoration(
+                                    //         border: InputBorder.none,
+                                    //         hintText: "Internet",
+                                    //         counterText: ""),
+                                    //   ),
+                                    // ),
+                                  ),
+                                  buildSelectButton(context, userSnapshot)
                                 ],
                               ),
                               Column(

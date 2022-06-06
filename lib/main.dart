@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/firebase_options.dart';
 import 'package:flutter_demo_01/navigation/bottom_navigation_bar.dart';
+import 'package:flutter_demo_01/provider/bg_mechanic_provider.dart';
 import 'package:flutter_demo_01/provider/card_provider.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page_edit.dart';
@@ -33,7 +34,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context) => CardProvider()),
-          ChangeNotifierProvider(create: (context) => UserProvider())
+          ChangeNotifierProvider(create: (context) => UserProvider()),
+          ChangeNotifierProvider(create: (context) => BgGameMechanicProvider())
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

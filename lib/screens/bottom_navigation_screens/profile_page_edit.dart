@@ -48,14 +48,44 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
   // List<BgMechanic> selectedBgMechanics = [];
   // late TabController _controller;
 
+  late List<FavBgMechanicItem> itemList;
+  late List<FavBgMechanicItem> selectedList;
   /** END Board Game Interests */
 
   @override
   void initState() {
-    super.initState();
-    _isMultiSelection = true;
-    // _controller = TabController(vsync: this, length: 2);
     _userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    _isMultiSelection = true;
+
+    loadList();
+    // _controller = TabController(vsync: this, length: 2);
+
+    // _allBgMechanics = [
+    //   FavBgMechanicItem(name: "Co-op"),
+    //   FavBgMechanicItem(name: "Team"),
+    //   FavBgMechanicItem(name: "Social Deduction"),
+    //   FavBgMechanicItem(name: "Euro"),
+    //   FavBgMechanicItem(name: "Card"),
+    //   FavBgMechanicItem(name: "Resource Management"),
+    //   FavBgMechanicItem(name: "Bidding"),
+    //   FavBgMechanicItem(name: "Worker Placement")
+    // ];
+    super.initState();
+  }
+
+  loadList() {
+    itemList = [];
+    selectedList = [];
+
+    itemList.add(FavBgMechanicItem(name: "Co-op"));
+    itemList.add(FavBgMechanicItem(name: "Team"));
+    itemList.add(FavBgMechanicItem(name: "Social Deduction"));
+    itemList.add(FavBgMechanicItem(name: "Euro"));
+    itemList.add(FavBgMechanicItem(name: "Card"));
+    itemList.add(FavBgMechanicItem(name: "Resource Management"));
+    itemList.add(FavBgMechanicItem(name: "Bidding"));
+    itemList.add(FavBgMechanicItem(name: "Worker Placement"));
   }
 
   void logoutPressed(UserProvider userProvider, BuildContext context) async {
@@ -151,6 +181,9 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                   ),
                                   GestureDetector(
                                       onTap: () {
+                                        // _testingModalBottomSheet(
+                                        //     context, userSnapshot.data!);
+
                                         Navigator.of(context).push(
                                           PageRouteBuilder(
                                             pageBuilder: (context, animation1,
@@ -306,33 +339,35 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                               ]))),
                                   GestureDetector(
                                       onTap: () {
-                                        Navigator.of(context)
-                                            .push(PageRouteBuilder(
-                                          pageBuilder: (
-                                            BuildContext context,
-                                            Animation<double> animation,
-                                            Animation<double>
-                                                secondaryAnimation,
-                                          ) =>
-                                              ProfilePageBgMechanicsEditSecond(
-                                                  userSnapshot:
-                                                      userSnapshot.data!,
-                                                  notifyParent: refresh),
-                                          transitionsBuilder: (
-                                            BuildContext context,
-                                            Animation<double> animation,
-                                            Animation<double>
-                                                secondaryAnimation,
-                                            Widget child,
-                                          ) =>
-                                              SlideTransition(
-                                            position: Tween<Offset>(
-                                              begin: const Offset(0, 1),
-                                              end: Offset.zero,
-                                            ).animate(animation),
-                                            child: child,
-                                          ),
-                                        ));
+                                        _testingModalBottomSheet(
+                                            context, userSnapshot.data!);
+                                        // Navigator.of(context)
+                                        //     .push(PageRouteBuilder(
+                                        //   pageBuilder: (
+                                        //     BuildContext context,
+                                        //     Animation<double> animation,
+                                        //     Animation<double>
+                                        //         secondaryAnimation,
+                                        //   ) =>
+                                        //       ProfilePageBgMechanicsEditSecond(
+                                        //           userSnapshot:
+                                        //               userSnapshot.data!,
+                                        //           notifyParent: refresh),
+                                        //   transitionsBuilder: (
+                                        //     BuildContext context,
+                                        //     Animation<double> animation,
+                                        //     Animation<double>
+                                        //         secondaryAnimation,
+                                        //     Widget child,
+                                        //   ) =>
+                                        //       SlideTransition(
+                                        //     position: Tween<Offset>(
+                                        //       begin: const Offset(0, 1),
+                                        //       end: Offset.zero,
+                                        //     ).animate(animation),
+                                        //     child: child,
+                                        //   ),
+                                        // ));
                                       },
                                       child: Container(
                                           margin: const EdgeInsets.fromLTRB(
@@ -395,6 +430,406 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
             },
           );
         }));
+  }
+
+  void _testingModalBottomSheet(context, AppUser userSnapshot) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return BottomSheet(
+            onClosing: () {},
+            builder: (BuildContext context) {
+              bool b = false;
+
+              //  List<FavBgMechanicItem> itemList;
+              List<FavBgMechanicItem> localList = [
+                FavBgMechanicItem(name: "Co-op"),
+                FavBgMechanicItem(name: "Team"),
+                FavBgMechanicItem(name: "Social Deduction"),
+                FavBgMechanicItem(name: "Euro"),
+                FavBgMechanicItem(name: "Card"),
+                FavBgMechanicItem(name: "Resource Management"),
+                FavBgMechanicItem(name: "Bidding"),
+                FavBgMechanicItem(name: "Worker Placement")
+              ];
+
+              List<FavBgMechanicItem> localSelectedList = [];
+
+              return StatefulBuilder(builder: (BuildContext context, setState) {
+                print("BOOL ${b}");
+
+                return SingleChildScrollView(
+                  child: Padding(
+                    padding: MediaQuery.of(context).viewInsets,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 600,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(18.0),
+                              topRight: const Radius.circular(18.0))),
+                      child: DefaultTabController(
+                        length: 2,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 12),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              TabBar(tabs: [
+                                Tab(
+                                  child: Text("Game Mechanics",
+                                      style: TextStyle(color: Colors.black)),
+                                ),
+                                Tab(
+                                  child: Text("Themes",
+                                      style: TextStyle(color: Colors.black)),
+                                ),
+                              ]),
+                              Expanded(
+                                  child: TabBarView(
+                                children: [
+                                  Column(
+                                    children: [
+                                      Text("Here are your favourite mechanics",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(fontSize: 24)),
+                                      SizedBox(height: 26),
+                                      Expanded(
+                                        child: ListView(
+                                            children:
+                                                localList.map((bgMechanic) {
+                                          final isSelected = localSelectedList
+                                              .contains(bgMechanic);
+
+                                          final selectedColor =
+                                              Theme.of(context).primaryColor;
+                                          final style = isSelected
+                                              ? TextStyle(
+                                                  fontSize: 18,
+                                                  color: selectedColor,
+                                                  fontWeight: FontWeight.bold,
+                                                )
+                                              : TextStyle(fontSize: 18);
+
+                                          return ListTile(
+                                            onTap: () {
+                                              print("HELLO WORLD");
+
+                                              final isSelected =
+                                                  localSelectedList
+                                                      .contains(bgMechanic);
+
+                                              setState(() => isSelected
+                                                  ? localSelectedList
+                                                      .remove(bgMechanic)
+                                                  : localSelectedList
+                                                      .add(bgMechanic));
+
+                                              print(
+                                                  "localSelectedList, ${localSelectedList.length}");
+                                            },
+                                            // leading: FlagWidget(code: BgMechanic),
+                                            title: Text(
+                                              bgMechanic.name,
+                                              style: style,
+                                            ),
+                                            trailing: isSelected
+                                                ? Icon(Icons.check,
+                                                    color: selectedColor,
+                                                    size: 26)
+                                                : null,
+
+                                            // return BgMechanicListTileWidget(
+                                            //     bgMechanic: bgMechanic,
+                                            //     isSelected: isSelected,
+                                            //     onSelectedBgMechanic:
+                                            //         selectBgMechanic);
+                                          );
+                                        }).toList()),
+                                      ),
+                                      buildSelectButton(context, userSnapshot)
+                                    ],
+                                  ),
+                                  Column(
+                                    children: <Widget>[
+                                      Text(
+                                        "Here are your favorite themes",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(fontSize: 24),
+                                      ),
+                                      SizedBox(height: 26),
+                                      Container(
+                                        height: 73,
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                24,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            color: kAccentColor,
+                                            border: Border.all(
+                                              width: 0.5,
+                                              color: Colors.redAccent,
+                                            )),
+                                        child: Align(
+                                            alignment: Alignment.center,
+                                            child: Switch(
+                                                onChanged: (bool v) {
+                                                  setState(() => b = v);
+                                                },
+                                                value: b)
+                                            //  TextField(
+                                            //   maxLength: 30,
+                                            //   enableInteractiveSelection: false,
+                                            //   keyboardType: TextInputType.number,
+                                            //   style: TextStyle(height: 1.6),
+                                            //   cursorColor: Colors.green[800],
+                                            //   textAlign: TextAlign.center,
+                                            //   autofocus: false,
+                                            //   decoration: InputDecoration(
+                                            //       border: InputBorder.none,
+                                            //       hintText: "Credit",
+                                            //       counterText: ""),
+                                            // ),
+                                            ),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ))
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              });
+            },
+          );
+          // return SingleChildScrollView(
+          //   child: Padding(
+          //     padding: MediaQuery.of(context).viewInsets,
+          //     child: Container(
+          //       width: MediaQuery.of(context).size.width,
+          //       height: 600,
+          //       decoration: BoxDecoration(
+          //           color: Colors.white,
+          //           borderRadius: BorderRadius.only(
+          //             topLeft: Radius.circular(18.0),
+          //             topRight: const Radius.circular(18.0),
+          //           )),
+          //       child: DefaultTabController(
+          //           length: 2,
+          //           child: Padding(
+          //             padding: const EdgeInsets.symmetric(
+          //                 vertical: 10, horizontal: 12),
+          //             child: Column(
+          //               mainAxisAlignment: MainAxisAlignment.center,
+          //               crossAxisAlignment: CrossAxisAlignment.start,
+          //               children: <Widget>[
+          //                 TabBar(tabs: [
+          //                   Tab(
+          //                     child: Text(
+          //                       "Game Mechanics",
+          //                       style: TextStyle(color: Colors.black),
+          //                     ),
+          //                   ),
+          //                   Tab(
+          //                       child: Text(
+          //                     "Themes",
+          //                     style: TextStyle(color: Colors.black),
+          //                   )),
+          //                 ]),
+          //                 Expanded(
+          //                     child: TabBarView(children: <Widget>[
+          //                   Column(
+          //                     children: [
+          //                       Text("Here are your favorite game mechanics",
+          //                           textAlign: TextAlign.center,
+          //                           style: TextStyle(fontSize: 24)),
+          //                       SizedBox(height: 26),
+          //                       Expanded(
+          //                           child: ListView(
+          //                               children: itemList.map((bgMechanic) {
+          //                         final isSelected =
+          //                             selectedList.contains(bgMechanic);
+
+          //                         return BgMechanicListTileWidget(
+          //                             bgMechanic: bgMechanic,
+          //                             isSelected: isSelected,
+          //                             onSelectedBgMechanic: selectBgMechanic);
+          //                       }).toList())),
+          //                       // child: ListView(
+          //                       //   children: _allBgMechanics.map((bgMechanic) {
+          //                       //     final isSelected =
+          //                       //         _allBgMechanics.contains(bgMechanic);
+
+          //                       //     return BgMechanicListTileWidget(
+          //                       //       bgMechanic: bgMechanic,
+          //                       //       isSelected: isSelected,
+          //                       //       onSelectedBgMechanic: selectBgMechanic,
+          //                       //     );
+          //                       //   }).toList(),
+          //                       // ),
+
+          //                       // child: Align(
+          //                       //   alignment: Alignment.center,
+          //                       //   child: TextField(
+          //                       //     maxLength: 30,
+          //                       //     enableInteractiveSelection: false,
+          //                       //     keyboardType: TextInputType.number,
+          //                       //     style: TextStyle(height: 1.6),
+          //                       //     cursorColor: Colors.green[800],
+          //                       //     textAlign: TextAlign.center,
+          //                       //     autofocus: false,
+          //                       //     decoration: InputDecoration(
+          //                       //         border: InputBorder.none,
+          //                       //         hintText: "Internet",
+          //                       //         counterText: ""),
+          //                       //   ),
+          //                       // ),
+
+          // void selectBgMechanic(
+          //   FavBgMechanicItem bgMechanic,
+          // ) {
+          //   print("Is multiselection");
+
+          //   // setState(() {
+          //   //   _allBgMechanics = [];
+          //   // });
+
+          //   // setState(() {
+          //   //   selectedBgMechanics = [];
+          //   // });
+
+          //   final isSelected = selectedList.contains(bgMechanic);
+          //   setState(() => isSelected
+          //       ? selectedList.remove(bgMechanic)
+          //       : selectedList.add(bgMechanic));
+
+          //   // setState(() {
+          //   //   widget.notifyParent();
+          //   // });
+          //   print("selectedList, ${selectedList.length}");
+          // }
+
+          //                       buildSelectButton(context, userSnapshot)
+          //                     ],
+          //                   ),
+          //                   Column(
+          //                     children: <Widget>[
+          //                       Text(
+          //                         "Here are your favorite themes",
+          //                         textAlign: TextAlign.center,
+          //                         style: TextStyle(fontSize: 24),
+          //                       ),
+          //                       SizedBox(height: 26),
+          //                       Container(
+          //                         height: 73,
+          //                         width: MediaQuery.of(context).size.width - 24,
+          //                         decoration: BoxDecoration(
+          //                             borderRadius: BorderRadius.circular(5),
+          //                             color: kAccentColor,
+          //                             border: Border.all(
+          //                               width: 0.5,
+          //                               color: Colors.redAccent,
+          //                             )),
+          //                         child: Align(
+          //                           alignment: Alignment.center,
+          //                           child: TextField(
+          //                             maxLength: 30,
+          //                             enableInteractiveSelection: false,
+          //                             keyboardType: TextInputType.number,
+          //                             style: TextStyle(height: 1.6),
+          //                             cursorColor: Colors.green[800],
+          //                             textAlign: TextAlign.center,
+          //                             autofocus: false,
+          //                             decoration: InputDecoration(
+          //                                 border: InputBorder.none,
+          //                                 hintText: "Credit",
+          //                                 counterText: ""),
+          //                           ),
+          //                         ),
+          //                       ),
+          //                     ],
+          //                   )
+          //                 ])),
+          //               ],
+          //             ),
+          //           )),
+          //     ),
+          //   ),
+          // );
+
+          // return BottomSheet(
+          //   onClosing: () {},
+          //   builder: (BuildContext context) {
+          //     bool b = false;
+          //     return StatefulBuilder(
+          //         builder: (BuildContext context, setState) => Switch(
+          //               onChanged: (bool v) {
+          //                 setState(() => b = v);
+          //               },
+          //               value: b,
+          //             ));
+          //   },
+          // );
+        });
+  }
+
+  void selectBgMechanic(
+    FavBgMechanicItem bgMechanic,
+  ) {
+    print("Is multiselection");
+
+    // setState(() {
+    //   _allBgMechanics = [];
+    // });
+
+    // setState(() {
+    //   selectedBgMechanics = [];
+    // });
+
+    final isSelected = selectedList.contains(bgMechanic);
+    setState(() => isSelected
+        ? selectedList.remove(bgMechanic)
+        : selectedList.add(bgMechanic));
+
+    // setState(() {
+    //   widget.notifyParent();
+    // });
+    print("selectedList, ${selectedList.length}");
+  }
+
+  Widget buildSelectButton(BuildContext context, AppUser userSnapshot) {
+    final label = "Select Countries";
+    // 'Select ${selectedBgMechanics.length} Countries'
+    final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+      color: Theme.of(context).primaryColor,
+      child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            shape: StadiumBorder(),
+            minimumSize: Size.fromHeight(40),
+            primary: Colors.white,
+          ),
+          child: Text(
+            label,
+            style: TextStyle(color: Colors.black, fontSize: 16),
+          ),
+          onPressed: () {
+            _userProvider.updateFavouriteBgMechanics(
+                userSnapshot, selectedList, _scaffoldKey);
+
+            // widget.notifyParent();
+          }),
+    );
   }
 
   void _basicInfoEditModalBottomSheet(context, AppUser userSnapshot) {

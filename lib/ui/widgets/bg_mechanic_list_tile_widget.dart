@@ -25,7 +25,9 @@ class BgMechanicListTileWidget extends StatelessWidget {
         : TextStyle(fontSize: 18);
 
     return ListTile(
-      onTap: () => onSelectedBgMechanic(bgMechanic),
+      onTap: () => onSelectedBgMechanic(
+        bgMechanic,
+      ),
       // leading: FlagWidget(code: BgMechanic),
       title: Text(
         bgMechanic.name,

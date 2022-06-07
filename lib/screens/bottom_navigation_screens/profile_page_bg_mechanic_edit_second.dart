@@ -10,7 +10,7 @@ import 'package:flutter_demo_01/utils/constants.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePageBgMechanicsEditSecond extends StatefulWidget {
-  static const String id = 'profile_page_bg_genre_edit';
+  static const String id = 'profile_page_bg_mechanics_edit_second';
   final Function() notifyParent;
   final AppUser? userSnapshot;
 
@@ -64,6 +64,30 @@ class _ProfilePageBgMechanicsEditStateSecond
     //   }
     // }
   }
+
+  /**
+   * 
+   * showModalBottomSheet(
+  context: context,
+  builder: (BuildContext context) {
+    return BottomSheet(
+      onClosing: () {},
+      builder: (BuildContext context) {
+        bool b = false;
+        return StatefulBuilder(
+          builder: (BuildContext context, setState) => Switch(
+            onChanged: (bool v) {
+              setState(() => b = v);
+            },
+            value: b,
+          ),
+        );
+      },
+    );
+  },
+);
+   * 
+   */
 
   @override
   Widget build(BuildContext context) {

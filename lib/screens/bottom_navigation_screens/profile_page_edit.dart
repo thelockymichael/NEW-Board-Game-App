@@ -8,6 +8,8 @@ import 'package:flutter_demo_01/model/user_profile_edit.dart';
 import 'package:flutter_demo_01/provider/bg_mechanic_provider.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page_bg_genre_edit.dart';
+import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page_bg_mechanic_edit.dart';
+import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page_bg_mechanic_edit_second.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page_bio_edit.dart';
 import 'package:flutter_demo_01/screens/login_page.dart';
 import 'package:flutter_demo_01/screens/settings_page.dart';
@@ -43,7 +45,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
 
   /**  Board Game Interest Tabs */
   late final bool _isMultiSelection;
-  List<BgMechanic> selectedBgMechanics = [];
+  // List<BgMechanic> selectedBgMechanics = [];
   // late TabController _controller;
 
   /** END Board Game Interests */
@@ -304,8 +306,33 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                               ]))),
                                   GestureDetector(
                                       onTap: () {
-                                        _bgInterestsEditModalBottomSheet(
-                                            context, userSnapshot.data!);
+                                        Navigator.of(context)
+                                            .push(PageRouteBuilder(
+                                          pageBuilder: (
+                                            BuildContext context,
+                                            Animation<double> animation,
+                                            Animation<double>
+                                                secondaryAnimation,
+                                          ) =>
+                                              ProfilePageBgMechanicsEditSecond(
+                                                  userSnapshot:
+                                                      userSnapshot.data!,
+                                                  notifyParent: refresh),
+                                          transitionsBuilder: (
+                                            BuildContext context,
+                                            Animation<double> animation,
+                                            Animation<double>
+                                                secondaryAnimation,
+                                            Widget child,
+                                          ) =>
+                                              SlideTransition(
+                                            position: Tween<Offset>(
+                                              begin: const Offset(0, 1),
+                                              end: Offset.zero,
+                                            ).animate(animation),
+                                            child: child,
+                                          ),
+                                        ));
                                       },
                                       child: Container(
                                           margin: const EdgeInsets.fromLTRB(
@@ -347,7 +374,18 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                                     ],
                                                   ),
                                                 ),
-                                              ])))
+                                              ]))),
+
+                                  // ProfilePageBgMechanicsEditSecond(
+                                  //     userSnapshot: userSnapshot.data!,
+                                  //     notifyParent: refresh)
+                                  // ProfilePageBgMechanicEdit(
+                                  //     notifyParent: refresh,
+                                  //     userSnapshot: userSnapshot.data!,
+                                  //     bgMechanics: userSnapshot
+                                  //         .data!.favBgMechanics
+                                  //         .map((e) => BgMechanic(name: e))
+                                  //         .toList())
                                 ],
                               )
                             ]))
@@ -548,410 +586,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                 ],
               ),
             ));
-  }
-
-  String text = '';
-
-  bool containsSearchText(BgMechanic bgMechanic) {
-    final name = bgMechanic.name;
-    final textLower = text.toLowerCase();
-    final countryLower = name.toLowerCase();
-
-    return countryLower.contains(textLower);
-  }
-
-  List<BgMechanic> getPrioritizedBgMechanics(List<BgMechanic> bgMechanics) {
-    final notSelectedBgMechanics = List.of(bgMechanics)
-      ..removeWhere((BgMechanic) => selectedBgMechanics.contains(BgMechanic));
-
-    return [
-      ...List.of(selectedBgMechanics)..sort(Utils.ascendingSort),
-      ...notSelectedBgMechanics,
-    ];
-  }
-
-  void selectBgMechanic(BgMechanic bgMechanic) {
-    print("Is multiselection ${_isMultiSelection}");
-
-    if (_isMultiSelection) {
-      print("Is multiselection");
-
-      print("selectedBgMechanics, ${selectedBgMechanics.length}");
-      final isSelected = selectedBgMechanics.contains(bgMechanic);
-      setState(() => isSelected
-          ? selectedBgMechanics.remove(bgMechanic)
-          : selectedBgMechanics.add(bgMechanic));
-    } else {
-      Navigator.pop(context, bgMechanic);
-    }
-  }
-
-  Widget buildSelectButton(BuildContext context, AppUser userSnapshot) {
-    final label = _isMultiSelection
-        ? 'Select ${selectedBgMechanics.length} Countries'
-        : 'Continue';
-    final _scaffoldKey = GlobalKey<ScaffoldState>();
-
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-      color: Theme.of(context).primaryColor,
-      child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            shape: StadiumBorder(),
-            minimumSize: Size.fromHeight(40),
-            primary: Colors.white,
-          ),
-          child: Text(
-            label,
-            style: TextStyle(color: Colors.black, fontSize: 16),
-          ),
-          onPressed: () {
-            _userProvider.updateFavouriteBgMechanics(
-                userSnapshot, selectedBgMechanics, _scaffoldKey);
-
-            // widget.notifyParent();
-          }),
-    );
-  }
-
-  void _bgInterestsEditModalBottomSheet(context, AppUser userSnapshot) {
-    final _nameTextController = TextEditingController(text: userSnapshot.name);
-    final _bggNameTextController =
-        TextEditingController(text: userSnapshot.bggName);
-    final _birthdayTextController =
-        TextEditingController(text: userSnapshot.age);
-    final _genderTextController =
-        TextEditingController(text: userSnapshot.gender);
-    final _currentLocationTextController =
-        TextEditingController(text: userSnapshot.currentLocation);
-
-    final _focusName = FocusNode();
-    final _focusBggName = FocusNode();
-    final _focusBirthday = FocusNode();
-    final _focusGender = FocusNode();
-    final _focusCurrentLocation = FocusNode();
-
-    // final provider =
-    //     Provider.of<BgGameMechanicProvider>(context, listen: false);
-
-    print("before ${_bgMechanicProvider.bgMechanics.length}");
-    final allBgMechanics =
-        getPrioritizedBgMechanics(_bgMechanicProvider.bgMechanics);
-    final bgMechanics = allBgMechanics.where(containsSearchText).toList();
-
-    print("bgMechanics ${bgMechanics.length}");
-
-    for (var i = 0; i < userSnapshot.favBgMechanics.length; i++) {
-      final favBgMechanic = userSnapshot.favBgMechanics[i];
-
-      selectedBgMechanics.add(BgMechanic(name: favBgMechanic));
-    }
-    // selectedBgMechanics = userSnapshot.favBgMechanics.cast<BgMechanic>();
-
-    showModalBottomSheet(
-        backgroundColor: Colors.transparent,
-        context: context,
-        isScrollControlled: true,
-        builder: (context) {
-          return SingleChildScrollView(
-            child: Padding(
-              padding: MediaQuery.of(context).viewInsets,
-              child: StatefulBuilder(
-                  builder: (BuildContext context, StateSetter setState) {
-                return Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 600,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(18.0),
-                      topRight: const Radius.circular(18.0),
-                    ),
-                  ),
-                  child: DefaultTabController(
-                      length: 2,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 12),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            TabBar(tabs: [
-                              Tab(
-                                child: Text(
-                                  "Game Mechanics",
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ),
-                              Tab(
-                                  child: Text(
-                                "Themes",
-                                style: TextStyle(color: Colors.black),
-                              )),
-                            ]),
-                            Expanded(
-                                child: TabBarView(children: <Widget>[
-                              Column(
-                                children: [
-                                  Text("Here are your favorite game mechanics",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(fontSize: 24)),
-                                  SizedBox(height: 26),
-                                  Expanded(
-                                    child: ListView(
-                                      children: bgMechanics.map((bgMechanic) {
-                                        final isSelected = selectedBgMechanics
-                                            .contains(bgMechanic);
-
-                                        return BgMechanicListTileWidget(
-                                          bgMechanic: bgMechanic,
-                                          isSelected: isSelected,
-                                          onSelectedBgMechanic:
-                                              selectBgMechanic,
-                                        );
-                                      }).toList(),
-                                    ),
-
-                                    // child: Align(
-                                    //   alignment: Alignment.center,
-                                    //   child: TextField(
-                                    //     maxLength: 30,
-                                    //     enableInteractiveSelection: false,
-                                    //     keyboardType: TextInputType.number,
-                                    //     style: TextStyle(height: 1.6),
-                                    //     cursorColor: Colors.green[800],
-                                    //     textAlign: TextAlign.center,
-                                    //     autofocus: false,
-                                    //     decoration: InputDecoration(
-                                    //         border: InputBorder.none,
-                                    //         hintText: "Internet",
-                                    //         counterText: ""),
-                                    //   ),
-                                    // ),
-                                  ),
-                                  buildSelectButton(context, userSnapshot)
-                                ],
-                              ),
-                              Column(
-                                children: <Widget>[
-                                  Text(
-                                    "Here are your favorite themes",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(fontSize: 24),
-                                  ),
-                                  SizedBox(height: 26),
-                                  Container(
-                                    height: 73,
-                                    width:
-                                        MediaQuery.of(context).size.width - 24,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                        color: kAccentColor,
-                                        border: Border.all(
-                                          width: 0.5,
-                                          color: Colors.redAccent,
-                                        )),
-                                    child: Align(
-                                      alignment: Alignment.center,
-                                      child: TextField(
-                                        maxLength: 30,
-                                        enableInteractiveSelection: false,
-                                        keyboardType: TextInputType.number,
-                                        style: TextStyle(height: 1.6),
-                                        cursorColor: Colors.green[800],
-                                        textAlign: TextAlign.center,
-                                        autofocus: false,
-                                        decoration: InputDecoration(
-                                            border: InputBorder.none,
-                                            hintText: "Credit",
-                                            counterText: ""),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              )
-                            ])),
-                          ],
-                        ),
-                      )),
-                );
-              }),
-            ),
-          );
-        });
-    //   showModalBottomSheet(
-    //       isScrollControlled: true,
-    //       elevation: 5,
-    //       shape: RoundedRectangleBorder(
-    //         borderRadius: BorderRadius.circular(12.0),
-    //       ),
-    //       context: context,
-    //       builder: (ctx) => Padding(
-    //             padding: EdgeInsets.only(
-    //                 top: 15,
-    //                 left: 15,
-    //                 right: 15,
-    //                 bottom: MediaQuery.of(ctx).viewInsets.bottom + 15),
-    //             child: Column(
-    //               mainAxisSize: MainAxisSize.min,
-    //               crossAxisAlignment: CrossAxisAlignment.start,
-    //               children: [
-    //                 const Text("Basic info",
-    //                     textAlign: TextAlign.center,
-    //                     style: TextStyle(fontSize: 32)),
-    //                 Form(
-    //                   key: _userFormKey,
-    //                   child: Column(children: <Widget>[
-    //                     TextFormField(
-    //                       controller: _nameTextController,
-    //                       focusNode: _focusName,
-    //                       validator: (value) => Validator.validateName(
-    //                         name: value,
-    //                       ),
-    //                       decoration: InputDecoration(
-    //                         labelText: "Name",
-    //                         hintText: "Name",
-    //                         errorBorder: UnderlineInputBorder(
-    //                           borderRadius: BorderRadius.circular(6.0),
-    //                           borderSide: const BorderSide(
-    //                             color: Colors.red,
-    //                           ),
-    //                         ),
-    //                       ),
-    //                       keyboardType: TextInputType.name,
-    //                     ),
-    //                     TextFormField(
-    //                       controller: _bggNameTextController,
-    //                       focusNode: _focusBggName,
-    //                       validator: (value) => Validator.validateName(
-    //                         name: value,
-    //                       ),
-    //                       decoration: InputDecoration(
-    //                         labelText: "BGG Name",
-    //                         hintText: "BGG Name",
-    //                         errorBorder: UnderlineInputBorder(
-    //                           borderRadius: BorderRadius.circular(6.0),
-    //                           borderSide: const BorderSide(
-    //                             color: Colors.red,
-    //                           ),
-    //                         ),
-    //                       ),
-    //                       keyboardType: TextInputType.name,
-    //                     ),
-    //                     TextFormField(
-    //                       controller: _birthdayTextController,
-    //                       focusNode: _focusBirthday,
-    //                       validator: (value) => Validator.validateName(
-    //                         name: value,
-    //                       ),
-    //                       decoration: InputDecoration(
-    //                         labelText: "Birthday",
-    //                         hintText: "Birthday",
-    //                         errorBorder: UnderlineInputBorder(
-    //                           borderRadius: BorderRadius.circular(6.0),
-    //                           borderSide: const BorderSide(
-    //                             color: Colors.red,
-    //                           ),
-    //                         ),
-    //                       ),
-    //                       keyboardType: TextInputType.name,
-    //                     ),
-    //                     TextFormField(
-    //                       controller: _genderTextController,
-    //                       focusNode: _focusGender,
-    //                       validator: (value) => Validator.validateName(
-    //                         name: value,
-    //                       ),
-    //                       decoration: InputDecoration(
-    //                         labelText: "Gender",
-    //                         hintText: "Gender",
-    //                         errorBorder: UnderlineInputBorder(
-    //                           borderRadius: BorderRadius.circular(6.0),
-    //                           borderSide: const BorderSide(
-    //                             color: Colors.red,
-    //                           ),
-    //                         ),
-    //                       ),
-    //                       keyboardType: TextInputType.name,
-    //                     ),
-    //                     TextFormField(
-    //                       controller: _currentLocationTextController,
-    //                       focusNode: _focusCurrentLocation,
-    //                       validator: (value) => Validator.validateName(
-    //                         name: value,
-    //                       ),
-    //                       decoration: InputDecoration(
-    //                         labelText: "Current location",
-    //                         hintText: "Current location",
-    //                         errorBorder: UnderlineInputBorder(
-    //                           borderRadius: BorderRadius.circular(6.0),
-    //                           borderSide: const BorderSide(
-    //                             color: Colors.red,
-    //                           ),
-    //                         ),
-    //                       ),
-    //                       keyboardType: TextInputType.name,
-    //                     ),
-    //                     _isProcessing
-    //                         ? const CircularProgressIndicator()
-    //                         : Row(
-    //                             children: [
-    //                               Expanded(
-    //                                   child: ElevatedButton(
-    //                                 onPressed: () async {
-    //                                   setState(() {
-    //                                     _isProcessing = true;
-    //                                   });
-    //                                   if (_userFormKey.currentState!.validate()) {
-    //                                     // First name
-    //                                     _userProfileEdit.name =
-    //                                         _nameTextController.text;
-
-    //                                     // BGG Name
-    //                                     _userProfileEdit.bggName =
-    //                                         _bggNameTextController.text;
-
-    //                                     // Gender
-    //                                     _userProfileEdit.gender =
-    //                                         _genderTextController.text;
-
-    //                                     // Current Location
-    //                                     _userProfileEdit.currentLocation =
-    //                                         _currentLocationTextController.text;
-
-    //                                     // Birthday
-    //                                     _userProfileEdit.birthDay =
-    //                                         _birthdayTextController.text;
-
-    //                                     await _userProvider
-    //                                         .updateUserBasicInfo(userSnapshot,
-    //                                             _userProfileEdit, _scaffoldKey)
-    //                                         .then((response) {
-    //                                       if (response is Success) {}
-    //                                     });
-
-    //                                     setState(() {
-    //                                       _isProcessing = false;
-    //                                     });
-    //                                   } else {
-    //                                     setState(() {
-    //                                       _isProcessing = false;
-    //                                     });
-    //                                   }
-    //                                 },
-    //                                 child: const Text(
-    //                                   "Save",
-    //                                   style: TextStyle(color: Colors.white),
-    //                                 ),
-    //                               ))
-    //                             ],
-    //                           ),
-    //                   ]),
-    //                 )
-    //               ],
-    //             ),
-    //           ));
   }
 
   Widget getProfileImage(AppUser user, UserProvider firebaseProvider) {

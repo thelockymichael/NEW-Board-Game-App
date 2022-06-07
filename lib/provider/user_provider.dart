@@ -185,7 +185,7 @@ class UserProvider extends ChangeNotifier {
 
   Future<Response> updateFavouriteBgMechanics(
       AppUser userSnapshot,
-      List<BgMechanic> favBgMechanics,
+      List<FavBgMechanicItem> favBgMechanics,
       GlobalKey<ScaffoldState> errorScaffoldKey) async {
     final mappedBgMechanics = <String>[];
 

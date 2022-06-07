@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/model/bg_mechanic.dart';
 
 class BgMechanicListTileWidget extends StatelessWidget {
-  final BgMechanic bgMechanic;
+  final FavBgMechanicItem bgMechanic;
   // final bool isNative;
   final bool isSelected;
-  final ValueChanged<BgMechanic> onSelectedBgMechanic;
+  final ValueChanged<FavBgMechanicItem> onSelectedBgMechanic;
 
   const BgMechanicListTileWidget(
       {required this.bgMechanic,

@@ -6,16 +6,16 @@ import 'package:flutter_demo_01/model/bg_mechanic.dart';
 import 'package:flutter_demo_01/utils/utils.dart';
 
 class BgGameMechanicProvider with ChangeNotifier {
-  List<BgMechanic> _bgMechanics = [
-    BgMechanic(name: "Co-op"),
-    BgMechanic(name: "Team"),
-    BgMechanic(name: "Social Deduction"),
-    BgMechanic(name: "Euro"),
-    BgMechanic(name: "Card"),
-    BgMechanic(name: "Resource Management"),
-    BgMechanic(name: "Bidding"),
-    BgMechanic(name: "Worker Placement")
+  List<FavBgMechanicItem> _bgMechanics = [
+    FavBgMechanicItem(name: "Co-op"),
+    FavBgMechanicItem(name: "Team"),
+    FavBgMechanicItem(name: "Social Deduction"),
+    FavBgMechanicItem(name: "Euro"),
+    FavBgMechanicItem(name: "Card"),
+    FavBgMechanicItem(name: "Resource Management"),
+    FavBgMechanicItem(name: "Bidding"),
+    FavBgMechanicItem(name: "Worker Placement")
   ];
 
-  List<BgMechanic> get bgMechanics => _bgMechanics;
+  List<FavBgMechanicItem> get bgMechanics => _bgMechanics;
 }

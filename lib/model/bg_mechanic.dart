@@ -1,14 +1,15 @@
-class BgMechanic {
+class FavBgMechanicItem {
   final String name;
   // final String nativeName;
   // final String code;
 
-  const BgMechanic({required this.name
+  const FavBgMechanicItem({required this.name
       // @required this.nativeName,
       // @required this.code,
       });
 
-  factory BgMechanic.fromJson(Map<String, dynamic> json) => BgMechanic(
+  factory FavBgMechanicItem.fromJson(Map<String, dynamic> json) =>
+      FavBgMechanicItem(
         name: json['name'],
         // code: json['code'],
         // nativeName: json['native'],
@@ -17,7 +18,7 @@ class BgMechanic {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is BgMechanic &&
+      other is FavBgMechanicItem &&
           runtimeType == other.runtimeType &&
           name == other.name;
   // nativeName == other.nativeName &&

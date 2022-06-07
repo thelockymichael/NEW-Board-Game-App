@@ -5,7 +5,7 @@ import 'package:flutter_demo_01/model/bg_mechanic.dart';
 import 'package:intl/intl.dart';
 
 class Utils {
-  static int ascendingSort(BgMechanic c1, BgMechanic c2) =>
+  static int ascendingSort(FavBgMechanicItem c1, FavBgMechanicItem c2) =>
       c1.name.compareTo(c2.name);
 }
 

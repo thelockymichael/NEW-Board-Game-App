@@ -45,24 +45,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
   void initState() {
     _userProvider = Provider.of<UserProvider>(context, listen: false);
 
-    loadList();
-
     super.initState();
-  }
-
-  loadList() {}
-
-  void logoutPressed(UserProvider userProvider, BuildContext context) async {
-    userProvider.logoutUser();
-    Navigator.pushNamedAndRemoveUntil(context, LoginPage.id, (route) => false);
-  }
-
-  void navigateToSettings(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const SettingsPage(),
-      ),
-    );
   }
 
   refresh() {
@@ -330,16 +313,83 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                                                       FontWeight
                                                                           .bold))),
                                                       Align(
-                                                        alignment: Alignment
-                                                            .centerLeft,
-                                                        child: Text(
-                                                            userSnapshot
-                                                                .data!.bio,
-                                                            style:
-                                                                const TextStyle(
-                                                              fontSize: 20,
-                                                            )),
-                                                      )
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          child: Column(
+                                                              children: [
+                                                                Wrap(
+                                                                  children: userSnapshot
+                                                                      .data!
+                                                                      .favBgMechanics
+                                                                      .map(
+                                                                          (gameGenre) {
+                                                                    return Container(
+                                                                      margin: const EdgeInsets
+                                                                              .only(
+                                                                          right:
+                                                                              10,
+                                                                          top:
+                                                                              10),
+                                                                      padding:
+                                                                          const EdgeInsets.all(
+                                                                              8),
+                                                                      decoration:
+                                                                          const BoxDecoration(
+                                                                        color: Colors
+                                                                            .green,
+                                                                        borderRadius:
+                                                                            BorderRadius.all(Radius.circular(12.0)),
+                                                                      ),
+                                                                      child:
+                                                                          Text(
+                                                                        gameGenre
+                                                                            .capitalize(),
+                                                                        style: const TextStyle(
+                                                                            fontSize:
+                                                                                20,
+                                                                            color:
+                                                                                Colors.white),
+                                                                      ),
+                                                                    );
+                                                                  }).toList(),
+                                                                ),
+                                                                Wrap(
+                                                                  children: userSnapshot
+                                                                      .data!
+                                                                      .favBgThemes
+                                                                      .map(
+                                                                          (gameGenre) {
+                                                                    return Container(
+                                                                      margin: const EdgeInsets
+                                                                              .only(
+                                                                          right:
+                                                                              10,
+                                                                          top:
+                                                                              10),
+                                                                      padding:
+                                                                          const EdgeInsets.all(
+                                                                              8),
+                                                                      decoration:
+                                                                          const BoxDecoration(
+                                                                        color: Colors
+                                                                            .green,
+                                                                        borderRadius:
+                                                                            BorderRadius.all(Radius.circular(12.0)),
+                                                                      ),
+                                                                      child:
+                                                                          Text(
+                                                                        gameGenre
+                                                                            .capitalize(),
+                                                                        style: const TextStyle(
+                                                                            fontSize:
+                                                                                20,
+                                                                            color:
+                                                                                Colors.white),
+                                                                      ),
+                                                                    );
+                                                                  }).toList(),
+                                                                )
+                                                              ])),
                                                     ],
                                                   ),
                                                 ),
@@ -356,197 +406,197 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
   }
 
   void _testingModalBottomSheet(context, AppUser userSnapshot) {
+/* Board Game Mechanics  */
+    List<FavBgMechanicItem> bgMechanicsList = [
+      FavBgMechanicItem(name: "Co-op"),
+      FavBgMechanicItem(name: "Team"),
+      FavBgMechanicItem(name: "Social Deduction"),
+      FavBgMechanicItem(name: "Euro"),
+      FavBgMechanicItem(name: "Card"),
+      FavBgMechanicItem(name: "Resource Management"),
+      FavBgMechanicItem(name: "Bidding"),
+      FavBgMechanicItem(name: "Worker Placement")
+    ];
+    List<FavBgMechanicItem> bgMechanicsSelectedList = [];
+    for (var i = 0; i < userSnapshot.favBgMechanics.length; i++) {
+      bgMechanicsSelectedList
+          .add(FavBgMechanicItem(name: userSnapshot.favBgMechanics[i]));
+    }
+
+    /* END Board Game Mechanics END */
+
+    /* Board Game Themes  */
+    List<FavBgThemeItem> bgThemesList = [
+      FavBgThemeItem(name: "Fantasy"),
+      FavBgThemeItem(name: "Alien"),
+      FavBgThemeItem(name: "Horror"),
+      FavBgThemeItem(name: "Adventure"),
+      FavBgThemeItem(name: "Wild West"),
+      FavBgThemeItem(name: "Winter"),
+    ];
+    List<FavBgThemeItem> bgThemesSelectedList = [];
+    for (var i = 0; i < userSnapshot.favBgThemes.length; i++) {
+      bgThemesSelectedList
+          .add(FavBgThemeItem(name: userSnapshot.favBgThemes[i]));
+    }
+    /* END Board Game Themes END */
+
     showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return BottomSheet(
-            onClosing: () {},
-            builder: (BuildContext context) {
-              bool b = false;
+      elevation: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      context: context,
+      builder: (BuildContext context) {
+        bool b = false;
 
-              /* Board Game Mechanics  */
-              List<FavBgMechanicItem> bgMechanicsList = [
-                FavBgMechanicItem(name: "Co-op"),
-                FavBgMechanicItem(name: "Team"),
-                FavBgMechanicItem(name: "Social Deduction"),
-                FavBgMechanicItem(name: "Euro"),
-                FavBgMechanicItem(name: "Card"),
-                FavBgMechanicItem(name: "Resource Management"),
-                FavBgMechanicItem(name: "Bidding"),
-                FavBgMechanicItem(name: "Worker Placement")
-              ];
-              List<FavBgMechanicItem> bgMechanicsSelectedList = [];
-              for (var i = 0; i < userSnapshot.favBgMechanics.length; i++) {
-                bgMechanicsSelectedList.add(
-                    FavBgMechanicItem(name: userSnapshot.favBgMechanics[i]));
-              }
+        return StatefulBuilder(builder: (BuildContext context, setState) {
+          print("BOOL ${b}");
 
-              /* END Board Game Mechanics END */
-
-              /* Board Game Mechanics  */
-              List<FavBgThemeItem> bgThemesList = [
-                FavBgThemeItem(name: "Fantasy"),
-                FavBgThemeItem(name: "Alien"),
-                FavBgThemeItem(name: "Horror"),
-                FavBgThemeItem(name: "Adventure"),
-                FavBgThemeItem(name: "Wild West"),
-                FavBgThemeItem(name: "Winter"),
-              ];
-              List<FavBgThemeItem> bgThemesSelectedList = [];
-              for (var i = 0; i < userSnapshot.favBgMechanics.length; i++) {
-                bgThemesSelectedList
-                    .add(FavBgThemeItem(name: userSnapshot.favBgMechanics[i]));
-              }
-
-              /* END Board Game Mechanics END */
-
-              return StatefulBuilder(builder: (BuildContext context, setState) {
-                print("BOOL ${b}");
-
-                return DefaultTabController(
-                  length: 2,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 12),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        TabBar(tabs: [
-                          Tab(
-                            child: Text("Game Mechanics",
-                                style: TextStyle(color: Colors.black)),
-                          ),
-                          Tab(
-                            child: Text("Themes",
-                                style: TextStyle(color: Colors.black)),
-                          ),
-                        ]),
-                        Expanded(
-                            child: TabBarView(
-                          children: [
-                            Column(
-                              children: [
-                                Text("Here are your favourite mechanics",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(fontSize: 24)),
-                                SizedBox(height: 26),
-                                Expanded(
-                                  child: ListView(
-                                      children:
-                                          bgMechanicsList.map((bgMechanic) {
-                                    final isSelected = bgMechanicsSelectedList
-                                        .contains(bgMechanic);
-
-                                    final selectedColor =
-                                        Theme.of(context).primaryColor;
-                                    final style = isSelected
-                                        ? TextStyle(
-                                            fontSize: 18,
-                                            color: selectedColor,
-                                            fontWeight: FontWeight.bold,
-                                          )
-                                        : TextStyle(fontSize: 18);
-
-                                    return ListTile(
-                                      onTap: () {
-                                        print("HELLO WORLD");
-
-                                        final isSelected =
-                                            bgMechanicsSelectedList
-                                                .contains(bgMechanic);
-
-                                        setState(() => isSelected
-                                            ? bgMechanicsSelectedList
-                                                .remove(bgMechanic)
-                                            : bgMechanicsSelectedList
-                                                .add(bgMechanic));
-
-                                        print(
-                                            "bgMechanicsSelectedList, ${bgMechanicsSelectedList.length}");
-                                      },
-                                      // leading: FlagWidget(code: BgMechanic),
-                                      title: Text(
-                                        bgMechanic.name,
-                                        style: style,
-                                      ),
-                                      trailing: isSelected
-                                          ? Icon(Icons.check,
-                                              color: selectedColor, size: 26)
-                                          : null,
-                                    );
-                                  }).toList()),
-                                ),
-                                selectMechanicsButton(context, userSnapshot,
-                                    bgMechanicsSelectedList)
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                Text("Here are your favourite themes",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(fontSize: 24)),
-                                SizedBox(height: 26),
-                                Expanded(
-                                  child: ListView(
-                                      children: bgThemesList.map((bgTheme) {
-                                    final isSelected =
-                                        bgThemesSelectedList.contains(bgTheme);
-
-                                    final selectedColor =
-                                        Theme.of(context).primaryColor;
-                                    final style = isSelected
-                                        ? TextStyle(
-                                            fontSize: 18,
-                                            color: selectedColor,
-                                            fontWeight: FontWeight.bold,
-                                          )
-                                        : TextStyle(fontSize: 18);
-
-                                    return ListTile(
-                                      onTap: () {
-                                        print("HELLO WORLD");
-
-                                        final isSelected = bgThemesSelectedList
-                                            .contains(bgTheme);
-
-                                        setState(() => isSelected
-                                            ? bgThemesSelectedList
-                                                .remove(bgTheme)
-                                            : bgThemesSelectedList
-                                                .add(bgTheme));
-
-                                        print(
-                                            "bgThemesSelectedList, ${bgThemesSelectedList.length}");
-                                      },
-                                      // leading: FlagWidget(code: BgMechanic),
-                                      title: Text(
-                                        bgTheme.name,
-                                        style: style,
-                                      ),
-                                      trailing: isSelected
-                                          ? Icon(Icons.check,
-                                              color: selectedColor, size: 26)
-                                          : null,
-                                    );
-                                  }).toList()),
-                                ),
-                                selectThemesButton(
-                                    context, userSnapshot, bgThemesSelectedList)
-                                // buildSelectButton(
-                                //     context, userSnapshot, bgThemesSelectedList)
-                              ],
-                            ),
-                          ],
-                        ))
-                      ],
+          return DefaultTabController(
+            length: 2,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  TabBar(tabs: [
+                    Tab(
+                      child: Text("Game Mechanics",
+                          style: TextStyle(color: Colors.black)),
                     ),
-                  ),
-                );
-              });
-            },
+                    Tab(
+                      child:
+                          Text("Themes", style: TextStyle(color: Colors.black)),
+                    ),
+                  ]),
+                  Expanded(
+                      child: TabBarView(
+                    children: [
+                      Column(
+                        children: [
+                          Text("Here are your favourite mechanics",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 24)),
+                          SizedBox(height: 26),
+                          Expanded(
+                            child: ListView(
+                                children: bgMechanicsList.map((bgMechanic) {
+                              final isSelected =
+                                  bgMechanicsSelectedList.contains(bgMechanic);
+
+                              final selectedColor =
+                                  Theme.of(context).primaryColor;
+                              final style = isSelected
+                                  ? TextStyle(
+                                      fontSize: 18,
+                                      color: selectedColor,
+                                      fontWeight: FontWeight.bold,
+                                    )
+                                  : TextStyle(fontSize: 18);
+
+                              return ListTile(
+                                onTap: () {
+                                  print("HELLO WORLD");
+
+                                  final isSelected = bgMechanicsSelectedList
+                                      .contains(bgMechanic);
+
+                                  setState(() => isSelected
+                                      ? bgMechanicsSelectedList
+                                          .remove(bgMechanic)
+                                      : bgMechanicsSelectedList
+                                          .add(bgMechanic));
+
+                                  print(
+                                      "bgMechanicsSelectedList, ${bgMechanicsSelectedList.length}");
+                                },
+                                // leading: FlagWidget(code: BgMechanic),
+                                title: Text(
+                                  bgMechanic.name,
+                                  style: style,
+                                ),
+                                trailing: isSelected
+                                    ? Icon(Icons.check,
+                                        color: selectedColor, size: 26)
+                                    : null,
+                              );
+                            }).toList()),
+                          ),
+                          // selectMechanicsButton(
+                          //     context, userSnapshot, bgMechanicsSelectedList)
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Text("Here are your favourite themes",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 24)),
+                          SizedBox(height: 26),
+                          Expanded(
+                            child: ListView(
+                                children: bgThemesList.map((bgTheme) {
+                              final isSelected =
+                                  bgThemesSelectedList.contains(bgTheme);
+
+                              final selectedColor =
+                                  Theme.of(context).primaryColor;
+                              final style = isSelected
+                                  ? TextStyle(
+                                      fontSize: 18,
+                                      color: selectedColor,
+                                      fontWeight: FontWeight.bold,
+                                    )
+                                  : TextStyle(fontSize: 18);
+
+                              return ListTile(
+                                onTap: () {
+                                  print("HELLO WORLD");
+
+                                  final isSelected =
+                                      bgThemesSelectedList.contains(bgTheme);
+
+                                  setState(() => isSelected
+                                      ? bgThemesSelectedList.remove(bgTheme)
+                                      : bgThemesSelectedList.add(bgTheme));
+
+                                  print(
+                                      "bgThemesSelectedList, ${bgThemesSelectedList.length}");
+                                },
+                                // leading: FlagWidget(code: BgMechanic),
+                                title: Text(
+                                  bgTheme.name,
+                                  style: style,
+                                ),
+                                trailing: isSelected
+                                    ? Icon(Icons.check,
+                                        color: selectedColor, size: 26)
+                                    : null,
+                              );
+                            }).toList()),
+                          ),
+                          // selectThemesButton(
+                          //     context, userSnapshot, bgThemesSelectedList)
+                          // buildSelectButton(
+                          //     context, userSnapshot, bgThemesSelectedList)
+                        ],
+                      ),
+                    ],
+                  ))
+                ],
+              ),
+            ),
           );
         });
+      },
+    ).whenComplete(() {
+      _userProvider.updateBgMechanicsAndThemes(userSnapshot,
+          bgMechanicsSelectedList, bgThemesSelectedList, _scaffoldKey);
+
+      refresh();
+      print('Hey there, I\'m calling after hide bottomSheet');
+    });
   }
 
   Widget selectMechanicsButton(BuildContext context, AppUser userSnapshot,

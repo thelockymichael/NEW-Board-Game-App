@@ -256,6 +256,46 @@ class UserProvider extends ChangeNotifier {
     return response;
   }
 
+  Future<Response> updateBgMechanicsAndThemes(
+      AppUser userSnapshot,
+      List<FavBgMechanicItem> favBgMechanics,
+      List<FavBgThemeItem> favBgThemes,
+      GlobalKey<ScaffoldState> errorScaffoldKey) async {
+    final mappedBgMechanics = <String>[];
+    final mappedBgThemes = <String>[];
+
+    for (var element in favBgMechanics) {
+      mappedBgMechanics.add(element.name);
+    }
+
+    for (var element in favBgThemes) {
+      mappedBgThemes.add(element.name);
+    }
+
+    AppUser user = AppUser(
+        id: userSnapshot.id,
+        name: userSnapshot.name,
+        bggName: userSnapshot.bggName,
+        currentLocation: userSnapshot.currentLocation,
+        gender: userSnapshot.gender,
+        age: userSnapshot.age,
+        bio: userSnapshot.bio,
+        email: userSnapshot.email,
+        favBoardGameGenres: userSnapshot.favBoardGameGenres,
+        favBgMechanics: mappedBgMechanics,
+        favBgThemes: mappedBgThemes,
+        profilePhotoPath: userSnapshot.profilePhotoPath);
+
+    Response<dynamic> response = await _databaseSource.updateUser(user);
+
+    if (response is Success<String>) {
+      return Response.success(user);
+    }
+
+    if (response is Error) showSnackBar(errorScaffoldKey, response.message);
+    return response;
+  }
+
   Future<Response> updateUserBio(AppUser userSnapshot, UserBioEdit userBioEdit,
       GlobalKey<ScaffoldState> errorScaffoldKey) async {
     AppUser user = AppUser(

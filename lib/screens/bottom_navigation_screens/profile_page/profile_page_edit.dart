@@ -8,8 +8,9 @@ import 'package:flutter_demo_01/model/bg_theme.dart';
 import 'package:flutter_demo_01/model/user_profile_edit.dart';
 import 'package:flutter_demo_01/provider/bg_mechanic_provider.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
-import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page_bg_genre_edit.dart';
-import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page_bio_edit.dart';
+import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/profile_page_bg_genre_edit.dart';
+import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/profile_page_bio_edit.dart';
+import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/profile_page_fav_board_games_edit.dart';
 import 'package:flutter_demo_01/screens/login_page.dart';
 import 'package:flutter_demo_01/screens/settings_page.dart';
 import 'package:flutter_demo_01/utils/constants.dart';
@@ -17,8 +18,6 @@ import 'package:flutter_demo_01/utils/validator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import "package:flutter_demo_01/utils/utils.dart";
-
-import '../../model/bg_mechanic.dart';
 
 class ProfilePageEdit extends StatefulWidget {
   static const String id = 'profile_page_edit';
@@ -394,6 +393,146 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                                   ),
                                                 ),
                                               ]))),
+                                  GestureDetector(
+                                      onTap: () {
+                                        // _testingModalBottomSheet(
+                                        //     context, userSnapshot.data!);
+                                        Navigator.of(context)
+                                            .push(PageRouteBuilder(
+                                          pageBuilder: (
+                                            BuildContext context,
+                                            Animation<double> animation,
+                                            Animation<double>
+                                                secondaryAnimation,
+                                          ) =>
+                                              ProfilePageFavBoardGamesEdit(
+                                                  userSnapshot:
+                                                      userSnapshot.data!,
+                                                  notifyParent: refresh),
+                                          transitionsBuilder: (
+                                            BuildContext context,
+                                            Animation<double> animation,
+                                            Animation<double>
+                                                secondaryAnimation,
+                                            Widget child,
+                                          ) =>
+                                              SlideTransition(
+                                            position: Tween<Offset>(
+                                              begin: const Offset(1, 0),
+                                              end: Offset.zero,
+                                            ).animate(animation),
+                                            child: child,
+                                          ),
+                                        ));
+                                      },
+                                      child: Container(
+                                          margin: const EdgeInsets.fromLTRB(
+                                              0, 0, 0, 12),
+                                          color: Colors.white,
+                                          width: double.infinity,
+                                          child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal: 20,
+                                                      vertical: 20),
+                                                  child: Column(
+                                                    children: [
+                                                      Align(
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          child: Text(
+                                                              "Favourite Board Games",
+                                                              style: TextStyle(
+                                                                  fontSize: 32,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold))),
+                                                      Align(
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          child: Column(
+                                                              children: [
+                                                                Wrap(
+                                                                  children: userSnapshot
+                                                                      .data!
+                                                                      .favBgMechanics
+                                                                      .map(
+                                                                          (gameGenre) {
+                                                                    return Container(
+                                                                      margin: const EdgeInsets
+                                                                              .only(
+                                                                          right:
+                                                                              10,
+                                                                          top:
+                                                                              10),
+                                                                      padding:
+                                                                          const EdgeInsets.all(
+                                                                              8),
+                                                                      decoration:
+                                                                          const BoxDecoration(
+                                                                        color: Colors
+                                                                            .green,
+                                                                        borderRadius:
+                                                                            BorderRadius.all(Radius.circular(12.0)),
+                                                                      ),
+                                                                      child:
+                                                                          Text(
+                                                                        gameGenre
+                                                                            .capitalize(),
+                                                                        style: const TextStyle(
+                                                                            fontSize:
+                                                                                20,
+                                                                            color:
+                                                                                Colors.white),
+                                                                      ),
+                                                                    );
+                                                                  }).toList(),
+                                                                ),
+                                                                Wrap(
+                                                                  children: userSnapshot
+                                                                      .data!
+                                                                      .favBgThemes
+                                                                      .map(
+                                                                          (gameGenre) {
+                                                                    return Container(
+                                                                      margin: const EdgeInsets
+                                                                              .only(
+                                                                          right:
+                                                                              10,
+                                                                          top:
+                                                                              10),
+                                                                      padding:
+                                                                          const EdgeInsets.all(
+                                                                              8),
+                                                                      decoration:
+                                                                          const BoxDecoration(
+                                                                        color: Colors
+                                                                            .green,
+                                                                        borderRadius:
+                                                                            BorderRadius.all(Radius.circular(12.0)),
+                                                                      ),
+                                                                      child:
+                                                                          Text(
+                                                                        gameGenre
+                                                                            .capitalize(),
+                                                                        style: const TextStyle(
+                                                                            fontSize:
+                                                                                20,
+                                                                            color:
+                                                                                Colors.white),
+                                                                      ),
+                                                                    );
+                                                                  }).toList(),
+                                                                )
+                                                              ])),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ]))),
                                 ],
                               )
                             ]))
@@ -576,10 +715,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                               );
                             }).toList()),
                           ),
-                          // selectThemesButton(
-                          //     context, userSnapshot, bgThemesSelectedList)
-                          // buildSelectButton(
-                          //     context, userSnapshot, bgThemesSelectedList)
                         ],
                       ),
                     ],
@@ -597,72 +732,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
       refresh();
       print('Hey there, I\'m calling after hide bottomSheet');
     });
-  }
-
-  Widget selectMechanicsButton(BuildContext context, AppUser userSnapshot,
-      List<FavBgMechanicItem> localSelectedList) {
-    // final label = "Select Countries";
-    var itemText = localSelectedList.length > 1 ? "items" : "item";
-
-    final label = localSelectedList.isEmpty
-        ? "Select Game Mechanics"
-        : "${localSelectedList.length} $itemText selected";
-    // 'Select ${selectedBgMechanics.length} Countries'
-    final _scaffoldKey = GlobalKey<ScaffoldState>();
-
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-      color: Theme.of(context).primaryColor,
-      child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            shape: StadiumBorder(),
-            minimumSize: Size.fromHeight(40),
-            primary: Colors.white,
-          ),
-          child: Text(
-            label,
-            style: TextStyle(color: Colors.black, fontSize: 16),
-          ),
-          onPressed: () {
-            _userProvider.updateFavouriteBgMechanics(
-                userSnapshot, localSelectedList, _scaffoldKey);
-
-            refresh();
-          }),
-    );
-  }
-
-  Widget selectThemesButton(BuildContext context, AppUser userSnapshot,
-      List<FavBgThemeItem> localSelectedList) {
-    // final label = "Select Countries";
-    var itemText = localSelectedList.length > 1 ? "items" : "item";
-
-    final label = localSelectedList.isEmpty
-        ? "Select Game Themes"
-        : "${localSelectedList.length} $itemText selected";
-    // 'Select ${selectedBgMechanics.length} Countries'
-    final _scaffoldKey = GlobalKey<ScaffoldState>();
-
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-      color: Theme.of(context).primaryColor,
-      child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            shape: StadiumBorder(),
-            minimumSize: Size.fromHeight(40),
-            primary: Colors.white,
-          ),
-          child: Text(
-            label,
-            style: TextStyle(color: Colors.black, fontSize: 16),
-          ),
-          onPressed: () {
-            _userProvider.updateFavouriteBgThemes(
-                userSnapshot, localSelectedList, _scaffoldKey);
-
-            refresh();
-          }),
-    );
   }
 
   void _basicInfoEditModalBottomSheet(context, AppUser userSnapshot) {

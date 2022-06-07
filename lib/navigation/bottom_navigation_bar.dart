@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/chats_screen.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/discover_page.dart';
-import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page.dart';
+import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/profile_page.dart';
 
 class MainNavigation extends StatefulWidget {
   static const String id = 'main_navigation_page';

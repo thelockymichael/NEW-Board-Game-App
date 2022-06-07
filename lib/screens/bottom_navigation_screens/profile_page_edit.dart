@@ -455,155 +455,141 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
 
               List<FavBgMechanicItem> localSelectedList = [];
 
+              for (var i = 0; i < userSnapshot.favBgMechanics.length; i++) {
+                localSelectedList.add(
+                    FavBgMechanicItem(name: userSnapshot.favBgMechanics[i]));
+              }
+
               return StatefulBuilder(builder: (BuildContext context, setState) {
                 print("BOOL ${b}");
 
-                return SingleChildScrollView(
+                return DefaultTabController(
+                  length: 2,
                   child: Padding(
-                    padding: MediaQuery.of(context).viewInsets,
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 600,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(18.0),
-                              topRight: const Radius.circular(18.0))),
-                      child: DefaultTabController(
-                        length: 2,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 12),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              TabBar(tabs: [
-                                Tab(
-                                  child: Text("Game Mechanics",
-                                      style: TextStyle(color: Colors.black)),
-                                ),
-                                Tab(
-                                  child: Text("Themes",
-                                      style: TextStyle(color: Colors.black)),
-                                ),
-                              ]),
-                              Expanded(
-                                  child: TabBarView(
-                                children: [
-                                  Column(
-                                    children: [
-                                      Text("Here are your favourite mechanics",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(fontSize: 24)),
-                                      SizedBox(height: 26),
-                                      Expanded(
-                                        child: ListView(
-                                            children:
-                                                localList.map((bgMechanic) {
-                                          final isSelected = localSelectedList
-                                              .contains(bgMechanic);
-
-                                          final selectedColor =
-                                              Theme.of(context).primaryColor;
-                                          final style = isSelected
-                                              ? TextStyle(
-                                                  fontSize: 18,
-                                                  color: selectedColor,
-                                                  fontWeight: FontWeight.bold,
-                                                )
-                                              : TextStyle(fontSize: 18);
-
-                                          return ListTile(
-                                            onTap: () {
-                                              print("HELLO WORLD");
-
-                                              final isSelected =
-                                                  localSelectedList
-                                                      .contains(bgMechanic);
-
-                                              setState(() => isSelected
-                                                  ? localSelectedList
-                                                      .remove(bgMechanic)
-                                                  : localSelectedList
-                                                      .add(bgMechanic));
-
-                                              print(
-                                                  "localSelectedList, ${localSelectedList.length}");
-                                            },
-                                            // leading: FlagWidget(code: BgMechanic),
-                                            title: Text(
-                                              bgMechanic.name,
-                                              style: style,
-                                            ),
-                                            trailing: isSelected
-                                                ? Icon(Icons.check,
-                                                    color: selectedColor,
-                                                    size: 26)
-                                                : null,
-
-                                            // return BgMechanicListTileWidget(
-                                            //     bgMechanic: bgMechanic,
-                                            //     isSelected: isSelected,
-                                            //     onSelectedBgMechanic:
-                                            //         selectBgMechanic);
-                                          );
-                                        }).toList()),
-                                      ),
-                                      buildSelectButton(context, userSnapshot)
-                                    ],
-                                  ),
-                                  Column(
-                                    children: <Widget>[
-                                      Text(
-                                        "Here are your favorite themes",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(fontSize: 24),
-                                      ),
-                                      SizedBox(height: 26),
-                                      Container(
-                                        height: 73,
-                                        width:
-                                            MediaQuery.of(context).size.width -
-                                                24,
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                            color: kAccentColor,
-                                            border: Border.all(
-                                              width: 0.5,
-                                              color: Colors.redAccent,
-                                            )),
-                                        child: Align(
-                                            alignment: Alignment.center,
-                                            child: Switch(
-                                                onChanged: (bool v) {
-                                                  setState(() => b = v);
-                                                },
-                                                value: b)
-                                            //  TextField(
-                                            //   maxLength: 30,
-                                            //   enableInteractiveSelection: false,
-                                            //   keyboardType: TextInputType.number,
-                                            //   style: TextStyle(height: 1.6),
-                                            //   cursorColor: Colors.green[800],
-                                            //   textAlign: TextAlign.center,
-                                            //   autofocus: false,
-                                            //   decoration: InputDecoration(
-                                            //       border: InputBorder.none,
-                                            //       hintText: "Credit",
-                                            //       counterText: ""),
-                                            // ),
-                                            ),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ))
-                            ],
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 12),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        TabBar(tabs: [
+                          Tab(
+                            child: Text("Game Mechanics",
+                                style: TextStyle(color: Colors.black)),
                           ),
-                        ),
-                      ),
+                          Tab(
+                            child: Text("Themes",
+                                style: TextStyle(color: Colors.black)),
+                          ),
+                        ]),
+                        Expanded(
+                            child: TabBarView(
+                          children: [
+                            Column(
+                              children: [
+                                Text("Here are your favourite mechanics",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontSize: 24)),
+                                SizedBox(height: 26),
+                                Expanded(
+                                  child: ListView(
+                                      children: localList.map((bgMechanic) {
+                                    final isSelected =
+                                        localSelectedList.contains(bgMechanic);
+
+                                    final selectedColor =
+                                        Theme.of(context).primaryColor;
+                                    final style = isSelected
+                                        ? TextStyle(
+                                            fontSize: 18,
+                                            color: selectedColor,
+                                            fontWeight: FontWeight.bold,
+                                          )
+                                        : TextStyle(fontSize: 18);
+
+                                    return ListTile(
+                                      onTap: () {
+                                        print("HELLO WORLD");
+
+                                        final isSelected = localSelectedList
+                                            .contains(bgMechanic);
+
+                                        setState(() => isSelected
+                                            ? localSelectedList
+                                                .remove(bgMechanic)
+                                            : localSelectedList
+                                                .add(bgMechanic));
+
+                                        print(
+                                            "localSelectedList, ${localSelectedList.length}");
+                                      },
+                                      // leading: FlagWidget(code: BgMechanic),
+                                      title: Text(
+                                        bgMechanic.name,
+                                        style: style,
+                                      ),
+                                      trailing: isSelected
+                                          ? Icon(Icons.check,
+                                              color: selectedColor, size: 26)
+                                          : null,
+
+                                      // return BgMechanicListTileWidget(
+                                      //     bgMechanic: bgMechanic,
+                                      //     isSelected: isSelected,
+                                      //     onSelectedBgMechanic:
+                                      //         selectBgMechanic);
+                                    );
+                                  }).toList()),
+                                ),
+                                buildSelectButton(
+                                    context, userSnapshot, localSelectedList)
+                              ],
+                            ),
+                            Column(
+                              children: <Widget>[
+                                Text(
+                                  "Here are your favorite themes",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 24),
+                                ),
+                                SizedBox(height: 26),
+                                Container(
+                                  height: 73,
+                                  width: MediaQuery.of(context).size.width - 24,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: kAccentColor,
+                                      border: Border.all(
+                                        width: 0.5,
+                                        color: Colors.redAccent,
+                                      )),
+                                  child: Align(
+                                      alignment: Alignment.center,
+                                      child: Switch(
+                                          onChanged: (bool v) {
+                                            setState(() => b = v);
+                                          },
+                                          value: b)
+                                      //  TextField(
+                                      //   maxLength: 30,
+                                      //   enableInteractiveSelection: false,
+                                      //   keyboardType: TextInputType.number,
+                                      //   style: TextStyle(height: 1.6),
+                                      //   cursorColor: Colors.green[800],
+                                      //   textAlign: TextAlign.center,
+                                      //   autofocus: false,
+                                      //   decoration: InputDecoration(
+                                      //       border: InputBorder.none,
+                                      //       hintText: "Credit",
+                                      //       counterText: ""),
+                                      // ),
+                                      ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ))
+                      ],
                     ),
                   ),
                 );
@@ -805,8 +791,14 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
     print("selectedList, ${selectedList.length}");
   }
 
-  Widget buildSelectButton(BuildContext context, AppUser userSnapshot) {
-    final label = "Select Countries";
+  Widget buildSelectButton(BuildContext context, AppUser userSnapshot,
+      List<FavBgMechanicItem> localSelectedList) {
+    // final label = "Select Countries";
+    var itemText = localSelectedList.length > 1 ? "items" : "item";
+
+    final label = localSelectedList.isEmpty
+        ? "Select Game Mechanics"
+        : "${localSelectedList.length} $itemText selected";
     // 'Select ${selectedBgMechanics.length} Countries'
     final _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -825,9 +817,9 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
           ),
           onPressed: () {
             _userProvider.updateFavouriteBgMechanics(
-                userSnapshot, selectedList, _scaffoldKey);
+                userSnapshot, localSelectedList, _scaffoldKey);
 
-            // widget.notifyParent();
+            refresh();
           }),
     );
   }

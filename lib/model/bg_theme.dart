@@ -1,17 +1,16 @@
-class FavBgMechanicItem {
+class FavBgThemeItem {
   final String name;
 
-  const FavBgMechanicItem({required this.name});
+  const FavBgThemeItem({required this.name});
 
-  factory FavBgMechanicItem.fromJson(Map<String, dynamic> json) =>
-      FavBgMechanicItem(
+  factory FavBgThemeItem.fromJson(Map<String, dynamic> json) => FavBgThemeItem(
         name: json['name'],
       );
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is FavBgMechanicItem &&
+      other is FavBgThemeItem &&
           runtimeType == other.runtimeType &&
           name == other.name;
 

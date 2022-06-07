@@ -4,16 +4,14 @@ import 'package:flutter_demo_01/components/widgets/rounded_icon_button.dart';
 import 'package:flutter_demo_01/db/remote/response.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/model/bg_mechanic.dart';
+import 'package:flutter_demo_01/model/bg_theme.dart';
 import 'package:flutter_demo_01/model/user_profile_edit.dart';
 import 'package:flutter_demo_01/provider/bg_mechanic_provider.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page_bg_genre_edit.dart';
-import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page_bg_mechanic_edit.dart';
-import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page_bg_mechanic_edit_second.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page_bio_edit.dart';
 import 'package:flutter_demo_01/screens/login_page.dart';
 import 'package:flutter_demo_01/screens/settings_page.dart';
-import 'package:flutter_demo_01/ui/widgets/bg_mechanic_list_tile_widget.dart';
 import 'package:flutter_demo_01/utils/constants.dart';
 import 'package:flutter_demo_01/utils/validator.dart';
 import 'package:image_picker/image_picker.dart';
@@ -43,50 +41,16 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
   late UserProvider _userProvider;
   late BgGameMechanicProvider _bgMechanicProvider;
 
-  /**  Board Game Interest Tabs */
-  late final bool _isMultiSelection;
-  // List<BgMechanic> selectedBgMechanics = [];
-  // late TabController _controller;
-
-  late List<FavBgMechanicItem> itemList;
-  late List<FavBgMechanicItem> selectedList;
-  /** END Board Game Interests */
-
   @override
   void initState() {
     _userProvider = Provider.of<UserProvider>(context, listen: false);
 
-    _isMultiSelection = true;
-
     loadList();
-    // _controller = TabController(vsync: this, length: 2);
 
-    // _allBgMechanics = [
-    //   FavBgMechanicItem(name: "Co-op"),
-    //   FavBgMechanicItem(name: "Team"),
-    //   FavBgMechanicItem(name: "Social Deduction"),
-    //   FavBgMechanicItem(name: "Euro"),
-    //   FavBgMechanicItem(name: "Card"),
-    //   FavBgMechanicItem(name: "Resource Management"),
-    //   FavBgMechanicItem(name: "Bidding"),
-    //   FavBgMechanicItem(name: "Worker Placement")
-    // ];
     super.initState();
   }
 
-  loadList() {
-    itemList = [];
-    selectedList = [];
-
-    itemList.add(FavBgMechanicItem(name: "Co-op"));
-    itemList.add(FavBgMechanicItem(name: "Team"));
-    itemList.add(FavBgMechanicItem(name: "Social Deduction"));
-    itemList.add(FavBgMechanicItem(name: "Euro"));
-    itemList.add(FavBgMechanicItem(name: "Card"));
-    itemList.add(FavBgMechanicItem(name: "Resource Management"));
-    itemList.add(FavBgMechanicItem(name: "Bidding"));
-    itemList.add(FavBgMechanicItem(name: "Worker Placement"));
-  }
+  loadList() {}
 
   void logoutPressed(UserProvider userProvider, BuildContext context) async {
     userProvider.logoutUser();
@@ -181,9 +145,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                   ),
                                   GestureDetector(
                                       onTap: () {
-                                        // _testingModalBottomSheet(
-                                        //     context, userSnapshot.data!);
-
                                         Navigator.of(context).push(
                                           PageRouteBuilder(
                                             pageBuilder: (context, animation1,
@@ -341,33 +302,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                       onTap: () {
                                         _testingModalBottomSheet(
                                             context, userSnapshot.data!);
-                                        // Navigator.of(context)
-                                        //     .push(PageRouteBuilder(
-                                        //   pageBuilder: (
-                                        //     BuildContext context,
-                                        //     Animation<double> animation,
-                                        //     Animation<double>
-                                        //         secondaryAnimation,
-                                        //   ) =>
-                                        //       ProfilePageBgMechanicsEditSecond(
-                                        //           userSnapshot:
-                                        //               userSnapshot.data!,
-                                        //           notifyParent: refresh),
-                                        //   transitionsBuilder: (
-                                        //     BuildContext context,
-                                        //     Animation<double> animation,
-                                        //     Animation<double>
-                                        //         secondaryAnimation,
-                                        //     Widget child,
-                                        //   ) =>
-                                        //       SlideTransition(
-                                        //     position: Tween<Offset>(
-                                        //       begin: const Offset(0, 1),
-                                        //       end: Offset.zero,
-                                        //     ).animate(animation),
-                                        //     child: child,
-                                        //   ),
-                                        // ));
                                       },
                                       child: Container(
                                           margin: const EdgeInsets.fromLTRB(
@@ -410,17 +344,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                                   ),
                                                 ),
                                               ]))),
-
-                                  // ProfilePageBgMechanicsEditSecond(
-                                  //     userSnapshot: userSnapshot.data!,
-                                  //     notifyParent: refresh)
-                                  // ProfilePageBgMechanicEdit(
-                                  //     notifyParent: refresh,
-                                  //     userSnapshot: userSnapshot.data!,
-                                  //     bgMechanics: userSnapshot
-                                  //         .data!.favBgMechanics
-                                  //         .map((e) => BgMechanic(name: e))
-                                  //         .toList())
                                 ],
                               )
                             ]))
@@ -441,8 +364,8 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
             builder: (BuildContext context) {
               bool b = false;
 
-              //  List<FavBgMechanicItem> itemList;
-              List<FavBgMechanicItem> localList = [
+              /* Board Game Mechanics  */
+              List<FavBgMechanicItem> bgMechanicsList = [
                 FavBgMechanicItem(name: "Co-op"),
                 FavBgMechanicItem(name: "Team"),
                 FavBgMechanicItem(name: "Social Deduction"),
@@ -452,13 +375,30 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                 FavBgMechanicItem(name: "Bidding"),
                 FavBgMechanicItem(name: "Worker Placement")
               ];
-
-              List<FavBgMechanicItem> localSelectedList = [];
-
+              List<FavBgMechanicItem> bgMechanicsSelectedList = [];
               for (var i = 0; i < userSnapshot.favBgMechanics.length; i++) {
-                localSelectedList.add(
+                bgMechanicsSelectedList.add(
                     FavBgMechanicItem(name: userSnapshot.favBgMechanics[i]));
               }
+
+              /* END Board Game Mechanics END */
+
+              /* Board Game Mechanics  */
+              List<FavBgThemeItem> bgThemesList = [
+                FavBgThemeItem(name: "Fantasy"),
+                FavBgThemeItem(name: "Alien"),
+                FavBgThemeItem(name: "Horror"),
+                FavBgThemeItem(name: "Adventure"),
+                FavBgThemeItem(name: "Wild West"),
+                FavBgThemeItem(name: "Winter"),
+              ];
+              List<FavBgThemeItem> bgThemesSelectedList = [];
+              for (var i = 0; i < userSnapshot.favBgMechanics.length; i++) {
+                bgThemesSelectedList
+                    .add(FavBgThemeItem(name: userSnapshot.favBgMechanics[i]));
+              }
+
+              /* END Board Game Mechanics END */
 
               return StatefulBuilder(builder: (BuildContext context, setState) {
                 print("BOOL ${b}");
@@ -493,9 +433,10 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                 SizedBox(height: 26),
                                 Expanded(
                                   child: ListView(
-                                      children: localList.map((bgMechanic) {
-                                    final isSelected =
-                                        localSelectedList.contains(bgMechanic);
+                                      children:
+                                          bgMechanicsList.map((bgMechanic) {
+                                    final isSelected = bgMechanicsSelectedList
+                                        .contains(bgMechanic);
 
                                     final selectedColor =
                                         Theme.of(context).primaryColor;
@@ -511,17 +452,18 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                       onTap: () {
                                         print("HELLO WORLD");
 
-                                        final isSelected = localSelectedList
-                                            .contains(bgMechanic);
+                                        final isSelected =
+                                            bgMechanicsSelectedList
+                                                .contains(bgMechanic);
 
                                         setState(() => isSelected
-                                            ? localSelectedList
+                                            ? bgMechanicsSelectedList
                                                 .remove(bgMechanic)
-                                            : localSelectedList
+                                            : bgMechanicsSelectedList
                                                 .add(bgMechanic));
 
                                         print(
-                                            "localSelectedList, ${localSelectedList.length}");
+                                            "bgMechanicsSelectedList, ${bgMechanicsSelectedList.length}");
                                       },
                                       // leading: FlagWidget(code: BgMechanic),
                                       title: Text(
@@ -532,61 +474,69 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                           ? Icon(Icons.check,
                                               color: selectedColor, size: 26)
                                           : null,
-
-                                      // return BgMechanicListTileWidget(
-                                      //     bgMechanic: bgMechanic,
-                                      //     isSelected: isSelected,
-                                      //     onSelectedBgMechanic:
-                                      //         selectBgMechanic);
                                     );
                                   }).toList()),
                                 ),
-                                buildSelectButton(
-                                    context, userSnapshot, localSelectedList)
+                                selectMechanicsButton(context, userSnapshot,
+                                    bgMechanicsSelectedList)
                               ],
                             ),
                             Column(
-                              children: <Widget>[
-                                Text(
-                                  "Here are your favorite themes",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(fontSize: 24),
-                                ),
+                              children: [
+                                Text("Here are your favourite themes",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontSize: 24)),
                                 SizedBox(height: 26),
-                                Container(
-                                  height: 73,
-                                  width: MediaQuery.of(context).size.width - 24,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: kAccentColor,
-                                      border: Border.all(
-                                        width: 0.5,
-                                        color: Colors.redAccent,
-                                      )),
-                                  child: Align(
-                                      alignment: Alignment.center,
-                                      child: Switch(
-                                          onChanged: (bool v) {
-                                            setState(() => b = v);
-                                          },
-                                          value: b)
-                                      //  TextField(
-                                      //   maxLength: 30,
-                                      //   enableInteractiveSelection: false,
-                                      //   keyboardType: TextInputType.number,
-                                      //   style: TextStyle(height: 1.6),
-                                      //   cursorColor: Colors.green[800],
-                                      //   textAlign: TextAlign.center,
-                                      //   autofocus: false,
-                                      //   decoration: InputDecoration(
-                                      //       border: InputBorder.none,
-                                      //       hintText: "Credit",
-                                      //       counterText: ""),
-                                      // ),
+                                Expanded(
+                                  child: ListView(
+                                      children: bgThemesList.map((bgTheme) {
+                                    final isSelected =
+                                        bgThemesSelectedList.contains(bgTheme);
+
+                                    final selectedColor =
+                                        Theme.of(context).primaryColor;
+                                    final style = isSelected
+                                        ? TextStyle(
+                                            fontSize: 18,
+                                            color: selectedColor,
+                                            fontWeight: FontWeight.bold,
+                                          )
+                                        : TextStyle(fontSize: 18);
+
+                                    return ListTile(
+                                      onTap: () {
+                                        print("HELLO WORLD");
+
+                                        final isSelected = bgThemesSelectedList
+                                            .contains(bgTheme);
+
+                                        setState(() => isSelected
+                                            ? bgThemesSelectedList
+                                                .remove(bgTheme)
+                                            : bgThemesSelectedList
+                                                .add(bgTheme));
+
+                                        print(
+                                            "bgThemesSelectedList, ${bgThemesSelectedList.length}");
+                                      },
+                                      // leading: FlagWidget(code: BgMechanic),
+                                      title: Text(
+                                        bgTheme.name,
+                                        style: style,
                                       ),
+                                      trailing: isSelected
+                                          ? Icon(Icons.check,
+                                              color: selectedColor, size: 26)
+                                          : null,
+                                    );
+                                  }).toList()),
                                 ),
+                                selectThemesButton(
+                                    context, userSnapshot, bgThemesSelectedList)
+                                // buildSelectButton(
+                                //     context, userSnapshot, bgThemesSelectedList)
                               ],
-                            )
+                            ),
                           ],
                         ))
                       ],
@@ -596,202 +546,10 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
               });
             },
           );
-          // return SingleChildScrollView(
-          //   child: Padding(
-          //     padding: MediaQuery.of(context).viewInsets,
-          //     child: Container(
-          //       width: MediaQuery.of(context).size.width,
-          //       height: 600,
-          //       decoration: BoxDecoration(
-          //           color: Colors.white,
-          //           borderRadius: BorderRadius.only(
-          //             topLeft: Radius.circular(18.0),
-          //             topRight: const Radius.circular(18.0),
-          //           )),
-          //       child: DefaultTabController(
-          //           length: 2,
-          //           child: Padding(
-          //             padding: const EdgeInsets.symmetric(
-          //                 vertical: 10, horizontal: 12),
-          //             child: Column(
-          //               mainAxisAlignment: MainAxisAlignment.center,
-          //               crossAxisAlignment: CrossAxisAlignment.start,
-          //               children: <Widget>[
-          //                 TabBar(tabs: [
-          //                   Tab(
-          //                     child: Text(
-          //                       "Game Mechanics",
-          //                       style: TextStyle(color: Colors.black),
-          //                     ),
-          //                   ),
-          //                   Tab(
-          //                       child: Text(
-          //                     "Themes",
-          //                     style: TextStyle(color: Colors.black),
-          //                   )),
-          //                 ]),
-          //                 Expanded(
-          //                     child: TabBarView(children: <Widget>[
-          //                   Column(
-          //                     children: [
-          //                       Text("Here are your favorite game mechanics",
-          //                           textAlign: TextAlign.center,
-          //                           style: TextStyle(fontSize: 24)),
-          //                       SizedBox(height: 26),
-          //                       Expanded(
-          //                           child: ListView(
-          //                               children: itemList.map((bgMechanic) {
-          //                         final isSelected =
-          //                             selectedList.contains(bgMechanic);
-
-          //                         return BgMechanicListTileWidget(
-          //                             bgMechanic: bgMechanic,
-          //                             isSelected: isSelected,
-          //                             onSelectedBgMechanic: selectBgMechanic);
-          //                       }).toList())),
-          //                       // child: ListView(
-          //                       //   children: _allBgMechanics.map((bgMechanic) {
-          //                       //     final isSelected =
-          //                       //         _allBgMechanics.contains(bgMechanic);
-
-          //                       //     return BgMechanicListTileWidget(
-          //                       //       bgMechanic: bgMechanic,
-          //                       //       isSelected: isSelected,
-          //                       //       onSelectedBgMechanic: selectBgMechanic,
-          //                       //     );
-          //                       //   }).toList(),
-          //                       // ),
-
-          //                       // child: Align(
-          //                       //   alignment: Alignment.center,
-          //                       //   child: TextField(
-          //                       //     maxLength: 30,
-          //                       //     enableInteractiveSelection: false,
-          //                       //     keyboardType: TextInputType.number,
-          //                       //     style: TextStyle(height: 1.6),
-          //                       //     cursorColor: Colors.green[800],
-          //                       //     textAlign: TextAlign.center,
-          //                       //     autofocus: false,
-          //                       //     decoration: InputDecoration(
-          //                       //         border: InputBorder.none,
-          //                       //         hintText: "Internet",
-          //                       //         counterText: ""),
-          //                       //   ),
-          //                       // ),
-
-          // void selectBgMechanic(
-          //   FavBgMechanicItem bgMechanic,
-          // ) {
-          //   print("Is multiselection");
-
-          //   // setState(() {
-          //   //   _allBgMechanics = [];
-          //   // });
-
-          //   // setState(() {
-          //   //   selectedBgMechanics = [];
-          //   // });
-
-          //   final isSelected = selectedList.contains(bgMechanic);
-          //   setState(() => isSelected
-          //       ? selectedList.remove(bgMechanic)
-          //       : selectedList.add(bgMechanic));
-
-          //   // setState(() {
-          //   //   widget.notifyParent();
-          //   // });
-          //   print("selectedList, ${selectedList.length}");
-          // }
-
-          //                       buildSelectButton(context, userSnapshot)
-          //                     ],
-          //                   ),
-          //                   Column(
-          //                     children: <Widget>[
-          //                       Text(
-          //                         "Here are your favorite themes",
-          //                         textAlign: TextAlign.center,
-          //                         style: TextStyle(fontSize: 24),
-          //                       ),
-          //                       SizedBox(height: 26),
-          //                       Container(
-          //                         height: 73,
-          //                         width: MediaQuery.of(context).size.width - 24,
-          //                         decoration: BoxDecoration(
-          //                             borderRadius: BorderRadius.circular(5),
-          //                             color: kAccentColor,
-          //                             border: Border.all(
-          //                               width: 0.5,
-          //                               color: Colors.redAccent,
-          //                             )),
-          //                         child: Align(
-          //                           alignment: Alignment.center,
-          //                           child: TextField(
-          //                             maxLength: 30,
-          //                             enableInteractiveSelection: false,
-          //                             keyboardType: TextInputType.number,
-          //                             style: TextStyle(height: 1.6),
-          //                             cursorColor: Colors.green[800],
-          //                             textAlign: TextAlign.center,
-          //                             autofocus: false,
-          //                             decoration: InputDecoration(
-          //                                 border: InputBorder.none,
-          //                                 hintText: "Credit",
-          //                                 counterText: ""),
-          //                           ),
-          //                         ),
-          //                       ),
-          //                     ],
-          //                   )
-          //                 ])),
-          //               ],
-          //             ),
-          //           )),
-          //     ),
-          //   ),
-          // );
-
-          // return BottomSheet(
-          //   onClosing: () {},
-          //   builder: (BuildContext context) {
-          //     bool b = false;
-          //     return StatefulBuilder(
-          //         builder: (BuildContext context, setState) => Switch(
-          //               onChanged: (bool v) {
-          //                 setState(() => b = v);
-          //               },
-          //               value: b,
-          //             ));
-          //   },
-          // );
         });
   }
 
-  void selectBgMechanic(
-    FavBgMechanicItem bgMechanic,
-  ) {
-    print("Is multiselection");
-
-    // setState(() {
-    //   _allBgMechanics = [];
-    // });
-
-    // setState(() {
-    //   selectedBgMechanics = [];
-    // });
-
-    final isSelected = selectedList.contains(bgMechanic);
-    setState(() => isSelected
-        ? selectedList.remove(bgMechanic)
-        : selectedList.add(bgMechanic));
-
-    // setState(() {
-    //   widget.notifyParent();
-    // });
-    print("selectedList, ${selectedList.length}");
-  }
-
-  Widget buildSelectButton(BuildContext context, AppUser userSnapshot,
+  Widget selectMechanicsButton(BuildContext context, AppUser userSnapshot,
       List<FavBgMechanicItem> localSelectedList) {
     // final label = "Select Countries";
     var itemText = localSelectedList.length > 1 ? "items" : "item";
@@ -817,6 +575,39 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
           ),
           onPressed: () {
             _userProvider.updateFavouriteBgMechanics(
+                userSnapshot, localSelectedList, _scaffoldKey);
+
+            refresh();
+          }),
+    );
+  }
+
+  Widget selectThemesButton(BuildContext context, AppUser userSnapshot,
+      List<FavBgThemeItem> localSelectedList) {
+    // final label = "Select Countries";
+    var itemText = localSelectedList.length > 1 ? "items" : "item";
+
+    final label = localSelectedList.isEmpty
+        ? "Select Game Themes"
+        : "${localSelectedList.length} $itemText selected";
+    // 'Select ${selectedBgMechanics.length} Countries'
+    final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+      color: Theme.of(context).primaryColor,
+      child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            shape: StadiumBorder(),
+            minimumSize: Size.fromHeight(40),
+            primary: Colors.white,
+          ),
+          child: Text(
+            label,
+            style: TextStyle(color: Colors.black, fontSize: 16),
+          ),
+          onPressed: () {
+            _userProvider.updateFavouriteBgThemes(
                 userSnapshot, localSelectedList, _scaffoldKey);
 
             refresh();

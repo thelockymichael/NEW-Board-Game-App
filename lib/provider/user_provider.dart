@@ -8,6 +8,7 @@ import 'package:flutter_demo_01/db/remote/firebase_storage_source.dart';
 import 'package:flutter_demo_01/db/remote/response.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/model/bg_mechanic.dart';
+import 'package:flutter_demo_01/model/bg_theme.dart';
 import 'package:flutter_demo_01/model/chat_with_user.dart';
 import 'package:flutter_demo_01/model/user_bio_edit.dart';
 import 'package:flutter_demo_01/model/user_profile_edit.dart';
@@ -27,7 +28,8 @@ class UserProvider extends ChangeNotifier {
       name: "test name",
       email: "test@gmail.com",
       favBoardGameGenres: [],
-      favBgMechanics: []);
+      favBgMechanics: [],
+      favBgThemes: []);
 
   Future<AppUser> get user => _getUser();
 
@@ -62,7 +64,8 @@ class UserProvider extends ChangeNotifier {
           profilePhotoPath:
               "https://metropolia.imgix.net/tinder-profile-imgs/man_board_game.jpeg",
           favBoardGameGenres: [],
-          favBgMechanics: []);
+          favBgMechanics: [],
+          favBgThemes: []);
 
       _databaseSource.addUser(user);
 
@@ -138,6 +141,7 @@ class UserProvider extends ChangeNotifier {
         email: userSnapshot.email,
         favBoardGameGenres: userSnapshot.favBoardGameGenres,
         favBgMechanics: userSnapshot.favBgMechanics,
+        favBgThemes: userSnapshot.favBgThemes,
         profilePhotoPath: userSnapshot.profilePhotoPath);
 
     Response<dynamic> response = await _databaseSource.updateUser(user);
@@ -171,6 +175,7 @@ class UserProvider extends ChangeNotifier {
         email: userSnapshot.email,
         favBoardGameGenres: mappedGenres,
         favBgMechanics: userSnapshot.favBgMechanics,
+        favBgThemes: userSnapshot.favBgThemes,
         profilePhotoPath: userSnapshot.profilePhotoPath);
 
     Response<dynamic> response = await _databaseSource.updateUser(user);
@@ -204,6 +209,7 @@ class UserProvider extends ChangeNotifier {
         email: userSnapshot.email,
         favBoardGameGenres: userSnapshot.favBoardGameGenres,
         favBgMechanics: mappedBgMechanics,
+        favBgThemes: userSnapshot.favBgThemes,
         profilePhotoPath: userSnapshot.profilePhotoPath);
 
     Response<dynamic> response = await _databaseSource.updateUser(user);
@@ -216,15 +222,42 @@ class UserProvider extends ChangeNotifier {
     return response;
   }
 
-  // Future<Response> updateUserBasicInfo(UserProfileEdit userProfile,
+  Future<Response> updateFavouriteBgThemes(
+      AppUser userSnapshot,
+      List<FavBgThemeItem> favBgThemes,
+      GlobalKey<ScaffoldState> errorScaffoldKey) async {
+    final mappedBgThemes = <String>[];
+
+    for (var element in favBgThemes) {
+      mappedBgThemes.add(element.name);
+    }
+
+    AppUser user = AppUser(
+        id: userSnapshot.id,
+        name: userSnapshot.name,
+        bggName: userSnapshot.bggName,
+        currentLocation: userSnapshot.currentLocation,
+        gender: userSnapshot.gender,
+        age: userSnapshot.age,
+        bio: userSnapshot.bio,
+        email: userSnapshot.email,
+        favBoardGameGenres: userSnapshot.favBoardGameGenres,
+        favBgMechanics: userSnapshot.favBgMechanics,
+        favBgThemes: mappedBgThemes,
+        profilePhotoPath: userSnapshot.profilePhotoPath);
+
+    Response<dynamic> response = await _databaseSource.updateUser(user);
+
+    if (response is Success<String>) {
+      return Response.success(user);
+    }
+
+    if (response is Error) showSnackBar(errorScaffoldKey, response.message);
+    return response;
+  }
+
   Future<Response> updateUserBio(AppUser userSnapshot, UserBioEdit userBioEdit,
       GlobalKey<ScaffoldState> errorScaffoldKey) async {
-    // print("userProfile ${userProfile.name}");
-    // print("userProfile ${userProfile.bggName}");
-    // print("userProfile ${userProfile.birthDay}");
-    // print("userProfile ${userProfile.currentLocation}");
-    // print("userProfile ${userProfile.gender}");
-
     AppUser user = AppUser(
         id: userSnapshot.id,
         name: userSnapshot.name,
@@ -236,6 +269,7 @@ class UserProvider extends ChangeNotifier {
         email: userSnapshot.email,
         favBoardGameGenres: userSnapshot.favBoardGameGenres,
         favBgMechanics: userSnapshot.favBgMechanics,
+        favBgThemes: userSnapshot.favBgThemes,
         profilePhotoPath: userSnapshot.profilePhotoPath);
 
     Response<dynamic> response = await _databaseSource.updateUser(user);

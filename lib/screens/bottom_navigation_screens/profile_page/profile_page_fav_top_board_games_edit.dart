@@ -62,11 +62,15 @@ class _ProfilePageFavTopBoardGamesEditState
         false),
   ];
 
+  late Future<List<BoardGameData>> boardGames;
+
   @override
   void initState() {
     _userProvider = Provider.of<UserProvider>(context, listen: false);
-
     super.initState();
+
+    boardGames = RecommendedGamesApi().getBoardGamesData(
+        '?game_type=5499&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1');
   }
 
   // itemList = [];
@@ -103,7 +107,7 @@ class _ProfilePageFavTopBoardGamesEditState
                                   onTap: () {
                                     print("ON TAP");
 
-                                    _showBgMechanicAndThemeModal(
+                                    _showBoardGameModal(
                                         context, userSnapshot.data!);
                                   },
                                   child: Stack(
@@ -158,88 +162,57 @@ class _ProfilePageFavTopBoardGamesEditState
   }
 
   _getBoardGames(String gameGenre) {
-    RecommendedGamesApi()
-        .getBoardGamesData(
-            '?game_type=5499&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1')
-        .then((response) {
-      print("response $response");
+    // RecommendedGamesApi()
+    //     .getBoardGamesData(
+    //         '?game_type=5499&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1')
+    //     .then((response) {
+    //   print("response $response");
 
-      final parsedJson = json.decode(response.body);
+    //   final parsedJson = json.decode(response.body);
 
-      final finalResponse = ResponseData.fromJson(parsedJson);
+    //   final finalResponse = ResponseData.fromJson(parsedJson);
 
-      print(finalResponse.results[0].name);
-      print(finalResponse.results[1].name);
-      print(finalResponse.results[0].recRank);
-      print(finalResponse.results[1].recRank);
-      print(finalResponse.results[0].recRating);
-      print(finalResponse.results[1].recRating);
-      // var jsonString = response.body;
-      // var jsonMap = json.decode(jsonString);
-      // print(jsonMap);
-      // var userModel = ResponseData.fromJson(jsonMap);
+    //   print(finalResponse.results[0].name);
+    //   print(finalResponse.results[1].name);
+    //   print(finalResponse.results[0].recRank);
+    //   print(finalResponse.results[1].recRank);
+    //   print(finalResponse.results[0].recRating);
+    //   print(finalResponse.results[1].recRating);
 
-      // print("userModel ${userModel}");
-      // print("userModel board games ${userModel.results}");
-
-      // List<BoardGameData> list = userModel.results.cast<BoardGameData>();
-
-      // var list = userModel.results
-      //     .map((item) => BoardGameData.fromJson(item))
-      //     .toList();
-      // Iterable list = userModel.results;
-      // var boardGames =
-      //     list.map((model) => BoardGameData.fromJson(model)).toList();
-
-      // print(
-      //     "boardus gamus ${boardGames}"); // var decoded = json.decode(response.body);
-
-      // var jotain = ResponseData.fromJson(decoded);
-
-      // print("LIST ${jotain.count}");
-    });
+    //   return finalResponse.results;
+    // });
   }
 
-  void _showBgMechanicAndThemeModal(context, AppUser userSnapshot) {
+  void _showBoardGameModal(context, AppUser userSnapshot) {
 // TODO
 // 1. Make a HTTP request to recommend.games
 //  https://recommend.games/api/games/?game_type=5499&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1
-    _getBoardGames(widget.gameGenre);
+
+    // RecommendedGamesApi()
+    //     .getBoardGamesData(
+    //         '?game_type=5499&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1')
+    //     .then((response) {
+    //   print("response $response");
+
+    //   final parsedJson = json.decode(response.body);
+
+    //   final finalResponse = ResponseData.fromJson(parsedJson);
+
+    //   print(finalResponse.results[0].name);
+    //   print(finalResponse.results[1].name);
+    //   print(finalResponse.results[0].recRank);
+    //   print(finalResponse.results[1].recRank);
+    //   print(finalResponse.results[0].recRating);
+    //   print(finalResponse.results[1].recRating);
+
+    //   boardGames = finalResponse.results;
+    // });
 
 /* Board Game Mechanics  */
-    List<FavBgMechanicItem> bgMechanicsList = [
-      FavBgMechanicItem(name: "Co-op"),
-      FavBgMechanicItem(name: "Team"),
-      FavBgMechanicItem(name: "Social Deduction"),
-      FavBgMechanicItem(name: "Euro"),
-      FavBgMechanicItem(name: "Card"),
-      FavBgMechanicItem(name: "Resource Management"),
-      FavBgMechanicItem(name: "Bidding"),
-      FavBgMechanicItem(name: "Worker Placement")
-    ];
-    List<FavBgMechanicItem> bgMechanicsSelectedList = [];
-    for (var i = 0; i < userSnapshot.favBgMechanics.length; i++) {
-      bgMechanicsSelectedList
-          .add(FavBgMechanicItem(name: userSnapshot.favBgMechanics[i]));
-    }
 
-    /* END Board Game Mechanics END */
-
-    /* Board Game Themes  */
-    List<FavBgThemeItem> bgThemesList = [
-      FavBgThemeItem(name: "Fantasy"),
-      FavBgThemeItem(name: "Alien"),
-      FavBgThemeItem(name: "Horror"),
-      FavBgThemeItem(name: "Adventure"),
-      FavBgThemeItem(name: "Wild West"),
-      FavBgThemeItem(name: "Winter"),
-    ];
-    List<FavBgThemeItem> bgThemesSelectedList = [];
-    for (var i = 0; i < userSnapshot.favBgThemes.length; i++) {
-      bgThemesSelectedList
-          .add(FavBgThemeItem(name: userSnapshot.favBgThemes[i]));
-    }
     /* END Board Game Themes END */
+
+    BoardGameData boardGameSelected;
 
     showModalBottomSheet(
       elevation: 5,
@@ -253,136 +226,153 @@ class _ProfilePageFavTopBoardGamesEditState
         return StatefulBuilder(builder: (BuildContext context, setState) {
           print("BOOL ${b}");
 
-          return DefaultTabController(
-            length: 2,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  TabBar(tabs: [
-                    Tab(
-                      child: Text("Game Mechanics",
-                          style: TextStyle(color: Colors.black)),
-                    ),
-                    Tab(
-                      child:
-                          Text("Themes", style: TextStyle(color: Colors.black)),
-                    ),
-                  ]),
-                  Expanded(
-                      child: TabBarView(
-                    children: [
-                      Column(
-                        children: [
-                          Text("Here are your favourite mechanics",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 24)),
-                          SizedBox(height: 26),
-                          Expanded(
-                            child: ListView(
-                                children: bgMechanicsList.map((bgMechanic) {
-                              final isSelected =
-                                  bgMechanicsSelectedList.contains(bgMechanic);
+          return FutureBuilder<List<BoardGameData>>(
+              future: boardGames,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return GridView.builder(
+                    itemCount: snapshot.data!.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            childAspectRatio: 0.56,
+                            crossAxisSpacing: 0,
+                            mainAxisSpacing: 0),
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        onTap: () {
+                          boardGameSelected = snapshot.data![index];
 
-                              final selectedColor =
-                                  Theme.of(context).primaryColor;
-                              final style = isSelected
-                                  ? TextStyle(
-                                      fontSize: 18,
-                                      color: selectedColor,
-                                      fontWeight: FontWeight.bold,
-                                    )
-                                  : TextStyle(fontSize: 18);
+                          print(
+                              "THIS IS THE SELECTED BOARD GAME!!! ${boardGameSelected.name}");
+                          // Navigator.of(context).push(PageRouteBuilder(
+                          //   pageBuilder: (
+                          //     BuildContext context,
+                          //     Animation<double> animation,
+                          //     Animation<double> secondaryAnimation,
+                          //   ) =>
+                          //       ProfilePageFavTopBoardGamesEdit(
+                          //           gameGenre: snapshot.data![index].name,
+                          //           userSnapshot: userSnapshot.data!),
+                          //   // ProfilePageFavBoardGamesEdit(
+                          //   //     userSnapshot:
+                          //   //         userSnapshot.data!,
+                          //   //     notifyParent: refresh),
+                          //   transitionsBuilder: (
+                          //     BuildContext context,
+                          //     Animation<double> animation,
+                          //     Animation<double> secondaryAnimation,
+                          //     Widget child,
+                          //   ) =>
+                          //       SlideTransition(
+                          //     position: Tween<Offset>(
+                          //       begin: const Offset(1, 0),
+                          //       end: Offset.zero,
+                          //     ).animate(animation),
+                          //     child: child,
+                          //   ),
+                          // ));
+                          // print("ON TAP");
+                        },
+                        child: Stack(
+                          children: <Widget>[
+                            Container(
+                                height: 350.0,
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image: NetworkImage(
+                                            snapshot.data![index].imageUrl[0]),
+                                        fit: BoxFit.cover))),
+                            Container(
+                              decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                    Colors.grey.withOpacity(0.0),
+                                    Colors.black.withOpacity(0.6),
+                                  ],
+                                      stops: const [
+                                    0.0,
+                                    1.0
+                                  ])),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Center(
+                                    child: Text(
+                                        snapshot.data![index].name.capitalize(),
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20)))
+                              ],
+                            )
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('${snapshot.error}');
+                }
 
-                              return ListTile(
-                                onTap: () {
-                                  print("HELLO WORLD");
+                // By default, show a loading spinner.
+                return const CircularProgressIndicator();
+              });
 
-                                  final isSelected = bgMechanicsSelectedList
-                                      .contains(bgMechanic);
+          return Column(
+            children: [
+              Text("Here are your favourite mechanics",
+                  textAlign: TextAlign.center, style: TextStyle(fontSize: 24)),
+              SizedBox(height: 26),
+              // Expanded(
+              //   child: ListView(
+              //       children: boardGames.map((bgMechanic) {
+              //     // final isSelected =
+              //     //     bgMechanicsSelectedList.contains(bgMechanic);
 
-                                  setState(() => isSelected
-                                      ? bgMechanicsSelectedList
-                                          .remove(bgMechanic)
-                                      : bgMechanicsSelectedList
-                                          .add(bgMechanic));
+              //     // final selectedColor = Theme.of(context).primaryColor;
+              //     // final style = isSelected
+              //     //     ? TextStyle(
+              //     //         fontSize: 18,
+              //     //         color: selectedColor,
+              //     //         fontWeight: FontWeight.bold,
+              //     //       )
+              //     //     : TextStyle(fontSize: 18);
 
-                                  print(
-                                      "bgMechanicsSelectedList, ${bgMechanicsSelectedList.length}");
-                                },
-                                // leading: FlagWidget(code: BgMechanic),
-                                title: Text(
-                                  bgMechanic.name,
-                                  style: style,
-                                ),
-                                trailing: isSelected
-                                    ? Icon(Icons.check,
-                                        color: selectedColor, size: 26)
-                                    : null,
-                              );
-                            }).toList()),
-                          ),
-                          // selectMechanicsButton(
-                          //     context, userSnapshot, bgMechanicsSelectedList)
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          Text("Here are your favourite themes",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 24)),
-                          SizedBox(height: 26),
-                          Expanded(
-                            child: ListView(
-                                children: bgThemesList.map((bgTheme) {
-                              final isSelected =
-                                  bgThemesSelectedList.contains(bgTheme);
+              //     return ListTile(
+              //       onTap: () {
+              //         print("HELLO WORLD");
 
-                              final selectedColor =
-                                  Theme.of(context).primaryColor;
-                              final style = isSelected
-                                  ? TextStyle(
-                                      fontSize: 18,
-                                      color: selectedColor,
-                                      fontWeight: FontWeight.bold,
-                                    )
-                                  : TextStyle(fontSize: 18);
+              //         // final isSelected =
+              //         //     bgMechanicsSelectedList.contains(bgMechanic);
 
-                              return ListTile(
-                                onTap: () {
-                                  print("HELLO WORLD");
+              //         // setState(() => isSelected
+              //         //     ? bgMechanicsSelectedList.remove(bgMechanic)
+              //         //     : bgMechanicsSelectedList.add(bgMechanic));
 
-                                  final isSelected =
-                                      bgThemesSelectedList.contains(bgTheme);
-
-                                  setState(() => isSelected
-                                      ? bgThemesSelectedList.remove(bgTheme)
-                                      : bgThemesSelectedList.add(bgTheme));
-
-                                  print(
-                                      "bgThemesSelectedList, ${bgThemesSelectedList.length}");
-                                },
-                                // leading: FlagWidget(code: BgMechanic),
-                                title: Text(
-                                  bgTheme.name,
-                                  style: style,
-                                ),
-                                trailing: isSelected
-                                    ? Icon(Icons.check,
-                                        color: selectedColor, size: 26)
-                                    : null,
-                              );
-                            }).toList()),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ))
-                ],
-              ),
-            ),
+              //         // print(
+              //         //     "bgMechanicsSelectedList, ${bgMechanicsSelectedList.length}");
+              //       },
+              //       // leading: FlagWidget(code: BgMechanic),
+              //       title: Text(
+              //         bgMechanic.name,
+              //         style: TextStyle(fontSize: 18),
+              //       ),
+              //       // trailing: isSelected
+              //       //     ? Icon(Icons.check, color: selectedColor, size: 26)
+              //       //     : null,
+              //     );
+              //   }).toList()),
+              // ),
+              // selectMechanicsButton(
+              //     context, userSnapshot, bgMechanicsSelectedList)
+            ],
           );
         });
       },

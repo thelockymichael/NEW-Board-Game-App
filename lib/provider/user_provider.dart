@@ -29,7 +29,8 @@ class UserProvider extends ChangeNotifier {
       email: "test@gmail.com",
       favBoardGameGenres: [],
       favBgMechanics: [],
-      favBgThemes: []);
+      favBgThemes: [],
+      favBoardGames: FavBoardGames(familyGames: ""));
 
   Future<AppUser> get user => _getUser();
 
@@ -65,7 +66,8 @@ class UserProvider extends ChangeNotifier {
               "https://metropolia.imgix.net/tinder-profile-imgs/man_board_game.jpeg",
           favBoardGameGenres: [],
           favBgMechanics: [],
-          favBgThemes: []);
+          favBgThemes: [],
+          favBoardGames: FavBoardGames(familyGames: ""));
 
       _databaseSource.addUser(user);
 
@@ -131,18 +133,20 @@ class UserProvider extends ChangeNotifier {
       UserProfileEdit userProfile,
       GlobalKey<ScaffoldState> errorScaffoldKey) async {
     AppUser user = AppUser(
-        id: userSnapshot.id,
-        name: userProfile.name,
-        bggName: userProfile.bggName,
-        currentLocation: userProfile.currentLocation,
-        gender: userProfile.gender,
-        age: userProfile.birthDay,
-        bio: userSnapshot.bio,
-        email: userSnapshot.email,
-        favBoardGameGenres: userSnapshot.favBoardGameGenres,
-        favBgMechanics: userSnapshot.favBgMechanics,
-        favBgThemes: userSnapshot.favBgThemes,
-        profilePhotoPath: userSnapshot.profilePhotoPath);
+      id: userSnapshot.id,
+      name: userProfile.name,
+      bggName: userProfile.bggName,
+      currentLocation: userProfile.currentLocation,
+      gender: userProfile.gender,
+      age: userProfile.birthDay,
+      bio: userSnapshot.bio,
+      email: userSnapshot.email,
+      favBoardGameGenres: userSnapshot.favBoardGameGenres,
+      favBgMechanics: userSnapshot.favBgMechanics,
+      favBgThemes: userSnapshot.favBgThemes,
+      profilePhotoPath: userSnapshot.profilePhotoPath,
+      favBoardGames: userSnapshot.favBoardGames,
+    );
 
     Response<dynamic> response = await _databaseSource.updateUser(user);
 
@@ -165,18 +169,20 @@ class UserProvider extends ChangeNotifier {
     }
 
     AppUser user = AppUser(
-        id: userSnapshot.id,
-        name: userSnapshot.name,
-        bggName: userSnapshot.bggName,
-        currentLocation: userSnapshot.currentLocation,
-        gender: userSnapshot.gender,
-        age: userSnapshot.age,
-        bio: userSnapshot.bio,
-        email: userSnapshot.email,
-        favBoardGameGenres: mappedGenres,
-        favBgMechanics: userSnapshot.favBgMechanics,
-        favBgThemes: userSnapshot.favBgThemes,
-        profilePhotoPath: userSnapshot.profilePhotoPath);
+      id: userSnapshot.id,
+      name: userSnapshot.name,
+      bggName: userSnapshot.bggName,
+      currentLocation: userSnapshot.currentLocation,
+      gender: userSnapshot.gender,
+      age: userSnapshot.age,
+      bio: userSnapshot.bio,
+      email: userSnapshot.email,
+      favBoardGameGenres: mappedGenres,
+      favBgMechanics: userSnapshot.favBgMechanics,
+      favBgThemes: userSnapshot.favBgThemes,
+      profilePhotoPath: userSnapshot.profilePhotoPath,
+      favBoardGames: userSnapshot.favBoardGames,
+    );
 
     Response<dynamic> response = await _databaseSource.updateUser(user);
 
@@ -199,18 +205,20 @@ class UserProvider extends ChangeNotifier {
     }
 
     AppUser user = AppUser(
-        id: userSnapshot.id,
-        name: userSnapshot.name,
-        bggName: userSnapshot.bggName,
-        currentLocation: userSnapshot.currentLocation,
-        gender: userSnapshot.gender,
-        age: userSnapshot.age,
-        bio: userSnapshot.bio,
-        email: userSnapshot.email,
-        favBoardGameGenres: userSnapshot.favBoardGameGenres,
-        favBgMechanics: mappedBgMechanics,
-        favBgThemes: userSnapshot.favBgThemes,
-        profilePhotoPath: userSnapshot.profilePhotoPath);
+      id: userSnapshot.id,
+      name: userSnapshot.name,
+      bggName: userSnapshot.bggName,
+      currentLocation: userSnapshot.currentLocation,
+      gender: userSnapshot.gender,
+      age: userSnapshot.age,
+      bio: userSnapshot.bio,
+      email: userSnapshot.email,
+      favBoardGameGenres: userSnapshot.favBoardGameGenres,
+      favBgMechanics: mappedBgMechanics,
+      favBgThemes: userSnapshot.favBgThemes,
+      profilePhotoPath: userSnapshot.profilePhotoPath,
+      favBoardGames: userSnapshot.favBoardGames,
+    );
 
     Response<dynamic> response = await _databaseSource.updateUser(user);
 
@@ -233,18 +241,20 @@ class UserProvider extends ChangeNotifier {
     }
 
     AppUser user = AppUser(
-        id: userSnapshot.id,
-        name: userSnapshot.name,
-        bggName: userSnapshot.bggName,
-        currentLocation: userSnapshot.currentLocation,
-        gender: userSnapshot.gender,
-        age: userSnapshot.age,
-        bio: userSnapshot.bio,
-        email: userSnapshot.email,
-        favBoardGameGenres: userSnapshot.favBoardGameGenres,
-        favBgMechanics: userSnapshot.favBgMechanics,
-        favBgThemes: mappedBgThemes,
-        profilePhotoPath: userSnapshot.profilePhotoPath);
+      id: userSnapshot.id,
+      name: userSnapshot.name,
+      bggName: userSnapshot.bggName,
+      currentLocation: userSnapshot.currentLocation,
+      gender: userSnapshot.gender,
+      age: userSnapshot.age,
+      bio: userSnapshot.bio,
+      email: userSnapshot.email,
+      favBoardGameGenres: userSnapshot.favBoardGameGenres,
+      favBgMechanics: userSnapshot.favBgMechanics,
+      favBgThemes: mappedBgThemes,
+      profilePhotoPath: userSnapshot.profilePhotoPath,
+      favBoardGames: userSnapshot.favBoardGames,
+    );
 
     Response<dynamic> response = await _databaseSource.updateUser(user);
 
@@ -273,18 +283,20 @@ class UserProvider extends ChangeNotifier {
     }
 
     AppUser user = AppUser(
-        id: userSnapshot.id,
-        name: userSnapshot.name,
-        bggName: userSnapshot.bggName,
-        currentLocation: userSnapshot.currentLocation,
-        gender: userSnapshot.gender,
-        age: userSnapshot.age,
-        bio: userSnapshot.bio,
-        email: userSnapshot.email,
-        favBoardGameGenres: userSnapshot.favBoardGameGenres,
-        favBgMechanics: mappedBgMechanics,
-        favBgThemes: mappedBgThemes,
-        profilePhotoPath: userSnapshot.profilePhotoPath);
+      id: userSnapshot.id,
+      name: userSnapshot.name,
+      bggName: userSnapshot.bggName,
+      currentLocation: userSnapshot.currentLocation,
+      gender: userSnapshot.gender,
+      age: userSnapshot.age,
+      bio: userSnapshot.bio,
+      email: userSnapshot.email,
+      favBoardGameGenres: userSnapshot.favBoardGameGenres,
+      favBgMechanics: mappedBgMechanics,
+      favBgThemes: mappedBgThemes,
+      profilePhotoPath: userSnapshot.profilePhotoPath,
+      favBoardGames: userSnapshot.favBoardGames,
+    );
 
     Response<dynamic> response = await _databaseSource.updateUser(user);
 
@@ -299,18 +311,60 @@ class UserProvider extends ChangeNotifier {
   Future<Response> updateUserBio(AppUser userSnapshot, UserBioEdit userBioEdit,
       GlobalKey<ScaffoldState> errorScaffoldKey) async {
     AppUser user = AppUser(
-        id: userSnapshot.id,
-        name: userSnapshot.name,
-        bggName: userSnapshot.bggName,
-        currentLocation: userSnapshot.currentLocation,
-        gender: userSnapshot.gender,
-        age: userSnapshot.age,
-        bio: userBioEdit.bio,
-        email: userSnapshot.email,
-        favBoardGameGenres: userSnapshot.favBoardGameGenres,
-        favBgMechanics: userSnapshot.favBgMechanics,
-        favBgThemes: userSnapshot.favBgThemes,
-        profilePhotoPath: userSnapshot.profilePhotoPath);
+      id: userSnapshot.id,
+      name: userSnapshot.name,
+      bggName: userSnapshot.bggName,
+      currentLocation: userSnapshot.currentLocation,
+      gender: userSnapshot.gender,
+      age: userSnapshot.age,
+      bio: userBioEdit.bio,
+      email: userSnapshot.email,
+      favBoardGameGenres: userSnapshot.favBoardGameGenres,
+      favBgMechanics: userSnapshot.favBgMechanics,
+      favBgThemes: userSnapshot.favBgThemes,
+      profilePhotoPath: userSnapshot.profilePhotoPath,
+      favBoardGames: userSnapshot.favBoardGames,
+    );
+
+    Response<dynamic> response = await _databaseSource.updateUser(user);
+
+    if (response is Success<String>) {
+      return Response.success(user);
+    }
+
+    if (response is Error) showSnackBar(errorScaffoldKey, response.message);
+    return response;
+  }
+
+  Future<Response> updateFavouriteBoardGamesByGenre(
+      AppUser userSnapshot,
+      UserBioEdit userBioEdit,
+      GlobalKey<ScaffoldState> errorScaffoldKey) async {
+    AppUser user = AppUser(
+      id: userSnapshot.id,
+      name: userSnapshot.name,
+      bggName: userSnapshot.bggName,
+      currentLocation: userSnapshot.currentLocation,
+      gender: userSnapshot.gender,
+      age: userSnapshot.age,
+      bio: userBioEdit.bio,
+      email: userSnapshot.email,
+      favBoardGameGenres: userSnapshot.favBoardGameGenres,
+      favBgMechanics: userSnapshot.favBgMechanics,
+      favBgThemes: userSnapshot.favBgThemes,
+      profilePhotoPath: userSnapshot.profilePhotoPath,
+      favBoardGames: userSnapshot.favBoardGames,
+    );
+
+    // favBoardGames:
+    // {
+    //  familyGames: [
+    //  {
+    //    rank: 1,
+    //    boardGame: { BoardGameData }
+    //  }
+    // ],
+    // }
 
     Response<dynamic> response = await _databaseSource.updateUser(user);
 

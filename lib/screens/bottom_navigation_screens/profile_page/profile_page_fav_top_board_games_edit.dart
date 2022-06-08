@@ -212,7 +212,7 @@ class _ProfilePageFavTopBoardGamesEditState
 
     /* END Board Game Themes END */
 
-    BoardGameData boardGameSelected;
+    BoardGameData? boardGameSelected;
 
     showModalBottomSheet(
       elevation: 5,
@@ -244,7 +244,7 @@ class _ProfilePageFavTopBoardGamesEditState
                           boardGameSelected = snapshot.data![index];
 
                           print(
-                              "THIS IS THE SELECTED BOARD GAME!!! ${boardGameSelected.name}");
+                              "THIS IS THE SELECTED BOARD GAME!!! ${boardGameSelected?.name}");
                           // Navigator.of(context).push(PageRouteBuilder(
                           //   pageBuilder: (
                           //     BuildContext context,
@@ -380,6 +380,13 @@ class _ProfilePageFavTopBoardGamesEditState
       // _userProvider.updateBgMechanicsAndThemes(userSnapshot,
       //     bgMechanicsSelectedList, bgThemesSelectedList, _scaffoldKey);
 
+      if (boardGameSelected != null) {
+        _userProvider.updateFavouriteBoardGamesByGenre(
+            userSnapshot, boardGameSelected!, _scaffoldKey);
+        print("boardGameSelected ${boardGameSelected?.name}");
+      }
+
+// boardGameSelected.bggId
       // refresh();
       print('Hey there, I\'m calling after hide bottomSheet');
     });

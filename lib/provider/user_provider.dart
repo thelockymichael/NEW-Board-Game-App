@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_demo_01/api/recommend_games_api.dart';
 import 'package:flutter_demo_01/db/entity/chat.dart';
 import 'package:flutter_demo_01/db/entity/FavGenreItem.dart';
 import 'package:flutter_demo_01/db/entity/match.dart';
@@ -30,7 +31,7 @@ class UserProvider extends ChangeNotifier {
       favBoardGameGenres: [],
       favBgMechanics: [],
       favBgThemes: [],
-      favBoardGames: FavBoardGames(familyGames: []));
+      favBoardGames: FavBoardGames(familyGames: ""));
 
   Future<AppUser> get user => _getUser();
 
@@ -67,7 +68,7 @@ class UserProvider extends ChangeNotifier {
           favBoardGameGenres: [],
           favBgMechanics: [],
           favBgThemes: [],
-          favBoardGames: FavBoardGames(familyGames: []));
+          favBoardGames: FavBoardGames(familyGames: ""));
 
       _databaseSource.addUser(user);
 
@@ -338,24 +339,29 @@ class UserProvider extends ChangeNotifier {
 
   Future<Response> updateFavouriteBoardGamesByGenre(
       AppUser userSnapshot,
-      UserBioEdit userBioEdit,
+      BoardGameData boardGameData,
       GlobalKey<ScaffoldState> errorScaffoldKey) async {
-    AppUser user = AppUser(
-      id: userSnapshot.id,
-      name: userSnapshot.name,
-      bggName: userSnapshot.bggName,
-      currentLocation: userSnapshot.currentLocation,
-      gender: userSnapshot.gender,
-      age: userSnapshot.age,
-      bio: userBioEdit.bio,
-      email: userSnapshot.email,
-      favBoardGameGenres: userSnapshot.favBoardGameGenres,
-      favBgMechanics: userSnapshot.favBgMechanics,
-      favBgThemes: userSnapshot.favBgThemes,
-      profilePhotoPath: userSnapshot.profilePhotoPath,
-      favBoardGames: userSnapshot.favBoardGames,
-    );
+    List<SelectedBoardGame> temp = [];
 
+    AppUser user = AppUser(
+        id: userSnapshot.id,
+        name: userSnapshot.name,
+        bggName: userSnapshot.bggName,
+        currentLocation: userSnapshot.currentLocation,
+        gender: userSnapshot.gender,
+        age: userSnapshot.age,
+        bio: userSnapshot.bio,
+        email: userSnapshot.email,
+        favBoardGameGenres: userSnapshot.favBoardGameGenres,
+        favBgMechanics: userSnapshot.favBgMechanics,
+        favBgThemes: userSnapshot.favBgThemes,
+        profilePhotoPath: userSnapshot.profilePhotoPath,
+        favBoardGames: FavBoardGames(familyGames: boardGameData.name));
+
+    // print("AppUser ${user.favBoardGames.familyGames}");
+    // user.favBoardGames.familyGames.forEach((element) {
+    //   print("AppUser ${element.rank}");
+    // });
     // favBoardGames:
     // {
     //  familyGames: [

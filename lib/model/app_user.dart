@@ -92,7 +92,7 @@ class AppUser {
 }
 
 class FavBoardGames {
-  late List<SelectedBoardGame> familyGames = [];
+  late String familyGames;
 
   FavBoardGames({
     required this.familyGames,
@@ -102,13 +102,37 @@ class FavBoardGames {
   //   familyGames = snapshot["familyGames"];
   // }
 
+  FavBoardGames.fromSnapshot(DocumentSnapshot snapshot) {
+    // favBoardGames = List<String>.from(snapshot["favBoardGames"]);
+    familyGames = snapshot["familyGames"] ?? "";
+  }
+
   Map<String, dynamic> toMap() => {
         "familyGames": familyGames,
       };
 
+/**
+ * 
+ *  Question.fromMap(Map<String, dynamic> map, {this.reference}){
+    text = map['text'];
+    if (map['options'] != null) {
+      map['options'].forEach((v) {
+      options.add(new Option.fromMap(v));
+    });
+   }
+  }
+ */
+
+  // FavBoardGames.fromMap(Map<String, dynamic> map) {
+  //   if (map['familyGames'] != null) {
+  //     map['familyGames'].forEach((v) {
+  //       familyGames.add(new SelectedBoardGame.fromMap(v));
+  //     });
+  //   }
+  // }
+
   factory FavBoardGames.fromMap(Map<String, dynamic> map) {
-    return FavBoardGames(
-        familyGames: List<SelectedBoardGame>.from(map["familyGames"])
+    return FavBoardGames(familyGames: map["familyGames"] ?? ""
         // familyGames: map['familyGames'] ?? '',
         );
   }
@@ -119,30 +143,82 @@ class FavBoardGames {
       FavBoardGames.fromMap(json.decode(source));
 }
 
+// class FavBoardGames {
+//   late SelectedBoardGame familyGames;
+
+//   FavBoardGames({
+//     required this.familyGames,
+//   });
+
+//   // FavBoardGames.fromSnapshot(DocumentSnapshot snapshot) {
+//   //   familyGames = snapshot["familyGames"];
+//   // }
+
+//   FavBoardGames.fromSnapshot(DocumentSnapshot snapshot) {
+//     // favBoardGames = List<String>.from(snapshot["favBoardGames"]);
+//     familyGames = SelectedBoardGame.fromMap(snapshot["familyGames"]);
+//   }
+
+//   Map<String, dynamic> toMap() => {
+//         "familyGames": familyGames,
+//       };
+
+// /**
+//  *
+//  *  Question.fromMap(Map<String, dynamic> map, {this.reference}){
+//     text = map['text'];
+//     if (map['options'] != null) {
+//       map['options'].forEach((v) {
+//       options.add(new Option.fromMap(v));
+//     });
+//    }
+//   }
+//  */
+
+//   // FavBoardGames.fromMap(Map<String, dynamic> map) {
+//   //   if (map['familyGames'] != null) {
+//   //     map['familyGames'].forEach((v) {
+//   //       familyGames.add(new SelectedBoardGame.fromMap(v));
+//   //     });
+//   //   }
+//   // }
+
+//   factory FavBoardGames.fromMap(Map<String, dynamic> map) {
+//     return FavBoardGames(familyGames: map["familyGames"]
+//         // familyGames: map['familyGames'] ?? '',
+//         );
+//   }
+
+//   String toJson() => json.encode(toMap());
+
+//   factory FavBoardGames.fromJson(String source) =>
+//       FavBoardGames.fromMap(json.decode(source));
+// }
+
 class SelectedBoardGame {
   late int rank;
-  late BoardGameData boardGame;
+  // late BoardGameData boardGame;
 
-  SelectedBoardGame({this.rank = 0, required this.boardGame});
+  SelectedBoardGame({
+    this.rank = 0,
+    // required this.boardGame
+  });
 
   // SelectedBoardGame.fromSnapshot(DocumentSnapshot snapshot) {
   //   familyGames = snapshot["familyGames"];
   // }
 
   Map<String, dynamic> toMap() => {
-        "rank": rank,
-        "boardGame": boardGame.toMap(),
+        "rank": rank.toInt(),
+        // "rank": rank,
+        // "boardGame": boardGame.toMap(),
       };
 
   factory SelectedBoardGame.fromMap(Map<String, dynamic> map) {
     return SelectedBoardGame(
-        rank: map["rank"], boardGame: BoardGameData.fromMap(map["boardGame"])
-        // familyGames: map['familyGames'] ?? '',
-        );
+      rank: map["rank"] ?? 0,
+      // boardGame: BoardGameData.fromMap(map["boardGame"])
+      // familyGames: map['familyGames'] ?? '',
+    );
   }
-
-  String toJson() => json.encode(toMap());
-
-  factory SelectedBoardGame.fromJson(String source) =>
-      SelectedBoardGame.fromMap(json.decode(source));
 }

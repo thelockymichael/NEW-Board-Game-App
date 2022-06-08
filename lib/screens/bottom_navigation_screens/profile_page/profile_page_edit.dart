@@ -282,7 +282,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                               ]))),
                                   GestureDetector(
                                       onTap: () {
-                                        _testingModalBottomSheet(
+                                        _showBgMechanicAndThemeModal(
                                             context, userSnapshot.data!);
                                       },
                                       child: Container(
@@ -542,7 +542,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
         }));
   }
 
-  void _testingModalBottomSheet(context, AppUser userSnapshot) {
+  void _showBgMechanicAndThemeModal(context, AppUser userSnapshot) {
 /* Board Game Mechanics  */
     List<FavBgMechanicItem> bgMechanicsList = [
       FavBgMechanicItem(name: "Co-op"),

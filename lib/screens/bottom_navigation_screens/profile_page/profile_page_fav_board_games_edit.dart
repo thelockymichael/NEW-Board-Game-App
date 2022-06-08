@@ -138,51 +138,43 @@ class _ProfilePageFavBoardGamesEditState
                               },
                               child: Stack(
                                 children: <Widget>[
-                                  Stack(
-                                    children: <Widget>[
-                                      Container(
-                                          height: 350.0,
-                                          decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                  image: NetworkImage(
-                                                      itemList[index].imageUrl),
-                                                  fit: BoxFit.cover))),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                            gradient: LinearGradient(
-                                                begin: Alignment.topCenter,
-                                                end: Alignment.bottomCenter,
-                                                colors: [
-                                              Colors.grey.withOpacity(0.0),
-                                              Colors.black.withOpacity(0.6),
-                                            ],
-                                                stops: const [
-                                              0.0,
-                                              1.0
-                                            ])),
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.max,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Center(
-                                              child: Text(
-                                                  itemList[index]
-                                                      .name
-                                                      .capitalize(),
-                                                  textAlign: TextAlign.center,
-                                                  style: const TextStyle(
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 20)))
+                                  Container(
+                                      height: 350.0,
+                                      decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                              image: NetworkImage(
+                                                  itemList[index].imageUrl),
+                                              fit: BoxFit.cover))),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                            begin: Alignment.topCenter,
+                                            end: Alignment.bottomCenter,
+                                            colors: [
+                                          Colors.grey.withOpacity(0.0),
+                                          Colors.black.withOpacity(0.6),
                                         ],
-                                      )
-                                    ],
+                                            stops: const [
+                                          0.0,
+                                          1.0
+                                        ])),
                                   ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Center(
+                                          child: Text(
+                                              itemList[index].name.capitalize(),
+                                              textAlign: TextAlign.center,
+                                              style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20)))
+                                    ],
+                                  )
                                 ],
                               ),
                             );
@@ -192,82 +184,5 @@ class _ProfilePageFavBoardGamesEditState
             },
           );
         }));
-  }
-
-  Widget bioEditForm(context, AppUser userSnapshot) {
-    final _bioTextController = TextEditingController(text: userSnapshot.bio);
-
-    final _focusBio = FocusNode();
-    return Container(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text("Write about your board game hobby",
-                textAlign: TextAlign.center, style: TextStyle(fontSize: 32)),
-            Form(
-              key: _bioFormKey,
-              child: Column(children: <Widget>[
-                TextFormField(
-                  controller: _bioTextController,
-                  focusNode: _focusBio,
-                  decoration: InputDecoration(
-                    alignLabelWithHint: true,
-                    labelText: "Don't be shy!",
-                    errorBorder: UnderlineInputBorder(
-                      borderRadius: BorderRadius.circular(6.0),
-                      borderSide: const BorderSide(
-                        color: Colors.red,
-                      ),
-                    ),
-                  ),
-                  keyboardType: TextInputType.multiline,
-                  maxLines: 10,
-                  maxLength: 500,
-                ),
-                _isProcessing
-                    ? const CircularProgressIndicator()
-                    : Row(
-                        children: [
-                          Expanded(
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                setState(() {
-                                  _isProcessing = true;
-                                });
-
-                                if (_bioFormKey.currentState!.validate()) {
-                                  // Bio
-                                  _userBioEdit.bio = _bioTextController.text;
-
-                                  await _userProvider
-                                      .updateUserBio(userSnapshot, _userBioEdit,
-                                          _scaffoldKey)
-                                      .then((response) {
-                                    if (response is Success) {
-                                      widget.notifyParent();
-                                    }
-                                  });
-
-                                  setState(() {
-                                    _isProcessing = false;
-                                  });
-                                } else {
-                                  setState(() {
-                                    _isProcessing = false;
-                                  });
-                                }
-                              },
-                              child: const Text("Save",
-                                  style: TextStyle(color: Colors.white)),
-                            ),
-                          )
-                        ],
-                      )
-              ]),
-            )
-          ],
-        ));
   }
 }

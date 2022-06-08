@@ -6,26 +6,28 @@ import 'package:flutter_demo_01/db/remote/response.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/model/user_bio_edit.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
-import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/profile_page_fav_top_board_games_edit.dart';
 import 'package:provider/provider.dart';
 import "package:flutter_demo_01/utils/utils.dart";
 
-class ProfilePageFavBoardGamesEdit extends StatefulWidget {
+class ProfilePageFavTopBoardGamesEdit extends StatefulWidget {
   static const String id = 'profile_page_fav_board_games_edit';
-  final Function() notifyParent;
+  // final Function() notifyParent;
+  final String gameGenre;
   final AppUser? userSnapshot;
 
-  const ProfilePageFavBoardGamesEdit(
-      {Key? key, this.userSnapshot, required this.notifyParent})
+  const ProfilePageFavTopBoardGamesEdit(
+      {Key? key, this.userSnapshot, required this.gameGenre
+      // required this.notifyParent
+      })
       : super(key: key);
 
   @override
-  _ProfilePageFavBoardGamesEditState createState() =>
-      _ProfilePageFavBoardGamesEditState();
+  _ProfilePageFavTopBoardGamesEditState createState() =>
+      _ProfilePageFavTopBoardGamesEditState();
 }
 
-class _ProfilePageFavBoardGamesEditState
-    extends State<ProfilePageFavBoardGamesEdit> {
+class _ProfilePageFavTopBoardGamesEditState
+    extends State<ProfilePageFavTopBoardGamesEdit> {
   final UserBioEdit _userBioEdit = UserBioEdit();
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -61,6 +63,16 @@ class _ProfilePageFavBoardGamesEditState
         "Thematic \n / \n Eurogames",
         5,
         false),
+    // FavGenreItem(
+    //     "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/board_game_genres%2Fthematic_game.jpg?alt=media&token=21ce6eac-9f08-40e6-9a0a-d8e56046977c",
+    //     "thematic games",
+    //     5,
+    //     false),
+    // FavGenreItem(
+    //     "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/board_game_genres%2Feurogame_game.jpg?alt=media&token=e38e0cc7-c9a4-4525-8c91-378c8444b51a",
+    //     "eurogames",
+    //     6,
+    //     false),
     FavGenreItem(
         "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/board_game_genres%2Fwargame.jpg?alt=media&token=e342eed7-1ca0-4fdc-b95a-560024c3b1fe",
         "wargames",
@@ -83,7 +95,7 @@ class _ProfilePageFavBoardGamesEditState
     return Scaffold(
         appBar: AppBar(
           title: const Text(
-            "Choose favourite board games",
+            "Eurogames",
           ),
           elevation: 0,
         ),
@@ -107,33 +119,6 @@ class _ProfilePageFavBoardGamesEditState
                           itemBuilder: (context, index) {
                             return InkWell(
                               onTap: () {
-                                Navigator.of(context).push(PageRouteBuilder(
-                                  pageBuilder: (
-                                    BuildContext context,
-                                    Animation<double> animation,
-                                    Animation<double> secondaryAnimation,
-                                  ) =>
-                                      ProfilePageFavTopBoardGamesEdit(
-                                          gameGenre: itemList[index].name,
-                                          userSnapshot: userSnapshot.data!),
-                                  // ProfilePageFavBoardGamesEdit(
-                                  //     userSnapshot:
-                                  //         userSnapshot.data!,
-                                  //     notifyParent: refresh),
-                                  transitionsBuilder: (
-                                    BuildContext context,
-                                    Animation<double> animation,
-                                    Animation<double> secondaryAnimation,
-                                    Widget child,
-                                  ) =>
-                                      SlideTransition(
-                                    position: Tween<Offset>(
-                                      begin: const Offset(1, 0),
-                                      end: Offset.zero,
-                                    ).animate(animation),
-                                    child: child,
-                                  ),
-                                ));
                                 print("ON TAP");
                               },
                               child: Stack(
@@ -237,27 +222,27 @@ class _ProfilePageFavBoardGamesEditState
                                   _isProcessing = true;
                                 });
 
-                                if (_bioFormKey.currentState!.validate()) {
-                                  // Bio
-                                  _userBioEdit.bio = _bioTextController.text;
+                                // if (_bioFormKey.currentState!.validate()) {
+                                //   // Bio
+                                //   _userBioEdit.bio = _bioTextController.text;
 
-                                  await _userProvider
-                                      .updateUserBio(userSnapshot, _userBioEdit,
-                                          _scaffoldKey)
-                                      .then((response) {
-                                    if (response is Success) {
-                                      widget.notifyParent();
-                                    }
-                                  });
+                                //   await _userProvider
+                                //       .updateUserBio(userSnapshot, _userBioEdit,
+                                //           _scaffoldKey)
+                                //       .then((response) {
+                                //     if (response is Success) {
+                                //       widget.notifyParent();
+                                //     }
+                                //   });
 
-                                  setState(() {
-                                    _isProcessing = false;
-                                  });
-                                } else {
-                                  setState(() {
-                                    _isProcessing = false;
-                                  });
-                                }
+                                //   setState(() {
+                                //     _isProcessing = false;
+                                //   });
+                                // } else {
+                                //   setState(() {
+                                //     _isProcessing = false;
+                                //   });
+                                // }
                               },
                               child: const Text("Save",
                                   style: TextStyle(color: Colors.white)),

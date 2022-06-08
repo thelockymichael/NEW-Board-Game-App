@@ -395,8 +395,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                               ]))),
                                   GestureDetector(
                                       onTap: () {
-                                        // _testingModalBottomSheet(
-                                        //     context, userSnapshot.data!);
                                         Navigator.of(context)
                                             .push(PageRouteBuilder(
                                           pageBuilder: (

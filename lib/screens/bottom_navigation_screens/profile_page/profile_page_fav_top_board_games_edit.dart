@@ -164,14 +164,35 @@ class _ProfilePageFavTopBoardGamesEditState
         .then((response) {
       print("response $response");
 
-      var jsonString = response.body;
-      var jsonMap = json.decode(jsonString);
-      print(jsonMap);
-      var userModel = ResponseData.fromJson(jsonMap[0]);
+      final parsedJson = json.decode(response.body);
 
-      print("userModel ${userModel}");
+      final finalResponse = ResponseData.fromJson(parsedJson);
 
-      // var decoded = json.decode(response.body);
+      print(finalResponse.results[0].name);
+      print(finalResponse.results[1].name);
+      print(finalResponse.results[0].recRank);
+      print(finalResponse.results[1].recRank);
+      print(finalResponse.results[0].recRating);
+      print(finalResponse.results[1].recRating);
+      // var jsonString = response.body;
+      // var jsonMap = json.decode(jsonString);
+      // print(jsonMap);
+      // var userModel = ResponseData.fromJson(jsonMap);
+
+      // print("userModel ${userModel}");
+      // print("userModel board games ${userModel.results}");
+
+      // List<BoardGameData> list = userModel.results.cast<BoardGameData>();
+
+      // var list = userModel.results
+      //     .map((item) => BoardGameData.fromJson(item))
+      //     .toList();
+      // Iterable list = userModel.results;
+      // var boardGames =
+      //     list.map((model) => BoardGameData.fromJson(model)).toList();
+
+      // print(
+      //     "boardus gamus ${boardGames}"); // var decoded = json.decode(response.body);
 
       // var jotain = ResponseData.fromJson(decoded);
 

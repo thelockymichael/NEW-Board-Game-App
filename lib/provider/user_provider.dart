@@ -30,7 +30,7 @@ class UserProvider extends ChangeNotifier {
       favBoardGameGenres: [],
       favBgMechanics: [],
       favBgThemes: [],
-      favBoardGames: FavBoardGames(familyGames: ""));
+      favBoardGames: FavBoardGames(familyGames: []));
 
   Future<AppUser> get user => _getUser();
 
@@ -67,7 +67,7 @@ class UserProvider extends ChangeNotifier {
           favBoardGameGenres: [],
           favBgMechanics: [],
           favBgThemes: [],
-          favBoardGames: FavBoardGames(familyGames: ""));
+          favBoardGames: FavBoardGames(familyGames: []));
 
       _databaseSource.addUser(user);
 

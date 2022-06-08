@@ -92,10 +92,10 @@ class AppUser {
 }
 
 class FavBoardGames {
-  late String familyGames;
+  late List<SelectedBoardGame> familyGames = [];
 
   FavBoardGames({
-    this.familyGames = "",
+    required this.familyGames,
   });
 
   // FavBoardGames.fromSnapshot(DocumentSnapshot snapshot) {
@@ -108,8 +108,9 @@ class FavBoardGames {
 
   factory FavBoardGames.fromMap(Map<String, dynamic> map) {
     return FavBoardGames(
-      familyGames: map['familyGames'] ?? '',
-    );
+        familyGames: List<SelectedBoardGame>.from(map["familyGames"])
+        // familyGames: map['familyGames'] ?? '',
+        );
   }
 
   String toJson() => json.encode(toMap());
@@ -118,31 +119,30 @@ class FavBoardGames {
       FavBoardGames.fromMap(json.decode(source));
 }
 
-// class SelectedBoardGames {
-//   late int rank;
-//   late BoardGameData boardGameData;
+class SelectedBoardGame {
+  late int rank;
+  late BoardGameData boardGame;
 
-//   SelectedBoardGames({
-//     this.rank = 0;
-//    required this.familyGames;
-//   });
+  SelectedBoardGame({this.rank = 0, required this.boardGame});
 
-//   // SelectedBoardGames.fromSnapshot(DocumentSnapshot snapshot) {
-//   //   familyGames = snapshot["familyGames"];
-//   // }
+  // SelectedBoardGame.fromSnapshot(DocumentSnapshot snapshot) {
+  //   familyGames = snapshot["familyGames"];
+  // }
 
-//   Map<String, dynamic> toMap() => {
-//         "familyGames": familyGames,
-//       };
+  Map<String, dynamic> toMap() => {
+        "rank": rank,
+        "boardGame": boardGame.toMap(),
+      };
 
-//   factory SelectedBoardGames.fromMap(Map<String, dynamic> map) {
-//     return SelectedBoardGames(
-//       familyGames: map['familyGames'] ?? '',
-//     );
-//   }
+  factory SelectedBoardGame.fromMap(Map<String, dynamic> map) {
+    return SelectedBoardGame(
+        rank: map["rank"], boardGame: BoardGameData.fromMap(map["boardGame"])
+        // familyGames: map['familyGames'] ?? '',
+        );
+  }
 
-//   String toJson() => json.encode(toMap());
+  String toJson() => json.encode(toMap());
 
-//   factory SelectedBoardGames.fromJson(String source) =>
-//       SelectedBoardGames.fromMap(json.decode(source));
-// }
+  factory SelectedBoardGame.fromJson(String source) =>
+      SelectedBoardGame.fromMap(json.decode(source));
+}

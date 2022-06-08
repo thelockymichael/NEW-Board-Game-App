@@ -77,6 +77,28 @@ class BoardGameData {
   double recStars;
   String name;
 
+  Map<String, dynamic> toMap() => {
+        "id": bggId,
+        "imageUrl": imageUrl,
+        "year": year,
+        "recRank": recRank,
+        "recRating": recRating,
+        "recStars": recStars,
+        "name": name,
+      };
+
+  factory BoardGameData.fromMap(Map<String, dynamic> map) {
+    return BoardGameData(
+        bggId: map['bggId'] ?? 0,
+        year: map['year'] ?? 0,
+        recRank: map['recRank'] ?? 0,
+        recRating: map['recRating'] ?? 0,
+        recStars: map['recStars'] ?? 0,
+        name: map['name'] ?? "0",
+        imageUrl: List<String>.from(map["imageUrl"]));
+  }
+  // favBoardGames: List<String>.from(map["favBoardGames"]),
+
   factory BoardGameData.fromJson(Map<String, dynamic> json) => BoardGameData(
         bggId: json["bgg_id"],
         imageUrl: List<String>.from(json["image_url"].map((x) => x)),

@@ -405,8 +405,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                           ) =>
                                               ProfilePageFavBoardGamesEdit(
                                                   userSnapshot:
-                                                      userSnapshot.data!,
-                                                  notifyParent: refresh),
+                                                      userSnapshot.data!),
                                           transitionsBuilder: (
                                             BuildContext context,
                                             Animation<double> animation,

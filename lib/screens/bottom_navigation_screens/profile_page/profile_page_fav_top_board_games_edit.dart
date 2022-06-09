@@ -44,23 +44,56 @@ class _ProfilePageFavTopBoardGamesEditState
   final _bioFormKey = GlobalKey<FormState>();
   bool _isProcessing = false;
 
-  final List<FavGenreItem> itemList = [
-    FavGenreItem(
-        "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/board_game_genres%2Ffamily_game.jpg?alt=media&token=cd082d8c-a6d7-4720-a569-6c63d7853ecb",
-        "1.",
-        1,
-        false),
-    FavGenreItem(
-        "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/board_game_genres%2Fdexterity_games.jpg?alt=media&token=f1ec1bf1-6af1-4290-8bde-46819674ea0c",
-        "2.",
-        2,
-        false),
-    FavGenreItem(
-        "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/board_game_genres%2Fparty_games.jpg?alt=media&token=0ac34bd6-78b1-418e-b5d8-fe1e9121e2af",
-        "3.",
-        3,
-        false),
+  List<SelectedBoardGame> itemList = [
+    SelectedBoardGame(
+        rank: 1,
+        boardGame: BoardGameData(
+            bggId: 0,
+            imageUrl: [""],
+            name: "EMPTY",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0)),
+    SelectedBoardGame(
+        rank: 2,
+        boardGame: BoardGameData(
+            bggId: 0,
+            imageUrl: [""],
+            name: "EMPTY",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0)),
+    SelectedBoardGame(
+        rank: 3,
+        boardGame: BoardGameData(
+            bggId: 0,
+            imageUrl: [""],
+            name: "EMPTY",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0))
   ];
+
+  // final List<FavGenreItem> itemList = [
+  //   FavGenreItem(
+  //       "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/board_game_genres%2Ffamily_game.jpg?alt=media&token=cd082d8c-a6d7-4720-a569-6c63d7853ecb",
+  //       "1.",
+  //       1,
+  //       false),
+  //   FavGenreItem(
+  //       "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/board_game_genres%2Fdexterity_games.jpg?alt=media&token=f1ec1bf1-6af1-4290-8bde-46819674ea0c",
+  //       "2.",
+  //       2,
+  //       false),
+  //   FavGenreItem(
+  //       "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/board_game_genres%2Fparty_games.jpg?alt=media&token=0ac34bd6-78b1-418e-b5d8-fe1e9121e2af",
+  //       "3.",
+  //       3,
+  //       false),
+  // ];
 
   late Future<List<BoardGameData>> boardGames;
 
@@ -102,13 +135,15 @@ class _ProfilePageFavTopBoardGamesEditState
                           SizedBox(height: 26),
                           Expanded(
                               child: ListView(
-                            children: itemList.map((item) {
+                            children: userSnapshot
+                                .data!.favBoardGames.familyGames
+                                .map((item) {
                               return InkWell(
                                   onTap: () {
                                     print("ON TAP");
 
                                     _showBoardGameModal(
-                                        context, userSnapshot.data!);
+                                        context, userSnapshot.data!, item.rank);
                                   },
                                   child: Stack(
                                     children: <Widget>[
@@ -116,8 +151,8 @@ class _ProfilePageFavTopBoardGamesEditState
                                         height: 180.0,
                                         decoration: BoxDecoration(
                                             image: DecorationImage(
-                                                image:
-                                                    NetworkImage(item.imageUrl),
+                                                image: NetworkImage(
+                                                    item.boardGame.imageUrl[0]),
                                                 fit: BoxFit.cover)),
                                       ),
                                       Container(
@@ -135,18 +170,35 @@ class _ProfilePageFavTopBoardGamesEditState
                                             ])),
                                       ),
                                       Positioned(
+                                          bottom: 0,
+                                          //you can use "right" and "bottom" too
+                                          child: Container(
+                                            child: Center(
+                                                child: Text(
+                                              item.boardGame.name.capitalize(),
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white,
+                                                  fontSize: 32),
+                                            )),
+                                          )),
+                                      Positioned(
                                           top: 0,
                                           left: 0,
-                                          bottom: 0,
                                           //you can use "right" and "bottom" too
                                           child: Container(
                                             height: 100,
                                             width: 100,
+                                            decoration: BoxDecoration(
+                                                color: Colors.green,
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
                                             child: Center(
                                                 child: Text(
-                                              item.name,
+                                              item.rank.toString(),
                                               style: TextStyle(
                                                   fontWeight: FontWeight.bold,
+                                                  color: Colors.white,
                                                   fontSize: 32),
                                             )),
                                           )),
@@ -183,7 +235,7 @@ class _ProfilePageFavTopBoardGamesEditState
     // });
   }
 
-  void _showBoardGameModal(context, AppUser userSnapshot) {
+  void _showBoardGameModal(context, AppUser userSnapshot, int boardGameRank) {
 // TODO
 // 1. Make a HTTP request to recommend.games
 //  https://recommend.games/api/games/?game_type=5499&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1
@@ -324,56 +376,6 @@ class _ProfilePageFavTopBoardGamesEditState
                 // By default, show a loading spinner.
                 return const CircularProgressIndicator();
               });
-
-          return Column(
-            children: [
-              Text("Here are your favourite mechanics",
-                  textAlign: TextAlign.center, style: TextStyle(fontSize: 24)),
-              SizedBox(height: 26),
-              // Expanded(
-              //   child: ListView(
-              //       children: boardGames.map((bgMechanic) {
-              //     // final isSelected =
-              //     //     bgMechanicsSelectedList.contains(bgMechanic);
-
-              //     // final selectedColor = Theme.of(context).primaryColor;
-              //     // final style = isSelected
-              //     //     ? TextStyle(
-              //     //         fontSize: 18,
-              //     //         color: selectedColor,
-              //     //         fontWeight: FontWeight.bold,
-              //     //       )
-              //     //     : TextStyle(fontSize: 18);
-
-              //     return ListTile(
-              //       onTap: () {
-              //         print("HELLO WORLD");
-
-              //         // final isSelected =
-              //         //     bgMechanicsSelectedList.contains(bgMechanic);
-
-              //         // setState(() => isSelected
-              //         //     ? bgMechanicsSelectedList.remove(bgMechanic)
-              //         //     : bgMechanicsSelectedList.add(bgMechanic));
-
-              //         // print(
-              //         //     "bgMechanicsSelectedList, ${bgMechanicsSelectedList.length}");
-              //       },
-              //       // leading: FlagWidget(code: BgMechanic),
-              //       title: Text(
-              //         bgMechanic.name,
-              //         style: TextStyle(fontSize: 18),
-              //       ),
-              //       // trailing: isSelected
-              //       //     ? Icon(Icons.check, color: selectedColor, size: 26)
-              //       //     : null,
-              //     );
-              //   }).toList()),
-              // ),
-              // selectMechanicsButton(
-              //     context, userSnapshot, bgMechanicsSelectedList)
-            ],
-          );
         });
       },
     ).whenComplete(() {
@@ -381,9 +383,13 @@ class _ProfilePageFavTopBoardGamesEditState
       //     bgMechanicsSelectedList, bgThemesSelectedList, _scaffoldKey);
 
       if (boardGameSelected != null) {
+        print("boardGame Rank $boardGameRank");
         _userProvider.updateFavouriteBoardGamesByGenre(
-            userSnapshot, boardGameSelected!, _scaffoldKey);
+            userSnapshot, boardGameSelected!, boardGameRank, _scaffoldKey);
+
         print("boardGameSelected ${boardGameSelected?.name}");
+
+        setState(() {});
       }
 
 // boardGameSelected.bggId

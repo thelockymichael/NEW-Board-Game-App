@@ -74,7 +74,7 @@ class BoardGameData {
   int year;
   int recRank;
   double recRating;
-  double recStars;
+  num recStars;
   String name;
 
   Map<String, dynamic> toMap() => {

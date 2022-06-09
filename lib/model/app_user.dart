@@ -110,12 +110,7 @@ class FavBoardGames {
     return FavBoardGames(
         familyGames: List<SelectedBoardGame>.from(
             map["familyGames"].map((x) => SelectedBoardGame.fromMap(x))));
-    // familyGames: List<SelectedBoardGame>.from(map["familyGames"]));
-
-    // familyGames: List<SelectedBoardGame>.from(json["familyGames"].map((x) => SelectedBoardGame.fromJson(x))),
   }
-
-  //   familyGames: List<FamilyGame>.from(json["familyGames"].map((x) => FamilyGame.fromJson(x))),
 
   String toJson() => json.encode(toMap());
 

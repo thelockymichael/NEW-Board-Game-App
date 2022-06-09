@@ -31,7 +31,44 @@ class UserProvider extends ChangeNotifier {
       favBoardGameGenres: [],
       favBgMechanics: [],
       favBgThemes: [],
-      favBoardGames: FavBoardGames(familyGames: []));
+      favBoardGames: FavBoardGames(familyGames: [
+        SelectedBoardGame(
+          rank: 1,
+          boardGame: BoardGameData(
+            bggId: 0,
+            imageUrl: [""],
+            name: "",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0,
+          ),
+        ),
+        SelectedBoardGame(
+          rank: 2,
+          boardGame: BoardGameData(
+            bggId: 0,
+            imageUrl: [""],
+            name: "",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0,
+          ),
+        ),
+        SelectedBoardGame(
+          rank: 3,
+          boardGame: BoardGameData(
+            bggId: 0,
+            imageUrl: [""],
+            name: "",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0,
+          ),
+        )
+      ]));
 
   Future<AppUser> get user => _getUser();
 
@@ -68,10 +105,44 @@ class UserProvider extends ChangeNotifier {
           favBoardGameGenres: [],
           favBgMechanics: [],
           favBgThemes: [],
-          favBoardGames:
-              // FavBoardGames(familyGames: SelectedBoardGame(rank: 1))
-
-              FavBoardGames(familyGames: []));
+          favBoardGames: FavBoardGames(familyGames: [
+            SelectedBoardGame(
+              rank: 1,
+              boardGame: BoardGameData(
+                bggId: 0,
+                imageUrl: [""],
+                name: "",
+                recRank: 0,
+                recRating: 0,
+                recStars: 0,
+                year: 0,
+              ),
+            ),
+            SelectedBoardGame(
+              rank: 2,
+              boardGame: BoardGameData(
+                bggId: 0,
+                imageUrl: [""],
+                name: "",
+                recRank: 0,
+                recRating: 0,
+                recStars: 0,
+                year: 0,
+              ),
+            ),
+            SelectedBoardGame(
+              rank: 3,
+              boardGame: BoardGameData(
+                bggId: 0,
+                imageUrl: [""],
+                name: "",
+                recRank: 0,
+                recRating: 0,
+                recStars: 0,
+                year: 0,
+              ),
+            )
+          ]));
       _databaseSource.addUser(user);
 
       SharedPreferencesUtil.setUserId(id);
@@ -343,21 +414,28 @@ class UserProvider extends ChangeNotifier {
       AppUser userSnapshot,
       BoardGameData boardGameData,
       // String boardGameGenre,
-      // String boardGameRank,
+      int boardGameRank,
       GlobalKey<ScaffoldState> errorScaffoldKey) async {
     List<SelectedBoardGame> temp = [];
 
-    temp.add(new SelectedBoardGame(
-        rank: 4,
-        boardGame: new BoardGameData(
-            bggId: 0,
-            imageUrl: ["dsada"],
-            name: "dasd",
-            recRank: 0,
-            recRating: 0,
-            recStars: 0,
-            year: 0)));
+    // userSnapshot.favBoardGames.
 
+    // TODO
+    // 1. Add item if DOES NOT EXIST
+    // 2. If ITEM DOES EXIST => DO NOT ADD ITEM
+
+    var familyGames = userSnapshot.favBoardGames.familyGames;
+
+    for (var i = 0; i < familyGames.length; i++) {
+      if (familyGames[i].rank == boardGameRank) {
+        temp.add(
+            SelectedBoardGame(rank: boardGameRank, boardGame: boardGameData));
+        continue;
+      }
+
+      temp.add(SelectedBoardGame(
+          rank: familyGames[i].rank, boardGame: familyGames[i].boardGame));
+    }
     AppUser user = AppUser(
         id: userSnapshot.id,
         name: userSnapshot.name,

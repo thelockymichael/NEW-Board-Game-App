@@ -780,6 +780,95 @@ class UserProvider extends ChangeNotifier {
     return response;
   }
 
+  List<SelectedBoardGame> _returnUpdatedGenreBoardGames(
+      List<SelectedBoardGame> genreBoardGames,
+      int boardGameRank,
+      BoardGameData boardGameData) {
+    List<SelectedBoardGame> updateBoardGames = [];
+
+    for (var i = 0; i < genreBoardGames.length; i++) {
+      if (genreBoardGames[i].rank == boardGameRank) {
+        updateBoardGames.add(
+            SelectedBoardGame(rank: boardGameRank, boardGame: boardGameData));
+        continue;
+      }
+
+      updateBoardGames.add(SelectedBoardGame(
+          rank: genreBoardGames[i].rank,
+          boardGame: genreBoardGames[i].boardGame));
+    }
+    return updateBoardGames;
+    // print("whole str ${boardGameGenre}");
+    // updateFavBoardGames.familyGames = updateBoardGames;
+  }
+
+  // final String
+  FavBoardGames _returnFavBoardGames(AppUser userSnapshot,
+      BoardGameData boardGameData, int boardGameRank, String boardGameGenre) {
+    // List<SelectedBoardGame> updateBoardGames = [];
+
+    var familyGames = userSnapshot.favBoardGames.familyGames;
+    var dexterityGames = userSnapshot.favBoardGames.dexterityGames;
+    var partyGames = userSnapshot.favBoardGames.partyGames;
+    var thematicGames = userSnapshot.favBoardGames.thematicGames;
+    var abstractGames = userSnapshot.favBoardGames.abstractGames;
+    var warGames = userSnapshot.favBoardGames.warGames;
+
+    FavBoardGames updateFavBoardGames = FavBoardGames(
+        familyGames: familyGames,
+        dexterityGames: dexterityGames,
+        partyGames: partyGames,
+        thematicGames: thematicGames,
+        abstractGames: abstractGames,
+        warGames: warGames);
+
+    print("gameGenre ${boardGameGenre}");
+
+    switch (boardGameGenre) {
+      case "family games":
+        updateFavBoardGames.familyGames = _returnUpdatedGenreBoardGames(
+            familyGames, boardGameRank, boardGameData);
+        break;
+
+      case "dexterity games":
+        updateFavBoardGames.dexterityGames = _returnUpdatedGenreBoardGames(
+            dexterityGames, boardGameRank, boardGameData);
+        break;
+
+      case "party games":
+        print("whole str ${boardGameGenre}");
+        updateFavBoardGames.partyGames = _returnUpdatedGenreBoardGames(
+            partyGames, boardGameRank, boardGameData);
+        break;
+
+      case "abstracts":
+        print("whole str ${boardGameGenre}");
+        updateFavBoardGames.abstractGames = _returnUpdatedGenreBoardGames(
+            abstractGames, boardGameRank, boardGameData);
+        break;
+      // https://recommend.games/api/games/?game_type=4666&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1
+      case "thematic & eurogames":
+        print("whole str ${boardGameGenre}");
+        updateFavBoardGames.thematicGames = _returnUpdatedGenreBoardGames(
+            thematicGames, boardGameRank, boardGameData);
+        break;
+// https://recommend.games/api/games/?game_type=5496&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1
+      case "wargames":
+        updateFavBoardGames.warGames = _returnUpdatedGenreBoardGames(
+            warGames, boardGameRank, boardGameData);
+        print("whole str ${boardGameGenre}");
+        break;
+
+      // https://recommend.games/api/games/?game_type=4664&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1
+
+      default:
+        print("whole str ${boardGameGenre}");
+        break;
+    }
+
+    return updateFavBoardGames;
+  }
+
   Future<Response> updateFavouriteBoardGamesByGenre(
       AppUser userSnapshot,
       BoardGameData boardGameData,
@@ -794,7 +883,19 @@ class UserProvider extends ChangeNotifier {
     // 1. Add item if DOES NOT EXIST
     // 2. If ITEM DOES EXIST => DO NOT ADD ITEM
 
-// TODO 1. FamilyGames
+    // TODO 1. Family Games
+    // TODO 2. Dexterity Games
+
+    final updateFavBoardGames = _returnFavBoardGames(
+        userSnapshot, boardGameData, boardGameRank, boardGameGenre);
+    // var familyGames = userSnapshot.favBoardGames.familyGames;
+
+    // for (var i = 0; i < familyGames.length; i++) {
+    //   if (familyGames[i].rank == boardGameData) {
+    //     temp.add(SelectedBoardGame(rank: boardGameRank, boardGame: boardGameData));
+    //   }
+    // }
+
     // var familyGames = userSnapshot.favBoardGames.familyGames;
 
     // for (var i = 0; i < familyGames.length; i++) {
@@ -821,229 +922,7 @@ class UserProvider extends ChangeNotifier {
         favBgMechanics: userSnapshot.favBgMechanics,
         favBgThemes: userSnapshot.favBgThemes,
         profilePhotoPath: userSnapshot.profilePhotoPath,
-        favBoardGames: FavBoardGames(familyGames: [
-          SelectedBoardGame(
-            rank: 1,
-            boardGame: BoardGameData(
-              bggId: 0,
-              imageUrl: [""],
-              name: "",
-              recRank: 0,
-              recRating: 0,
-              recStars: 0,
-              year: 0,
-            ),
-          ),
-          SelectedBoardGame(
-            rank: 2,
-            boardGame: BoardGameData(
-              bggId: 0,
-              imageUrl: [""],
-              name: "",
-              recRank: 0,
-              recRating: 0,
-              recStars: 0,
-              year: 0,
-            ),
-          ),
-          SelectedBoardGame(
-            rank: 3,
-            boardGame: BoardGameData(
-              bggId: 0,
-              imageUrl: [""],
-              name: "",
-              recRank: 0,
-              recRating: 0,
-              recStars: 0,
-              year: 0,
-            ),
-          )
-        ], dexterityGames: [
-          SelectedBoardGame(
-            rank: 1,
-            boardGame: BoardGameData(
-              bggId: 0,
-              imageUrl: [""],
-              name: "",
-              recRank: 0,
-              recRating: 0,
-              recStars: 0,
-              year: 0,
-            ),
-          ),
-          SelectedBoardGame(
-            rank: 2,
-            boardGame: BoardGameData(
-              bggId: 0,
-              imageUrl: [""],
-              name: "",
-              recRank: 0,
-              recRating: 0,
-              recStars: 0,
-              year: 0,
-            ),
-          ),
-          SelectedBoardGame(
-            rank: 3,
-            boardGame: BoardGameData(
-              bggId: 0,
-              imageUrl: [""],
-              name: "",
-              recRank: 0,
-              recRating: 0,
-              recStars: 0,
-              year: 0,
-            ),
-          )
-        ], partyGames: [
-          SelectedBoardGame(
-            rank: 1,
-            boardGame: BoardGameData(
-              bggId: 0,
-              imageUrl: [""],
-              name: "",
-              recRank: 0,
-              recRating: 0,
-              recStars: 0,
-              year: 0,
-            ),
-          ),
-          SelectedBoardGame(
-            rank: 2,
-            boardGame: BoardGameData(
-              bggId: 0,
-              imageUrl: [""],
-              name: "",
-              recRank: 0,
-              recRating: 0,
-              recStars: 0,
-              year: 0,
-            ),
-          ),
-          SelectedBoardGame(
-            rank: 3,
-            boardGame: BoardGameData(
-              bggId: 0,
-              imageUrl: [""],
-              name: "",
-              recRank: 0,
-              recRating: 0,
-              recStars: 0,
-              year: 0,
-            ),
-          )
-        ], thematicGames: [
-          SelectedBoardGame(
-            rank: 1,
-            boardGame: BoardGameData(
-              bggId: 0,
-              imageUrl: [""],
-              name: "",
-              recRank: 0,
-              recRating: 0,
-              recStars: 0,
-              year: 0,
-            ),
-          ),
-          SelectedBoardGame(
-            rank: 2,
-            boardGame: BoardGameData(
-              bggId: 0,
-              imageUrl: [""],
-              name: "",
-              recRank: 0,
-              recRating: 0,
-              recStars: 0,
-              year: 0,
-            ),
-          ),
-          SelectedBoardGame(
-            rank: 3,
-            boardGame: BoardGameData(
-              bggId: 0,
-              imageUrl: [""],
-              name: "",
-              recRank: 0,
-              recRating: 0,
-              recStars: 0,
-              year: 0,
-            ),
-          )
-        ], abstractGames: [
-          SelectedBoardGame(
-            rank: 1,
-            boardGame: BoardGameData(
-              bggId: 0,
-              imageUrl: [""],
-              name: "",
-              recRank: 0,
-              recRating: 0,
-              recStars: 0,
-              year: 0,
-            ),
-          ),
-          SelectedBoardGame(
-            rank: 2,
-            boardGame: BoardGameData(
-              bggId: 0,
-              imageUrl: [""],
-              name: "",
-              recRank: 0,
-              recRating: 0,
-              recStars: 0,
-              year: 0,
-            ),
-          ),
-          SelectedBoardGame(
-            rank: 3,
-            boardGame: BoardGameData(
-              bggId: 0,
-              imageUrl: [""],
-              name: "",
-              recRank: 0,
-              recRating: 0,
-              recStars: 0,
-              year: 0,
-            ),
-          )
-        ], warGames: [
-          SelectedBoardGame(
-            rank: 1,
-            boardGame: BoardGameData(
-              bggId: 0,
-              imageUrl: [""],
-              name: "",
-              recRank: 0,
-              recRating: 0,
-              recStars: 0,
-              year: 0,
-            ),
-          ),
-          SelectedBoardGame(
-            rank: 2,
-            boardGame: BoardGameData(
-              bggId: 0,
-              imageUrl: [""],
-              name: "",
-              recRank: 0,
-              recRating: 0,
-              recStars: 0,
-              year: 0,
-            ),
-          ),
-          SelectedBoardGame(
-            rank: 3,
-            boardGame: BoardGameData(
-              bggId: 0,
-              imageUrl: [""],
-              name: "",
-              recRank: 0,
-              recRating: 0,
-              recStars: 0,
-              year: 0,
-            ),
-          )
-        ]));
+        favBoardGames: updateFavBoardGames);
 
     // print("AppUser ${user.favBoardGames.familyGames}");
     // user.favBoardGames.familyGames.forEach((element) {

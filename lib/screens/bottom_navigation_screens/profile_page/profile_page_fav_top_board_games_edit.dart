@@ -44,63 +44,40 @@ class _ProfilePageFavTopBoardGamesEditState
   final _bioFormKey = GlobalKey<FormState>();
   bool _isProcessing = false;
 
-  List<SelectedBoardGame> itemList = [
-    SelectedBoardGame(
-        rank: 1,
-        boardGame: BoardGameData(
-            bggId: 0,
-            imageUrl: [""],
-            name: "EMPTY",
-            recRank: 0,
-            recRating: 0,
-            recStars: 0,
-            year: 0)),
-    SelectedBoardGame(
-        rank: 2,
-        boardGame: BoardGameData(
-            bggId: 0,
-            imageUrl: [""],
-            name: "EMPTY",
-            recRank: 0,
-            recRating: 0,
-            recStars: 0,
-            year: 0)),
-    SelectedBoardGame(
-        rank: 3,
-        boardGame: BoardGameData(
-            bggId: 0,
-            imageUrl: [""],
-            name: "EMPTY",
-            recRank: 0,
-            recRating: 0,
-            recStars: 0,
-            year: 0))
-  ];
-
-  // final List<FavGenreItem> itemList = [
-  //   FavGenreItem(
-  //       "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/board_game_genres%2Ffamily_game.jpg?alt=media&token=cd082d8c-a6d7-4720-a569-6c63d7853ecb",
-  //       "1.",
-  //       1,
-  //       false),
-  //   FavGenreItem(
-  //       "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/board_game_genres%2Fdexterity_games.jpg?alt=media&token=f1ec1bf1-6af1-4290-8bde-46819674ea0c",
-  //       "2.",
-  //       2,
-  //       false),
-  //   FavGenreItem(
-  //       "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/board_game_genres%2Fparty_games.jpg?alt=media&token=0ac34bd6-78b1-418e-b5d8-fe1e9121e2af",
-  //       "3.",
-  //       3,
-  //       false),
-  // ];
-
   late Future<List<BoardGameData>> boardGames;
+
+  late FavBoardGames favBoardGames;
+
+  List<SelectedBoardGame> _returnGenreOfBoardGames(
+      FavBoardGames favBoardGames) {
+    switch (widget.gameGenre) {
+      case "family games":
+        return favBoardGames.familyGames;
+
+      case "dexterity games":
+        return favBoardGames.dexterityGames;
+
+      case "party games":
+        return favBoardGames.partyGames;
+
+      case "abstracts":
+        return favBoardGames.abstractGames;
+
+      case "thematic & eurogames":
+        return favBoardGames.thematicGames;
+
+      case "wargames":
+        return favBoardGames.warGames;
+
+      default:
+        return favBoardGames.familyGames;
+    }
+  }
 
   @override
   void initState() {
-    _userProvider = Provider.of<UserProvider>(context, listen: false);
     super.initState();
+    _userProvider = Provider.of<UserProvider>(context, listen: false);
 
     boardGames = RecommendedGamesApi().getBoardGamesData(widget.gameGenre,
         '&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1');
@@ -111,6 +88,10 @@ class _ProfilePageFavTopBoardGamesEditState
 
   // itemList = [];
   // selectedList = [];
+
+  var _loadImage = new AssetImage('assets/images/white-background.jpg');
+
+  bool _checkLoaded = true;
 
   @override
   Widget build(BuildContext context) {
@@ -138,8 +119,8 @@ class _ProfilePageFavTopBoardGamesEditState
                           SizedBox(height: 26),
                           Expanded(
                               child: ListView(
-                            children: userSnapshot
-                                .data!.favBoardGames.familyGames
+                            children: _returnGenreOfBoardGames(
+                                    userSnapshot.data!.favBoardGames)
                                 .map((item) {
                               return InkWell(
                                   onTap: () {
@@ -341,7 +322,7 @@ class _ProfilePageFavTopBoardGamesEditState
                       return InkWell(
                         onTap: () {
                           boardGameSelected = snapshot.data![index];
-
+                          Navigator.of(context).pop();
                           print(
                               "THIS IS THE SELECTED BOARD GAME!!! ${boardGameSelected?.name}");
                         },

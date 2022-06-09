@@ -73,9 +73,6 @@ class _ProfilePageFavBoardGamesEditState
     super.initState();
   }
 
-  // itemList = [];
-  // selectedList = [];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

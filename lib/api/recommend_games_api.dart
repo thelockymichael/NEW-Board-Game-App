@@ -136,7 +136,7 @@ class BoardGameData {
   String name;
 
   Map<String, dynamic> toMap() => {
-        "id": bggId,
+        "bggId": bggId,
         "imageUrl": imageUrl,
         "year": year,
         "recRank": recRank,

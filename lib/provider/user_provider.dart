@@ -31,7 +31,7 @@ class UserProvider extends ChangeNotifier {
       favBoardGameGenres: [],
       favBgMechanics: [],
       favBgThemes: [],
-      favBoardGames: FavBoardGames(familyGames: ""));
+      favBoardGames: FavBoardGames(familyGames: []));
 
   Future<AppUser> get user => _getUser();
 
@@ -68,8 +68,10 @@ class UserProvider extends ChangeNotifier {
           favBoardGameGenres: [],
           favBgMechanics: [],
           favBgThemes: [],
-          favBoardGames: FavBoardGames(familyGames: ""));
+          favBoardGames:
+              // FavBoardGames(familyGames: SelectedBoardGame(rank: 1))
 
+              FavBoardGames(familyGames: []));
       _databaseSource.addUser(user);
 
       SharedPreferencesUtil.setUserId(id);
@@ -340,8 +342,21 @@ class UserProvider extends ChangeNotifier {
   Future<Response> updateFavouriteBoardGamesByGenre(
       AppUser userSnapshot,
       BoardGameData boardGameData,
+      // String boardGameGenre,
+      // String boardGameRank,
       GlobalKey<ScaffoldState> errorScaffoldKey) async {
     List<SelectedBoardGame> temp = [];
+
+    temp.add(new SelectedBoardGame(
+        rank: 4,
+        boardGame: new BoardGameData(
+            bggId: 0,
+            imageUrl: ["dsada"],
+            name: "dasd",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0)));
 
     AppUser user = AppUser(
         id: userSnapshot.id,
@@ -356,7 +371,7 @@ class UserProvider extends ChangeNotifier {
         favBgMechanics: userSnapshot.favBgMechanics,
         favBgThemes: userSnapshot.favBgThemes,
         profilePhotoPath: userSnapshot.profilePhotoPath,
-        favBoardGames: FavBoardGames(familyGames: boardGameData.name));
+        favBoardGames: FavBoardGames(familyGames: temp));
 
     // print("AppUser ${user.favBoardGames.familyGames}");
     // user.favBoardGames.familyGames.forEach((element) {

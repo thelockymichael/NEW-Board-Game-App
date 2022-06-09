@@ -19,7 +19,7 @@ class RecommendedGamesApi {
       return finalResponse.results;
       // return response;
     } else {
-      throw Exception('Failed to load album');
+      throw Exception('Failed to load board games');
     }
   }
 }

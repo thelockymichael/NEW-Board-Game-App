@@ -97,19 +97,46 @@ class AppUser {
 
 class FavBoardGames {
   late List<SelectedBoardGame> familyGames;
+  late List<SelectedBoardGame> dexterityGames;
+  late List<SelectedBoardGame> partyGames;
+  late List<SelectedBoardGame> thematicGames;
+  late List<SelectedBoardGame> abstractGames;
+  late List<SelectedBoardGame> warGames;
 
-  FavBoardGames({
-    required this.familyGames,
-  });
+  FavBoardGames(
+      {required this.familyGames,
+      required this.dexterityGames,
+      required this.partyGames,
+      required this.thematicGames,
+      required this.abstractGames,
+      required this.warGames});
 
   Map<String, dynamic> toMap() => {
         "familyGames": List<dynamic>.from(familyGames.map((x) => x.toMap())),
+        "dexterityGames":
+            List<dynamic>.from(dexterityGames.map((x) => x.toMap())),
+        "partyGames": List<dynamic>.from(partyGames.map((x) => x.toMap())),
+        "thematicGames":
+            List<dynamic>.from(thematicGames.map((x) => x.toMap())),
+        "abstractGames":
+            List<dynamic>.from(abstractGames.map((x) => x.toMap())),
+        "warGames": List<dynamic>.from(warGames.map((x) => x.toMap())),
       };
 
   factory FavBoardGames.fromMap(Map<String, dynamic> map) {
     return FavBoardGames(
         familyGames: List<SelectedBoardGame>.from(
-            map["familyGames"].map((x) => SelectedBoardGame.fromMap(x))));
+            map["familyGames"].map((x) => SelectedBoardGame.fromMap(x))),
+        dexterityGames: List<SelectedBoardGame>.from(
+            map["dexterityGames"].map((x) => SelectedBoardGame.fromMap(x))),
+        partyGames: List<SelectedBoardGame>.from(
+            map["partyGames"].map((x) => SelectedBoardGame.fromMap(x))),
+        thematicGames: List<SelectedBoardGame>.from(
+            map["thematicGames"].map((x) => SelectedBoardGame.fromMap(x))),
+        abstractGames: List<SelectedBoardGame>.from(
+            map["abstractGames"].map((x) => SelectedBoardGame.fromMap(x))),
+        warGames: List<SelectedBoardGame>.from(
+            map["warGames"].map((x) => SelectedBoardGame.fromMap(x))));
   }
 
   String toJson() => json.encode(toMap());

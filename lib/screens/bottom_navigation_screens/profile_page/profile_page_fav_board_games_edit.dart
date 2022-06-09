@@ -56,7 +56,7 @@ class _ProfilePageFavBoardGamesEditState
         false),
     FavGenreItem(
         "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/board_game_genres%2Feurogame_game.jpg?alt=media&token=e38e0cc7-c9a4-4525-8c91-378c8444b51a",
-        "Thematic \n / \n Eurogames",
+        "thematic & eurogames",
         5,
         false),
     FavGenreItem(

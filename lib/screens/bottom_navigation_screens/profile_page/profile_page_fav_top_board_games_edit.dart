@@ -102,8 +102,11 @@ class _ProfilePageFavTopBoardGamesEditState
     _userProvider = Provider.of<UserProvider>(context, listen: false);
     super.initState();
 
-    boardGames = RecommendedGamesApi().getBoardGamesData(
-        '?game_type=5499&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1');
+    boardGames = RecommendedGamesApi().getBoardGamesData(widget.gameGenre,
+        '&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1');
+
+    // widget.gameGenre,
+    //   '?game_type=5499&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1');
   }
 
   // itemList = [];
@@ -169,6 +172,20 @@ class _ProfilePageFavTopBoardGamesEditState
                                               1.0
                                             ])),
                                       ),
+                                      Container(
+                                          child: Positioned(
+                                              left: 0,
+                                              right: 0,
+                                              top: 0,
+                                              bottom: 0,
+                                              child: Center(
+                                                  child: Text(
+                                                "${item.boardGame.name == "" ? "NO BOARD GAME SELECTED" : ""}",
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16),
+                                              )))),
                                       Positioned(
                                           bottom: 0,
                                           //you can use "right" and "bottom" too
@@ -201,6 +218,36 @@ class _ProfilePageFavTopBoardGamesEditState
                                                   color: Colors.white,
                                                   fontSize: 32),
                                             )),
+                                          )),
+                                      Positioned(
+                                          top: 0,
+                                          right: 0,
+                                          //you can use "right" and "bottom" too
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                color: Colors.green,
+                                                borderRadius:
+                                                    BorderRadius.circular(40)),
+                                            child: Padding(
+                                                padding: EdgeInsets.all(12),
+                                                child: Row(children: [
+                                                  Text(
+                                                    "#${item.boardGame.recRank.toString()} ",
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.white,
+                                                        fontSize: 28),
+                                                  ),
+                                                  Text(
+                                                    "(${item.boardGame.recRating.toString()})",
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w200,
+                                                        color: Colors.white,
+                                                        fontSize: 24),
+                                                  )
+                                                ])),
                                           )),
                                     ],
                                   ));
@@ -297,34 +344,6 @@ class _ProfilePageFavTopBoardGamesEditState
 
                           print(
                               "THIS IS THE SELECTED BOARD GAME!!! ${boardGameSelected?.name}");
-                          // Navigator.of(context).push(PageRouteBuilder(
-                          //   pageBuilder: (
-                          //     BuildContext context,
-                          //     Animation<double> animation,
-                          //     Animation<double> secondaryAnimation,
-                          //   ) =>
-                          //       ProfilePageFavTopBoardGamesEdit(
-                          //           gameGenre: snapshot.data![index].name,
-                          //           userSnapshot: userSnapshot.data!),
-                          //   // ProfilePageFavBoardGamesEdit(
-                          //   //     userSnapshot:
-                          //   //         userSnapshot.data!,
-                          //   //     notifyParent: refresh),
-                          //   transitionsBuilder: (
-                          //     BuildContext context,
-                          //     Animation<double> animation,
-                          //     Animation<double> secondaryAnimation,
-                          //     Widget child,
-                          //   ) =>
-                          //       SlideTransition(
-                          //     position: Tween<Offset>(
-                          //       begin: const Offset(1, 0),
-                          //       end: Offset.zero,
-                          //     ).animate(animation),
-                          //     child: child,
-                          //   ),
-                          // ));
-                          // print("ON TAP");
                         },
                         child: Stack(
                           children: <Widget>[
@@ -384,8 +403,8 @@ class _ProfilePageFavTopBoardGamesEditState
 
       if (boardGameSelected != null) {
         print("boardGame Rank $boardGameRank");
-        _userProvider.updateFavouriteBoardGamesByGenre(
-            userSnapshot, boardGameSelected!, boardGameRank, _scaffoldKey);
+        _userProvider.updateFavouriteBoardGamesByGenre(userSnapshot,
+            boardGameSelected!, boardGameRank, widget.gameGenre, _scaffoldKey);
 
         print("boardGameSelected ${boardGameSelected?.name}");
 

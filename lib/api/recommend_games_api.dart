@@ -6,10 +6,68 @@ class RecommendedGamesApi {
 // http://recommend.games/api/games/?ordering=-rec_rating,-bayes_rating,-avg_rating&page=1
 
   final String _url = "http://recommend.games/api/games/";
-  // final String
 
-  Future<List<BoardGameData>> getBoardGamesData(apiUrl) async {
-    http.Response response = await http.get(Uri.parse(_url + apiUrl));
+  // final String
+  String _returnGameType(String gameGenre) {
+    var str = "";
+
+    print("gameGenre ${gameGenre}");
+
+    switch (gameGenre) {
+      case "family games":
+        str += "?game_type=5499";
+
+        print("whole str ${gameGenre}");
+        break;
+
+      case "dexterity games":
+        str += "?category=1032";
+
+        print("whole str ${gameGenre}");
+        break;
+
+      case "party games":
+        str += "?game_type=5498";
+
+        print("whole str ${gameGenre}");
+        break;
+
+      case "abstracts":
+        str += "?game_type=4666";
+
+        print("whole str ${gameGenre}");
+        break;
+      // https://recommend.games/api/games/?game_type=4666&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1
+      case "thematic & eurogames":
+        str += "?game_type=5496";
+
+        print("whole str ${gameGenre}");
+        break;
+// https://recommend.games/api/games/?game_type=5496&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1
+      case "wargames":
+        str += "?game_type=4664";
+
+        print("whole str ${gameGenre}");
+        break;
+
+      // https://recommend.games/api/games/?game_type=4664&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1
+
+      default:
+        str += "?game_type=5499";
+        print("whole str ${gameGenre}");
+        break;
+    }
+
+    return str;
+  }
+
+  Future<List<BoardGameData>> getBoardGamesData(gameGenre, apiUrl) async {
+    String gameType = _returnGameType(gameGenre);
+
+    http.Response response =
+        await http.get(Uri.parse(_url + gameType + apiUrl));
+
+    //'?game_type=5499&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1');
 
     if (response.statusCode == 200) {
       final parsedJson = json.decode(response.body);
@@ -102,7 +160,7 @@ class BoardGameData {
   factory BoardGameData.fromJson(Map<String, dynamic> json) => BoardGameData(
         bggId: json["bgg_id"],
         imageUrl: List<String>.from(json["image_url"].map((x) => x)),
-        year: json["year"],
+        year: json["year"] ?? 0,
         recRank: json["rec_rank"],
         recRating: json["rec_rating"].toDouble(),
         recStars: json["rec_stars"].toDouble(),

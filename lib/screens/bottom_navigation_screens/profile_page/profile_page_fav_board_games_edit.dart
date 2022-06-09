@@ -55,14 +55,19 @@ class _ProfilePageFavBoardGamesEditState
         4,
         false),
     FavGenreItem(
-        "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/board_game_genres%2Feurogame_game.jpg?alt=media&token=e38e0cc7-c9a4-4525-8c91-378c8444b51a",
-        "thematic & eurogames",
+        "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/board_game_genres%2Fthematic_game.jpg?alt=media&token=12a936d7-5157-4eaf-b318-1af3342f1509",
+        "thematic",
         5,
+        false),
+    FavGenreItem(
+        "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/board_game_genres%2Feurogame_game.jpg?alt=media&token=e38e0cc7-c9a4-4525-8c91-378c8444b51a",
+        "strategy",
+        6,
         false),
     FavGenreItem(
         "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/board_game_genres%2Fwargame.jpg?alt=media&token=e342eed7-1ca0-4fdc-b95a-560024c3b1fe",
         "wargames",
-        6,
+        7,
         false)
   ];
 

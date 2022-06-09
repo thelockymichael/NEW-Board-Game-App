@@ -38,7 +38,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
   bool _isProcessing = false;
 
   late UserProvider _userProvider;
-  late BgGameMechanicProvider _bgMechanicProvider;
 
   @override
   void initState() {
@@ -53,9 +52,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
 
   @override
   Widget build(BuildContext context) {
-    _bgMechanicProvider =
-        Provider.of<BgGameMechanicProvider>(context, listen: false);
-
     return Scaffold(
         backgroundColor: Colors.grey,
         key: _scaffoldKey,

@@ -38,12 +38,17 @@ class RecommendedGamesApi {
         print("whole str ${gameGenre}");
         break;
       // https://recommend.games/api/games/?game_type=4666&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1
-      case "thematic & eurogames":
+      case "thematic":
         str += "?game_type=5496";
 
         print("whole str ${gameGenre}");
         break;
-// https://recommend.games/api/games/?game_type=5496&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1
+
+      case "strategy":
+        str += "?game_type=5497";
+
+        print("whole str ${gameGenre}");
+        break;
       case "wargames":
         str += "?game_type=4664";
 
@@ -57,6 +62,8 @@ class RecommendedGamesApi {
         print("whole str ${gameGenre}");
         break;
     }
+
+// https://recommend.games/api/games/?game_type=5497&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1
 
     return str;
   }
@@ -73,7 +80,7 @@ class RecommendedGamesApi {
       final parsedJson = json.decode(response.body);
       final finalResponse = ResponseData.fromJson(parsedJson);
 
-      print("JOTAIN ${finalResponse.results[0].name}");
+      // print("JOTAIN ${finalResponse.results[0].name}");
       return finalResponse.results;
       // return response;
     } else {
@@ -96,7 +103,7 @@ class ResponseData {
   });
 
   int count;
-  String next;
+  String? next;
   String? previous;
   List<BoardGameData> results;
 
@@ -161,7 +168,7 @@ class BoardGameData {
         bggId: json["bgg_id"],
         imageUrl: List<String>.from(json["image_url"].map((x) => x)),
         year: json["year"] ?? 0,
-        recRank: json["rec_rank"],
+        recRank: json["rec_rank"] ?? 0,
         recRating: json["rec_rating"].toDouble(),
         recStars: json["rec_stars"].toDouble(),
         name: json["name"],

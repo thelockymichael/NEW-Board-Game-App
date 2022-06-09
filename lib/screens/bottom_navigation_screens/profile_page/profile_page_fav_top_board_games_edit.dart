@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/api/recommend_games_api.dart';
 import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
 import 'package:flutter_demo_01/components/widgets/rounded_icon_button.dart';
+import 'package:flutter_demo_01/components/widgets/search_widget.dart';
 import 'package:flutter_demo_01/db/entity/FavGenreItem.dart';
 import 'package:flutter_demo_01/db/entity/GridItem.dart';
 import 'package:flutter_demo_01/db/remote/response.dart';
@@ -35,14 +36,13 @@ class ProfilePageFavTopBoardGamesEdit extends StatefulWidget {
 
 class _ProfilePageFavTopBoardGamesEditState
     extends State<ProfilePageFavTopBoardGamesEdit> {
-  final UserBioEdit _userBioEdit = UserBioEdit();
-
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  late UserProvider _userProvider;
+  /** Search for Board Game  */
+  String text = '';
+  /** END Search for Board Game END */
 
-  final _bioFormKey = GlobalKey<FormState>();
-  bool _isProcessing = false;
+  late UserProvider _userProvider;
 
   late Future<List<BoardGameData>> boardGames;
 
@@ -63,8 +63,11 @@ class _ProfilePageFavTopBoardGamesEditState
       case "abstracts":
         return favBoardGames.abstractGames;
 
-      case "thematic & eurogames":
+      case "thematic":
         return favBoardGames.thematicGames;
+
+      case "strategy":
+        return favBoardGames.strategyGames;
 
       case "wargames":
         return favBoardGames.warGames;
@@ -241,52 +244,10 @@ class _ProfilePageFavTopBoardGamesEditState
         }));
   }
 
-  _getBoardGames(String gameGenre) {
-    // RecommendedGamesApi()
-    //     .getBoardGamesData(
-    //         '?game_type=5499&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1')
-    //     .then((response) {
-    //   print("response $response");
-
-    //   final parsedJson = json.decode(response.body);
-
-    //   final finalResponse = ResponseData.fromJson(parsedJson);
-
-    //   print(finalResponse.results[0].name);
-    //   print(finalResponse.results[1].name);
-    //   print(finalResponse.results[0].recRank);
-    //   print(finalResponse.results[1].recRank);
-    //   print(finalResponse.results[0].recRating);
-    //   print(finalResponse.results[1].recRating);
-
-    //   return finalResponse.results;
-    // });
-  }
-
   void _showBoardGameModal(context, AppUser userSnapshot, int boardGameRank) {
 // TODO
 // 1. Make a HTTP request to recommend.games
 //  https://recommend.games/api/games/?game_type=5499&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1
-
-    // RecommendedGamesApi()
-    //     .getBoardGamesData(
-    //         '?game_type=5499&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1')
-    //     .then((response) {
-    //   print("response $response");
-
-    //   final parsedJson = json.decode(response.body);
-
-    //   final finalResponse = ResponseData.fromJson(parsedJson);
-
-    //   print(finalResponse.results[0].name);
-    //   print(finalResponse.results[1].name);
-    //   print(finalResponse.results[0].recRank);
-    //   print(finalResponse.results[1].recRank);
-    //   print(finalResponse.results[0].recRating);
-    //   print(finalResponse.results[1].recRating);
-
-    //   boardGames = finalResponse.results;
-    // });
 
 /* Board Game Mechanics  */
 
@@ -310,65 +271,102 @@ class _ProfilePageFavTopBoardGamesEditState
               future: boardGames,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return GridView.builder(
-                    itemCount: snapshot.data!.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            childAspectRatio: 0.56,
-                            crossAxisSpacing: 0,
-                            mainAxisSpacing: 0),
-                    itemBuilder: (context, index) {
-                      return InkWell(
-                        onTap: () {
-                          boardGameSelected = snapshot.data![index];
-                          Navigator.of(context).pop();
-                          print(
-                              "THIS IS THE SELECTED BOARD GAME!!! ${boardGameSelected?.name}");
-                        },
-                        child: Stack(
-                          children: <Widget>[
-                            Container(
-                                height: 350.0,
-                                decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        image: NetworkImage(
-                                            snapshot.data![index].imageUrl[0]),
-                                        fit: BoxFit.cover))),
-                            Container(
-                              decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                      colors: [
-                                    Colors.grey.withOpacity(0.0),
-                                    Colors.black.withOpacity(0.6),
-                                  ],
-                                      stops: const [
-                                    0.0,
-                                    1.0
-                                  ])),
+                  return Container(
+                      padding:
+                          EdgeInsets.only(left: 16.0, top: 10.0, right: 16.0),
+                      child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SearchWidget(
+                              text: text,
+                              onEditingComplete: (searchStr) {
+                                print("STR jotain ${searchStr}");
+                                setState(() {
+                                  boardGames = RecommendedGamesApi()
+                                      .getBoardGamesData(widget.gameGenre,
+                                          '&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1&search=${searchStr}');
+                                });
+
+                                // https://recommend.games/api/games/?game_type=5496&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1&search=catan
+                              },
+                              onChanged: (text) {
+                                setState(() {
+                                  // boardGames = RecommendedGamesApi()
+                                  //     .getBoardGamesData("dexterity games",
+                                  //         '&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1');
+                                  this.text = text;
+                                });
+                              },
+                              hintText: 'Search for a board game',
                             ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Center(
-                                    child: Text(
-                                        snapshot.data![index].name.capitalize(),
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20)))
-                              ],
-                            )
-                          ],
-                        ),
-                      );
-                    },
-                  );
+                            Expanded(
+                                child: GridView.builder(
+                              itemCount: snapshot.data!.length,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 3,
+                                      childAspectRatio: 0.56,
+                                      crossAxisSpacing: 0,
+                                      mainAxisSpacing: 0),
+                              itemBuilder: (context, index) {
+                                return InkWell(
+                                  onTap: () {
+                                    boardGameSelected = snapshot.data![index];
+                                    Navigator.of(context).pop();
+                                    print(
+                                        "THIS IS THE SELECTED BOARD GAME!!! ${boardGameSelected?.name}");
+                                  },
+                                  child: Stack(
+                                    children: <Widget>[
+                                      Container(
+                                          height: 350.0,
+                                          decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                  image: NetworkImage(snapshot
+                                                      .data![index]
+                                                      .imageUrl[0]),
+                                                  fit: BoxFit.cover))),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                                begin: Alignment.topCenter,
+                                                end: Alignment.bottomCenter,
+                                                colors: [
+                                              Colors.grey.withOpacity(0.0),
+                                              Colors.black.withOpacity(0.6),
+                                            ],
+                                                stops: const [
+                                              0.0,
+                                              1.0
+                                            ])),
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.max,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Center(
+                                              child: Text(
+                                                  snapshot.data![index].name
+                                                      .capitalize(),
+                                                  textAlign: TextAlign.center,
+                                                  style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 20)))
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                );
+                              },
+                            ))
+                          ]));
                 } else if (snapshot.hasError) {
                   return Text('${snapshot.error}');
                 }

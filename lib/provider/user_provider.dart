@@ -179,6 +179,43 @@ class UserProvider extends ChangeNotifier {
             year: 0,
           ),
         )
+      ], strategyGames: [
+        SelectedBoardGame(
+          rank: 1,
+          boardGame: BoardGameData(
+            bggId: 0,
+            imageUrl: [""],
+            name: "",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0,
+          ),
+        ),
+        SelectedBoardGame(
+          rank: 2,
+          boardGame: BoardGameData(
+            bggId: 0,
+            imageUrl: [""],
+            name: "",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0,
+          ),
+        ),
+        SelectedBoardGame(
+          rank: 3,
+          boardGame: BoardGameData(
+            bggId: 0,
+            imageUrl: [""],
+            name: "",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0,
+          ),
+        )
       ], abstractGames: [
         SelectedBoardGame(
           rank: 1,
@@ -402,6 +439,43 @@ class UserProvider extends ChangeNotifier {
               ),
             )
           ], thematicGames: [
+            SelectedBoardGame(
+              rank: 1,
+              boardGame: BoardGameData(
+                bggId: 0,
+                imageUrl: [""],
+                name: "",
+                recRank: 0,
+                recRating: 0,
+                recStars: 0,
+                year: 0,
+              ),
+            ),
+            SelectedBoardGame(
+              rank: 2,
+              boardGame: BoardGameData(
+                bggId: 0,
+                imageUrl: [""],
+                name: "",
+                recRank: 0,
+                recRating: 0,
+                recStars: 0,
+                year: 0,
+              ),
+            ),
+            SelectedBoardGame(
+              rank: 3,
+              boardGame: BoardGameData(
+                bggId: 0,
+                imageUrl: [""],
+                name: "",
+                recRank: 0,
+                recRating: 0,
+                recStars: 0,
+                year: 0,
+              ),
+            )
+          ], strategyGames: [
             SelectedBoardGame(
               rank: 1,
               boardGame: BoardGameData(
@@ -811,6 +885,7 @@ class UserProvider extends ChangeNotifier {
     var dexterityGames = userSnapshot.favBoardGames.dexterityGames;
     var partyGames = userSnapshot.favBoardGames.partyGames;
     var thematicGames = userSnapshot.favBoardGames.thematicGames;
+    var strategyGames = userSnapshot.favBoardGames.strategyGames;
     var abstractGames = userSnapshot.favBoardGames.abstractGames;
     var warGames = userSnapshot.favBoardGames.warGames;
 
@@ -819,6 +894,7 @@ class UserProvider extends ChangeNotifier {
         dexterityGames: dexterityGames,
         partyGames: partyGames,
         thematicGames: thematicGames,
+        strategyGames: strategyGames,
         abstractGames: abstractGames,
         warGames: warGames);
 
@@ -847,10 +923,16 @@ class UserProvider extends ChangeNotifier {
             abstractGames, boardGameRank, boardGameData);
         break;
       // https://recommend.games/api/games/?game_type=4666&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1
-      case "thematic & eurogames":
+      case "thematic":
         print("whole str ${boardGameGenre}");
         updateFavBoardGames.thematicGames = _returnUpdatedGenreBoardGames(
             thematicGames, boardGameRank, boardGameData);
+        break;
+
+      case "strategy":
+        print("whole str ${boardGameGenre}");
+        updateFavBoardGames.strategyGames = _returnUpdatedGenreBoardGames(
+            strategyGames, boardGameRank, boardGameData);
         break;
 // https://recommend.games/api/games/?game_type=5496&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1
       case "wargames":
@@ -875,39 +957,8 @@ class UserProvider extends ChangeNotifier {
       int boardGameRank,
       String boardGameGenre,
       GlobalKey<ScaffoldState> errorScaffoldKey) async {
-    List<SelectedBoardGame> temp = [];
-
-    // userSnapshot.favBoardGames.
-
-    // TODO
-    // 1. Add item if DOES NOT EXIST
-    // 2. If ITEM DOES EXIST => DO NOT ADD ITEM
-
-    // TODO 1. Family Games
-    // TODO 2. Dexterity Games
-
     final updateFavBoardGames = _returnFavBoardGames(
         userSnapshot, boardGameData, boardGameRank, boardGameGenre);
-    // var familyGames = userSnapshot.favBoardGames.familyGames;
-
-    // for (var i = 0; i < familyGames.length; i++) {
-    //   if (familyGames[i].rank == boardGameData) {
-    //     temp.add(SelectedBoardGame(rank: boardGameRank, boardGame: boardGameData));
-    //   }
-    // }
-
-    // var familyGames = userSnapshot.favBoardGames.familyGames;
-
-    // for (var i = 0; i < familyGames.length; i++) {
-    //   if (familyGames[i].rank == boardGameRank) {
-    //     temp.add(
-    //         SelectedBoardGame(rank: boardGameRank, boardGame: boardGameData));
-    //     continue;
-    //   }
-
-    //   temp.add(SelectedBoardGame(
-    //       rank: familyGames[i].rank, boardGame: familyGames[i].boardGame));
-    // }
 
     AppUser user = AppUser(
         id: userSnapshot.id,
@@ -923,20 +974,6 @@ class UserProvider extends ChangeNotifier {
         favBgThemes: userSnapshot.favBgThemes,
         profilePhotoPath: userSnapshot.profilePhotoPath,
         favBoardGames: updateFavBoardGames);
-
-    // print("AppUser ${user.favBoardGames.familyGames}");
-    // user.favBoardGames.familyGames.forEach((element) {
-    //   print("AppUser ${element.rank}");
-    // });
-    // favBoardGames:
-    // {
-    //  familyGames: [
-    //  {
-    //    rank: 1,
-    //    boardGame: { BoardGameData }
-    //  }
-    // ],
-    // }
 
     Response<dynamic> response = await _databaseSource.updateUser(user);
 

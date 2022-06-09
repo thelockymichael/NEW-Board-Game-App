@@ -100,6 +100,7 @@ class FavBoardGames {
   late List<SelectedBoardGame> dexterityGames;
   late List<SelectedBoardGame> partyGames;
   late List<SelectedBoardGame> thematicGames;
+  late List<SelectedBoardGame> strategyGames;
   late List<SelectedBoardGame> abstractGames;
   late List<SelectedBoardGame> warGames;
 
@@ -108,6 +109,7 @@ class FavBoardGames {
       required this.dexterityGames,
       required this.partyGames,
       required this.thematicGames,
+      required this.strategyGames,
       required this.abstractGames,
       required this.warGames});
 
@@ -118,6 +120,8 @@ class FavBoardGames {
         "partyGames": List<dynamic>.from(partyGames.map((x) => x.toMap())),
         "thematicGames":
             List<dynamic>.from(thematicGames.map((x) => x.toMap())),
+        "strategyGames":
+            List<dynamic>.from(strategyGames.map((x) => x.toMap())),
         "abstractGames":
             List<dynamic>.from(abstractGames.map((x) => x.toMap())),
         "warGames": List<dynamic>.from(warGames.map((x) => x.toMap())),
@@ -133,6 +137,8 @@ class FavBoardGames {
             map["partyGames"].map((x) => SelectedBoardGame.fromMap(x))),
         thematicGames: List<SelectedBoardGame>.from(
             map["thematicGames"].map((x) => SelectedBoardGame.fromMap(x))),
+        strategyGames: List<SelectedBoardGame>.from(
+            map["strategyGames"].map((x) => SelectedBoardGame.fromMap(x))),
         abstractGames: List<SelectedBoardGame>.from(
             map["abstractGames"].map((x) => SelectedBoardGame.fromMap(x))),
         warGames: List<SelectedBoardGame>.from(

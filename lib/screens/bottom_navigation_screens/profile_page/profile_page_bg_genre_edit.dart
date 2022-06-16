@@ -64,7 +64,7 @@ class _ProfilePageBgGenreEditState extends State<ProfilePageBgGenreEdit> {
         4,
         false));
     itemList.add(FavGenreItem(
-        "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/board_game_genres%2Fthematic_game.jpg?alt=media&token=21ce6eac-9f08-40e6-9a0a-d8e56046977c",
+        "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/board_game_genres%2Fthematic_game.jpg?alt=media&token=12a936d7-5157-4eaf-b318-1af3342f1509",
         "thematic games",
         5,
         false));

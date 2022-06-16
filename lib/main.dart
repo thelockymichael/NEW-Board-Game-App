@@ -47,7 +47,6 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (context) => CardProvider()),
           ChangeNotifierProvider(create: (context) => UserProvider()),
-          ChangeNotifierProvider(create: (context) => BgGameMechanicProvider())
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

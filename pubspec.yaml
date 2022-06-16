@@ -49,6 +49,7 @@ dependencies:
   cloud_functions: ^3.2.16
   firebase_crashlytics: ^2.8.1
   http: ^0.13.4
+  sticky_headers: ^0.2.0
 
 dev_dependencies:
   flutter_test:

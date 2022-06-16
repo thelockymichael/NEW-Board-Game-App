@@ -6,13 +6,10 @@ import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/model/bg_mechanic.dart';
 import 'package:flutter_demo_01/model/bg_theme.dart';
 import 'package:flutter_demo_01/model/user_profile_edit.dart';
-import 'package:flutter_demo_01/provider/bg_mechanic_provider.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/profile_page_bg_genre_edit.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/profile_page_bio_edit.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/profile_page_fav_board_games_edit.dart';
-import 'package:flutter_demo_01/screens/login_page.dart';
-import 'package:flutter_demo_01/screens/settings_page.dart';
 import 'package:flutter_demo_01/utils/constants.dart';
 import 'package:flutter_demo_01/utils/validator.dart';
 import 'package:image_picker/image_picker.dart';
@@ -444,84 +441,222 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold))),
-                                                      Align(
-                                                          alignment: Alignment
-                                                              .centerLeft,
-                                                          child: Column(
-                                                              children: [
-                                                                Wrap(
-                                                                  children: userSnapshot
-                                                                      .data!
-                                                                      .favBgMechanics
-                                                                      .map(
-                                                                          (gameGenre) {
-                                                                    return Container(
-                                                                      margin: const EdgeInsets
-                                                                              .only(
-                                                                          right:
-                                                                              10,
-                                                                          top:
-                                                                              10),
-                                                                      padding:
-                                                                          const EdgeInsets.all(
-                                                                              8),
-                                                                      decoration:
-                                                                          const BoxDecoration(
-                                                                        color: Colors
-                                                                            .green,
-                                                                        borderRadius:
-                                                                            BorderRadius.all(Radius.circular(12.0)),
-                                                                      ),
-                                                                      child:
-                                                                          Text(
-                                                                        gameGenre
-                                                                            .capitalize(),
-                                                                        style: const TextStyle(
-                                                                            fontSize:
-                                                                                20,
-                                                                            color:
-                                                                                Colors.white),
-                                                                      ),
-                                                                    );
-                                                                  }).toList(),
-                                                                ),
-                                                                Wrap(
-                                                                  children: userSnapshot
-                                                                      .data!
-                                                                      .favBgThemes
-                                                                      .map(
-                                                                          (gameGenre) {
-                                                                    return Container(
-                                                                      margin: const EdgeInsets
-                                                                              .only(
-                                                                          right:
-                                                                              10,
-                                                                          top:
-                                                                              10),
-                                                                      padding:
-                                                                          const EdgeInsets.all(
-                                                                              8),
-                                                                      decoration:
-                                                                          const BoxDecoration(
-                                                                        color: Colors
-                                                                            .green,
-                                                                        borderRadius:
-                                                                            BorderRadius.all(Radius.circular(12.0)),
-                                                                      ),
-                                                                      child:
-                                                                          Text(
-                                                                        gameGenre
-                                                                            .capitalize(),
-                                                                        style: const TextStyle(
-                                                                            fontSize:
-                                                                                20,
-                                                                            color:
-                                                                                Colors.white),
-                                                                      ),
-                                                                    );
-                                                                  }).toList(),
-                                                                )
-                                                              ])),
+
+                                                      SafeArea(
+                                                          child: SizedBox(
+                                                        width: double.infinity,
+                                                        height: 200,
+                                                        child: GridView(
+                                                            scrollDirection:
+                                                                Axis.horizontal,
+                                                            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                                                                maxCrossAxisExtent:
+                                                                    250,
+                                                                childAspectRatio:
+                                                                    3 / 2,
+                                                                crossAxisSpacing:
+                                                                    20,
+                                                                mainAxisSpacing:
+                                                                    20),
+                                                            children: userSnapshot
+                                                                .data!
+                                                                .favBoardGames
+                                                                .familyGames
+                                                                .map(
+                                                                    (favFamGame) =>
+                                                                        Stack(
+                                                                          children: <
+                                                                              Widget>[
+                                                                            Container(
+                                                                                height: 350.0,
+                                                                                decoration: BoxDecoration(image: favFamGame.boardGame.name.isEmpty ? null : DecorationImage(image: NetworkImage(favFamGame.boardGame.imageUrl[0]), fit: BoxFit.cover))),
+                                                                            Container(
+                                                                              decoration: BoxDecoration(
+                                                                                  gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [
+                                                                                Colors.grey.withOpacity(0.0),
+                                                                                Colors.black.withOpacity(0.6),
+                                                                              ], stops: const [
+                                                                                0.0,
+                                                                                1.0
+                                                                              ])),
+                                                                            ),
+                                                                            Positioned(
+                                                                                top: 0,
+                                                                                left: 0,
+                                                                                //you can use "right" and "bottom" too
+                                                                                child: Container(
+                                                                                  height: 40,
+                                                                                  width: 40,
+                                                                                  decoration: BoxDecoration(color: Colors.green, borderRadius: BorderRadius.circular(20)),
+                                                                                  child: Center(
+                                                                                      child: Text(
+                                                                                    favFamGame.rank.toString(),
+                                                                                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 32),
+                                                                                  )),
+                                                                                )),
+                                                                            Positioned(
+                                                                                top: 0,
+                                                                                right: 0,
+                                                                                //you can use "right" and "bottom" too
+                                                                                child: Container(
+                                                                                  decoration: BoxDecoration(color: Colors.green, borderRadius: BorderRadius.circular(8)),
+                                                                                  child: Padding(
+                                                                                      padding: EdgeInsets.all(6),
+                                                                                      child: Column(children: [
+                                                                                        Text(
+                                                                                          "#${favFamGame.boardGame.recRank.toString()}",
+                                                                                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
+                                                                                        ),
+                                                                                        Text(
+                                                                                          "(${favFamGame.boardGame.recRating.toStringAsFixed(1)})",
+                                                                                          style: TextStyle(fontWeight: FontWeight.w200, color: Colors.white, fontSize: 18),
+                                                                                        )
+                                                                                      ])),
+                                                                                )),
+                                                                            Column(
+                                                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                                                              mainAxisSize: MainAxisSize.max,
+                                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                                              children: [
+                                                                                Center(child: Text(favFamGame.boardGame.name.isEmpty ? "Not selected" : favFamGame.boardGame.name, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20)))
+                                                                              ],
+                                                                            )
+                                                                          ],
+                                                                        ))
+                                                                .toList()
+
+                                                            // Stack(
+                                                            //   children: <Widget>[
+                                                            //     Container(
+                                                            //         height:
+                                                            //             350.0,
+                                                            //         decoration: BoxDecoration(
+                                                            //             image: DecorationImage(
+                                                            //                 image: NetworkImage(userSnapshot.data!.favBoardGames.familyGames[0].boardGame.imageUrl[0]
+                                                            //                     // snapshot
+                                                            //                     //     .data![
+                                                            //                     //         index]
+                                                            //                     //     .imageUrl[0]
+
+                                                            //                     ),
+                                                            //                 fit: BoxFit.cover))),
+                                                            //     Container(
+                                                            //       decoration:
+                                                            //           BoxDecoration(
+                                                            //               gradient:
+                                                            //                   LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [
+                                                            //         Colors.grey
+                                                            //             .withOpacity(
+                                                            //                 0.0),
+                                                            //         Colors.black
+                                                            //             .withOpacity(
+                                                            //                 0.6),
+                                                            //       ], stops: const [
+                                                            //         0.0,
+                                                            //         1.0
+                                                            //       ])),
+                                                            //     ),
+                                                            //     Column(
+                                                            //       crossAxisAlignment:
+                                                            //           CrossAxisAlignment
+                                                            //               .center,
+                                                            //       mainAxisSize:
+                                                            //           MainAxisSize
+                                                            //               .max,
+                                                            //       mainAxisAlignment:
+                                                            //           MainAxisAlignment
+                                                            //               .center,
+                                                            //       children: [
+                                                            //         Center(
+                                                            //             child: Text(
+                                                            //                 userSnapshot.data!.favBoardGames.familyGames[0].boardGame.name,
+                                                            //                 textAlign: TextAlign.center,
+                                                            //                 style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20)))
+                                                            //       ],
+                                                            //     )
+                                                            //   ],
+                                                            // )
+
+                                                            ),
+                                                      ))
+                                                      // Align(
+                                                      //     alignment: Alignment
+                                                      //         .centerLeft,
+                                                      //     child: Column(
+                                                      //         children: [
+                                                      //           Wrap(
+                                                      //             children: userSnapshot
+                                                      //                 .data!
+                                                      //                 .favBgMechanics
+                                                      //                 .map(
+                                                      //                     (gameGenre) {
+                                                      //               return Container(
+                                                      //                 margin: const EdgeInsets
+                                                      //                         .only(
+                                                      //                     right:
+                                                      //                         10,
+                                                      //                     top:
+                                                      //                         10),
+                                                      //                 padding:
+                                                      //                     const EdgeInsets.all(
+                                                      //                         8),
+                                                      //                 decoration:
+                                                      //                     const BoxDecoration(
+                                                      //                   color: Colors
+                                                      //                       .green,
+                                                      //                   borderRadius:
+                                                      //                       BorderRadius.all(Radius.circular(12.0)),
+                                                      //                 ),
+                                                      //                 child:
+                                                      //                     Text(
+                                                      //                   gameGenre
+                                                      //                       .capitalize(),
+                                                      //                   style: const TextStyle(
+                                                      //                       fontSize:
+                                                      //                           20,
+                                                      //                       color:
+                                                      //                           Colors.white),
+                                                      //                 ),
+                                                      //               );
+                                                      //             }).toList(),
+                                                      //           ),
+                                                      //           Wrap(
+                                                      //             children: userSnapshot
+                                                      //                 .data!
+                                                      //                 .favBgThemes
+                                                      //                 .map(
+                                                      //                     (gameGenre) {
+                                                      //               return Container(
+                                                      //                 margin: const EdgeInsets
+                                                      //                         .only(
+                                                      //                     right:
+                                                      //                         10,
+                                                      //                     top:
+                                                      //                         10),
+                                                      //                 padding:
+                                                      //                     const EdgeInsets.all(
+                                                      //                         8),
+                                                      //                 decoration:
+                                                      //                     const BoxDecoration(
+                                                      //                   color: Colors
+                                                      //                       .green,
+                                                      //                   borderRadius:
+                                                      //                       BorderRadius.all(Radius.circular(12.0)),
+                                                      //                 ),
+                                                      //                 child:
+                                                      //                     Text(
+                                                      //                   gameGenre
+                                                      //                       .capitalize(),
+                                                      //                   style: const TextStyle(
+                                                      //                       fontSize:
+                                                      //                           20,
+                                                      //                       color:
+                                                      //                           Colors.white),
+                                                      //                 ),
+                                                      //               );
+                                                      //             }).toList(),
+                                                      //           )
+                                                      //         ])),
                                                     ],
                                                   ),
                                                 ),

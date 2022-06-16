@@ -45,6 +45,7 @@ class _ProfilePageFavTopBoardGamesEditState
   late UserProvider _userProvider;
 
   late Future<List<BoardGameData>> boardGames;
+  late Future<List<BoardGameData>> defaultBoardGames;
 
   late FavBoardGames favBoardGames;
 
@@ -84,6 +85,12 @@ class _ProfilePageFavTopBoardGamesEditState
 
     boardGames = RecommendedGamesApi().getBoardGamesData(widget.gameGenre,
         '&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1');
+
+    defaultBoardGames = boardGames;
+
+    // defaultBoardGames = RecommendedGamesApi().getBoardGamesData(
+    //     widget.gameGenre,
+    //     '&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1');
 
     // widget.gameGenre,
     //   '?game_type=5499&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1');
@@ -137,10 +144,13 @@ class _ProfilePageFavTopBoardGamesEditState
                                       Container(
                                         height: 180.0,
                                         decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                                image: NetworkImage(
-                                                    item.boardGame.imageUrl[0]),
-                                                fit: BoxFit.cover)),
+                                            image: item.boardGame.imageUrl[0]
+                                                    .isEmpty
+                                                ? null
+                                                : DecorationImage(
+                                                    image: NetworkImage(item
+                                                        .boardGame.imageUrl[0]),
+                                                    fit: BoxFit.cover)),
                                       ),
                                       Container(
                                         decoration: BoxDecoration(
@@ -172,7 +182,6 @@ class _ProfilePageFavTopBoardGamesEditState
                                               )))),
                                       Positioned(
                                           bottom: 0,
-                                          //you can use "right" and "bottom" too
                                           child: Container(
                                             child: Center(
                                                 child: Text(
@@ -262,11 +271,7 @@ class _ProfilePageFavTopBoardGamesEditState
       ),
       context: context,
       builder: (BuildContext context) {
-        bool b = false;
-
         return StatefulBuilder(builder: (BuildContext context, setState) {
-          print("BOOL ${b}");
-
           return FutureBuilder<List<BoardGameData>>(
               future: boardGames,
               builder: (context, snapshot) {
@@ -282,90 +287,127 @@ class _ProfilePageFavTopBoardGamesEditState
                             SearchWidget(
                               text: text,
                               onEditingComplete: (searchStr) {
-                                print("STR jotain ${searchStr}");
-                                setState(() {
-                                  boardGames = RecommendedGamesApi()
-                                      .getBoardGamesData(widget.gameGenre,
-                                          '&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1&search=${searchStr}');
-                                });
+                                print("THIS IS TEXT $searchStr");
 
-                                // https://recommend.games/api/games/?game_type=5496&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1&search=catan
+                                if (searchStr.isNotEmpty) {
+                                  print("STR jotain $searchStr");
+                                  setState(() {
+                                    boardGames = RecommendedGamesApi()
+                                        .getBoardGamesData(widget.gameGenre,
+                                            '&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1&search=$searchStr');
+                                  });
+                                }
+
+                                if (searchStr.isEmpty) {
+                                  print("THIS IS EMPTY TEXT");
+
+                                  setState(() {
+                                    print("THIS IS ${defaultBoardGames}");
+                                    boardGames = defaultBoardGames;
+                                  });
+                                }
                               },
                               onChanged: (text) {
                                 setState(() {
-                                  // boardGames = RecommendedGamesApi()
-                                  //     .getBoardGamesData("dexterity games",
-                                  //         '&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1');
+                                  if (text.isEmpty) {
+                                    print("THIS IS EMPTY TEXT");
+
+                                    setState(() {
+                                      print("THIS IS ${text}");
+                                      boardGames = defaultBoardGames;
+                                    });
+                                  }
+
                                   this.text = text;
                                 });
                               },
                               hintText: 'Search for a board game',
                             ),
                             Expanded(
-                                child: GridView.builder(
-                              itemCount: snapshot.data!.length,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 3,
-                                      childAspectRatio: 0.56,
-                                      crossAxisSpacing: 0,
-                                      mainAxisSpacing: 0),
-                              itemBuilder: (context, index) {
-                                return InkWell(
-                                  onTap: () {
-                                    boardGameSelected = snapshot.data![index];
-                                    Navigator.of(context).pop();
-                                    print(
-                                        "THIS IS THE SELECTED BOARD GAME!!! ${boardGameSelected?.name}");
-                                  },
-                                  child: Stack(
-                                    children: <Widget>[
-                                      Container(
-                                          height: 350.0,
-                                          decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                  image: NetworkImage(snapshot
-                                                      .data![index]
-                                                      .imageUrl[0]),
-                                                  fit: BoxFit.cover))),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                            gradient: LinearGradient(
-                                                begin: Alignment.topCenter,
-                                                end: Alignment.bottomCenter,
-                                                colors: [
-                                              Colors.grey.withOpacity(0.0),
-                                              Colors.black.withOpacity(0.6),
-                                            ],
-                                                stops: const [
-                                              0.0,
-                                              1.0
-                                            ])),
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.max,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Center(
-                                              child: Text(
-                                                  snapshot.data![index].name
-                                                      .capitalize(),
-                                                  textAlign: TextAlign.center,
-                                                  style: const TextStyle(
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 20)))
-                                        ],
+                                child: snapshot.data!.isEmpty
+                                    ? Text(
+                                        "No results",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline4,
                                       )
-                                    ],
-                                  ),
-                                );
-                              },
-                            ))
+                                    : GridView.builder(
+                                        itemCount: snapshot.data!.length,
+                                        gridDelegate:
+                                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                                crossAxisCount: 3,
+                                                childAspectRatio: 0.56,
+                                                crossAxisSpacing: 0,
+                                                mainAxisSpacing: 0),
+                                        itemBuilder: (context, index) {
+                                          return InkWell(
+                                            onTap: () {
+                                              boardGameSelected =
+                                                  snapshot.data![index];
+                                              Navigator.of(context).pop();
+                                              print(
+                                                  "THIS IS THE SELECTED BOARD GAME!!! ${boardGameSelected?.name}");
+                                            },
+                                            child: Stack(
+                                              children: <Widget>[
+                                                Container(
+                                                    height: 350.0,
+                                                    decoration: BoxDecoration(
+                                                        image: DecorationImage(
+                                                            image: NetworkImage(
+                                                                snapshot
+                                                                    .data![
+                                                                        index]
+                                                                    .imageUrl[0]),
+                                                            fit: BoxFit.cover))),
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                      gradient: LinearGradient(
+                                                          begin: Alignment
+                                                              .topCenter,
+                                                          end: Alignment
+                                                              .bottomCenter,
+                                                          colors: [
+                                                        Colors.grey
+                                                            .withOpacity(0.0),
+                                                        Colors.black
+                                                            .withOpacity(0.6),
+                                                      ],
+                                                          stops: const [
+                                                        0.0,
+                                                        1.0
+                                                      ])),
+                                                ),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisSize:
+                                                      MainAxisSize.max,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Center(
+                                                        child: Text(
+                                                            snapshot
+                                                                .data![index]
+                                                                .name
+                                                                .capitalize(),
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: const TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 20)))
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      ))
                           ]));
                 } else if (snapshot.hasError) {
                   return Text('${snapshot.error}');
@@ -377,20 +419,17 @@ class _ProfilePageFavTopBoardGamesEditState
         });
       },
     ).whenComplete(() {
-      // _userProvider.updateBgMechanicsAndThemes(userSnapshot,
-      //     bgMechanicsSelectedList, bgThemesSelectedList, _scaffoldKey);
-
       if (boardGameSelected != null) {
         print("boardGame Rank $boardGameRank");
         _userProvider.updateFavouriteBoardGamesByGenre(userSnapshot,
             boardGameSelected!, boardGameRank, widget.gameGenre, _scaffoldKey);
 
         print("boardGameSelected ${boardGameSelected?.name}");
-
-        setState(() {});
       }
 
-// boardGameSelected.bggId
+      setState(() {
+        boardGames = defaultBoardGames;
+      });
       // refresh();
       print('Hey there, I\'m calling after hide bottomSheet');
     });

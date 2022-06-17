@@ -23,6 +23,8 @@ class CardProvider extends ChangeNotifier {
   Offset get position => _position;
   double get angle => _angle;
 
+  Size get size => _screenSize;
+
   void setUsers(List<AppUser> users) {
     _users = users;
   }

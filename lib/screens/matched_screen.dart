@@ -15,13 +15,15 @@ class MatchedScreen extends StatelessWidget {
   final String myUserId;
   final String otherUserProfilePhotoPath;
   final String otherUserId;
+  final String otherUserName;
 
   const MatchedScreen(
       {Key? key,
       required this.myProfilePhotoPath,
       required this.myUserId,
       required this.otherUserProfilePhotoPath,
-      required this.otherUserId})
+      required this.otherUserId,
+      required this.otherUserName})
       : super(key: key);
 
   void sendMessagePressed(BuildContext context) async {
@@ -52,6 +54,12 @@ class MatchedScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              Column(children: [
+                Text("It's a Match!", style: TextStyle(fontSize: 32)),
+                Text(
+                    "You and ${otherUserName.capitalize()} have liked each other",
+                    style: TextStyle(fontSize: 24))
+              ]),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [

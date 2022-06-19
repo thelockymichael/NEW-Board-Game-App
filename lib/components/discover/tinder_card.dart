@@ -95,25 +95,30 @@ class _TinderCardState extends State<TinderCard> {
           final provider = Provider.of<CardProvider>(context, listen: false);
 
           provider.endPosition(context, widget.myUser!);
+          print("!!! END POSITION !!!");
 
-          widget.resetState();
+          print("-----------------");
+          print("Provider onPandEnd");
+          provider.users.forEach((user) => print("USER NAME: ${user.name}"));
+
+          print("-----------------");
+
+/**
+    required this.user,
+    required this.resetState,
+    required this.myUser,
+    required this.isFront,
+ */
+
+          if (provider.users[0] == widget.user) {
+            // TIME TO RESET
+
+            print("TIME TO RESTARTEE");
+            widget.resetState();
+          }
+          // widget.resetState();
         },
       );
-
-  // Container(
-  //   decoration: BoxDecoration(
-  //       image: DecorationImage(
-  //     image: NetworkImage(widget.user!.profilePhotoPath),
-  //     fit: BoxFit.cover,
-  //     alignment: const Alignment(-0.3, 0),
-  //   )),
-  //   child: Container(
-  //     decoration: const BoxDecoration(
-  //         gradient: LinearGradient(
-  //             colors: [Colors.transparent, Colors.black],
-  //             begin: Alignment.bottomCenter,
-  //             end: Alignment.topCenter,
-  //             stops: [0.7, 1])),
 
   Widget buildCard() => ClipRRect(
       borderRadius: BorderRadius.circular(20),
@@ -536,53 +541,10 @@ class _TinderCardState extends State<TinderCard> {
               ),
             ],
           ),
-        )
-        // Container(
-        //   decoration: BoxDecoration(
-        //       image: DecorationImage(
-        //     image: NetworkImage(widget.user!.profilePhotoPath),
-        //     fit: BoxFit.cover,
-        //     alignment: const Alignment(-0.3, 0),
-        //   )),
-        //   child: Container(
-        //     decoration: const BoxDecoration(
-        //         gradient: LinearGradient(
-        //             colors: [Colors.transparent, Colors.black],
-        //             begin: Alignment.bottomCenter,
-        //             end: Alignment.topCenter,
-        //             stops: [0.7, 1])),
-        //     padding: const EdgeInsets.all(20),
-        //     child: Column(
-        //       children: [
-        //         buildName(),
-        //         const SizedBox(height: 8),
-        //         buildBGGName(),
-        //         const Spacer(),
-        //         const SizedBox(height: 8),
-        //         buildFavGameGenres(),
-        //         const SizedBox(height: 16),
-        //         buildStatus()
-        //       ],
-        //     ),
-        //   ),
-        // ),
-        ,
+        ),
         Padding(
             padding: const EdgeInsets.all(20),
-            child: Align(child: Column(children: [buildName()]))
-
-            //  Container(
-            //   margin: EdgeInsets.only(top: 20),
-            //   alignment: Alignment.center,
-            //   color: Colors.blue,
-            //   height: 30,
-            //   width: 300,
-            //   child: Text(
-            //     "This is a title",
-            //     style: TextStyle(fontSize: 24),
-            //   ),
-            // ),
-            ),
+            child: Align(child: Column(children: [buildName()]))),
       ]));
 
   Widget buildFavGameGenres() {

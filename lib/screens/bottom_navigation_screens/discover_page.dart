@@ -9,6 +9,7 @@ import 'package:flutter_demo_01/db/entity/match.dart';
 import 'package:flutter_demo_01/db/entity/swipe.dart';
 import 'package:flutter_demo_01/db/remote/firebase_database_source.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
+import 'package:flutter_demo_01/provider/card_provider.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/screens/matched_screen.dart';
 import 'package:flutter_demo_01/utils/utils.dart';
@@ -50,9 +51,50 @@ class _DiscoverPage extends State<DiscoverPage> {
     var res = await _databaseSource.getPersonsToMatchWith(2, _ignoreSwipeIds);
 
     if (res.docs.isNotEmpty) {
+      // for (var i = 0; i < res.docs.length; i++) {
+      //   AppUser temp = AppUser.fromSnapshot(res.docs[0]);
+
+      //   if (temp.name == AppUser.fromSnapshot(res.docs.last).name) {
+      //     print("JOKU, IT IS THE SAME?");
+      //     _userList.add(temp);
+
+      //     break;
+      //   } else {
+      //     print("JOKU, IT IS NOT?");
+      //     AppUser temp2 = AppUser.fromSnapshot(res.docs.last);
+
+      //     print("JOKU, ${temp.name}, ${temp2.name}");
+
+      //     _userList.add(AppUser.fromSnapshot(res.docs[i]));
+      //   }
+      // }
+      _userList = [];
       for (var element in res.docs) {
         _userList.add(AppUser.fromSnapshot(element));
       }
+
+      // final provider = Provider.of<CardProvider>(context, listen: false);
+
+      // _userList.reversed.toList().forEach((user) => print(user.name));
+
+      // provider.setUsers(_userList.reversed.toList());
+
+      final provider = Provider.of<CardProvider>(context, listen: false);
+
+      // widget.people.forEach((user) => print(user.name));
+
+      // if (_userList.last == _userList[0]) {
+      //   _userList = [];
+      //   _userList.add(_userList[0]);
+      //   return _userList;
+      // }
+      // print("JUKAJUKA ${_userList.reversed.toList()}");
+
+      print("HASTA provider setUser ${_userList.reversed.toList().length}");
+
+      provider.setUsers(_userList.reversed.toList());
+
+      // print("HELLO 2323");
 
       return _userList.reversed.toList();
     }
@@ -60,35 +102,47 @@ class _DiscoverPage extends State<DiscoverPage> {
     return null;
   }
 
-  void personSwiped(List<AppUser> users, AppUser myUser, AppUser otherUser,
-      bool isLiked) async {
-    _databaseSource.addSwipedUser(myUser.id, Swipe(otherUser.id, isLiked));
-    _ignoreSwipeIds.add(otherUser.id);
-    // widget.ignoreSwipeIds.add(otherUser.id);
+  void personSwiped(List<AppUser> users, AppUser myUser,
+      List<AppUser> otherUsers, bool isLiked) async {
+    print("PERSONSWIPED ${myUser.id}");
+
+    print("PERSONSWIPED ${otherUsers.last.id}");
+    print("PERSONSWIPED $isLiked");
+    print("PERSONSWIPED usr");
+    print(await isMatch(myUser, otherUsers.last) == true);
+
+    _databaseSource.addSwipedUser(
+        myUser.id, Swipe(otherUsers.last.id, isLiked));
+    _ignoreSwipeIds.add(otherUsers.last.id);
+    // widget.ignoreSwipeIds.add(otherUsers.last.id);
 
     if (isLiked = true) {
-      if (await isMatch(myUser, otherUser) == true) {
-        _databaseSource.addMatch(myUser.id, Match(otherUser.id));
-        _databaseSource.addMatch(otherUser.id, Match(myUser.id));
-        // var uuid = Uuid();
-        // var chatId = uuid.v4();
-        // BACKUP
-        String chatId = compareAndCombineIds(myUser.id, otherUser.id);
+      if (await isMatch(myUser, otherUsers.last) == true) {
+        _databaseSource.addMatch(myUser.id, Match(otherUsers.last.id));
+        _databaseSource.addMatch(otherUsers.last.id, Match(myUser.id));
 
-        // var uuid = uu();
-        _databaseSource.addChat(Chat(chatId, myUser.id, otherUser.id, null));
-        // _databaseSource.addChat(Chat(chatId, null));
+        String chatId = compareAndCombineIds(myUser.id, otherUsers.last.id);
+
+        _databaseSource
+            .addChat(Chat(chatId, myUser.id, otherUsers.last.id, null));
 
         Navigator.pushNamed(context, MatchedScreen.id, arguments: {
           "my_user_id": myUser.id,
           "my_profile_photo_path": myUser.profilePhotoPath,
-          "other_user_profile_photo_path": otherUser.profilePhotoPath,
-          "other_user_id": otherUser.id
+          "other_user_profile_photo_path": otherUsers.last.profilePhotoPath,
+          "other_user_id": otherUsers.last.id,
+          "other_user_name": otherUsers.last.name
         });
       }
     }
 
-    setState(() {});
+    print("PERSONSWIPED ${users.length}");
+    // otherUsers.removeLast();
+
+    // print("otherUsers length ${otherUsers.length}");
+    if (users.isEmpty) {
+      setState(() {});
+    }
   }
 
   void resetState() {

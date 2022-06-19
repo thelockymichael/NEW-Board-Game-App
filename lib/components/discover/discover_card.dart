@@ -27,13 +27,23 @@ class DiscoverCard extends StatefulWidget {
 }
 
 class _DiscoverCard extends State<DiscoverCard> {
+  late CardProvider cardProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    cardProvider = Provider.of<CardProvider>(context, listen: false);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<CardProvider>(context, listen: false);
+    // final provider = Provider.of<CardProvider>(context, listen: false);
 
-    provider.setUsers(widget.people);
+    // widget.people.forEach((user) => print(user.name));
 
-    return provider.users.isEmpty
+    // provider.setUsers(widget.people);
+
+    return cardProvider.users.isEmpty
         ? Center(
             child: Text('No more users to swipe',
                 style: Theme.of(context).textTheme.headline4),
@@ -61,31 +71,24 @@ class _DiscoverCard extends State<DiscoverCard> {
           );
   }
 
-  // Widget buildLogo() => Row(
-  //       children: [
-  //         const SizedBox(width: 4),
-  //         FittedBox(
-  //           fit: BoxFit.fitWidth,
-  //           child: Text(
-  //             'Board Game Friends',
-  //             style: TextStyle(
-  //               fontSize: 36,
-  //               fontWeight: FontWeight.bold,
-  //               color: Colors.white,
-  //             ),
-  //           ),
-  //         )
-  //       ],
-  //     );
-
   Widget buildCards() {
+    print("-----------------");
+    print("Build cards");
+
+    print("cardProviders. ${cardProvider.users.last.name}");
+    print("cardProviders. ${cardProvider.users.length}");
+    cardProvider.users.forEach((user) => print("NAME: ${user.name}"));
+// cardProvider.users.last == user
+    print("IS TRUE ??? ${cardProvider.users.last == cardProvider.users[0]}");
+    print("-----------------");
+
     return Stack(
-      children: widget.people
+      children: cardProvider.users
           .map((user) => TinderCard(
                 user: user,
                 resetState: widget.resetState,
                 myUser: widget.myUser,
-                isFront: widget.people.last == user,
+                isFront: cardProvider.users.last == user,
               ))
           .toList(),
     );
@@ -111,12 +114,9 @@ class _DiscoverCard extends State<DiscoverCard> {
               backgroundColor: getColor(Colors.white, Colors.red, isDislike),
               side: getBorder(Colors.red, Colors.white, isDislike)),
           onPressed: () {
-            final provider = Provider.of<CardProvider>(context, listen: false);
-
             provider.dislike();
 
-            widget.personSwiped(
-                users, widget.myUser, widget.people.last, false);
+            widget.personSwiped(users, widget.myUser, widget.people, false);
           },
           child: const Icon(Icons.clear, size: 46),
         ),
@@ -142,13 +142,9 @@ class _DiscoverCard extends State<DiscoverCard> {
               backgroundColor: getColor(Colors.white, Colors.teal, isLike),
               side: getBorder(Colors.teal, Colors.white, isLike)),
           onPressed: () {
-            // personSwiped(widget.myUser, widget.people.last, false);
-
             provider.like();
 
-            // people.removeLast();
-
-            widget.personSwiped(users, widget.myUser, widget.people.last, true);
+            widget.personSwiped(users, widget.myUser, widget.people, true);
           },
           child: const Icon(Icons.favorite, size: 46),
         )

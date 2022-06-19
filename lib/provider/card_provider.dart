@@ -1,10 +1,14 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:flutter/material.dart";
+import 'package:flutter_demo_01/db/entity/chat.dart';
 import 'package:flutter_demo_01/db/entity/match.dart';
 import 'package:flutter_demo_01/db/entity/swipe.dart';
 import 'package:flutter_demo_01/db/remote/firebase_database_source.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
+import 'package:flutter_demo_01/screens/matched_screen.dart';
+import 'package:flutter_demo_01/utils/utils.dart';
+import 'package:uuid/uuid.dart';
 
 enum CardStatus { like, dislike, superLike }
 
@@ -26,7 +30,11 @@ class CardProvider extends ChangeNotifier {
   Size get size => _screenSize;
 
   void setUsers(List<AppUser> users) {
+    _users = [];
     _users = users;
+
+    // Update UI
+    // notifyListeners();
   }
 
   void personSwiped(BuildContext context, List<AppUser> users, AppUser myUser,
@@ -40,21 +48,19 @@ class CardProvider extends ChangeNotifier {
         _databaseSource.addMatch(myUser.id, Match(otherUser.id));
         _databaseSource.addMatch(otherUser.id, Match(myUser.id));
 
-        // String chatId = compareAndCombineIds(myUser.id, otherUser.id);
+        String chatId = compareAndCombineIds(myUser.id, otherUser.id);
 
-        // var uuid = Uuid();
+        print("New chat id $chatId");
 
-        // String chatId = uuid.v4();
+        _databaseSource.addChat(Chat(chatId, myUser.id, otherUser.id, null));
 
-        // print("New chat id ${chatId}");
-        // _databaseSource.addChat(Chat(chatId, myUser.id, otherUser.id, null));
-
-        // Navigator.pushNamed(context, MatchedScreen.id, arguments: {
-        //   "my_user_id": myUser.id,
-        //   "my_profile_photo_path": myUser.profilePhotoPath,
-        //   "other_user_profile_photo_path": otherUser.profilePhotoPath,
-        //   "other_user_id": otherUser.id
-        // });
+        Navigator.pushNamed(context, MatchedScreen.id, arguments: {
+          "my_user_id": myUser.id,
+          "my_profile_photo_path": myUser.profilePhotoPath,
+          "other_user_profile_photo_path": otherUser.profilePhotoPath,
+          "other_user_id": otherUser.id,
+          "other_user_name": otherUser.name
+        });
       }
     }
 

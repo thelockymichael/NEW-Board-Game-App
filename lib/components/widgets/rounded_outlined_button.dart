@@ -13,15 +13,20 @@ class RoundedOutlinedButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
         width: double.infinity,
+        child: OutlinedButton(
+            // child: OutlineButton(
+            onPressed: onPressed,
+            child: Text(text, style: Theme.of(context).textTheme.button))
         // ignore: deprecated_member_use
-        child: OutlineButton(
-          highlightedBorderColor: kAccentColor,
-          borderSide: const BorderSide(color: kSecondaryColor, width: 2.0),
-          child: Text(text, style: Theme.of(context).textTheme.button),
-          onPressed: onPressed,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(25),
-          ),
-        ));
+        // child: OutlineButton(
+        //   highlightedBorderColor: kAccentColor,
+        //   borderSide: const BorderSide(color: kSecondaryColor, width: 2.0),
+        //   child: Text(text, style: Theme.of(context).textTheme.button),
+        //   onPressed: onPressed,
+        //   shape: RoundedRectangleBorder(
+        //     borderRadius: BorderRadius.circular(25),
+        //   ),
+        // )
+        );
   }
 }

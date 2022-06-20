@@ -144,401 +144,23 @@ class _TinderCardState extends State<TinderCard> {
                 ),
               ),
 
-// BIO
+              // Board Game Geek Username
+              buildBggName(),
 
-              Container(
-                padding: const EdgeInsets.all(8),
-                color: Colors.white,
-                width: double.infinity,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 0),
-                      child: Column(children: [
-                        const SizedBox(height: 20),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "About me",
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.w300),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            widget.user!.bio,
-                            style: const TextStyle(fontSize: 20),
-                          ),
-                        )
-                      ]),
-                    )
-                  ],
-                ),
-              ),
+              // BIO
+              buildBio(),
 
               // BOARD GAME GENRES
-
               buildFavGameGenres(),
 
-              // BOARD GAME MECHANIS
-
-              Container(
-                padding: const EdgeInsets.all(8),
-                color: Colors.white,
-                width: double.infinity,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 0),
-                      child: Column(children: [
-                        const SizedBox(height: 20),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "My favourite game mechanics",
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.w300),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Column(
-                            children: [
-                              Wrap(
-                                children: widget.user!.favBgMechanics
-                                    .map((gameGenre) {
-                                  return Container(
-                                    margin: const EdgeInsets.only(
-                                        right: 10, top: 10),
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: const BoxDecoration(
-                                      color: Colors.green,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(12.0)),
-                                    ),
-                                    child: Text(
-                                      gameGenre.capitalize(),
-                                      style: const TextStyle(
-                                          fontSize: 20, color: Colors.white),
-                                    ),
-                                  );
-                                }).toList(),
-                              ),
-                            ],
-                          ),
-                        )
-                      ]),
-                    )
-                  ],
-                ),
-              ),
+              // BOARD GAME MECHANICS
+              buildBgMechanics(),
 
               // BOARD GAME THEMES
-              Container(
-                padding: const EdgeInsets.all(8),
-                color: Colors.white,
-                width: double.infinity,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 20),
-                      child: Column(children: [
-                        const SizedBox(height: 20),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "My favourite game themes",
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.w300),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Column(
-                            children: [
-                              Wrap(
-                                children: widget.user!.favBgMechanics
-                                    .map((gameGenre) {
-                                  return Container(
-                                    margin: const EdgeInsets.only(
-                                        right: 10, top: 10),
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: const BoxDecoration(
-                                      color: Colors.green,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(12.0)),
-                                    ),
-                                    child: Text(
-                                      gameGenre.capitalize(),
-                                      style: const TextStyle(
-                                          fontSize: 20, color: Colors.white),
-                                    ),
-                                  );
-                                }).toList(),
-                              ),
-                            ],
-                          ),
-                        )
-                      ]),
-                    )
-                  ],
-                ),
-              ),
+              buildBgThemes(),
 
               // FAVOURITE BOARD GAMES
-
-              Container(
-                color: Colors.white,
-                width: double.infinity,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(children: [
-                      const SizedBox(height: 20),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "My favourite board games",
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.w300),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      SafeArea(
-                          child: SizedBox(
-                              width: double.infinity,
-                              height: 300,
-                              child: new ListView.builder(
-                                  itemCount: listHeader.length,
-                                  itemBuilder: (context, index) {
-                                    var tempBoardGames = <SelectedBoardGame>[];
-
-                                    switch (listHeader[index]) {
-                                      case "Family Games":
-                                        tempBoardGames = widget
-                                            .user!.favBoardGames.familyGames;
-                                        break;
-
-                                      case "Dexterity Games":
-                                        tempBoardGames = widget
-                                            .user!.favBoardGames.dexterityGames;
-                                        break;
-
-                                      case "Party Games":
-                                        tempBoardGames = widget
-                                            .user!.favBoardGames.partyGames;
-                                        break;
-
-                                      case "Abstracts":
-                                        tempBoardGames = widget
-                                            .user!.favBoardGames.abstractGames;
-                                        break;
-
-                                      case "Thematic":
-                                        tempBoardGames = widget
-                                            .user!.favBoardGames.thematicGames;
-                                        break;
-
-                                      case "Strategy":
-                                        tempBoardGames = widget
-                                            .user!.favBoardGames.strategyGames;
-                                        break;
-
-                                      case "Wargames":
-                                        tempBoardGames =
-                                            widget.user!.favBoardGames.warGames;
-                                        break;
-
-                                      default:
-                                        tempBoardGames = widget
-                                            .user!.favBoardGames.familyGames;
-                                        break;
-                                    }
-                                    return new StickyHeader(
-                                        header: new Container(
-                                          height: 38.0,
-                                          color: Colors.white,
-                                          padding: new EdgeInsets.symmetric(
-                                              horizontal: 12.0),
-                                          alignment: Alignment.centerLeft,
-                                          child: new Text(
-                                            listHeader[index],
-                                            style: const TextStyle(
-                                                color: Colors.purple,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                        content: Container(
-                                            child: GridView.builder(
-                                                shrinkWrap: true,
-                                                physics:
-                                                    NeverScrollableScrollPhysics(),
-                                                itemCount: listTitle.length,
-                                                gridDelegate:
-                                                    SliverGridDelegateWithMaxCrossAxisExtent(
-                                                  maxCrossAxisExtent: 180,
-                                                  childAspectRatio: 2 / 3,
-                                                ),
-                                                itemBuilder: (context, index) {
-                                                  return Stack(
-                                                    children: [
-                                                      Container(
-                                                          height: 200,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                                  image: tempBoardGames[
-                                                                              index]
-                                                                          .boardGame
-                                                                          .imageUrl[
-                                                                              0]
-                                                                          .isEmpty
-                                                                      ? null
-                                                                      : DecorationImage(
-                                                                          fit: BoxFit
-                                                                              .cover,
-                                                                          image: NetworkImage(tempBoardGames[index]
-                                                                              .boardGame
-                                                                              .imageUrl[0]),
-                                                                        ))),
-                                                      Container(
-                                                        decoration: BoxDecoration(
-                                                            gradient: LinearGradient(
-                                                                begin: Alignment
-                                                                    .topCenter,
-                                                                end: Alignment
-                                                                    .bottomCenter,
-                                                                colors: [
-                                                              Colors.grey
-                                                                  .withOpacity(
-                                                                      0.0),
-                                                              Colors.black
-                                                                  .withOpacity(
-                                                                      0.6)
-                                                            ],
-                                                                stops: const [
-                                                              0.0,
-                                                              1.0
-                                                            ])),
-                                                      ),
-                                                      Positioned(
-                                                          top: 0,
-                                                          left: 0,
-                                                          //you can use "right" and "bottom" too
-                                                          child: Container(
-                                                            height: 40,
-                                                            width: 40,
-                                                            decoration: BoxDecoration(
-                                                                color: Colors
-                                                                    .green,
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            20)),
-                                                            child: Center(
-                                                                child: Text(
-                                                              tempBoardGames[
-                                                                      index]
-                                                                  .rank
-                                                                  .toString(),
-                                                              style: TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize: 32),
-                                                            )),
-                                                          )),
-                                                      Positioned(
-                                                          top: 0,
-                                                          right: 0,
-                                                          //you can use "right" and "bottom" too
-                                                          child: Container(
-                                                            decoration: BoxDecoration(
-                                                                color: Colors
-                                                                    .green,
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            8)),
-                                                            child: Padding(
-                                                                padding:
-                                                                    EdgeInsets
-                                                                        .all(6),
-                                                                child: Column(
-                                                                    children: [
-                                                                      Text(
-                                                                        "#${tempBoardGames[index].boardGame.recRank.toString()}",
-                                                                        style: TextStyle(
-                                                                            fontWeight:
-                                                                                FontWeight.bold,
-                                                                            color: Colors.white,
-                                                                            fontSize: 18),
-                                                                      ),
-                                                                      Text(
-                                                                        "(${tempBoardGames[index].boardGame.recRating.toStringAsFixed(1)})",
-                                                                        style: TextStyle(
-                                                                            fontWeight:
-                                                                                FontWeight.w200,
-                                                                            color: Colors.white,
-                                                                            fontSize: 18),
-                                                                      )
-                                                                    ])),
-                                                          )),
-                                                      Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
-                                                        mainAxisSize:
-                                                            MainAxisSize.max,
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          Center(
-                                                              child: Text(
-                                                                  tempBoardGames[
-                                                                              index]
-                                                                          .boardGame
-                                                                          .name
-                                                                          .isEmpty
-                                                                      ? "Not selected"
-                                                                      : tempBoardGames[
-                                                                              index]
-                                                                          .boardGame
-                                                                          .name,
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .center,
-                                                                  style: const TextStyle(
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                      fontSize:
-                                                                          20)))
-                                                        ],
-                                                      )
-                                                    ],
-                                                  );
-                                                })));
-                                  })))
-                    ]),
-                  ],
-                ),
-              ),
+              buildFavBoardGames(),
             ],
           ),
         ),
@@ -546,6 +168,497 @@ class _TinderCardState extends State<TinderCard> {
             padding: const EdgeInsets.all(20),
             child: Align(child: Column(children: [buildName()]))),
       ]));
+
+  Widget buildBgMechanics() {
+    final favBgMechanics = widget.user!.favBgMechanics;
+
+    if (favBgMechanics.isEmpty) {
+      return Container();
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(8),
+      color: Colors.white,
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+            child: Column(children: [
+              const SizedBox(height: 20),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "My favourite game mechanics",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Column(
+                  children: [
+                    Wrap(
+                      children: favBgMechanics.map((gameGenre) {
+                        return Container(
+                          margin: const EdgeInsets.only(right: 10, top: 10),
+                          padding: const EdgeInsets.all(8),
+                          decoration: const BoxDecoration(
+                            color: Colors.green,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12.0)),
+                          ),
+                          child: Text(
+                            gameGenre.capitalize(),
+                            style: const TextStyle(
+                                fontSize: 20, color: Colors.white),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+              )
+            ]),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget buildBgThemes() {
+    final favBgThemes = widget.user!.favBgThemes;
+
+    if (favBgThemes.isEmpty) {
+      return Container();
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(8),
+      color: Colors.white,
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            child: Column(children: [
+              const SizedBox(height: 20),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "My favourite game themes",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Column(
+                  children: [
+                    Wrap(
+                      children: favBgThemes.map((gameGenre) {
+                        return Container(
+                          margin: const EdgeInsets.only(right: 10, top: 10),
+                          padding: const EdgeInsets.all(8),
+                          decoration: const BoxDecoration(
+                            color: Colors.green,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12.0)),
+                          ),
+                          child: Text(
+                            gameGenre.capitalize(),
+                            style: const TextStyle(
+                                fontSize: 20, color: Colors.white),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+              )
+            ]),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget buildFavBoardGames() {
+    final favBoardGames = widget.user!.favBoardGames;
+
+    // 2.
+    bool isFamGamesEmpty = favBoardGames.familyGames
+        .every((element) => element.boardGame.name.isEmpty);
+
+    bool isPartyGamesEmpty = favBoardGames.partyGames
+        .every((element) => element.boardGame.name.isEmpty);
+
+    bool isAbstrGamesEmpty = favBoardGames.abstractGames
+        .every((element) => element.boardGame.name.isEmpty);
+
+    bool isDexGamesEmpty = favBoardGames.dexterityGames
+        .every((element) => element.boardGame.name.isEmpty);
+
+    bool isThemGamesEmpty = favBoardGames.abstractGames
+        .every((element) => element.boardGame.name.isEmpty);
+
+    bool isStratGamesEmpty = favBoardGames.strategyGames
+        .every((element) => element.boardGame.name.isEmpty);
+
+    bool isWargamesEmpty = favBoardGames.warGames
+        .every((element) => element.boardGame.name.isEmpty);
+
+    if (isFamGamesEmpty &&
+        isPartyGamesEmpty &&
+        isAbstrGamesEmpty &&
+        isDexGamesEmpty &&
+        isThemGamesEmpty &&
+        isStratGamesEmpty &&
+        isWargamesEmpty) {
+      return Container();
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(8),
+      color: Colors.white,
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(children: [
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "My favourite board games",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            SafeArea(
+                child: SizedBox(
+                    width: double.infinity,
+                    height: 300,
+                    child: new ListView.builder(
+                        itemCount: listHeader.length,
+                        itemBuilder: (context, index) {
+                          var tempBoardGames = <SelectedBoardGame>[];
+
+                          switch (listHeader[index]) {
+                            case "Family Games":
+                              if (!isFamGamesEmpty)
+                                tempBoardGames =
+                                    widget.user!.favBoardGames.familyGames;
+                              break;
+
+                            case "Dexterity Games":
+                              if (!isDexGamesEmpty)
+                                tempBoardGames =
+                                    widget.user!.favBoardGames.dexterityGames;
+                              break;
+
+                            case "Party Games":
+                              if (!isPartyGamesEmpty)
+                                tempBoardGames =
+                                    widget.user!.favBoardGames.partyGames;
+                              break;
+
+                            case "Abstracts":
+                              if (!isAbstrGamesEmpty)
+                                tempBoardGames =
+                                    widget.user!.favBoardGames.abstractGames;
+                              break;
+
+                            case "Thematic":
+                              if (!isThemGamesEmpty)
+                                tempBoardGames =
+                                    widget.user!.favBoardGames.thematicGames;
+                              break;
+
+                            case "Strategy":
+                              if (!isStratGamesEmpty)
+                                tempBoardGames =
+                                    widget.user!.favBoardGames.strategyGames;
+                              break;
+
+                            case "Wargames":
+                              if (!isWargamesEmpty)
+                                tempBoardGames =
+                                    widget.user!.favBoardGames.warGames;
+                              break;
+
+                            default:
+                              if (!isFamGamesEmpty)
+                                tempBoardGames =
+                                    widget.user!.favBoardGames.familyGames;
+                              break;
+                          }
+                          return tempBoardGames.isEmpty
+                              ? Container()
+                              : new StickyHeader(
+                                  header: new Container(
+                                    height: 38.0,
+                                    color: Colors.white,
+                                    padding: new EdgeInsets.symmetric(
+                                        horizontal: 12.0),
+                                    alignment: Alignment.centerLeft,
+                                    child: new Text(
+                                      listHeader[index],
+                                      style: const TextStyle(
+                                          color: Colors.purple,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  content: Container(
+                                      child: GridView.builder(
+                                          shrinkWrap: true,
+                                          physics:
+                                              NeverScrollableScrollPhysics(),
+                                          itemCount: listTitle.length,
+                                          gridDelegate:
+                                              SliverGridDelegateWithMaxCrossAxisExtent(
+                                            maxCrossAxisExtent: 180,
+                                            childAspectRatio: 2 / 3,
+                                          ),
+                                          itemBuilder: (context, index) {
+                                            return Stack(
+                                              children: [
+                                                Container(
+                                                    height: 200,
+                                                    decoration: BoxDecoration(
+                                                        image: tempBoardGames[
+                                                                    index]
+                                                                .boardGame
+                                                                .imageUrl[0]
+                                                                .isEmpty
+                                                            ? null
+                                                            : DecorationImage(
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                                image: NetworkImage(
+                                                                    tempBoardGames[
+                                                                            index]
+                                                                        .boardGame
+                                                                        .imageUrl[0]),
+                                                              ))),
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                      gradient: LinearGradient(
+                                                          begin: Alignment
+                                                              .topCenter,
+                                                          end: Alignment
+                                                              .bottomCenter,
+                                                          colors: [
+                                                        Colors.grey
+                                                            .withOpacity(0.0),
+                                                        Colors.black
+                                                            .withOpacity(0.6)
+                                                      ],
+                                                          stops: const [
+                                                        0.0,
+                                                        1.0
+                                                      ])),
+                                                ),
+                                                Positioned(
+                                                    top: 0,
+                                                    left: 0,
+                                                    //you can use "right" and "bottom" too
+                                                    child: Container(
+                                                      height: 40,
+                                                      width: 40,
+                                                      decoration: BoxDecoration(
+                                                          color: Colors.green,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      20)),
+                                                      child: Center(
+                                                          child: Text(
+                                                        tempBoardGames[index]
+                                                            .rank
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color: Colors.white,
+                                                            fontSize: 32),
+                                                      )),
+                                                    )),
+                                                Positioned(
+                                                    top: 0,
+                                                    right: 0,
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                          color: Colors.green,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(8)),
+                                                      child: Padding(
+                                                          padding:
+                                                              EdgeInsets.all(6),
+                                                          child:
+                                                              Column(children: [
+                                                            Text(
+                                                              "#${tempBoardGames[index].boardGame.recRank.toString()}",
+                                                              style: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 18),
+                                                            ),
+                                                            Text(
+                                                              "(${tempBoardGames[index].boardGame.recRating.toStringAsFixed(1)})",
+                                                              style: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w200,
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 18),
+                                                            )
+                                                          ])),
+                                                    )),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisSize:
+                                                      MainAxisSize.max,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Center(
+                                                        child: Text(
+                                                            tempBoardGames[
+                                                                        index]
+                                                                    .boardGame
+                                                                    .name
+                                                                    .isEmpty
+                                                                ? "Not selected"
+                                                                : tempBoardGames[
+                                                                        index]
+                                                                    .boardGame
+                                                                    .name,
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: const TextStyle(
+                                                                color:
+                                                                    Colors
+                                                                        .white,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 20)))
+                                                  ],
+                                                )
+                                              ],
+                                            );
+                                          })));
+                        })))
+          ]),
+        ],
+      ),
+    );
+  }
+
+  Widget buildBggName() {
+    final bggName = widget.user!.bggName;
+
+    if (bggName.isEmpty) {
+      return Container();
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(8),
+      color: Colors.white,
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+            child: Column(children: [
+              const SizedBox(height: 20),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Board Game Geek User",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  const Icon(Icons.gamepad_rounded, color: Colors.black),
+                  const SizedBox(width: 8),
+                  GestureDetector(
+                    onTap: () {
+                      showBggUserInWebBrowser(bggName);
+                    },
+                    child: Text(
+                      bggName,
+                      style: const TextStyle(
+                          decoration: TextDecoration.underline,
+                          fontSize: 20,
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  )
+                ],
+              ),
+            ]),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget buildBio() {
+    final bio = widget.user!.bio;
+
+    if (bio.isEmpty) {
+      return Container();
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(8),
+      color: Colors.white,
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+            child: Column(children: [
+              const SizedBox(height: 20),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "About me",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  bio,
+                  style: const TextStyle(fontSize: 20),
+                ),
+              )
+            ]),
+          )
+        ],
+      ),
+    );
+  }
 
   Widget buildFavGameGenres() {
     final favBoardGameGenres = widget.user!.favBoardGameGenres;
@@ -625,12 +738,13 @@ class _TinderCardState extends State<TinderCard> {
         ],
       );
 
-  inform(String bggName) {
+  showBggUserInWebBrowser(String bggName) {
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => BggWebView(
-                "https://boardgamegeek.com/collection/user/Zuxi?rated=1&subtype=boardgame&ff=1")));
+                "https://boardgamegeek.com/collection/user/$bggName?rated=1&subtype=boardgame&ff=1",
+                bggName)));
   }
 
   Widget buildBGGName() {
@@ -640,7 +754,7 @@ class _TinderCardState extends State<TinderCard> {
 
     return GestureDetector(
         onTap: () {
-          inform(widget.user!.bggName);
+          showBggUserInWebBrowser(widget.user!.bggName);
         },
         child: Row(
           children: [
@@ -735,7 +849,8 @@ class _TinderCardState extends State<TinderCard> {
 
 class BggWebView extends StatefulWidget {
   String url;
-  BggWebView(this.url, {Key? key}) : super(key: key);
+  String username = "";
+  BggWebView(this.url, this.username, {Key? key}) : super(key: key);
 
   @override
   State<BggWebView> createState() => _BggWebViewState();
@@ -746,8 +861,9 @@ class _BggWebViewState extends State<BggWebView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Board Game Geek"),
-      ),
+          title: widget.username.isEmpty
+              ? Text("Board Game Geek")
+              : Text(widget.username)),
       body: Builder(builder: (BuildContext context) {
         return WebView(
           javascriptMode: JavascriptMode.unrestricted,

@@ -38,6 +38,8 @@ class _DiscoverPage extends State<DiscoverPage> {
   }
 
   Future<List<AppUser>?> loadPerson(AppUser myUser) async {
+    print("VMK");
+
     _ignoreSwipeIds = <String>[];
     _userList = <AppUser>[];
 
@@ -51,50 +53,16 @@ class _DiscoverPage extends State<DiscoverPage> {
     var res = await _databaseSource.getPersonsToMatchWith(2, _ignoreSwipeIds);
 
     if (res.docs.isNotEmpty) {
-      // for (var i = 0; i < res.docs.length; i++) {
-      //   AppUser temp = AppUser.fromSnapshot(res.docs[0]);
-
-      //   if (temp.name == AppUser.fromSnapshot(res.docs.last).name) {
-      //     print("JOKU, IT IS THE SAME?");
-      //     _userList.add(temp);
-
-      //     break;
-      //   } else {
-      //     print("JOKU, IT IS NOT?");
-      //     AppUser temp2 = AppUser.fromSnapshot(res.docs.last);
-
-      //     print("JOKU, ${temp.name}, ${temp2.name}");
-
-      //     _userList.add(AppUser.fromSnapshot(res.docs[i]));
-      //   }
-      // }
       _userList = [];
       for (var element in res.docs) {
         _userList.add(AppUser.fromSnapshot(element));
       }
 
-      // final provider = Provider.of<CardProvider>(context, listen: false);
-
-      // _userList.reversed.toList().forEach((user) => print(user.name));
-
-      // provider.setUsers(_userList.reversed.toList());
-
       final provider = Provider.of<CardProvider>(context, listen: false);
-
-      // widget.people.forEach((user) => print(user.name));
-
-      // if (_userList.last == _userList[0]) {
-      //   _userList = [];
-      //   _userList.add(_userList[0]);
-      //   return _userList;
-      // }
-      // print("JUKAJUKA ${_userList.reversed.toList()}");
 
       print("HASTA provider setUser ${_userList.reversed.toList().length}");
 
       provider.setUsers(_userList.reversed.toList());
-
-      // print("HELLO 2323");
 
       return _userList.reversed.toList();
     }

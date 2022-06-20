@@ -12,6 +12,8 @@ import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/p
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/profile_page_fav_board_games_edit.dart';
 import 'package:flutter_demo_01/utils/constants.dart';
 import 'package:flutter_demo_01/utils/validator.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import "package:flutter_demo_01/utils/utils.dart";
@@ -46,15 +48,90 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
     'Strategy',
     'Wargames',
   ];
+
   List<String> listTitle = [
     'title1',
     'title2',
     'title3',
   ];
 
+  String? _currentAddress;
+  Position? _currentPosition;
+
+  void _getCurrentPosition() async {
+    final hasPermission = await _handleLocationPermission();
+
+    if (!hasPermission) return;
+
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) {
+      setState(() => _currentPosition = position);
+
+      _getAddressFromLatLng(_currentPosition!);
+    }).catchError((e) {
+      debugPrint(e);
+    });
+  }
+
+  Future<void> _getAddressFromLatLng(Position position) async {
+    AppUser userSnapshot = await _userProvider.user;
+
+    print("SDF ${userSnapshot.name}");
+    await placemarkFromCoordinates(
+            _currentPosition!.latitude, _currentPosition!.longitude,
+            localeIdentifier: "fi")
+        .then((List<Placemark> placemarks) {
+      Placemark place = placemarks[0];
+
+      setState(() {
+        _currentAddress = '${place.locality}';
+        _userProvider.updateCurrentLocationAddress(
+            userSnapshot, _currentAddress!, _scaffoldKey);
+      });
+    }).catchError((e) {
+      debugPrint(e);
+    });
+  }
+
+  Future<bool> _handleLocationPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+
+    if (!serviceEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content:
+            Text("Location services are disabled. Please enable the services"),
+      ));
+      return false;
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Location permissions are denied")));
+        return false;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text(
+            "Location permissions are permanently denied, we cannot request permissions."),
+      ));
+      return false;
+    }
+
+    return true;
+  }
+
   @override
   void initState() {
     _userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    _getCurrentPosition();
 
     super.initState();
   }
@@ -72,42 +149,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
           return FutureBuilder<AppUser>(
             future: userProvider.user,
             builder: (context, userSnapshot) {
-              var allFavBgGames = <SelectedBoardGame>[];
-              // final favBgGames = userSnapshot.data!.favBoardGames;
-
-              // var allFavBgGames = [];
-              // // Family Games
-              // var famGames = favBgGames.familyGames;
-              // // Dexterity Games
-              // var dexGames = favBgGames.dexterityGames;
-              // // Party Games
-              // var partyGames = favBgGames.partyGames;
-              // // Abstracts
-              // var abstractGames = favBgGames.abstractGames;
-              // // Thematic
-              // var thematicGames = favBgGames.thematicGames;
-              // // Strategy
-              // var strategyGames = favBgGames.strategyGames;
-              // // Wargames
-              // var warGames = favBgGames.warGames;
-
-              // allFavBgGames.addAll(famGames);
-              // allFavBgGames.addAll(dexGames);
-              // allFavBgGames.addAll(partyGames);
-              // allFavBgGames.addAll(abstractGames);
-              // allFavBgGames.addAll(thematicGames);
-              // allFavBgGames.addAll(strategyGames);
-              // allFavBgGames.addAll(warGames);
-              if (userSnapshot.hasData) {
-                final favBgGames = userSnapshot.data!.favBoardGames;
-                // Family Games
-                var famGames = favBgGames.familyGames;
-                // Dexterity Games
-                var dexGames = favBgGames.dexterityGames;
-                allFavBgGames.addAll(famGames);
-                allFavBgGames.addAll(dexGames);
-              }
-
               return CustomModalProgressHUD(
                   inAsyncCall: userProvider.isLoading,
                   child: userSnapshot.hasData
@@ -602,10 +643,12 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                                                                       Container(
                                                                                           height: 200,
                                                                                           decoration: BoxDecoration(
-                                                                                              image: DecorationImage(
-                                                                                            fit: BoxFit.cover,
-                                                                                            image: NetworkImage(tempBoardGames[index].boardGame.imageUrl[0]),
-                                                                                          ))),
+                                                                                              image: tempBoardGames[index].boardGame.imageUrl[0].isEmpty
+                                                                                                  ? null
+                                                                                                  : DecorationImage(
+                                                                                                      fit: BoxFit.cover,
+                                                                                                      image: NetworkImage(tempBoardGames[index].boardGame.imageUrl[0]),
+                                                                                                    ))),
                                                                                       Container(
                                                                                         decoration: BoxDecoration(
                                                                                             gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [
@@ -1224,11 +1267,12 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                         keyboardType: TextInputType.name,
                       ),
                       TextFormField(
-                        controller: _currentLocationTextController,
-                        focusNode: _focusCurrentLocation,
-                        validator: (value) => Validator.validateName(
-                          name: value,
-                        ),
+                        readOnly: true,
+                        enabled: false,
+                        style: TextStyle(color: Colors.grey),
+                        initialValue: userSnapshot.currentLocation.isEmpty
+                            ? _currentAddress
+                            : userSnapshot.currentLocation,
                         decoration: InputDecoration(
                           labelText: "Current location",
                           hintText: "Current location",
@@ -1263,10 +1307,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                       // Gender
                                       _userProfileEdit.gender =
                                           _genderTextController.text;
-
-                                      // Current Location
-                                      _userProfileEdit.currentLocation =
-                                          _currentLocationTextController.text;
 
                                       // Birthday
                                       _userProfileEdit.birthDay =

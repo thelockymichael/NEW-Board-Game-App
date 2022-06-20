@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/firebase_options.dart';
 import 'package:flutter_demo_01/navigation/bottom_navigation_bar.dart';
-import 'package:flutter_demo_01/provider/bg_mechanic_provider.dart';
 import 'package:flutter_demo_01/provider/card_provider.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/profile_page_edit.dart';

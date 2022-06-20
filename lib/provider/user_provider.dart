@@ -984,4 +984,34 @@ class UserProvider extends ChangeNotifier {
     if (response is Error) showSnackBar(errorScaffoldKey, response.message);
     return response;
   }
+
+  Future<Response> updateCurrentLocationAddress(AppUser userSnapshot,
+      String address, GlobalKey<ScaffoldState> errorScaffoldKey) async {
+    // final updateFavBoardGames = _returnFavBoardGames(
+    //     userSnapshot, boardGameData, boardGameRank, boardGameGenre);
+
+    AppUser user = AppUser(
+        id: userSnapshot.id,
+        name: userSnapshot.name,
+        bggName: userSnapshot.bggName,
+        currentLocation: address,
+        gender: userSnapshot.gender,
+        age: userSnapshot.age,
+        bio: userSnapshot.bio,
+        email: userSnapshot.email,
+        favBoardGameGenres: userSnapshot.favBoardGameGenres,
+        favBgMechanics: userSnapshot.favBgMechanics,
+        favBgThemes: userSnapshot.favBgThemes,
+        profilePhotoPath: userSnapshot.profilePhotoPath,
+        favBoardGames: userSnapshot.favBoardGames);
+
+    Response<dynamic> response = await _databaseSource.updateUser(user);
+
+    if (response is Success<String>) {
+      return Response.success(user);
+    }
+
+    if (response is Error) showSnackBar(errorScaffoldKey, response.message);
+    return response;
+  }
 }

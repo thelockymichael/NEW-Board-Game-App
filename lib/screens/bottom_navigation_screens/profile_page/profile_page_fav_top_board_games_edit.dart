@@ -123,7 +123,7 @@ class _ProfilePageFavTopBoardGamesEditState
                   child: userSnapshot.hasData
                       ? Column(children: [
                           SizedBox(height: 26),
-                          Text("Choose Top 3 Board Games",
+                          Text("Choose your top 3 board games",
                               textAlign: TextAlign.center,
                               style: TextStyle(fontSize: 24)),
                           SizedBox(height: 26),
@@ -253,7 +253,8 @@ class _ProfilePageFavTopBoardGamesEditState
         }));
   }
 
-  void _showBoardGameModal(context, AppUser userSnapshot, int boardGameRank) {
+  void _showBoardGameModal(
+      BuildContext context, AppUser userSnapshot, int boardGameRank) {
 // TODO
 // 1. Make a HTTP request to recommend.games
 //  https://recommend.games/api/games/?game_type=5499&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1

@@ -98,7 +98,27 @@ Query<Map<String, dynamic>> filterSwipableUsers(
         break;
 
       case "isEqualTo":
-        queryRef = queryRef.where(query.field, isEqualTo: query.value);
+        if (query.field.contains("gender")) {
+          if (!query.value.contains("everyone")) {
+            print("VMK dsada ${query.value}");
+            if (query.value.contains("women")) {
+              print("VMK women");
+              queryRef = queryRef.where(query.field, isEqualTo: "female");
+            } else if (query.value.contains("men")) {
+              print("VMK men");
+              queryRef = queryRef.where(query.field, isEqualTo: "male");
+            } else if (query.value.contains("other")) {
+              print("VMK other");
+              queryRef = queryRef.where(query.field, isEqualTo: "other");
+            }
+            //   print("VMK everyone");
+            //   queryRef = queryRef.where(query.field, isEqualTo: query.value)
+            //   .where(query.field, );
+            // } else {
+            // print("VMK else");
+            // queryRef = queryRef.where(query.field, isEqualTo: query.value);
+          }
+        }
 
         break;
 

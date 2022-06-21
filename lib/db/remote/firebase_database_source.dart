@@ -95,23 +95,36 @@ export async function workTripOrderByQuery(companyId, querys) {
 }
  */
 
-  Future<QuerySnapshot> getPersonsToMatchWith(int limit, List<String> ignoreIds,
-      [List<UserQuery>? queries]) {
-// Step 1.
-// TODO Set collection as a variable
+  // Future<QuerySnapshot> getPersonsToMatchWith(
+  //     int limit, List<String> ignoreIds) {
+  //   return instance
+  //       .collection('users')
+  //       .where('id', whereNotIn: ignoreIds)
+  //       .limit(limit)
+  //       .get();
+  // }
+
+  Future<QuerySnapshot> getPersonsToMatchWith(
+      int limit, List<String> ignoreIds, List<UserQuery>? queries) {
+    // Step 1.
+    // TODO Set collection as a variable
 
     Query<Map<String, dynamic>> queryRef = instance.collection("users");
 
-    queryRef.where('id', whereNotIn: ignoreIds).limit(limit);
+    queryRef = queryRef.where('id', whereNotIn: ignoreIds);
+
+    // queryRef.where('id', whereNotIn: ignoreIds).limit(limit);
 
     // queries?.forEach((query) {
     //   queryRef = queryRef.where(query.field, ["isEqualTo"]: query.value);
     // });
 
-    queryRef = filterSwipableUsers(queryRef, queries!);
+    if (queries!.isNotEmpty) {
+      queryRef = filterSwipableUsers(queryRef, queries);
+    }
+    print("FSAFfA${queryRef}");
 
-    return queryRef.get();
-    // return queryRef.where('id', whereNotIn: ignoreIds).limit(limit).get();
+    return queryRef.limit(limit).get();
     // return instance
     //     .collection('users')
     //     // .where("gender", isEqualTo: "female")

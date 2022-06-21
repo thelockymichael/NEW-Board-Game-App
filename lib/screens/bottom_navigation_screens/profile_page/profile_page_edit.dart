@@ -719,7 +719,8 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
         }));
   }
 
-  void _showBgMechanicAndThemeModal(context, AppUser userSnapshot) {
+  void _showBgMechanicAndThemeModal(
+      BuildContext context, AppUser userSnapshot) {
 /* Board Game Mechanics  */
     List<FavBgMechanicItem> bgMechanicsList = [
       FavBgMechanicItem(name: "Dice Rolling"),

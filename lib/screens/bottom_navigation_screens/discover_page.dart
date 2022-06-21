@@ -10,6 +10,7 @@ import 'package:flutter_demo_01/db/entity/match.dart';
 import 'package:flutter_demo_01/db/entity/swipe.dart';
 import 'package:flutter_demo_01/db/remote/firebase_database_source.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
+import 'package:flutter_demo_01/model/bg_mechanic.dart';
 import 'package:flutter_demo_01/my_flutter_app_icons.dart';
 import 'package:flutter_demo_01/provider/card_provider.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
@@ -32,6 +33,10 @@ class _DiscoverPage extends State<DiscoverPage> {
   late List<String> _ignoreSwipeIds;
   late List<AppUser> _userList;
 
+  List<String> selectedGender = ["everyone"];
+
+  List<UserQuery> userQuery = [];
+
   @override
   void initState() {
     super.initState();
@@ -39,7 +44,41 @@ class _DiscoverPage extends State<DiscoverPage> {
     _userList = <AppUser>[];
   }
 
-  Future<List<AppUser>?> loadPerson(AppUser myUser) async {
+  // Future<List<AppUser>?> loadPerson(AppUser myUser) async {
+  //   print("VMK");
+
+  //   _ignoreSwipeIds = <String>[];
+  //   _userList = <AppUser>[];
+
+  //   var swipes = await _databaseSource.getSwipes(myUser.id);
+  //   for (var i = 0; i < swipes.size; i++) {
+  //     Swipe swipe = Swipe.fromSnapshot(swipes.docs[i]);
+  //     _ignoreSwipeIds.add(swipe.id);
+  //   }
+  //   _ignoreSwipeIds.add(myUser.id);
+
+  //   var res = await _databaseSource.getPersonsToMatchWith(2, _ignoreSwipeIds);
+
+  //   if (res.docs.isNotEmpty) {
+  //     _userList = [];
+  //     for (var element in res.docs) {
+  //       _userList.add(AppUser.fromSnapshot(element));
+  //     }
+
+  //     final provider = Provider.of<CardProvider>(context, listen: false);
+
+  //     print("HASTA provider setUser ${_userList.reversed.toList().length}");
+
+  //     provider.setUsers(_userList.reversed.toList());
+
+  //     return _userList.reversed.toList();
+  //   }
+
+  //   return null;
+  // }
+
+  Future<List<AppUser>?> loadPerson(
+      AppUser myUser, List<UserQuery> userQuery) async {
     print("VMK");
 
     _ignoreSwipeIds = <String>[];
@@ -59,11 +98,11 @@ class _DiscoverPage extends State<DiscoverPage> {
 
     // var jot = calculateAge(DateTime(1998, 5, 21));
 
-    List<UserQuery> userQuery = [
-      UserQuery("age", "isGreaterThanOrEqualTo", 20),
-      UserQuery("age", "isLessThanOrEqualTo", 26),
-      UserQuery("gender", "isEqualTo", "female")
-    ];
+    // List<UserQuery> userQuery = [
+    //   // UserQuery("age", "isGreaterThanOrEqualTo", 20),
+    //   // UserQuery("age", "isLessThanOrEqualTo", 26),
+    //   UserQuery("gender", "isEqualTo", "female")
+    // ];
 
     var res = await _databaseSource.getPersonsToMatchWith(
         2, _ignoreSwipeIds, userQuery);
@@ -90,7 +129,8 @@ class _DiscoverPage extends State<DiscoverPage> {
     return null;
   }
 
-  void _filterSwipableUsersModalBottomSheet(context) {
+  void _filterSwipableUsersModalBottomSheet(BuildContext context,
+      [genderSelected]) {
     showModalBottomSheet(
         elevation: 5,
         shape: RoundedRectangleBorder(
@@ -98,40 +138,148 @@ class _DiscoverPage extends State<DiscoverPage> {
         ),
         context: context,
         builder: (BuildContext context) {
+          return StatefulBuilder(builder: (BuildContext context, setState) {
+            List<String> availableGenders = [
+              "everyone",
+              "men",
+              "women",
+              "other"
+            ];
+
+            List<String> selectedGender =
+                genderSelected != null ? [genderSelected] : ["other"];
+
+            return Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ListView(
+                        children: [
+                          ListTile(
+                            leading: Text("Show me",
+                                style: TextStyle(
+                                    fontSize: 24, fontWeight: FontWeight.bold)),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(selectedGender[0].capitalize(),
+                                    style: TextStyle(fontSize: 20)),
+                                SizedBox(width: 12),
+                                const Icon(CustomIcons.right_open)
+                              ],
+                            ),
+                            onTap: () {
+                              Navigator.of(context).pop();
+
+                              _showGendersModal(
+                                  context, availableGenders, selectedGender);
+                            },
+                          ),
+                          ElevatedButton(
+                            child: const Text("Apply filters",
+                                style: TextStyle(color: Colors.white)),
+                            onPressed: () async {
+                              print("Selected gender $selectedGender");
+                              print("HOROSHOO");
+                              // TODO APPLY FILTERS !!!
+                              List<UserQuery> updateUserQuery = [
+                                UserQuery(
+                                    "gender", "isEqualTo", selectedGender[0])
+                              ];
+
+                              this.setState(() {
+                                // selectedGender = s
+                                this.selectedGender = selectedGender;
+                                userQuery = updateUserQuery;
+                              });
+
+                              Navigator.of(context).pop();
+                            },
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ));
+          });
+        });
+  }
+
+  void _showGendersModal(BuildContext context, List<String> availableGenders,
+      List<String> selectedGender) {
+    // List<String> availableGenders = ["everyone", "men", "women", "other"];
+    // List<String> selectedGender = ["everyone"];
+
+    showModalBottomSheet(
+      elevation: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(builder: (BuildContext context, setState) {
           return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
               child: Column(
                 children: [
-                  Text("Here are your favourite mechanics",
+                  Text("Show me",
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 24)),
-                  SizedBox(height: 26),
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 16),
+                  Text("Which genders(s) would you like to see?",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 18, color: Colors.black54)),
+                  SizedBox(height: 16),
                   Expanded(
-                    child: ListView(
-                      children: [
-                        ListTile(
-                          leading: Text("Show me",
-                              style: TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.bold)),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text("Everyone", style: TextStyle(fontSize: 20)),
-                              SizedBox(width: 12),
-                              const Icon(CustomIcons.right_open)
-                            ],
-                          ),
-                          onTap: () {
-                            Navigator.of(context).pop();
-                            print("JOTAIN dasdjas");
-                          },
-                        ),
-                      ],
-                    ),
-                  )
+                      child: ListView(
+                          children: availableGenders.map((gender) {
+                    final isSelected = selectedGender.contains(gender);
+
+                    final selectedColor = Theme.of(context).primaryColor;
+                    final style = isSelected
+                        ? TextStyle(
+                            fontSize: 18,
+                            color: selectedColor,
+                            fontWeight: FontWeight.bold,
+                          )
+                        : TextStyle(fontSize: 18);
+
+                    return ListTile(
+                      onTap: () {
+                        selectedGender.clear();
+
+                        final isSelected = selectedGender.contains(gender);
+
+                        setState(() => isSelected
+                            ? selectedGender.remove(gender)
+                            : selectedGender.add(gender));
+
+                        print("selectedGender, ${selectedGender[0]}");
+
+                        Navigator.of(context).pop();
+
+                        _filterSwipableUsersModalBottomSheet(
+                            context, selectedGender[0]);
+                      },
+                      title: Text(
+                        gender.capitalize(),
+                        style: style,
+                      ),
+                      trailing: isSelected
+                          ? Icon(Icons.radio_button_checked,
+                              color: selectedColor, size: 26)
+                          : Icon(Icons.radio_button_unchecked,
+                              color: selectedColor, size: 26),
+                    );
+                  }).toList()))
                 ],
               ));
         });
+      },
+    );
   }
 
   void personSwiped(List<AppUser> users, AppUser myUser,
@@ -169,9 +317,7 @@ class _DiscoverPage extends State<DiscoverPage> {
     }
 
     print("PERSONSWIPED ${users.length}");
-    // otherUsers.removeLast();
 
-    // print("otherUsers length ${otherUsers.length}");
     if (users.isEmpty) {
       setState(() {});
     }
@@ -206,9 +352,8 @@ class _DiscoverPage extends State<DiscoverPage> {
               color: Colors.black,
               icon: const Icon(CustomIcons.sliders),
               onPressed: () {
-                print("JOTAIN");
-
-                _filterSwipableUsersModalBottomSheet(context);
+                _filterSwipableUsersModalBottomSheet(
+                    context, selectedGender[0]);
               },
             )
           ],
@@ -223,7 +368,7 @@ class _DiscoverPage extends State<DiscoverPage> {
                   inAsyncCall: userProvider.isLoading,
                   child: (userSnapshot.hasData)
                       ? FutureBuilder<List<AppUser>?>(
-                          future: loadPerson(userSnapshot.data!),
+                          future: loadPerson(userSnapshot.data!, userQuery),
                           // future: loadPerson(userSnapshot.data!.id),
                           // future: userProvider.user,
                           builder: (context, snapshot) {

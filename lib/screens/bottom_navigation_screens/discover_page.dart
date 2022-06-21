@@ -10,7 +10,6 @@ import 'package:flutter_demo_01/db/entity/match.dart';
 import 'package:flutter_demo_01/db/entity/swipe.dart';
 import 'package:flutter_demo_01/db/remote/firebase_database_source.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
-import 'package:flutter_demo_01/model/bg_mechanic.dart';
 import 'package:flutter_demo_01/my_flutter_app_icons.dart';
 import 'package:flutter_demo_01/provider/card_provider.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
@@ -44,39 +43,6 @@ class _DiscoverPage extends State<DiscoverPage> {
     _userList = <AppUser>[];
   }
 
-  // Future<List<AppUser>?> loadPerson(AppUser myUser) async {
-  //   print("VMK");
-
-  //   _ignoreSwipeIds = <String>[];
-  //   _userList = <AppUser>[];
-
-  //   var swipes = await _databaseSource.getSwipes(myUser.id);
-  //   for (var i = 0; i < swipes.size; i++) {
-  //     Swipe swipe = Swipe.fromSnapshot(swipes.docs[i]);
-  //     _ignoreSwipeIds.add(swipe.id);
-  //   }
-  //   _ignoreSwipeIds.add(myUser.id);
-
-  //   var res = await _databaseSource.getPersonsToMatchWith(2, _ignoreSwipeIds);
-
-  //   if (res.docs.isNotEmpty) {
-  //     _userList = [];
-  //     for (var element in res.docs) {
-  //       _userList.add(AppUser.fromSnapshot(element));
-  //     }
-
-  //     final provider = Provider.of<CardProvider>(context, listen: false);
-
-  //     print("HASTA provider setUser ${_userList.reversed.toList().length}");
-
-  //     provider.setUsers(_userList.reversed.toList());
-
-  //     return _userList.reversed.toList();
-  //   }
-
-  //   return null;
-  // }
-
   Future<List<AppUser>?> loadPerson(
       AppUser myUser, List<UserQuery> userQuery) async {
     print("VMK");
@@ -91,25 +57,8 @@ class _DiscoverPage extends State<DiscoverPage> {
     }
     _ignoreSwipeIds.add(myUser.id);
 
-    // TODO Create dictionary
-    // Map<String, dynamic> map = {"ignoreSwipeIds": _ignoreSwipeIds};
-
-    // print("KJH ${map["ignoreSwipeIds"]}");
-
-    // var jot = calculateAge(DateTime(1998, 5, 21));
-
-    // List<UserQuery> userQuery = [
-    //   // UserQuery("age", "isGreaterThanOrEqualTo", 20),
-    //   // UserQuery("age", "isLessThanOrEqualTo", 26),
-    //   UserQuery("gender", "isEqualTo", "female")
-    // ];
-
     var res = await _databaseSource.getPersonsToMatchWith(
         2, _ignoreSwipeIds, userQuery);
-
-    // TODO Implement showBottomModal
-
-    // var res = await _databaseSource.getPersonsToMatchWith(2, tempQuery);
 
     if (res.docs.isNotEmpty) {
       _userList = [];
@@ -182,15 +131,13 @@ class _DiscoverPage extends State<DiscoverPage> {
                                 style: TextStyle(color: Colors.white)),
                             onPressed: () async {
                               print("Selected gender $selectedGender");
-                              print("HOROSHOO");
-                              // TODO APPLY FILTERS !!!
+
                               List<UserQuery> updateUserQuery = [
                                 UserQuery(
                                     "gender", "isEqualTo", selectedGender[0])
                               ];
 
                               this.setState(() {
-                                // selectedGender = s
                                 this.selectedGender = selectedGender;
                                 userQuery = updateUserQuery;
                               });
@@ -209,9 +156,6 @@ class _DiscoverPage extends State<DiscoverPage> {
 
   void _showGendersModal(BuildContext context, List<String> availableGenders,
       List<String> selectedGender) {
-    // List<String> availableGenders = ["everyone", "men", "women", "other"];
-    // List<String> selectedGender = ["everyone"];
-
     showModalBottomSheet(
       elevation: 5,
       shape: RoundedRectangleBorder(
@@ -294,7 +238,6 @@ class _DiscoverPage extends State<DiscoverPage> {
     _databaseSource.addSwipedUser(
         myUser.id, Swipe(otherUsers.last.id, isLiked));
     _ignoreSwipeIds.add(otherUsers.last.id);
-    // widget.ignoreSwipeIds.add(otherUsers.last.id);
 
     if (isLiked = true) {
       if (await isMatch(myUser, otherUsers.last) == true) {
@@ -369,8 +312,6 @@ class _DiscoverPage extends State<DiscoverPage> {
                   child: (userSnapshot.hasData)
                       ? FutureBuilder<List<AppUser>?>(
                           future: loadPerson(userSnapshot.data!, userQuery),
-                          // future: loadPerson(userSnapshot.data!.id),
-                          // future: userProvider.user,
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                     ConnectionState.done &&
@@ -394,7 +335,6 @@ class _DiscoverPage extends State<DiscoverPage> {
                               ignoreSwipeIds: _ignoreSwipeIds,
                               personSwiped: personSwiped,
                               resetState: resetState,
-                              // isMatch: isMatch,
                             );
                           })
                       : Container(),

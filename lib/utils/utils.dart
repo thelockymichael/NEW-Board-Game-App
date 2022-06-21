@@ -62,7 +62,6 @@ extension StringExtension on String {
 }
 
 // TODO Calculate age by using date of birth
-
 int calculateAge(DateTime birthDate) {
   DateTime currentDate = DateTime.now();
 
@@ -83,9 +82,6 @@ int calculateAge(DateTime birthDate) {
 
   return age;
 }
-
-// TODO 1. RETURN QUERYREF
-// TODO 2. Loop every query
 
 Query<Map<String, dynamic>> filterSwipableUsers(
     Query<Map<String, dynamic>> queryRef, List<UserQuery> queries) {
@@ -111,12 +107,6 @@ Query<Map<String, dynamic>> filterSwipableUsers(
               print("VMK other");
               queryRef = queryRef.where(query.field, isEqualTo: "other");
             }
-            //   print("VMK everyone");
-            //   queryRef = queryRef.where(query.field, isEqualTo: query.value)
-            //   .where(query.field, );
-            // } else {
-            // print("VMK else");
-            // queryRef = queryRef.where(query.field, isEqualTo: query.value);
           }
         }
 

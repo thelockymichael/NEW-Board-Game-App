@@ -1,6 +1,8 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_demo_01/db/entity/UserQuery.dart';
 import 'package:flutter_demo_01/model/bg_mechanic.dart';
 import 'package:intl/intl.dart';
 
@@ -57,4 +59,83 @@ extension StringExtension on String {
       return joinedName;
     }
   }
+}
+
+// TODO Calculate age by using date of birth
+
+int calculateAge(DateTime birthDate) {
+  DateTime currentDate = DateTime.now();
+
+  int age = currentDate.year - birthDate.year;
+  int month1 = currentDate.month;
+  int month2 = birthDate.month;
+
+  if (month2 > month1) {
+    age--;
+  } else if (month1 == month2) {
+    int day1 = currentDate.day;
+    int day2 = birthDate.day;
+
+    if (day2 > day1) {
+      age--;
+    }
+  }
+
+  return age;
+}
+
+// TODO 1. RETURN QUERYREF
+// TODO 2. Loop every query
+
+Query<Map<String, dynamic>> filterSwipableUsers(
+    Query<Map<String, dynamic>> queryRef, List<UserQuery> queries) {
+  queries.forEach((query) {
+    // 11 options
+    switch (query.condition) {
+      case "arrayContains":
+        break;
+      case "arrayContainsAny":
+        break;
+
+      case "isEqualTo":
+        queryRef = queryRef.where(query.field, isEqualTo: query.value);
+
+        break;
+
+      case "isGreaterThan":
+        break;
+
+      case "isGreaterThanOrEqualTo":
+        queryRef =
+            queryRef.where(query.field, isGreaterThanOrEqualTo: query.value);
+
+        break;
+
+      case "isLessThan":
+        break;
+
+      case "isLessThanOrEqualTo":
+        queryRef =
+            queryRef.where(query.field, isLessThanOrEqualTo: query.value);
+
+        break;
+
+      case "isNotEqualTo":
+        break;
+
+      case "isNull":
+        break;
+
+      case "whereIn":
+        break;
+
+      case "whereNotIn":
+        break;
+
+      default:
+        break;
+    }
+  });
+
+  return queryRef;
 }

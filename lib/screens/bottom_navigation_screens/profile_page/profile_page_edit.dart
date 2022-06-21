@@ -1057,8 +1057,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
 
                               return ListTile(
                                 onTap: () {
-                                  print("HELLO WORLD");
-
                                   final isSelected = bgMechanicsSelectedList
                                       .contains(bgMechanic);
 
@@ -1071,7 +1069,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                   print(
                                       "bgMechanicsSelectedList, ${bgMechanicsSelectedList.length}");
                                 },
-                                // leading: FlagWidget(code: BgMechanic),
                                 title: Text(
                                   bgMechanic.name,
                                   style: style,
@@ -1083,8 +1080,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                               );
                             }).toList()),
                           ),
-                          // selectMechanicsButton(
-                          //     context, userSnapshot, bgMechanicsSelectedList)
                         ],
                       ),
                       Column(
@@ -1159,7 +1154,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
     final _bggNameTextController =
         TextEditingController(text: userSnapshot.bggName);
     final _birthdayTextController =
-        TextEditingController(text: userSnapshot.age);
+        TextEditingController(text: userSnapshot.age.toString());
     final _genderTextController =
         TextEditingController(text: userSnapshot.gender);
     final _currentLocationTextController =
@@ -1309,8 +1304,8 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                           _genderTextController.text;
 
                                       // Birthday
-                                      _userProfileEdit.birthDay =
-                                          _birthdayTextController.text;
+                                      _userProfileEdit.age =
+                                          _birthdayTextController.text as int;
 
                                       await _userProvider
                                           .updateUserBasicInfo(userSnapshot,

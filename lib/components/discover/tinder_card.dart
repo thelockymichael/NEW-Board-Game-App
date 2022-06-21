@@ -732,7 +732,7 @@ class _TinderCardState extends State<TinderCard> {
           ),
           const SizedBox(width: 16),
           Text(
-            widget.user!.age,
+            widget.user!.age.toString(),
             style: const TextStyle(fontSize: 32, color: Colors.white),
           ),
         ],

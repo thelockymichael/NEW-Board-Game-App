@@ -1,7 +1,7 @@
 class UserProfileEdit {
   String name = '';
   String bggName = '';
-  String birthDay = '';
+  int age = 0;
   String gender = "";
   String currentLocation = "";
 }

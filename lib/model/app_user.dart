@@ -10,7 +10,7 @@ class AppUser {
   late String bggName;
   late String currentLocation;
   late String gender;
-  late String age;
+  late int age;
   late String profilePhotoPath;
   late String bio;
   late List<String> favBoardGameGenres;
@@ -25,7 +25,7 @@ class AppUser {
       this.bggName = "",
       this.currentLocation = "",
       this.gender = "",
-      this.age = "",
+      this.age = 0,
       this.profilePhotoPath = "",
       this.bio = "",
       required this.favBoardGameGenres,

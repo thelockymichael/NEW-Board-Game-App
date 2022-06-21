@@ -656,7 +656,7 @@ class UserProvider extends ChangeNotifier {
       bggName: userProfile.bggName,
       currentLocation: userProfile.currentLocation,
       gender: userProfile.gender,
-      age: userProfile.birthDay,
+      age: userProfile.age,
       bio: userSnapshot.bio,
       email: userSnapshot.email,
       favBoardGameGenres: userSnapshot.favBoardGameGenres,

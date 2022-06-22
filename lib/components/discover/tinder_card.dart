@@ -95,28 +95,6 @@ class _TinderCardState extends State<TinderCard> {
           final provider = Provider.of<CardProvider>(context, listen: false);
 
           provider.endPosition(context, widget.myUser!, widget.notifyParent);
-          print("!!! END POSITION !!!");
-
-          print("-----------------");
-          print("Provider onPandEnd");
-          provider.users.forEach((user) => print("USER NAME: ${user.name}"));
-
-          print("-----------------");
-
-/**
-    required this.user,
-    required this.notifyParent,
-    required this.myUser,
-    required this.isFront,
- */
-
-          // if (provider.users[0] == widget.user) {
-          //   // TIME TO RESET
-
-          //   print("TIME TO RESTARTEE");
-          //   widget.resetState();
-          // }
-          // widget.resetState();
         },
       );
 

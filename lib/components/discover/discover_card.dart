@@ -7,7 +7,6 @@ import 'package:flutter_demo_01/provider/card_provider.dart';
 import 'package:provider/provider.dart';
 
 class DiscoverCard extends StatefulWidget {
-  // final List<AppUser> people;
   final AppUser myUser;
   late List<String> ignoreSwipeIds;
   late Function personSwiped;
@@ -15,7 +14,6 @@ class DiscoverCard extends StatefulWidget {
 
   DiscoverCard({
     Key? key,
-    // required this.people,
     required this.myUser,
     required this.ignoreSwipeIds,
     required this.personSwiped,
@@ -37,19 +35,6 @@ class _DiscoverCard extends State<DiscoverCard> {
 
   @override
   Widget build(BuildContext context) {
-    // final provider = Provider.of<CardProvider>(context, listen: false);
-
-    // widget.people.forEach((user) => print(user.name));
-
-    // provider.setUsers(widget.people);
-
-    // if (cardProvider.users.isEmpty) {
-    //   print("VMK USER IS EMPTY !!!");
-
-    //   widget.notifyParent();
-    // }
-
-    // this.setState(() {});
     print("VMK card build users length ${cardProvider.users.length}");
 
     return cardProvider.users.isEmpty
@@ -70,7 +55,6 @@ class _DiscoverCard extends State<DiscoverCard> {
                       alignment: Alignment.center,
                       padding: const EdgeInsets.all(16),
                       child: Column(children: [
-                        // buildLogo(),
                         const SizedBox(height: 16),
                         Expanded(child: buildCards()),
                         const SizedBox(height: 16),

@@ -13,7 +13,6 @@ import 'package:flutter_demo_01/db/remote/firebase_database_source.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/my_flutter_app_icons.dart';
 import 'package:flutter_demo_01/provider/card_provider.dart';
-import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/screens/matched_screen.dart';
 import 'package:flutter_demo_01/utils/shared_preferences_utils.dart';
 import 'package:flutter_demo_01/utils/utils.dart';
@@ -530,12 +529,6 @@ class _DiscoverPage extends State<DiscoverPage> {
         });
       }
     }
-
-    // print("PERSONSWIPED ${users.length}");
-
-    // if (users.isEmpty) {
-    //   setState(() {});
-    // }
   }
 
   refresh() {
@@ -591,20 +584,7 @@ class _DiscoverPage extends State<DiscoverPage> {
                 );
               }
 
-              // TODO fetch new users
-              // print("VMK GHJ ${snapshot.data!.length}");
-
-              // return FloatingActionButton(
-              //     child: Text("Hello world"),
-              //     onPressed: () {
-              //       print("VMK PRESSED");
-
-              //       setState(() {
-              //         _userList = [];
-              //       });
-              //     });
               return DiscoverCard(
-                // people: snapshot.data!,
                 myUser: _myUser,
                 ignoreSwipeIds: _ignoreSwipeIds,
                 personSwiped: personSwiped,

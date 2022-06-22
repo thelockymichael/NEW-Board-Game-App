@@ -33,9 +33,6 @@ class CardProvider extends ChangeNotifier {
   void setUsers(List<AppUser> users) {
     _users = [];
     _users = users;
-
-    // Update UI
-    // notifyListeners();
   }
 
   Future<bool> isMatch(AppUser myUser, AppUser otherUser) async {
@@ -71,36 +68,6 @@ class CardProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // void specialLike(BuildContext context, List<AppUser> users, AppUser myUser,
-  //     AppUser last, bool isLiked) {
-  //   _angle = 20;
-  //   _position += Offset(2 * _screenSize.width, 0);
-  //   _specialNextCard(context, users, myUser, last, isLiked);
-
-  //   // personSwiped(context, users, myUser, users.last, true);
-
-  //   notifyListeners();
-  // }
-
-  // void specialDislike(BuildContext context, List<AppUser> users, AppUser myUser,
-  //     AppUser last, bool isLiked) {
-  //   _angle = -20;
-  //   _position -= Offset(2 * _screenSize.width, 0);
-  //   _specialNextCard(context, users, myUser, last, isLiked);
-
-  //   notifyListeners();
-  // }
-
-  // Future _specialNextCard(BuildContext context, List<AppUser> users,
-  //     AppUser myUser, AppUser last, bool isLiked) async {
-  //   if (_users.isEmpty) return;
-
-  //   personSwiped(context, users, myUser, users.last, isLiked);
-  //   await Future.delayed(const Duration(milliseconds: 200));
-  //   _users.removeLast();
-  //   resetPosition();
-  // }
-
   void endPosition(BuildContext context, AppUser myUser, Function refresh) {
     _isDragging = false;
     notifyListeners();
@@ -109,17 +76,10 @@ class CardProvider extends ChangeNotifier {
 
     switch (status) {
       case CardStatus.like:
-        // TODO
-        // personSwiped(context, myUser, true);
         like(context, myUser, refresh);
-        // personSwiped(context, users, myUser, users.last, true);
-        // specialLike(context, users, myUser, users.last, true);
         break;
       case CardStatus.dislike:
-        // TODO
-        // personSwiped(context, myUser, false);
         dislike(context, myUser, refresh);
-        // specialDislike(context, users, myUser, users.last, false);
         break;
       case CardStatus.superLike:
         superLike();
@@ -175,7 +135,6 @@ class CardProvider extends ChangeNotifier {
     return null;
   }
 
-  // void like(BuildContext context, AppUser myUser) {
   void like(BuildContext context, AppUser myUser, Function refresh) {
     _angle = 20;
     _position += Offset(2 * _screenSize.width, 0);
@@ -207,12 +166,6 @@ class CardProvider extends ChangeNotifier {
         });
       }
     }
-
-    // print("PERSONSWIPED ${users.length}");
-
-    // if (users.isEmpty) {
-    //   setState(() {});
-    // }
   }
 
   void dislike(BuildContext context, AppUser myUser, Function refresh) {
@@ -237,11 +190,6 @@ class CardProvider extends ChangeNotifier {
   Future _nextCard([Function? refresh]) async {
     if (_users.isEmpty) return;
 
-    // TODO
-    /*
-      Delay doesn't provide enough time to remove last user
-    */
-
     Future.delayed(const Duration(milliseconds: 200))
         .asStream()
         .listen((event) {
@@ -250,14 +198,5 @@ class CardProvider extends ChangeNotifier {
 
       if (_users.isEmpty) refresh!();
     });
-
-    // Timer t = Timer(const Duration(milliseconds: 200), () {});
-
-    // Timer t = Timer(Duration(seconds: 200), () {
-    //   // checkAnswer('');
-    //   // jumpToNextQuestion();
-    // });
-    // and later, before the timer goes off...
-    // t.cancel();
   }
 }

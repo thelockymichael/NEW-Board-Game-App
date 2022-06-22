@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/utils/constants.dart';
+import "package:flutter_demo_01/utils/utils.dart";
 
 class ChatTopBar extends StatelessWidget {
   final AppUser user;
@@ -30,7 +31,7 @@ class ChatTopBar extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              user.name,
+              user.name.capitalize(),
               style: Theme.of(context).textTheme.bodyText1,
             ),
           ],

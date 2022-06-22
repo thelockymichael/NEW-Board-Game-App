@@ -2,6 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_demo_01/api/recommend_games_api.dart';
 import 'package:flutter_demo_01/components/discover/discover_card.dart';
 import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
 import 'package:flutter_demo_01/db/entity/UserQuery.dart';
@@ -14,6 +15,7 @@ import 'package:flutter_demo_01/my_flutter_app_icons.dart';
 import 'package:flutter_demo_01/provider/card_provider.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/screens/matched_screen.dart';
+import 'package:flutter_demo_01/utils/shared_preferences_utils.dart';
 import 'package:flutter_demo_01/utils/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -36,41 +38,316 @@ class _DiscoverPage extends State<DiscoverPage> {
 
   List<UserQuery> userQuery = [];
 
+  late CardProvider cardProvider;
+
+  AppUser _myUser = AppUser(
+      id: "test id",
+      name: "test name",
+      email: "test@gmail.com",
+      favBoardGameGenres: [],
+      favBgMechanics: [],
+      favBgThemes: [],
+      favBoardGames: FavBoardGames(familyGames: [
+        SelectedBoardGame(
+          rank: 1,
+          boardGame: BoardGameData(
+            bggId: 0,
+            imageUrl: [""],
+            name: "",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0,
+          ),
+        ),
+        SelectedBoardGame(
+          rank: 2,
+          boardGame: BoardGameData(
+            bggId: 0,
+            imageUrl: [""],
+            name: "",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0,
+          ),
+        ),
+        SelectedBoardGame(
+          rank: 3,
+          boardGame: BoardGameData(
+            bggId: 0,
+            imageUrl: [""],
+            name: "",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0,
+          ),
+        )
+      ], dexterityGames: [
+        SelectedBoardGame(
+          rank: 1,
+          boardGame: BoardGameData(
+            bggId: 0,
+            imageUrl: [""],
+            name: "",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0,
+          ),
+        ),
+        SelectedBoardGame(
+          rank: 2,
+          boardGame: BoardGameData(
+            bggId: 0,
+            imageUrl: [""],
+            name: "",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0,
+          ),
+        ),
+        SelectedBoardGame(
+          rank: 3,
+          boardGame: BoardGameData(
+            bggId: 0,
+            imageUrl: [""],
+            name: "",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0,
+          ),
+        )
+      ], partyGames: [
+        SelectedBoardGame(
+          rank: 1,
+          boardGame: BoardGameData(
+            bggId: 0,
+            imageUrl: [""],
+            name: "",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0,
+          ),
+        ),
+        SelectedBoardGame(
+          rank: 2,
+          boardGame: BoardGameData(
+            bggId: 0,
+            imageUrl: [""],
+            name: "",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0,
+          ),
+        ),
+        SelectedBoardGame(
+          rank: 3,
+          boardGame: BoardGameData(
+            bggId: 0,
+            imageUrl: [""],
+            name: "",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0,
+          ),
+        )
+      ], thematicGames: [
+        SelectedBoardGame(
+          rank: 1,
+          boardGame: BoardGameData(
+            bggId: 0,
+            imageUrl: [""],
+            name: "",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0,
+          ),
+        ),
+        SelectedBoardGame(
+          rank: 2,
+          boardGame: BoardGameData(
+            bggId: 0,
+            imageUrl: [""],
+            name: "",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0,
+          ),
+        ),
+        SelectedBoardGame(
+          rank: 3,
+          boardGame: BoardGameData(
+            bggId: 0,
+            imageUrl: [""],
+            name: "",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0,
+          ),
+        )
+      ], strategyGames: [
+        SelectedBoardGame(
+          rank: 1,
+          boardGame: BoardGameData(
+            bggId: 0,
+            imageUrl: [""],
+            name: "",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0,
+          ),
+        ),
+        SelectedBoardGame(
+          rank: 2,
+          boardGame: BoardGameData(
+            bggId: 0,
+            imageUrl: [""],
+            name: "",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0,
+          ),
+        ),
+        SelectedBoardGame(
+          rank: 3,
+          boardGame: BoardGameData(
+            bggId: 0,
+            imageUrl: [""],
+            name: "",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0,
+          ),
+        )
+      ], abstractGames: [
+        SelectedBoardGame(
+          rank: 1,
+          boardGame: BoardGameData(
+            bggId: 0,
+            imageUrl: [""],
+            name: "",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0,
+          ),
+        ),
+        SelectedBoardGame(
+          rank: 2,
+          boardGame: BoardGameData(
+            bggId: 0,
+            imageUrl: [""],
+            name: "",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0,
+          ),
+        ),
+        SelectedBoardGame(
+          rank: 3,
+          boardGame: BoardGameData(
+            bggId: 0,
+            imageUrl: [""],
+            name: "",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0,
+          ),
+        )
+      ], warGames: [
+        SelectedBoardGame(
+          rank: 1,
+          boardGame: BoardGameData(
+            bggId: 0,
+            imageUrl: [""],
+            name: "",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0,
+          ),
+        ),
+        SelectedBoardGame(
+          rank: 2,
+          boardGame: BoardGameData(
+            bggId: 0,
+            imageUrl: [""],
+            name: "",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0,
+          ),
+        ),
+        SelectedBoardGame(
+          rank: 3,
+          boardGame: BoardGameData(
+            bggId: 0,
+            imageUrl: [""],
+            name: "",
+            recRank: 0,
+            recRating: 0,
+            recStars: 0,
+            year: 0,
+          ),
+        )
+      ]));
+
   @override
   void initState() {
     super.initState();
     _ignoreSwipeIds = <String>[];
     _userList = <AppUser>[];
+
+    cardProvider = Provider.of<CardProvider>(context, listen: false);
   }
 
-  Future<List<AppUser>?> loadPerson(
-      AppUser myUser, List<UserQuery> userQuery) async {
-    print("VMK");
+  Future<List<AppUser>?> loadPerson(List<UserQuery> userQuery) async {
+    print("LOK");
+
+    String? id = await SharedPreferencesUtil.getUserId();
+
+    if (id != null) {
+      _myUser = AppUser.fromSnapshot(await _databaseSource.getUser(id));
+    }
 
     _ignoreSwipeIds = <String>[];
     _userList = <AppUser>[];
 
-    var swipes = await _databaseSource.getSwipes(myUser.id);
+    var swipes = await _databaseSource.getSwipes(_myUser.id);
     for (var i = 0; i < swipes.size; i++) {
       Swipe swipe = Swipe.fromSnapshot(swipes.docs[i]);
       _ignoreSwipeIds.add(swipe.id);
     }
-    _ignoreSwipeIds.add(myUser.id);
+    _ignoreSwipeIds.add(_myUser.id);
 
     var res = await _databaseSource.getPersonsToMatchWith(
-        2, _ignoreSwipeIds, userQuery);
+        3, _ignoreSwipeIds, userQuery);
 
     if (res.docs.isNotEmpty) {
-      _userList = [];
       for (var element in res.docs) {
         _userList.add(AppUser.fromSnapshot(element));
       }
 
-      final provider = Provider.of<CardProvider>(context, listen: false);
+      print(
+          "VMK !!LOAD PERSON!! length of users ${_userList.reversed.toList().length}");
 
-      print("HASTA provider setUser ${_userList.reversed.toList().length}");
-
-      provider.setUsers(_userList.reversed.toList());
+      cardProvider.setUsers(_userList.reversed.toList());
 
       return _userList.reversed.toList();
     }
@@ -228,11 +505,6 @@ class _DiscoverPage extends State<DiscoverPage> {
 
   void personSwiped(List<AppUser> users, AppUser myUser,
       List<AppUser> otherUsers, bool isLiked) async {
-    print("PERSONSWIPED ${myUser.id}");
-
-    print("PERSONSWIPED ${otherUsers.last.id}");
-    print("PERSONSWIPED $isLiked");
-    print("PERSONSWIPED usr");
     print(await isMatch(myUser, otherUsers.last) == true);
 
     _databaseSource.addSwipedUser(
@@ -259,14 +531,14 @@ class _DiscoverPage extends State<DiscoverPage> {
       }
     }
 
-    print("PERSONSWIPED ${users.length}");
+    // print("PERSONSWIPED ${users.length}");
 
-    if (users.isEmpty) {
-      setState(() {});
-    }
+    // if (users.isEmpty) {
+    //   setState(() {});
+    // }
   }
 
-  void resetState() {
+  refresh() {
     setState(() {});
   }
 
@@ -302,47 +574,43 @@ class _DiscoverPage extends State<DiscoverPage> {
           ],
         ),
         key: _scaffoldKey,
-        body: Consumer<UserProvider>(
-          builder: (context, userProvider, child) {
-            return FutureBuilder<AppUser>(
-              future: userProvider.user,
-              builder: (context, userSnapshot) {
-                return CustomModalProgressHUD(
-                  inAsyncCall: userProvider.isLoading,
-                  child: (userSnapshot.hasData)
-                      ? FutureBuilder<List<AppUser>?>(
-                          future: loadPerson(userSnapshot.data!, userQuery),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                    ConnectionState.done &&
-                                !snapshot.hasData) {
-                              return Center(
-                                child: Text('No more users to swipe',
-                                    style:
-                                        Theme.of(context).textTheme.headline4),
-                              );
-                            }
-                            if (!snapshot.hasData) {
-                              return CustomModalProgressHUD(
-                                inAsyncCall: true,
-                                child: Container(),
-                              );
-                            }
-
-                            return DiscoverCard(
-                              people: snapshot.data!,
-                              myUser: userSnapshot.data!,
-                              ignoreSwipeIds: _ignoreSwipeIds,
-                              personSwiped: personSwiped,
-                              resetState: resetState,
-                            );
-                          })
-                      : Container(),
+        body: FutureBuilder<List<AppUser>?>(
+            future: loadPerson(userQuery),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done &&
+                  !snapshot.hasData) {
+                return Center(
+                  child: Text('No more users to swipe',
+                      style: Theme.of(context).textTheme.headline4),
                 );
-              },
-            );
-          },
-        ));
+              }
+              if (!snapshot.hasData) {
+                return CustomModalProgressHUD(
+                  inAsyncCall: true,
+                  child: Container(),
+                );
+              }
+
+              // TODO fetch new users
+              // print("VMK GHJ ${snapshot.data!.length}");
+
+              // return FloatingActionButton(
+              //     child: Text("Hello world"),
+              //     onPressed: () {
+              //       print("VMK PRESSED");
+
+              //       setState(() {
+              //         _userList = [];
+              //       });
+              //     });
+              return DiscoverCard(
+                // people: snapshot.data!,
+                myUser: _myUser,
+                ignoreSwipeIds: _ignoreSwipeIds,
+                personSwiped: personSwiped,
+                notifyParent: refresh,
+              );
+            }));
   }
 
   Widget buildLogo() => Row(

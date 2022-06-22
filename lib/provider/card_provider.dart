@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:flutter/material.dart";
@@ -37,36 +38,6 @@ class CardProvider extends ChangeNotifier {
     // notifyListeners();
   }
 
-  void personSwiped(BuildContext context, List<AppUser> users, AppUser myUser,
-      AppUser otherUser, bool isLiked) async {
-    _databaseSource.addSwipedUser(myUser.id, Swipe(otherUser.id, isLiked));
-    _ignoreSwipeIds.add(otherUser.id);
-    // widget.ignoreSwipeIds.add(otherUser.id);
-
-    if (isLiked = true) {
-      if (await isMatch(myUser, otherUser) == true) {
-        _databaseSource.addMatch(myUser.id, Match(otherUser.id));
-        _databaseSource.addMatch(otherUser.id, Match(myUser.id));
-
-        String chatId = compareAndCombineIds(myUser.id, otherUser.id);
-
-        print("New chat id $chatId");
-
-        _databaseSource.addChat(Chat(chatId, myUser.id, otherUser.id, null));
-
-        Navigator.pushNamed(context, MatchedScreen.id, arguments: {
-          "my_user_id": myUser.id,
-          "my_profile_photo_path": myUser.profilePhotoPath,
-          "other_user_profile_photo_path": otherUser.profilePhotoPath,
-          "other_user_id": otherUser.id,
-          "other_user_name": otherUser.name
-        });
-      }
-    }
-
-    // setState(() {});
-  }
-
   Future<bool> isMatch(AppUser myUser, AppUser otherUser) async {
     DocumentSnapshot swipeSnapshot =
         await _databaseSource.getSwipe(otherUser.id, myUser.id);
@@ -100,37 +71,37 @@ class CardProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void specialLike(BuildContext context, List<AppUser> users, AppUser myUser,
-      AppUser last, bool isLiked) {
-    _angle = 20;
-    _position += Offset(2 * _screenSize.width, 0);
-    _specialNextCard(context, users, myUser, last, isLiked);
+  // void specialLike(BuildContext context, List<AppUser> users, AppUser myUser,
+  //     AppUser last, bool isLiked) {
+  //   _angle = 20;
+  //   _position += Offset(2 * _screenSize.width, 0);
+  //   _specialNextCard(context, users, myUser, last, isLiked);
 
-    // personSwiped(context, users, myUser, users.last, true);
+  //   // personSwiped(context, users, myUser, users.last, true);
 
-    notifyListeners();
-  }
+  //   notifyListeners();
+  // }
 
-  void specialDislike(BuildContext context, List<AppUser> users, AppUser myUser,
-      AppUser last, bool isLiked) {
-    _angle = -20;
-    _position -= Offset(2 * _screenSize.width, 0);
-    _specialNextCard(context, users, myUser, last, isLiked);
+  // void specialDislike(BuildContext context, List<AppUser> users, AppUser myUser,
+  //     AppUser last, bool isLiked) {
+  //   _angle = -20;
+  //   _position -= Offset(2 * _screenSize.width, 0);
+  //   _specialNextCard(context, users, myUser, last, isLiked);
 
-    notifyListeners();
-  }
+  //   notifyListeners();
+  // }
 
-  Future _specialNextCard(BuildContext context, List<AppUser> users,
-      AppUser myUser, AppUser last, bool isLiked) async {
-    if (_users.isEmpty) return;
+  // Future _specialNextCard(BuildContext context, List<AppUser> users,
+  //     AppUser myUser, AppUser last, bool isLiked) async {
+  //   if (_users.isEmpty) return;
 
-    personSwiped(context, users, myUser, users.last, isLiked);
-    await Future.delayed(const Duration(milliseconds: 200));
-    _users.removeLast();
-    resetPosition();
-  }
+  //   personSwiped(context, users, myUser, users.last, isLiked);
+  //   await Future.delayed(const Duration(milliseconds: 200));
+  //   _users.removeLast();
+  //   resetPosition();
+  // }
 
-  void endPosition(BuildContext context, AppUser myUser) {
+  void endPosition(BuildContext context, AppUser myUser, Function refresh) {
     _isDragging = false;
     notifyListeners();
 
@@ -138,12 +109,17 @@ class CardProvider extends ChangeNotifier {
 
     switch (status) {
       case CardStatus.like:
+        // TODO
+        // personSwiped(context, myUser, true);
+        like(context, myUser, refresh);
         // personSwiped(context, users, myUser, users.last, true);
-        specialLike(context, users, myUser, users.last, true);
+        // specialLike(context, users, myUser, users.last, true);
         break;
       case CardStatus.dislike:
-        // dislike();
-        specialDislike(context, users, myUser, users.last, false);
+        // TODO
+        // personSwiped(context, myUser, false);
+        dislike(context, myUser, refresh);
+        // specialDislike(context, users, myUser, users.last, false);
         break;
       case CardStatus.superLike:
         superLike();
@@ -200,21 +176,53 @@ class CardProvider extends ChangeNotifier {
   }
 
   // void like(BuildContext context, AppUser myUser) {
-  void like() {
+  void like(BuildContext context, AppUser myUser, Function refresh) {
     _angle = 20;
     _position += Offset(2 * _screenSize.width, 0);
-    _nextCard();
 
-    // personSwiped(context, users, myUser, users.last, true);
-
+    personSwiped(context, myUser, true);
+    _nextCard(refresh);
     notifyListeners();
   }
 
-  void dislike() {
+  void personSwiped(BuildContext context, AppUser myUser, bool isLiked) async {
+    _databaseSource.addSwipedUser(myUser.id, Swipe(users.last.id, isLiked));
+    _ignoreSwipeIds.add(users.last.id);
+
+    if (isLiked = true) {
+      if (await isMatch(myUser, users.last) == true) {
+        _databaseSource.addMatch(myUser.id, Match(users.last.id));
+        _databaseSource.addMatch(users.last.id, Match(myUser.id));
+
+        String chatId = compareAndCombineIds(myUser.id, users.last.id);
+
+        _databaseSource.addChat(Chat(chatId, myUser.id, users.last.id, null));
+
+        Navigator.pushNamed(context, MatchedScreen.id, arguments: {
+          "my_user_id": myUser.id,
+          "my_profile_photo_path": myUser.profilePhotoPath,
+          "other_user_profile_photo_path": users.last.profilePhotoPath,
+          "other_user_id": users.last.id,
+          "other_user_name": users.last.name
+        });
+      }
+    }
+
+    // print("PERSONSWIPED ${users.length}");
+
+    // if (users.isEmpty) {
+    //   setState(() {});
+    // }
+  }
+
+  void dislike(BuildContext context, AppUser myUser, Function refresh) {
+    print("VMK DISLIKE");
     _angle = -20;
     _position -= Offset(2 * _screenSize.width, 0);
-    _nextCard();
 
+    personSwiped(context, myUser, false);
+
+    _nextCard(refresh);
     notifyListeners();
   }
 
@@ -226,11 +234,30 @@ class CardProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future _nextCard() async {
+  Future _nextCard([Function? refresh]) async {
     if (_users.isEmpty) return;
 
-    await Future.delayed(const Duration(milliseconds: 200));
-    _users.removeLast();
-    resetPosition();
+    // TODO
+    /*
+      Delay doesn't provide enough time to remove last user
+    */
+
+    Future.delayed(const Duration(milliseconds: 200))
+        .asStream()
+        .listen((event) {
+      resetPosition();
+      _users.removeLast();
+
+      if (_users.isEmpty) refresh!();
+    });
+
+    // Timer t = Timer(const Duration(milliseconds: 200), () {});
+
+    // Timer t = Timer(Duration(seconds: 200), () {
+    //   // checkAnswer('');
+    //   // jumpToNextQuestion();
+    // });
+    // and later, before the timer goes off...
+    // t.cancel();
   }
 }

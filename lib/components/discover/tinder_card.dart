@@ -11,14 +11,14 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 class TinderCard extends StatefulWidget {
   final AppUser? user;
-  final Function resetState;
+  final Function notifyParent;
   final AppUser? myUser;
   final bool isFront;
 
   const TinderCard({
     Key? key,
     required this.user,
-    required this.resetState,
+    required this.notifyParent,
     required this.myUser,
     required this.isFront,
   }) : super(key: key);
@@ -94,7 +94,7 @@ class _TinderCardState extends State<TinderCard> {
         onPanEnd: (details) {
           final provider = Provider.of<CardProvider>(context, listen: false);
 
-          provider.endPosition(context, widget.myUser!);
+          provider.endPosition(context, widget.myUser!, widget.notifyParent);
           print("!!! END POSITION !!!");
 
           print("-----------------");
@@ -105,17 +105,17 @@ class _TinderCardState extends State<TinderCard> {
 
 /**
     required this.user,
-    required this.resetState,
+    required this.notifyParent,
     required this.myUser,
     required this.isFront,
  */
 
-          if (provider.users[0] == widget.user) {
-            // TIME TO RESET
+          // if (provider.users[0] == widget.user) {
+          //   // TIME TO RESET
 
-            print("TIME TO RESTARTEE");
-            widget.resetState();
-          }
+          //   print("TIME TO RESTARTEE");
+          //   widget.resetState();
+          // }
           // widget.resetState();
         },
       );

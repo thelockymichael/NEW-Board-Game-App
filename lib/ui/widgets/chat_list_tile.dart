@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/model/chat_with_user.dart';
 import 'package:flutter_demo_01/utils/constants.dart';
 
-import '../../utils/utils.dart';
+import "package:flutter_demo_01/utils/utils.dart";
 
 class ChatListTile extends StatelessWidget {
   final ChatWithUser chatWithUser;
@@ -72,7 +72,7 @@ class ChatListTile extends StatelessWidget {
       children: [
         Expanded(
           child: Text(
-            chatWithUser.user.name,
+            chatWithUser.user.name.capitalize(),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(fontSize: 16),

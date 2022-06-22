@@ -7,19 +7,19 @@ import 'package:flutter_demo_01/provider/card_provider.dart';
 import 'package:provider/provider.dart';
 
 class DiscoverCard extends StatefulWidget {
-  final List<AppUser> people;
+  // final List<AppUser> people;
   final AppUser myUser;
   late List<String> ignoreSwipeIds;
   late Function personSwiped;
-  late Function resetState;
+  late Function notifyParent;
 
   DiscoverCard({
     Key? key,
-    required this.people,
+    // required this.people,
     required this.myUser,
     required this.ignoreSwipeIds,
     required this.personSwiped,
-    required this.resetState,
+    required this.notifyParent,
   }) : super(key: key);
 
   @override
@@ -42,6 +42,15 @@ class _DiscoverCard extends State<DiscoverCard> {
     // widget.people.forEach((user) => print(user.name));
 
     // provider.setUsers(widget.people);
+
+    // if (cardProvider.users.isEmpty) {
+    //   print("VMK USER IS EMPTY !!!");
+
+    //   widget.notifyParent();
+    // }
+
+    // this.setState(() {});
+    print("VMK card build users length ${cardProvider.users.length}");
 
     return cardProvider.users.isEmpty
         ? Center(
@@ -72,21 +81,11 @@ class _DiscoverCard extends State<DiscoverCard> {
   }
 
   Widget buildCards() {
-    print("-----------------");
-    print("Build cards");
-
-    print("cardProviders. ${cardProvider.users.last.name}");
-    print("cardProviders. ${cardProvider.users.length}");
-    cardProvider.users.forEach((user) => print("NAME: ${user.name}"));
-// cardProvider.users.last == user
-    print("IS TRUE ??? ${cardProvider.users.last == cardProvider.users[0]}");
-    print("-----------------");
-
     return Stack(
       children: cardProvider.users
           .map((user) => TinderCard(
                 user: user,
-                resetState: widget.resetState,
+                notifyParent: widget.notifyParent,
                 myUser: widget.myUser,
                 isFront: cardProvider.users.last == user,
               ))
@@ -114,9 +113,7 @@ class _DiscoverCard extends State<DiscoverCard> {
               backgroundColor: getColor(Colors.white, Colors.red, isDislike),
               side: getBorder(Colors.red, Colors.white, isDislike)),
           onPressed: () {
-            provider.dislike();
-
-            widget.personSwiped(users, widget.myUser, widget.people, false);
+            provider.dislike(context, widget.myUser, widget.notifyParent);
           },
           child: const Icon(Icons.clear, size: 46),
         ),
@@ -142,9 +139,7 @@ class _DiscoverCard extends State<DiscoverCard> {
               backgroundColor: getColor(Colors.white, Colors.teal, isLike),
               side: getBorder(Colors.teal, Colors.white, isLike)),
           onPressed: () {
-            provider.like();
-
-            widget.personSwiped(users, widget.myUser, widget.people, true);
+            provider.like(context, widget.myUser, widget.notifyParent);
           },
           child: const Icon(Icons.favorite, size: 46),
         )

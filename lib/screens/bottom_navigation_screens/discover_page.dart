@@ -16,6 +16,7 @@ import 'package:flutter_demo_01/provider/card_provider.dart';
 import 'package:flutter_demo_01/screens/matched_screen.dart';
 import 'package:flutter_demo_01/utils/shared_preferences_utils.dart';
 import 'package:flutter_demo_01/utils/utils.dart';
+import 'package:numberpicker/numberpicker.dart';
 import 'package:provider/provider.dart';
 
 class DiscoverPage extends StatefulWidget {
@@ -33,7 +34,14 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
   late List<String> _ignoreSwipeIds;
   late List<AppUser> _userList;
 
-  List<String> selectedGender = ["everyone"];
+  // Default Selected Gender
+  List<String> defaultSelectedGender = ["everyone"];
+
+  // Min Age Value
+  int defaultMinAgeValue = 17;
+
+  // Max Age Value
+  int defaultMaxAgeValue = 27;
 
   List<UserQuery> userQuery = [];
 
@@ -307,8 +315,14 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
         )
       ]));
 
-  // showModalBottomSheet animation
-  late AnimationController controller;
+  // Filter Menu Controller
+  late AnimationController filterMenuController;
+
+  // Gender Menu Controller
+  late AnimationController genderMenuController;
+
+  // Age Menu Controller
+  late AnimationController ageMenuController;
 
   @override
   void initState() {
@@ -318,13 +332,24 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
 
     cardProvider = Provider.of<CardProvider>(context, listen: false);
 
-    controller = BottomSheet.createAnimationController(this);
-    controller.duration = Duration(microseconds: 0);
+    // Filter Menu Controller
+    filterMenuController = BottomSheet.createAnimationController(this);
+    filterMenuController.duration = Duration(microseconds: 0);
+
+    // Gender Menu Controller
+    genderMenuController = BottomSheet.createAnimationController(this);
+    genderMenuController.duration = Duration(microseconds: 0);
+
+    // Age Menu Controller
+    ageMenuController = BottomSheet.createAnimationController(this);
+    ageMenuController.duration = Duration(microseconds: 0);
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    filterMenuController.dispose();
+    genderMenuController.dispose();
+    ageMenuController.dispose();
     super.dispose();
   }
 
@@ -348,12 +373,21 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
     _ignoreSwipeIds.add(_myUser.id);
 
     var res = await _databaseSource.getPersonsToMatchWith(
-        3, _ignoreSwipeIds, userQuery);
+        100, _ignoreSwipeIds, userQuery);
 
     if (res.docs.isNotEmpty) {
       for (var element in res.docs) {
         _userList.add(AppUser.fromSnapshot(element));
       }
+
+      // FILTER ALL STUFFS
+
+      print("CVB MIN: $defaultMinAgeValue");
+      print("CVB MAX: $defaultMaxAgeValue");
+
+      _userList.removeWhere(((element) =>
+          element.age < defaultMinAgeValue ||
+          element.age > defaultMaxAgeValue));
 
       print(
           "VMK !!LOAD PERSON!! length of users ${_userList.reversed.toList().length}");
@@ -367,7 +401,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
   }
 
   void _filterSwipableUsersModalBottomSheet(BuildContext context,
-      [genderSelected, controller]) {
+      [controller]) {
     showModalBottomSheet(
         transitionAnimationController: controller,
         barrierColor: Colors.black54,
@@ -378,6 +412,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
         context: context,
         builder: (BuildContext context) {
           return StatefulBuilder(builder: (BuildContext context, setState) {
+            /* 1. Gender Select */
             List<String> availableGenders = [
               "everyone",
               "men",
@@ -385,8 +420,19 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
               "other"
             ];
 
-            List<String> selectedGender =
-                genderSelected != null ? [genderSelected] : ["other"];
+            List<String> selectedGender = defaultSelectedGender;
+
+            // List<String> selectedGender =
+            //     genderSelected != null ? [genderSelected] : ["other"];
+            /* END Gender select END */
+
+            /* 2. Age Select */
+            // int selectedMinAge = _myUser.age;
+            // int selectedMaxAge = _myUser.age + 10;
+
+            int selectedMinAge = defaultMinAgeValue;
+            int selectedMaxAge = defaultMaxAgeValue;
+            /* END Age Select END */
 
             return Padding(
                 padding:
@@ -416,6 +462,28 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
                                   context, availableGenders, selectedGender);
                             },
                           ),
+                          ListTile(
+                            leading: Text("Age range",
+                                style: TextStyle(
+                                    fontSize: 24, fontWeight: FontWeight.bold)),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text("$selectedMinAge - $selectedMaxAge",
+                                    style: TextStyle(fontSize: 20)),
+                                // Text(selectedGender[0].capitalize(),
+                                //     style: TextStyle(fontSize: 20)),
+                                SizedBox(width: 12),
+                                const Icon(CustomIcons.right_open)
+                              ],
+                            ),
+                            onTap: () {
+                              Navigator.of(context).pop();
+
+                              _showAgeModal(
+                                  context, selectedMinAge, selectedMaxAge);
+                            },
+                          ),
                           ElevatedButton(
                             child: const Text("Apply filters",
                                 style: TextStyle(color: Colors.white)),
@@ -427,8 +495,49 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
                                     "gender", "isEqualTo", selectedGender[0])
                               ];
 
+                              // List<UserQuery> updateUserQuery = userQuery;
+
+                              // updateUserQuery
+                              //     .add(UserQuery("age", "whereIn", [20]));
+
+                              bool ageQueryExists = false;
+
+                              for (var i = 0; i < updateUserQuery.length; i++) {
+                                if (updateUserQuery[i].field.contains("age") &&
+                                    updateUserQuery[i]
+                                        .condition
+                                        .contains("isGreaterThanOrEqualTo")) {
+                                  updateUserQuery.removeAt(i);
+
+                                  updateUserQuery.add(UserQuery(
+                                      "age",
+                                      "isGreaterThanOrEqualTo",
+                                      selectedMinAge));
+                                  ageQueryExists = true;
+                                  continue;
+                                }
+                                if (updateUserQuery[i].field.contains("age") &&
+                                    updateUserQuery[i]
+                                        .condition
+                                        .contains("isLessThanOrEqualTo")) {
+                                  updateUserQuery.removeAt(i);
+
+                                  updateUserQuery.add(UserQuery("age",
+                                      "isLessThanOrEqualTo", selectedMaxAge));
+                                  ageQueryExists = true;
+                                  continue;
+                                }
+                              }
+                              if (ageQueryExists == false) {
+                                updateUserQuery.add(UserQuery("age",
+                                    "isGreaterThanOrEqualTo", selectedMinAge));
+
+                                updateUserQuery.add(UserQuery("age",
+                                    "isLessThanOrEqualTo", selectedMaxAge));
+                              }
+
                               this.setState(() {
-                                this.selectedGender = selectedGender;
+                                // this.defaultSelectedGender = selectedGender;
                                 userQuery = updateUserQuery;
                               });
 
@@ -452,7 +561,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
       List<String> availableGenders, List<String> selectedGender) {
     showModalBottomSheet(
       barrierColor: Colors.black54,
-      transitionAnimationController: controller,
+      transitionAnimationController: genderMenuController,
       elevation: 5,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),
@@ -495,19 +604,23 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
 
                         final isSelected = selectedGender.contains(gender);
 
+                        // setState(() => isSelected
+                        //     ? selectedGender.remove(gender)
+                        //     : selectedGender.add(gender));
+
                         setState(() => isSelected
-                            ? selectedGender.remove(gender)
-                            : selectedGender.add(gender));
+                            ? this.defaultSelectedGender.remove(gender)
+                            : this.defaultSelectedGender.add(gender));
 
                         print("selectedGender, ${selectedGender[0]}");
 
                         _filterSwipableUsersModalBottomSheet(
-                            context, selectedGender[0]);
+                            context, filterMenuController);
 
                         /*
-                        _filterSwipableUsersModalBottomSheet(
-                        context, selectedGender[0], controller);
-                      */
+                          _filterSwipableUsersModalBottomSheet(
+                          context, selectedGender[0], controller);
+                        */
                       },
                       title: Text(
                         gender.capitalize(),
@@ -520,6 +633,118 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
                               color: selectedColor, size: 26),
                     );
                   }).toList()))
+                ],
+              ));
+        });
+      },
+    );
+  }
+
+  void _showAgeModal(
+      BuildContext ageContext, int selectedMinAge, int selectedMaxAge) {
+    // // Min Age
+    // int selectedMinAge = selectedMinAge;
+
+    // // Max Age
+    // int selectedMaxAge = selectedMaxAge;
+
+    showModalBottomSheet(
+      barrierColor: Colors.black54,
+      transitionAnimationController: ageMenuController,
+      elevation: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      context: ageContext,
+      builder: (BuildContext context) {
+        return StatefulBuilder(builder: (BuildContext context, setState) {
+          return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+              child: Column(
+                children: [
+                  Text("Age range",
+                      textAlign: TextAlign.center,
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      NumberPicker(
+                        value: selectedMinAge,
+                        minValue: 0,
+                        maxValue: 100,
+                        step: 1,
+                        haptics: true,
+                        onChanged: (value) =>
+                            setState(() => selectedMinAge = value),
+                      ),
+                      NumberPicker(
+                        value: selectedMaxAge,
+                        minValue: 0,
+                        maxValue: 100,
+                        step: 1,
+                        haptics: true,
+                        onChanged: (value) =>
+                            setState(() => selectedMaxAge = value),
+                      )
+                    ],
+                  ),
+                  ElevatedButton(
+                    child: const Text("Apply",
+                        style: TextStyle(color: Colors.white)),
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                      print("VMK $selectedMinAge");
+                      print("VMK $selectedMaxAge");
+
+                      setState(() {
+                        this.defaultMinAgeValue = selectedMinAge;
+                        this.defaultMaxAgeValue = selectedMaxAge;
+                      });
+
+                      // List<UserQuery> updateUserQuery = userQuery;
+
+                      // updateUserQuery.add(UserQuery("age", "whereIn", [20]));
+
+                      // bool ageQueryExists = false;
+
+                      // for (var i = 0; i < updateUserQuery.length; i++) {
+                      //   if (updateUserQuery[i].field.contains("age") &&
+                      //       updateUserQuery[i]
+                      //           .condition
+                      //           .contains("isGreaterThanOrEqualTo")) {
+                      //     updateUserQuery.removeAt(i);
+
+                      //     updateUserQuery.add(UserQuery(
+                      //         "age", "isGreaterThanOrEqualTo", selectedMinAge));
+                      //     ageQueryExists = true;
+                      //     continue;
+                      //   }
+                      //   if (updateUserQuery[i].field.contains("age") &&
+                      //       updateUserQuery[i]
+                      //           .condition
+                      //           .contains("isLessThanOrEqualTo")) {
+                      //     updateUserQuery.removeAt(i);
+
+                      //     updateUserQuery.add(UserQuery(
+                      //         "age", "isLessThanOrEqualTo", selectedMaxAge));
+                      //     ageQueryExists = true;
+                      //     continue;
+                      //   }
+                      // }
+                      // if (ageQueryExists == false) {
+                      //   updateUserQuery.add(UserQuery(
+                      //       "age", "isGreaterThanOrEqualTo", selectedMinAge));
+
+                      //   updateUserQuery.add(UserQuery(
+                      //       "age", "isLessThanOrEqualTo", selectedMaxAge));
+                      // }
+
+                      _filterSwipableUsersModalBottomSheet(
+                          context, filterMenuController);
+                    },
+                  )
                 ],
               ));
         });
@@ -543,7 +768,8 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
               icon: const Icon(CustomIcons.sliders),
               onPressed: () {
                 _filterSwipableUsersModalBottomSheet(
-                    context, selectedGender[0]);
+                  context,
+                );
               },
             )
           ],

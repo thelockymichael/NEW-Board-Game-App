@@ -122,7 +122,6 @@ export async function workTripOrderByQuery(companyId, querys) {
     if (queries!.isNotEmpty) {
       queryRef = filterSwipableUsers(queryRef, queries);
     }
-    print("FSAFfA${queryRef}");
 
     return queryRef.limit(limit).get();
     // return instance

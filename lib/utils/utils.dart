@@ -87,10 +87,20 @@ Query<Map<String, dynamic>> filterSwipableUsers(
     Query<Map<String, dynamic>> queryRef, List<UserQuery> queries) {
   queries.forEach((query) {
     // 11 options
+
+    // if (query.field.contains("age") &&
+    //     query.condition.contains("isGreaterThanOrEqualTo")) {}
+
+    // if (query.field.contains("age") &&
+    //     query.condition.contains("isLessThanOrEqualTo")) {
+
+    //     }
+
     switch (query.condition) {
       case "arrayContains":
         break;
       case "arrayContainsAny":
+        // queryRef = queryRef.where(query.field, arrayContainsAny: query.value);
         break;
 
       case "isEqualTo":
@@ -116,8 +126,18 @@ Query<Map<String, dynamic>> filterSwipableUsers(
         break;
 
       case "isGreaterThanOrEqualTo":
-        queryRef =
-            queryRef.where(query.field, isGreaterThanOrEqualTo: query.value);
+        print("MNK ----------------");
+        print("MNK ${query.condition}");
+        print("MNK ${query.field}");
+        print("MNK ${query.value}");
+        print("MNK ----------------");
+
+        // queryRef =
+        //     queryRef.where(query.field, isGreaterThanOrEqualTo: query.value);
+        // queryRef = queryRef.where('id', whereNotIn: ignoreIds);
+        // queryRef = queryRef.where(query.field, isEqualTo: "male");
+        // queryRef = queryRef.where(query.field,
+        //     isGreaterThanOrEqualTo: query.value.toString());
 
         break;
 
@@ -125,8 +145,10 @@ Query<Map<String, dynamic>> filterSwipableUsers(
         break;
 
       case "isLessThanOrEqualTo":
-        queryRef =
-            queryRef.where(query.field, isLessThanOrEqualTo: query.value);
+        // queryRef =
+        //     queryRef.where(query.field, isLessThanOrEqualTo: query.value);
+        // queryRef =
+        //     queryRef.where(query.field, isLessThanOrEqualTo: query.value);
 
         break;
 
@@ -137,6 +159,7 @@ Query<Map<String, dynamic>> filterSwipableUsers(
         break;
 
       case "whereIn":
+        // queryRef = queryRef.where(query.field, whereIn: query.value);
         break;
 
       case "whereNotIn":

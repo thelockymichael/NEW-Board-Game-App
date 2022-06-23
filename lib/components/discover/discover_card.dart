@@ -9,14 +9,12 @@ import 'package:provider/provider.dart';
 class DiscoverCard extends StatefulWidget {
   final AppUser myUser;
   late List<String> ignoreSwipeIds;
-  late Function personSwiped;
   late Function notifyParent;
 
   DiscoverCard({
     Key? key,
     required this.myUser,
     required this.ignoreSwipeIds,
-    required this.personSwiped,
     required this.notifyParent,
   }) : super(key: key);
 

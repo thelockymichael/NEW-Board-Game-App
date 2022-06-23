@@ -27,7 +27,7 @@ class DiscoverPage extends StatefulWidget {
   _DiscoverPage createState() => _DiscoverPage();
 }
 
-class _DiscoverPage extends State<DiscoverPage> {
+class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
   final FirebaseDatabaseSource _databaseSource = FirebaseDatabaseSource();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   late List<String> _ignoreSwipeIds;
@@ -307,6 +307,9 @@ class _DiscoverPage extends State<DiscoverPage> {
         )
       ]));
 
+  // showModalBottomSheet animation
+  late AnimationController controller;
+
   @override
   void initState() {
     super.initState();
@@ -314,6 +317,15 @@ class _DiscoverPage extends State<DiscoverPage> {
     _userList = <AppUser>[];
 
     cardProvider = Provider.of<CardProvider>(context, listen: false);
+
+    controller = BottomSheet.createAnimationController(this);
+    controller.duration = Duration(microseconds: 0);
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   Future<List<AppUser>?> loadPerson(List<UserQuery> userQuery) async {
@@ -355,8 +367,10 @@ class _DiscoverPage extends State<DiscoverPage> {
   }
 
   void _filterSwipableUsersModalBottomSheet(BuildContext context,
-      [genderSelected]) {
+      [genderSelected, controller]) {
     showModalBottomSheet(
+        transitionAnimationController: controller,
+        barrierColor: Colors.black54,
         elevation: 5,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
@@ -430,14 +444,20 @@ class _DiscoverPage extends State<DiscoverPage> {
         });
   }
 
-  void _showGendersModal(BuildContext context, List<String> availableGenders,
-      List<String> selectedGender) {
+  // TODO PROBLEM OCCURS WHEN..
+  // Show me
+  // "I click e.g. 'Men'" => barrier gets darker.
+
+  void _showGendersModal(BuildContext filterContext,
+      List<String> availableGenders, List<String> selectedGender) {
     showModalBottomSheet(
+      barrierColor: Colors.black54,
+      transitionAnimationController: controller,
       elevation: 5,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),
       ),
-      context: context,
+      context: filterContext,
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (BuildContext context, setState) {
           return Padding(
@@ -469,6 +489,8 @@ class _DiscoverPage extends State<DiscoverPage> {
 
                     return ListTile(
                       onTap: () {
+                        Navigator.of(context).pop();
+
                         selectedGender.clear();
 
                         final isSelected = selectedGender.contains(gender);
@@ -479,10 +501,13 @@ class _DiscoverPage extends State<DiscoverPage> {
 
                         print("selectedGender, ${selectedGender[0]}");
 
-                        Navigator.of(context).pop();
-
                         _filterSwipableUsersModalBottomSheet(
                             context, selectedGender[0]);
+
+                        /*
+                        _filterSwipableUsersModalBottomSheet(
+                        context, selectedGender[0], controller);
+                      */
                       },
                       title: Text(
                         gender.capitalize(),
@@ -502,51 +527,8 @@ class _DiscoverPage extends State<DiscoverPage> {
     );
   }
 
-  void personSwiped(List<AppUser> users, AppUser myUser,
-      List<AppUser> otherUsers, bool isLiked) async {
-    print(await isMatch(myUser, otherUsers.last) == true);
-
-    _databaseSource.addSwipedUser(
-        myUser.id, Swipe(otherUsers.last.id, isLiked));
-    _ignoreSwipeIds.add(otherUsers.last.id);
-
-    if (isLiked = true) {
-      if (await isMatch(myUser, otherUsers.last) == true) {
-        _databaseSource.addMatch(myUser.id, Match(otherUsers.last.id));
-        _databaseSource.addMatch(otherUsers.last.id, Match(myUser.id));
-
-        String chatId = compareAndCombineIds(myUser.id, otherUsers.last.id);
-
-        _databaseSource
-            .addChat(Chat(chatId, myUser.id, otherUsers.last.id, null));
-
-        Navigator.pushNamed(context, MatchedScreen.id, arguments: {
-          "my_user_id": myUser.id,
-          "my_profile_photo_path": myUser.profilePhotoPath,
-          "other_user_profile_photo_path": otherUsers.last.profilePhotoPath,
-          "other_user_id": otherUsers.last.id,
-          "other_user_name": otherUsers.last.name
-        });
-      }
-    }
-  }
-
   refresh() {
     setState(() {});
-  }
-
-  Future<bool> isMatch(AppUser myUser, AppUser otherUser) async {
-    DocumentSnapshot swipeSnapshot =
-        await _databaseSource.getSwipe(otherUser.id, myUser.id);
-
-    if (swipeSnapshot.exists) {
-      Swipe swipe = Swipe.fromSnapshot(swipeSnapshot);
-
-      if (swipe.liked) {
-        return true;
-      }
-    }
-    return false;
   }
 
   @override
@@ -587,7 +569,6 @@ class _DiscoverPage extends State<DiscoverPage> {
               return DiscoverCard(
                 myUser: _myUser,
                 ignoreSwipeIds: _ignoreSwipeIds,
-                personSwiped: personSwiped,
                 notifyParent: refresh,
               );
             }));

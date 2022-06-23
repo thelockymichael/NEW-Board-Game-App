@@ -422,17 +422,8 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
 
             List<String> selectedGender = defaultSelectedGender;
 
-            // List<String> selectedGender =
-            //     genderSelected != null ? [genderSelected] : ["other"];
-            /* END Gender select END */
-
-            /* 2. Age Select */
-            // int selectedMinAge = _myUser.age;
-            // int selectedMaxAge = _myUser.age + 10;
-
             int selectedMinAge = defaultMinAgeValue;
             int selectedMaxAge = defaultMaxAgeValue;
-            /* END Age Select END */
 
             return Padding(
                 padding:
@@ -471,8 +462,6 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
                               children: [
                                 Text("$selectedMinAge - $selectedMaxAge",
                                     style: TextStyle(fontSize: 20)),
-                                // Text(selectedGender[0].capitalize(),
-                                //     style: TextStyle(fontSize: 20)),
                                 SizedBox(width: 12),
                                 const Icon(CustomIcons.right_open)
                               ],
@@ -494,11 +483,6 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
                                 UserQuery(
                                     "gender", "isEqualTo", selectedGender[0])
                               ];
-
-                              // List<UserQuery> updateUserQuery = userQuery;
-
-                              // updateUserQuery
-                              //     .add(UserQuery("age", "whereIn", [20]));
 
                               bool ageQueryExists = false;
 
@@ -537,7 +521,6 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
                               }
 
                               this.setState(() {
-                                // this.defaultSelectedGender = selectedGender;
                                 userQuery = updateUserQuery;
                               });
 
@@ -552,10 +535,6 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
           });
         });
   }
-
-  // TODO PROBLEM OCCURS WHEN..
-  // Show me
-  // "I click e.g. 'Men'" => barrier gets darker.
 
   void _showGendersModal(BuildContext filterContext,
       List<String> availableGenders, List<String> selectedGender) {
@@ -604,10 +583,6 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
 
                         final isSelected = selectedGender.contains(gender);
 
-                        // setState(() => isSelected
-                        //     ? selectedGender.remove(gender)
-                        //     : selectedGender.add(gender));
-
                         setState(() => isSelected
                             ? this.defaultSelectedGender.remove(gender)
                             : this.defaultSelectedGender.add(gender));
@@ -642,12 +617,6 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
 
   void _showAgeModal(
       BuildContext ageContext, int selectedMinAge, int selectedMaxAge) {
-    // // Min Age
-    // int selectedMinAge = selectedMinAge;
-
-    // // Max Age
-    // int selectedMaxAge = selectedMaxAge;
-
     showModalBottomSheet(
       barrierColor: Colors.black54,
       transitionAnimationController: ageMenuController,
@@ -702,44 +671,6 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
                         this.defaultMinAgeValue = selectedMinAge;
                         this.defaultMaxAgeValue = selectedMaxAge;
                       });
-
-                      // List<UserQuery> updateUserQuery = userQuery;
-
-                      // updateUserQuery.add(UserQuery("age", "whereIn", [20]));
-
-                      // bool ageQueryExists = false;
-
-                      // for (var i = 0; i < updateUserQuery.length; i++) {
-                      //   if (updateUserQuery[i].field.contains("age") &&
-                      //       updateUserQuery[i]
-                      //           .condition
-                      //           .contains("isGreaterThanOrEqualTo")) {
-                      //     updateUserQuery.removeAt(i);
-
-                      //     updateUserQuery.add(UserQuery(
-                      //         "age", "isGreaterThanOrEqualTo", selectedMinAge));
-                      //     ageQueryExists = true;
-                      //     continue;
-                      //   }
-                      //   if (updateUserQuery[i].field.contains("age") &&
-                      //       updateUserQuery[i]
-                      //           .condition
-                      //           .contains("isLessThanOrEqualTo")) {
-                      //     updateUserQuery.removeAt(i);
-
-                      //     updateUserQuery.add(UserQuery(
-                      //         "age", "isLessThanOrEqualTo", selectedMaxAge));
-                      //     ageQueryExists = true;
-                      //     continue;
-                      //   }
-                      // }
-                      // if (ageQueryExists == false) {
-                      //   updateUserQuery.add(UserQuery(
-                      //       "age", "isGreaterThanOrEqualTo", selectedMinAge));
-
-                      //   updateUserQuery.add(UserQuery(
-                      //       "age", "isLessThanOrEqualTo", selectedMaxAge));
-                      // }
 
                       _filterSwipableUsersModalBottomSheet(
                           context, filterMenuController);

@@ -48,7 +48,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
   // END
 
   // 3. Default Selected Bg Mechanics
-  List<String> defaultMechanics = ["Roll / Spin and Move"];
+  List<String> defaultMechanics = [];
   // END
 
   List<UserQuery> userQuery = [];
@@ -414,79 +414,26 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
           element.age < defaultMinAgeValue ||
           element.age > defaultMaxAgeValue));
 
-      // 2. Bg Mechanics
-
-      // TODO Comapre _userList.favBgMechanics
-      // TODO Compare defaultMechanics
-
-      // print(
-      //s       "VMK defMechs ${defaultMechanics[0].name}: ${defaultMechanics.length}");
-
-      // TODO For each user remove all users =>
-      // TODO that DO NOT contain any of defaultMechanics
-      // List<String> list1 = ["1", "2"];
-
-      // List<String> list2 = ["1", "3"];
-
-      // if (list1.any((item) => list2.contains(item))) {
-      //   // Lists have at least one common element
-
-      //   print("Lists havasfsanhjfsaknKSF");
-      // } else {
-      //   // Lists DON'T have any common element
-      // }
-
-      // if (defaultMechanics.isNotEmpty) {
-      //   for (var i = 0; i < _userList.length; i++) {
-      //     if (_userList[i]
-      //         .favBgMechanics
-      //         .any((element) => defaultMechanics.contains(element))) {
-      //       // Lists have at least one common element
-      //       print("VMK HAVE ONE COMMON ELEMENT");
-      //     } else {
-      //       print("VMK DO NOT HAVE ONE COMMON ELEMENT");
-
-      //       _userList.removeAt(i);
-
-      //       // Lists DON'T have any common element
-      //     }
-      //   }
-      // }
-
       List<AppUser> _usersToRemove = [];
 
       if (defaultMechanics.isNotEmpty) {
         for (var i = 0; i < _userList.length; i++) {
           for (var j = 0; j < defaultMechanics.length; j++) {
-            print("XCV index: $i");
-            print("XCV _userList.length: ${_userList.length}");
-
             bool doesExist =
                 _userList[i].favBgMechanics.contains(defaultMechanics[j]);
 
             if (doesExist == false) {
               _usersToRemove.add(_userList[i]);
             }
-
-            print("XCV Does exist: $doesExist");
           }
         }
       }
-
-      print("XCV ${_usersToRemove.length}");
-      print("XCV ${_usersToRemove[0].name}");
-      print("XCV ${_usersToRemove[1].name}");
-      print("XCV ${_usersToRemove[2].name}");
-      // if (list1.any((item) => list2.contains(item))) {
-
-      // _userList.any((item) => _usersToRemove.contains(item));
 
       _usersToRemove.forEach((element) {
         _userList.remove(element);
       });
 
       print("VMK FINAL ${_userList.length}");
-      // Roll / Spin and Move
 
       print(
           "VMK !!LOAD PERSON!! length of users ${_userList.reversed.toList().length}");
@@ -610,69 +557,6 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
                                 UserQuery(
                                     "gender", "isEqualTo", selectedGender[0])
                               ];
-
-                              bool mechanicsQueryExists = false;
-                              for (var i = 0; i < updateUserQuery.length; i++) {
-                                if (updateUserQuery[i]
-                                        .field
-                                        .contains("favBgMechanics") &&
-                                    updateUserQuery[i]
-                                        .condition
-                                        .contains("arrayContainsAny")) {
-                                  updateUserQuery.removeAt(i);
-                                  updateUserQuery.add(UserQuery(
-                                      "favBgMechanics",
-                                      "arrayContainsAny",
-                                      defaultMechanics));
-
-                                  mechanicsQueryExists = true;
-                                }
-                              }
-
-                              if (mechanicsQueryExists == false) {
-                                updateUserQuery.add(UserQuery("favBgMechanics",
-                                    "arrayContainsAny", defaultMechanics));
-                              }
-
-                              bool ageQueryExists = false;
-
-                              for (var i = 0; i < updateUserQuery.length; i++) {
-                                if (updateUserQuery[i].field.contains("age") &&
-                                    updateUserQuery[i]
-                                        .condition
-                                        .contains("isGreaterThanOrEqualTo")) {
-                                  updateUserQuery.removeAt(i);
-
-                                  updateUserQuery.add(UserQuery(
-                                      "age",
-                                      "isGreaterThanOrEqualTo",
-                                      selectedMinAge));
-                                  ageQueryExists = true;
-                                  continue;
-                                }
-                                if (updateUserQuery[i].field.contains("age") &&
-                                    updateUserQuery[i]
-                                        .condition
-                                        .contains("isLessThanOrEqualTo")) {
-                                  updateUserQuery.removeAt(i);
-
-                                  updateUserQuery.add(UserQuery("age",
-                                      "isLessThanOrEqualTo", selectedMaxAge));
-                                  ageQueryExists = true;
-                                  continue;
-                                }
-                              }
-                              if (ageQueryExists == false) {
-                                updateUserQuery.add(UserQuery("age",
-                                    "isGreaterThanOrEqualTo", selectedMinAge));
-
-                                updateUserQuery.add(UserQuery("age",
-                                    "isLessThanOrEqualTo", selectedMaxAge));
-                              }
-                              updateUserQuery.forEach((element) {
-                                print(
-                                    "VMK ${element.condition}: ${element.field}: ${element.value}");
-                              });
 
                               this.setState(() {
                                 userQuery = updateUserQuery;

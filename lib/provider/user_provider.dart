@@ -787,7 +787,7 @@ class UserProvider extends ChangeNotifier {
   Future<Response> updateBgMechanicsAndThemes(
       AppUser userSnapshot,
       List<String> favBgMechanics,
-      List<FavBgThemeItem> favBgThemes,
+      List<String> favBgThemes,
       GlobalKey<ScaffoldState> errorScaffoldKey) async {
     final mappedBgMechanics = <String>[];
     final mappedBgThemes = <String>[];
@@ -797,7 +797,7 @@ class UserProvider extends ChangeNotifier {
     }
 
     for (var element in favBgThemes) {
-      mappedBgThemes.add(element.name);
+      mappedBgThemes.add(element);
     }
 
     AppUser user = AppUser(

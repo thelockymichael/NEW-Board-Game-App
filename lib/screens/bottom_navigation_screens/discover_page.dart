@@ -51,6 +51,10 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
   List<String> defaultMechanics = [];
   // END
 
+  // 3. Default Selected Bg Themes
+  List<String> defaultThemes = [];
+  // END
+
   List<UserQuery> userQuery = [];
 
   late CardProvider cardProvider;
@@ -338,6 +342,9 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
   // Mechanics Controller
   late AnimationController mechanicsController;
 
+  // Mechanics Controller
+  late AnimationController themesController;
+
   void initControllers() {
     // Filter Menu Controller
     filterMenuController = BottomSheet.createAnimationController(this);
@@ -358,6 +365,10 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
     // Mechanics Controller
     mechanicsController = BottomSheet.createAnimationController(this);
     mechanicsController.duration = Duration(microseconds: 0);
+
+    // Themes Controller
+    themesController = BottomSheet.createAnimationController(this);
+    themesController.duration = Duration(microseconds: 0);
   }
 
   @override
@@ -379,7 +390,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  Future<List<AppUser>?> loadPerson(List<UserQuery> userQuery) async {
+  Future<List<AppUser>?> loadUsers(List<UserQuery> userQuery) async {
     print("LOK");
 
     String? id = await SharedPreferencesUtil.getUserId();
@@ -413,7 +424,9 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
       _userList.removeWhere(((element) =>
           element.age < defaultMinAgeValue ||
           element.age > defaultMaxAgeValue));
+      // END 1. Age Range
 
+      // 2. Bg Mechanics
       List<AppUser> _usersToRemove = [];
 
       if (defaultMechanics.isNotEmpty) {
@@ -428,10 +441,26 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
           }
         }
       }
+      // END 2. Bg Mechanics
+
+      // 3. Bg Themes
+      if (defaultThemes.isNotEmpty) {
+        for (var i = 0; i < _userList.length; i++) {
+          for (var j = 0; j < defaultThemes.length; j++) {
+            bool doesExist =
+                _userList[i].favBgThemes.contains(defaultThemes[j]);
+
+            if (doesExist == false) {
+              _usersToRemove.add(_userList[i]);
+            }
+          }
+        }
+      }
 
       _usersToRemove.forEach((element) {
         _userList.remove(element);
       });
+      // END 3. Bg Themes
 
       print("VMK FINAL ${_userList.length}");
 
@@ -478,6 +507,11 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
             List<String> selectedMechanics = defaultMechanics;
 
             /* END Bg Mechanics END */
+
+            /* 3. Select Bg Themes */
+            List<String> selectedThemes = defaultThemes;
+
+            /* END Bg Themes END */
 
             return Padding(
                 padding:
@@ -540,19 +574,13 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
                             ),
                             onTap: () {
                               Navigator.of(context).pop();
-                              _showMoreOptions(context, selectedMechanics);
-                              // _showMoreOptions(
-                              //     context, selectedMinAge, selectedMaxAge);
-                              // _showAgeModal(
-                              //     context, selectedMinAge, selectedMaxAge);
+                              _showMoreOptions(context);
                             },
                           ),
                           ElevatedButton(
                             child: const Text("Apply filters",
                                 style: TextStyle(color: Colors.white)),
                             onPressed: () async {
-                              // print("Selected gender $selectedGender");
-
                               List<UserQuery> updateUserQuery = [
                                 UserQuery(
                                     "gender", "isEqualTo", selectedGender[0])
@@ -790,7 +818,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
 
                       print("VMK defaultMechanics: ${this.defaultMechanics}");
 
-                      _showMoreOptions(context, selectedMechanics);
+                      _showMoreOptions(context);
                     },
                   )
                 ],
@@ -800,8 +828,84 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
     );
   }
 
-  void _showMoreOptions(
-      BuildContext moreOptionsContext, List<String> selectedMechanics) {
+  void _showGameThemes(
+      BuildContext themesContext, List<String> selectedThemes) {
+    showModalBottomSheet(
+      barrierColor: Colors.black54,
+      transitionAnimationController: themesController,
+      elevation: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      context: themesContext,
+      builder: (BuildContext context) {
+        return StatefulBuilder(builder: (BuildContext context, setState) {
+          return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+              child: Column(
+                children: [
+                  Text("Themes",
+                      textAlign: TextAlign.center,
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 16),
+                  Expanded(
+                    child: ListView(
+                        children: Utils.bgThemesList.map((bgTheme) {
+                      final isSelected = selectedThemes.contains(bgTheme);
+
+                      final selectedColor = Theme.of(context).primaryColor;
+                      final style = isSelected
+                          ? TextStyle(
+                              fontSize: 18,
+                              color: selectedColor,
+                              fontWeight: FontWeight.bold,
+                            )
+                          : TextStyle(fontSize: 18);
+
+                      return ListTile(
+                        onTap: () {
+                          final isSelected = selectedThemes.contains(bgTheme);
+
+                          setState(() => isSelected
+                              ? selectedThemes.remove(bgTheme)
+                              : selectedThemes.add(bgTheme));
+
+                          print("selectedThemes, ${selectedThemes.length}");
+                        },
+                        title: Text(
+                          bgTheme,
+                          style: style,
+                        ),
+                        trailing: isSelected
+                            ? Icon(Icons.check, color: selectedColor, size: 26)
+                            : null,
+                      );
+                    }).toList()),
+                  ),
+                  ElevatedButton(
+                    child: const Text("Apply",
+                        style: TextStyle(color: Colors.white)),
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+
+                      setState(() {
+                        this.defaultThemes = selectedThemes;
+                      });
+
+                      print("VMK defaultThemes: ${this.defaultThemes}");
+
+                      _showMoreOptions(context);
+                    },
+                  )
+                ],
+              ));
+        });
+      },
+    );
+  }
+
+  void _showMoreOptions(BuildContext moreOptionsContext) {
     showModalBottomSheet(
       barrierColor: Colors.black54,
       transitionAnimationController: moreOptionsController,
@@ -816,6 +920,18 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
               padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
               child: Column(
                 children: [
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: ElevatedButton(
+                        onPressed: this.defaultMechanics.isNotEmpty ||
+                                this.defaultThemes.isNotEmpty
+                            ? () => setState((() {
+                                  this.defaultMechanics = [];
+                                  this.defaultThemes = [];
+                                }))
+                            : null,
+                        child: Text("Clear all")),
+                  ),
                   Expanded(
                     child: ListView(
                       children: [
@@ -831,8 +947,6 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              // "NOT EMPTY"
-
                               Text(
                                   defaultMechanics.isNotEmpty
                                       ? "You're seeing: ${defaultMechanics.map((mechanic) => "$mechanic")}"
@@ -852,9 +966,41 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
                           onTap: () {
                             Navigator.of(context).pop();
 
-                            _showGameMechanics(context, selectedMechanics);
-                            // _showGendersModal(
-                            // context, availableGenders, selectedGender);
+                            _showGameMechanics(context, this.defaultMechanics);
+                          },
+                        ),
+                        ListTile(
+                          leading: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Themes",
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                  defaultThemes.isNotEmpty
+                                      ? "You're seeing: ${defaultThemes.map((mechanic) => "$mechanic")}"
+                                      : "What game themes do they like?",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                  )),
+                            ],
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(width: 12),
+                              const Icon(CustomIcons.right_open)
+                            ],
+                          ),
+                          onTap: () {
+                            Navigator.of(context).pop();
+
+                            _showGameThemes(context, this.defaultThemes);
                           },
                         ),
                         ElevatedButton(
@@ -905,7 +1051,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
         ),
         key: _scaffoldKey,
         body: FutureBuilder<List<AppUser>?>(
-            future: loadPerson(userQuery),
+            future: loadUsers(userQuery),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done &&
                   !snapshot.hasData) {

@@ -732,12 +732,11 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
     /* END Board Game Mechanics END */
 
     /* Board Game Themes  */
-    List<FavBgThemeItem> bgThemesList = Utils.bgThemesList;
+    List<String> bgThemesList = Utils.bgThemesList;
 
-    List<FavBgThemeItem> bgThemesSelectedList = [];
+    List<String> bgThemesSelectedList = [];
     for (var i = 0; i < userSnapshot.favBgThemes.length; i++) {
-      bgThemesSelectedList
-          .add(FavBgThemeItem(name: userSnapshot.favBgThemes[i]));
+      bgThemesSelectedList.add(userSnapshot.favBgThemes[i]);
     }
     /* END Board Game Themes END */
 
@@ -861,7 +860,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                 },
                                 // leading: FlagWidget(code: BgMechanic),
                                 title: Text(
-                                  bgTheme.name,
+                                  bgTheme,
                                   style: style,
                                 ),
                                 trailing: isSelected

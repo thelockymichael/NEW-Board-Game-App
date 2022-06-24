@@ -11,6 +11,7 @@ import 'package:flutter_demo_01/db/entity/match.dart';
 import 'package:flutter_demo_01/db/entity/swipe.dart';
 import 'package:flutter_demo_01/db/remote/firebase_database_source.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
+import 'package:flutter_demo_01/model/bg_mechanic.dart';
 import 'package:flutter_demo_01/my_flutter_app_icons.dart';
 import 'package:flutter_demo_01/provider/card_provider.dart';
 import 'package:flutter_demo_01/screens/matched_screen.dart';
@@ -34,14 +35,21 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
   late List<String> _ignoreSwipeIds;
   late List<AppUser> _userList;
 
-  // Default Selected Gender
+  // 1. Default Selected Gender
   List<String> defaultSelectedGender = ["everyone"];
+  // END
 
-  // Min Age Value
+  // 2. Min Age Value
   int defaultMinAgeValue = 17;
+  // END
 
-  // Max Age Value
+  // 2. Max Age Value
   int defaultMaxAgeValue = 27;
+  // END
+
+  // 3. Default Selected Bg Mechanics
+  List<String> defaultMechanics = ["Roll / Spin and Move"];
+  // END
 
   List<UserQuery> userQuery = [];
 
@@ -324,14 +332,13 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
   // Age Menu Controller
   late AnimationController ageMenuController;
 
-  @override
-  void initState() {
-    super.initState();
-    _ignoreSwipeIds = <String>[];
-    _userList = <AppUser>[];
+  // More Options Controller
+  late AnimationController moreOptionsController;
 
-    cardProvider = Provider.of<CardProvider>(context, listen: false);
+  // Mechanics Controller
+  late AnimationController mechanicsController;
 
+  void initControllers() {
     // Filter Menu Controller
     filterMenuController = BottomSheet.createAnimationController(this);
     filterMenuController.duration = Duration(microseconds: 0);
@@ -343,6 +350,25 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
     // Age Menu Controller
     ageMenuController = BottomSheet.createAnimationController(this);
     ageMenuController.duration = Duration(microseconds: 0);
+
+    // More Options Controller
+    moreOptionsController = BottomSheet.createAnimationController(this);
+    moreOptionsController.duration = Duration(microseconds: 0);
+
+    // Mechanics Controller
+    mechanicsController = BottomSheet.createAnimationController(this);
+    mechanicsController.duration = Duration(microseconds: 0);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _ignoreSwipeIds = <String>[];
+    _userList = <AppUser>[];
+
+    cardProvider = Provider.of<CardProvider>(context, listen: false);
+
+    initControllers();
   }
 
   @override
@@ -380,14 +406,87 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
         _userList.add(AppUser.fromSnapshot(element));
       }
 
-      // FILTER ALL STUFFS
-
       print("CVB MIN: $defaultMinAgeValue");
       print("CVB MAX: $defaultMaxAgeValue");
 
+      // 1. Age Range
       _userList.removeWhere(((element) =>
           element.age < defaultMinAgeValue ||
           element.age > defaultMaxAgeValue));
+
+      // 2. Bg Mechanics
+
+      // TODO Comapre _userList.favBgMechanics
+      // TODO Compare defaultMechanics
+
+      // print(
+      //s       "VMK defMechs ${defaultMechanics[0].name}: ${defaultMechanics.length}");
+
+      // TODO For each user remove all users =>
+      // TODO that DO NOT contain any of defaultMechanics
+      // List<String> list1 = ["1", "2"];
+
+      // List<String> list2 = ["1", "3"];
+
+      // if (list1.any((item) => list2.contains(item))) {
+      //   // Lists have at least one common element
+
+      //   print("Lists havasfsanhjfsaknKSF");
+      // } else {
+      //   // Lists DON'T have any common element
+      // }
+
+      // if (defaultMechanics.isNotEmpty) {
+      //   for (var i = 0; i < _userList.length; i++) {
+      //     if (_userList[i]
+      //         .favBgMechanics
+      //         .any((element) => defaultMechanics.contains(element))) {
+      //       // Lists have at least one common element
+      //       print("VMK HAVE ONE COMMON ELEMENT");
+      //     } else {
+      //       print("VMK DO NOT HAVE ONE COMMON ELEMENT");
+
+      //       _userList.removeAt(i);
+
+      //       // Lists DON'T have any common element
+      //     }
+      //   }
+      // }
+
+      List<AppUser> _usersToRemove = [];
+
+      if (defaultMechanics.isNotEmpty) {
+        for (var i = 0; i < _userList.length; i++) {
+          for (var j = 0; j < defaultMechanics.length; j++) {
+            print("XCV index: $i");
+            print("XCV _userList.length: ${_userList.length}");
+
+            bool doesExist =
+                _userList[i].favBgMechanics.contains(defaultMechanics[j]);
+
+            if (doesExist == false) {
+              _usersToRemove.add(_userList[i]);
+            }
+
+            print("XCV Does exist: $doesExist");
+          }
+        }
+      }
+
+      print("XCV ${_usersToRemove.length}");
+      print("XCV ${_usersToRemove[0].name}");
+      print("XCV ${_usersToRemove[1].name}");
+      print("XCV ${_usersToRemove[2].name}");
+      // if (list1.any((item) => list2.contains(item))) {
+
+      // _userList.any((item) => _usersToRemove.contains(item));
+
+      _usersToRemove.forEach((element) {
+        _userList.remove(element);
+      });
+
+      print("VMK FINAL ${_userList.length}");
+      // Roll / Spin and Move
 
       print(
           "VMK !!LOAD PERSON!! length of users ${_userList.reversed.toList().length}");
@@ -421,9 +520,17 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
             ];
 
             List<String> selectedGender = defaultSelectedGender;
+            /** 1. END Gender Select END */
 
+            /* 2. Select Age Range */
             int selectedMinAge = defaultMinAgeValue;
             int selectedMaxAge = defaultMaxAgeValue;
+            /* 2. END Select Age Range */
+
+            /* 3. Select Bg Mechanics */
+            List<String> selectedMechanics = defaultMechanics;
+
+            /* END Bg Mechanics END */
 
             return Padding(
                 padding:
@@ -473,16 +580,59 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
                                   context, selectedMinAge, selectedMaxAge);
                             },
                           ),
+                          ListTile(
+                            leading: Text("More options",
+                                style: TextStyle(
+                                    fontSize: 24, fontWeight: FontWeight.bold)),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(width: 12),
+                                const Icon(CustomIcons.right_open)
+                              ],
+                            ),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              _showMoreOptions(context, selectedMechanics);
+                              // _showMoreOptions(
+                              //     context, selectedMinAge, selectedMaxAge);
+                              // _showAgeModal(
+                              //     context, selectedMinAge, selectedMaxAge);
+                            },
+                          ),
                           ElevatedButton(
                             child: const Text("Apply filters",
                                 style: TextStyle(color: Colors.white)),
                             onPressed: () async {
-                              print("Selected gender $selectedGender");
+                              // print("Selected gender $selectedGender");
 
                               List<UserQuery> updateUserQuery = [
                                 UserQuery(
                                     "gender", "isEqualTo", selectedGender[0])
                               ];
+
+                              bool mechanicsQueryExists = false;
+                              for (var i = 0; i < updateUserQuery.length; i++) {
+                                if (updateUserQuery[i]
+                                        .field
+                                        .contains("favBgMechanics") &&
+                                    updateUserQuery[i]
+                                        .condition
+                                        .contains("arrayContainsAny")) {
+                                  updateUserQuery.removeAt(i);
+                                  updateUserQuery.add(UserQuery(
+                                      "favBgMechanics",
+                                      "arrayContainsAny",
+                                      defaultMechanics));
+
+                                  mechanicsQueryExists = true;
+                                }
+                              }
+
+                              if (mechanicsQueryExists == false) {
+                                updateUserQuery.add(UserQuery("favBgMechanics",
+                                    "arrayContainsAny", defaultMechanics));
+                              }
 
                               bool ageQueryExists = false;
 
@@ -519,6 +669,10 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
                                 updateUserQuery.add(UserQuery("age",
                                     "isLessThanOrEqualTo", selectedMaxAge));
                               }
+                              updateUserQuery.forEach((element) {
+                                print(
+                                    "VMK ${element.condition}: ${element.field}: ${element.value}");
+                              });
 
                               this.setState(() {
                                 userQuery = updateUserQuery;
@@ -675,6 +829,166 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
                       _filterSwipableUsersModalBottomSheet(
                           context, filterMenuController);
                     },
+                  )
+                ],
+              ));
+        });
+      },
+    );
+  }
+
+  void _showGameMechanics(
+      BuildContext mechanicsContext, List<String> selectedMechanics) {
+    showModalBottomSheet(
+      barrierColor: Colors.black54,
+      transitionAnimationController: mechanicsController,
+      elevation: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      context: mechanicsContext,
+      builder: (BuildContext context) {
+        return StatefulBuilder(builder: (BuildContext context, setState) {
+          return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+              child: Column(
+                children: [
+                  Text("Mechanics",
+                      textAlign: TextAlign.center,
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 16),
+                  Expanded(
+                    child: ListView(
+                        children: Utils.bgMechanicsList.map((bgMechanic) {
+                      final isSelected = selectedMechanics.contains(bgMechanic);
+
+                      final selectedColor = Theme.of(context).primaryColor;
+                      final style = isSelected
+                          ? TextStyle(
+                              fontSize: 18,
+                              color: selectedColor,
+                              fontWeight: FontWeight.bold,
+                            )
+                          : TextStyle(fontSize: 18);
+
+                      return ListTile(
+                        onTap: () {
+                          final isSelected =
+                              selectedMechanics.contains(bgMechanic);
+
+                          setState(() => isSelected
+                              ? selectedMechanics.remove(bgMechanic)
+                              : selectedMechanics.add(bgMechanic));
+
+                          print(
+                              "selectedMechanics, ${selectedMechanics.length}");
+                        },
+                        title: Text(
+                          bgMechanic,
+                          style: style,
+                        ),
+                        trailing: isSelected
+                            ? Icon(Icons.check, color: selectedColor, size: 26)
+                            : null,
+                      );
+                    }).toList()),
+                  ),
+                  ElevatedButton(
+                    child: const Text("Apply",
+                        style: TextStyle(color: Colors.white)),
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+
+                      setState(() {
+                        this.defaultMechanics = selectedMechanics;
+                      });
+
+                      print("VMK defaultMechanics: ${this.defaultMechanics}");
+
+                      _showMoreOptions(context, selectedMechanics);
+                    },
+                  )
+                ],
+              ));
+        });
+      },
+    );
+  }
+
+  void _showMoreOptions(
+      BuildContext moreOptionsContext, List<String> selectedMechanics) {
+    showModalBottomSheet(
+      barrierColor: Colors.black54,
+      transitionAnimationController: moreOptionsController,
+      elevation: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      context: moreOptionsContext,
+      builder: (BuildContext context) {
+        return StatefulBuilder(builder: (BuildContext context, setState) {
+          return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: ListView(
+                      children: [
+                        ListTile(
+                          leading: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Mechanics",
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              // "NOT EMPTY"
+
+                              Text(
+                                  defaultMechanics.isNotEmpty
+                                      ? "You're seeing: ${defaultMechanics.map((mechanic) => "$mechanic")}"
+                                      : "What game mechanics do they like?",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                  )),
+                            ],
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(width: 12),
+                              const Icon(CustomIcons.right_open)
+                            ],
+                          ),
+                          onTap: () {
+                            Navigator.of(context).pop();
+
+                            _showGameMechanics(context, selectedMechanics);
+                            // _showGendersModal(
+                            // context, availableGenders, selectedGender);
+                          },
+                        ),
+                        ElevatedButton(
+                          child: const Text("Apply",
+                              style: TextStyle(color: Colors.white)),
+                          onPressed: () async {
+                            // this.setState(() {
+                            //   userQuery = updateUserQuery;
+                            // });
+
+                            Navigator.of(context).pop();
+
+                            _filterSwipableUsersModalBottomSheet(
+                                context, filterMenuController);
+                          },
+                        )
+                      ],
+                    ),
                   )
                 ],
               ));

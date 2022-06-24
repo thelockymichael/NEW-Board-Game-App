@@ -390,37 +390,27 @@ Query<Map<String, dynamic>> filterSwipableUsers(
         // queryRef = queryRef.where(query.field, arrayContainsAny: query.value);
         break;
 
-      case "isEqualTo":
-        if (query.field.contains("gender")) {
-          if (!query.value.contains("everyone")) {
-            print("VMK dsada ${query.value}");
-            if (query.value.contains("women")) {
-              print("VMK women");
-              queryRef = queryRef.where(query.field, isEqualTo: "female");
-            } else if (query.value.contains("men")) {
-              print("VMK men");
-              queryRef = queryRef.where(query.field, isEqualTo: "male");
-            } else if (query.value.contains("other")) {
-              print("VMK other");
-              queryRef = queryRef.where(query.field, isEqualTo: "other");
-            }
+      case "isEqualToGender":
+        if (!query.value.contains("everyone")) {
+          print("VMK dsada ${query.value}");
+          if (query.value.contains("women")) {
+            print("VMK women");
+
+            queryRef = queryRef.where(query.field, isEqualTo: "female");
+          } else if (query.value.contains("men")) {
+            print("VMK men");
+            queryRef = queryRef.where(query.field, isEqualTo: "male");
+          } else if (query.value.contains("other")) {
+            print("VMK other");
+            queryRef = queryRef.where(query.field, isEqualTo: "other");
           }
         }
+        break;
 
-        if (query.field.contains("currentLocation")) {
-          print("ZXC DOES contain");
-          print("ZXC DOES contain ${query.field}");
-          print("ZXC DOES contain ${query.value}");
+      case "isEqualToCurrentLocation":
+        List<String> locality = query.value as List<String>;
 
-          // TODO cast as an array
-          List<String> locality = query.value as List<String>;
-
-          if (locality.isEmpty) {
-            queryRef = queryRef.where(query.field, isEqualTo: "");
-
-            return;
-          }
-
+        if (locality.isNotEmpty) {
           queryRef =
               queryRef.where(query.field, isEqualTo: locality.first.toString());
         }

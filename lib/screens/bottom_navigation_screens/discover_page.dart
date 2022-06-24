@@ -635,10 +635,10 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
                                 style: TextStyle(color: Colors.white)),
                             onPressed: () async {
                               List<UserQuery> updateUserQuery = [
-                                UserQuery(
-                                    "gender", "isEqualTo", selectedGender[0]),
-                                UserQuery("currentLocation", "isEqualTo",
-                                    defaultLocality)
+                                UserQuery("gender", "isEqualToGender",
+                                    selectedGender[0]),
+                                UserQuery("currentLocation",
+                                    "isEqualToCurrentLocation", defaultLocality)
                               ];
 
                               this.setState(() {

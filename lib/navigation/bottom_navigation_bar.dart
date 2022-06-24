@@ -21,12 +21,7 @@ class _MainNavigation extends State<MainNavigation> {
     super.initState();
 
     // 4 Different Tab Screens
-    screens = [
-      const DiscoverPage(),
-      const Center(child: Text("Feed", style: TextStyle(fontSize: 60))),
-      const ChatsScreen(),
-      const ProfilePage()
-    ];
+    screens = [const DiscoverPage(), const ChatsScreen(), const ProfilePage()];
   }
 
   @override
@@ -41,11 +36,6 @@ class _MainNavigation extends State<MainNavigation> {
               icon: Icon(Icons.home),
               label: 'Home',
               backgroundColor: Colors.blue,
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.favorite),
-              label: 'Feed',
-              backgroundColor: Colors.red,
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.chat),

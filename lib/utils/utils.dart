@@ -275,6 +275,27 @@ class Utils {
     "Korean War",
     "Fan Expansion",
   ];
+
+  static List<String> languages = [
+    "finnish",
+    "swedish",
+    "english",
+    "russian",
+    "estonian",
+    "german",
+    "dutch",
+    "arabian",
+    "somalian",
+    "chinese",
+    "persian",
+    "vietnamese",
+  ];
+
+  static List<String> localities = [
+    "espoo",
+    "helsinki",
+    "kajaani",
+  ];
 }
 
 void showSnackBar(GlobalKey<ScaffoldState> globalKey, String message) {
@@ -384,6 +405,24 @@ Query<Map<String, dynamic>> filterSwipableUsers(
               queryRef = queryRef.where(query.field, isEqualTo: "other");
             }
           }
+        }
+
+        if (query.field.contains("currentLocation")) {
+          print("ZXC DOES contain");
+          print("ZXC DOES contain ${query.field}");
+          print("ZXC DOES contain ${query.value}");
+
+          // TODO cast as an array
+          List<String> locality = query.value as List<String>;
+
+          if (locality.isEmpty) {
+            queryRef = queryRef.where(query.field, isEqualTo: "");
+
+            return;
+          }
+
+          queryRef =
+              queryRef.where(query.field, isEqualTo: locality.first.toString());
         }
 
         break;

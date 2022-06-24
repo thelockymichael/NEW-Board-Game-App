@@ -55,6 +55,14 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
   List<String> defaultThemes = [];
   // END
 
+  // 4. Default Selected Languages
+  List<String> defaultLanguages = [];
+  // END
+
+  // 5. Default Selected Locality
+  List<String> defaultLocality = [];
+  // END
+
   List<UserQuery> userQuery = [];
 
   late CardProvider cardProvider;
@@ -63,6 +71,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
       id: "test id",
       name: "test name",
       email: "test@gmail.com",
+      languages: [],
       favBoardGameGenres: [],
       favBgMechanics: [],
       favBgThemes: [],
@@ -342,8 +351,14 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
   // Mechanics Controller
   late AnimationController mechanicsController;
 
-  // Mechanics Controller
+  // Thmemes Controller
   late AnimationController themesController;
+
+  // Language Controller
+  late AnimationController languagesController;
+
+  // Locality Controller
+  late AnimationController localityController;
 
   void initControllers() {
     // Filter Menu Controller
@@ -369,6 +384,14 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
     // Themes Controller
     themesController = BottomSheet.createAnimationController(this);
     themesController.duration = Duration(microseconds: 0);
+
+    // Language  Controller
+    languagesController = BottomSheet.createAnimationController(this);
+    languagesController.duration = Duration(microseconds: 0);
+
+    // Locality  Controller
+    localityController = BottomSheet.createAnimationController(this);
+    localityController.duration = Duration(microseconds: 0);
   }
 
   @override
@@ -456,11 +479,41 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
           }
         }
       }
+      // END 3. Bg Themes
+
+      // 4. Languages
+      if (defaultLanguages.isNotEmpty) {
+        for (var i = 0; i < _userList.length; i++) {
+          for (var j = 0; j < defaultLanguages.length; j++) {
+            bool doesExist =
+                _userList[i].languages.contains(defaultLanguages[j]);
+
+            if (doesExist == false) {
+              _usersToRemove.add(_userList[i]);
+            }
+          }
+        }
+      }
+      // END 4. Languages
+
+      // // 5. Languages
+      // if (defaultLanguages.isNotEmpty) {
+      //   for (var i = 0; i < _userList.length; i++) {
+      //     for (var j = 0; j < defaultLanguages.length; j++) {
+      //       bool doesExist =
+      //           _userList[i].languages.contains(defaultLanguages[j]);
+
+      //       if (doesExist == false) {
+      //         _usersToRemove.add(_userList[i]);
+      //       }
+      //     }
+      //   }
+      // }
+      // // END 5. Languages
 
       _usersToRemove.forEach((element) {
         _userList.remove(element);
       });
-      // END 3. Bg Themes
 
       print("VMK FINAL ${_userList.length}");
 
@@ -583,7 +636,9 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
                             onPressed: () async {
                               List<UserQuery> updateUserQuery = [
                                 UserQuery(
-                                    "gender", "isEqualTo", selectedGender[0])
+                                    "gender", "isEqualTo", selectedGender[0]),
+                                UserQuery("currentLocation", "isEqualTo",
+                                    defaultLocality)
                               ];
 
                               this.setState(() {
@@ -665,6 +720,85 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
                       },
                       title: Text(
                         gender.capitalize(),
+                        style: style,
+                      ),
+                      trailing: isSelected
+                          ? Icon(Icons.radio_button_checked,
+                              color: selectedColor, size: 26)
+                          : Icon(Icons.radio_button_unchecked,
+                              color: selectedColor, size: 26),
+                    );
+                  }).toList()))
+                ],
+              ));
+        });
+      },
+    );
+  }
+
+  void _showLocalityModal(
+      BuildContext localityContext, List<String> selectedLocality) {
+    showModalBottomSheet(
+      barrierColor: Colors.black54,
+      transitionAnimationController: localityController,
+      elevation: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      context: localityContext,
+      builder: (BuildContext context) {
+        return StatefulBuilder(builder: (BuildContext context, setState) {
+          return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+              child: Column(
+                children: [
+                  Text("Show me",
+                      textAlign: TextAlign.center,
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 16),
+                  Text("Which genders(s) would you like to see?",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 18, color: Colors.black54)),
+                  SizedBox(height: 16),
+                  Expanded(
+                      child: ListView(
+                          children: Utils.localities.map((locality) {
+                    final isSelected = selectedLocality.contains(locality);
+
+                    final selectedColor = Theme.of(context).primaryColor;
+                    final style = isSelected
+                        ? TextStyle(
+                            fontSize: 18,
+                            color: selectedColor,
+                            fontWeight: FontWeight.bold,
+                          )
+                        : TextStyle(fontSize: 18);
+
+                    return ListTile(
+                      onTap: () {
+                        Navigator.of(context).pop();
+
+                        selectedLocality.clear();
+
+                        final isSelected = selectedLocality.contains(locality);
+
+                        setState(() => isSelected
+                            ? this.defaultLocality.remove(locality)
+                            : this.defaultLocality.add(locality));
+
+                        print("selectedLocality, ${selectedLocality[0]}");
+
+                        _filterSwipableUsersModalBottomSheet(
+                            context, filterMenuController);
+
+                        /*
+                          _filterSwipableUsersModalBottomSheet(
+                          context, selectedlocality[0], controller);
+                        */
+                      },
+                      title: Text(
+                        locality.capitalize(),
                         style: style,
                       ),
                       trailing: isSelected
@@ -905,6 +1039,85 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
     );
   }
 
+  void _showLanguages(
+      BuildContext languagesContext, List<String> selectedLanguages) {
+    showModalBottomSheet(
+      barrierColor: Colors.black54,
+      transitionAnimationController: languagesController,
+      elevation: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      context: languagesContext,
+      builder: (BuildContext context) {
+        return StatefulBuilder(builder: (BuildContext context, setState) {
+          return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+              child: Column(
+                children: [
+                  Text("Languages",
+                      textAlign: TextAlign.center,
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 16),
+                  Expanded(
+                    child: ListView(
+                        children: Utils.languages.map((language) {
+                      final isSelected = selectedLanguages.contains(language);
+
+                      final selectedColor = Theme.of(context).primaryColor;
+                      final style = isSelected
+                          ? TextStyle(
+                              fontSize: 18,
+                              color: selectedColor,
+                              fontWeight: FontWeight.bold,
+                            )
+                          : TextStyle(fontSize: 18);
+
+                      return ListTile(
+                        onTap: () {
+                          final isSelected =
+                              selectedLanguages.contains(language);
+
+                          setState(() => isSelected
+                              ? selectedLanguages.remove(language)
+                              : selectedLanguages.add(language));
+
+                          print(
+                              "selectedLanguages, ${selectedLanguages.length}");
+                        },
+                        title: Text(
+                          language.capitalize(),
+                          style: style,
+                        ),
+                        trailing: isSelected
+                            ? Icon(Icons.check, color: selectedColor, size: 26)
+                            : null,
+                      );
+                    }).toList()),
+                  ),
+                  ElevatedButton(
+                    child: const Text("Apply",
+                        style: TextStyle(color: Colors.white)),
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+
+                      setState(() {
+                        this.defaultLanguages = selectedLanguages;
+                      });
+
+                      print("VMK defaultLanguages: ${this.defaultLanguages}");
+
+                      _showMoreOptions(context);
+                    },
+                  )
+                ],
+              ));
+        });
+      },
+    );
+  }
+
   void _showMoreOptions(BuildContext moreOptionsContext) {
     showModalBottomSheet(
       barrierColor: Colors.black54,
@@ -923,11 +1136,17 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
                   Align(
                     alignment: Alignment.topRight,
                     child: ElevatedButton(
+
+                        // CLEAR FILTERS
                         onPressed: this.defaultMechanics.isNotEmpty ||
-                                this.defaultThemes.isNotEmpty
+                                this.defaultThemes.isNotEmpty ||
+                                this.defaultLanguages.isNotEmpty ||
+                                this.defaultLocality.isNotEmpty
                             ? () => setState((() {
                                   this.defaultMechanics = [];
                                   this.defaultThemes = [];
+                                  this.defaultLanguages = [];
+                                  this.defaultLocality = [];
                                 }))
                             : null,
                         child: Text("Clear all")),
@@ -1001,6 +1220,74 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
                             Navigator.of(context).pop();
 
                             _showGameThemes(context, this.defaultThemes);
+                          },
+                        ),
+                        ListTile(
+                          leading: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Languages",
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                  defaultLanguages.isNotEmpty
+                                      ? "You're seeing: ${defaultLanguages.map((language) => "${language.capitalize()}")}"
+                                      : "Will you understand each other?",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                  )),
+                            ],
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(width: 12),
+                              const Icon(CustomIcons.right_open)
+                            ],
+                          ),
+                          onTap: () {
+                            Navigator.of(context).pop();
+
+                            _showLanguages(context, this.defaultLanguages);
+                          },
+                        ),
+                        ListTile(
+                          leading: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Locality",
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                  defaultLocality.isNotEmpty
+                                      ? "You're seeing: ${defaultLocality[0].capitalize()}"
+                                      : "Where are they based?",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                  )),
+                            ],
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(width: 12),
+                              const Icon(CustomIcons.right_open)
+                            ],
+                          ),
+                          onTap: () {
+                            Navigator.of(context).pop();
+
+                            _showLocalityModal(context, this.defaultLocality);
                           },
                         ),
                         ElevatedButton(

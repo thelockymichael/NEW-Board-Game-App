@@ -13,6 +13,7 @@ class AppUser {
   late int age;
   late String profilePhotoPath;
   late String bio;
+  late List<String> languages;
   late List<String> favBoardGameGenres;
   late List<String> favBgMechanics;
   late List<String> favBgThemes;
@@ -28,6 +29,7 @@ class AppUser {
       this.age = 0,
       this.profilePhotoPath = "",
       this.bio = "",
+      required this.languages,
       required this.favBoardGameGenres,
       required this.favBgMechanics,
       required this.favBgThemes,
@@ -43,6 +45,7 @@ class AppUser {
     age = snapshot["age"] ?? '';
     profilePhotoPath = snapshot["profilePhotoPath"] ?? '';
     bio = snapshot["bio"] ?? '';
+    languages = List<String>.from(snapshot["languages"]);
     favBoardGameGenres = List<String>.from(snapshot["favBoardGameGenres"]);
     favBgMechanics = List<String>.from(snapshot["favBgMechanics"]);
     favBgThemes = List<String>.from(snapshot["favBgThemes"]);
@@ -60,6 +63,7 @@ class AppUser {
         "age": age,
         "profilePhotoPath": profilePhotoPath,
         "bio": bio,
+        "languages": languages,
         "favBoardGameGenres": favBoardGameGenres,
         "favBgMechanics": favBgMechanics,
         "favBgThemes": favBgThemes,
@@ -77,6 +81,7 @@ class AppUser {
         age: map["age"] ?? "",
         profilePhotoPath: map["profilePhotoPath"] ?? "",
         bio: map["bio"] ?? "",
+        languages: List<String>.from(map["languages"]),
         favBoardGameGenres: List<String>.from(map["favBoardGameGenres"]),
         favBgMechanics: List<String>.from(map["favBgMechanics"]),
         favBgThemes: List<String>.from(map["favBgThemes"]),

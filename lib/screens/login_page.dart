@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/db/remote/response.dart';
 import 'package:flutter_demo_01/navigation/bottom_navigation_bar.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
-import 'package:flutter_demo_01/screens/register_page.dart';
+import 'package:flutter_demo_01/screens/setup_screens/register_page.dart';
+import 'package:flutter_demo_01/screens/v1_register_page.dart';
 import 'package:flutter_demo_01/utils/validator.dart';
 import 'package:provider/provider.dart';
 
@@ -30,6 +31,8 @@ class _LoginPageState extends State<LoginPage> {
   final _focusPassword = FocusNode();
 
   bool _isProcessing = false;
+
+  bool _testingNewRegistration = true;
 
   @override
   void initState() {
@@ -95,9 +98,8 @@ class _LoginPageState extends State<LoginPage> {
                             controller: _passwordTextController,
                             focusNode: _focusPassword,
                             obscureText: true,
-                            validator: (value) => Validator.validatePassword(
-                              password: value,
-                            ),
+                            validator: (value) =>
+                                Validator.validatePassword(value!),
                             decoration: InputDecoration(
                               hintText: "Password",
                               errorBorder: UnderlineInputBorder(
@@ -111,68 +113,142 @@ class _LoginPageState extends State<LoginPage> {
                           const SizedBox(height: 24.0),
                           _isProcessing
                               ? const CircularProgressIndicator()
-                              : Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: ElevatedButton(
-                                        onPressed: () async {
-                                          _focusEmail.unfocus();
-                                          _focusPassword.unfocus();
+                              : _testingNewRegistration
 
-                                          if (_formKey.currentState!
-                                              .validate()) {
-                                            setState(() {
-                                              _isProcessing = true;
-                                            });
+                                  // NEW REGISTRATION
+                                  ? Column(
+                                      children: [
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            minimumSize: const Size.fromHeight(
+                                                40), // NEW
+                                          ),
+                                          onPressed: () async {
+                                            _focusEmail.unfocus();
+                                            _focusPassword.unfocus();
 
-                                            await _userProvider
-                                                .loginUser(
-                                                    _emailTextController.text,
-                                                    _passwordTextController
-                                                        .text,
-                                                    _scaffoldKey)
-                                                .then((response) {
-                                              if (response
-                                                  is Success<UserCredential>) {
-                                                Navigator.of(context)
-                                                    .pushNamedAndRemoveUntil(
-                                                        MainNavigation.id,
-                                                        (route) => false);
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              setState(() {
+                                                _isProcessing = true;
+                                              });
+
+                                              await _userProvider
+                                                  .loginUser(
+                                                      _emailTextController.text,
+                                                      _passwordTextController
+                                                          .text,
+                                                      _scaffoldKey)
+                                                  .then((response) {
+                                                if (response is Success<
+                                                    UserCredential>) {
+                                                  Navigator.of(context)
+                                                      .pushNamedAndRemoveUntil(
+                                                          MainNavigation.id,
+                                                          (route) => false);
+                                                }
+                                              });
+
+                                              setState(() {
+                                                _isProcessing = false;
+                                              });
+                                            }
+                                          },
+                                          child: const Text(
+                                            'Login',
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 24.0),
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            primary:
+                                                Colors.black.withOpacity(0.05),
+                                            minimumSize: const Size.fromHeight(
+                                                40), // NEW
+                                          ),
+                                          onPressed: () {
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const RegisterPage(),
+                                              ),
+                                            );
+                                          },
+                                          child: const Text(
+                                            'Register',
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  : Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: ElevatedButton(
+                                            onPressed: () async {
+                                              _focusEmail.unfocus();
+                                              _focusPassword.unfocus();
+
+                                              if (_formKey.currentState!
+                                                  .validate()) {
+                                                setState(() {
+                                                  _isProcessing = true;
+                                                });
+
+                                                await _userProvider
+                                                    .loginUser(
+                                                        _emailTextController
+                                                            .text,
+                                                        _passwordTextController
+                                                            .text,
+                                                        _scaffoldKey)
+                                                    .then((response) {
+                                                  if (response is Success<
+                                                      UserCredential>) {
+                                                    Navigator.of(context)
+                                                        .pushNamedAndRemoveUntil(
+                                                            MainNavigation.id,
+                                                            (route) => false);
+                                                  }
+                                                });
+
+                                                setState(() {
+                                                  _isProcessing = false;
+                                                });
                                               }
-                                            });
-
-                                            setState(() {
-                                              _isProcessing = false;
-                                            });
-                                          }
-                                        },
-                                        child: const Text(
-                                          'Sign In',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 24.0),
-                                    Expanded(
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const RegisterPage(),
+                                            },
+                                            child: const Text(
+                                              'Sign In',
+                                              style: TextStyle(
+                                                  color: Colors.white),
                                             ),
-                                          );
-                                        },
-                                        child: const Text(
-                                          'Register',
-                                          style: TextStyle(color: Colors.white),
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                  ],
-                                )
+                                        const SizedBox(width: 24.0),
+                                        Expanded(
+                                          child: ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const V1RegisterPage(),
+                                                ),
+                                              );
+                                            },
+                                            child: const Text(
+                                              'Register',
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )
                         ],
                       ),
                     )

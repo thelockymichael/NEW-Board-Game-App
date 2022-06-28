@@ -3,5 +3,6 @@ class UserRegistration {
   int age = 0;
   String email = '';
   String password = '';
+  String confirmPassword = '';
   String localProfilePhotoPath = '';
 }

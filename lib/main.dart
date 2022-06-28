@@ -11,9 +11,11 @@ import 'package:flutter_demo_01/screens/chat_screen.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/discover_page.dart';
 import 'package:flutter_demo_01/screens/matched_screen.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/profile_page.dart';
-import 'package:flutter_demo_01/screens/register_page.dart';
+import 'package:flutter_demo_01/screens/setup_screens/register_page.dart';
+import 'package:flutter_demo_01/screens/v1_register_page.dart';
 import 'package:flutter_demo_01/screens/settings_page.dart';
 import 'package:flutter_demo_01/screens/splash_screen.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
 import 'screens/login_page.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -47,7 +49,8 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context) => CardProvider()),
           ChangeNotifierProvider(create: (context) => UserProvider()),
         ],
-        child: MaterialApp(
+        child: GlobalLoaderOverlay(
+            child: MaterialApp(
           debugShowCheckedModeBanner: false,
           initialRoute: SplashScreen.id,
           routes: {
@@ -60,6 +63,7 @@ class MyApp extends StatelessWidget {
             // ProfilePageBgBioEdit.id: (context) => ProfilePageBgBioEdit(),
             SettingsPage.id: (context) => const SettingsPage(),
             RegisterPage.id: (context) => const RegisterPage(),
+            V1RegisterPage.id: (context) => const V1RegisterPage(),
             MainNavigation.id: (context) => const MainNavigation(),
             MatchedScreen.id: (context) => MatchedScreen(
                   myProfilePhotoPath: (ModalRoute.of(context)
@@ -84,7 +88,7 @@ class MyApp extends StatelessWidget {
                       as Map)['user_id'],
                 ),
           },
-        ));
+        )));
   }
   // @override
   // Widget build(BuildContext context) => ChangeNotifierProvider(

@@ -69,6 +69,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
 
   AppUser _myUser = AppUser(
       id: "test id",
+      setupIsCompleted: false,
       name: "test name",
       email: "test@gmail.com",
       languages: [],

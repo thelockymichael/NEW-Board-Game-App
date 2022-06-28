@@ -26,6 +26,7 @@ class UserProvider extends ChangeNotifier {
   bool isLoading = false;
   AppUser _user = AppUser(
       id: "test id",
+      setupIsCompleted: false,
       name: "test name",
       email: "test@gmail.com",
       languages: [],
@@ -321,6 +322,7 @@ class UserProvider extends ChangeNotifier {
 
       AppUser user = AppUser(
           id: id,
+          setupIsCompleted: false,
           name: userRegistration.name,
           age: userRegistration.age,
           profilePhotoPath:
@@ -654,6 +656,7 @@ class UserProvider extends ChangeNotifier {
       GlobalKey<ScaffoldState> errorScaffoldKey) async {
     AppUser user = AppUser(
       id: userSnapshot.id,
+      setupIsCompleted: userSnapshot.setupIsCompleted,
       name: userProfile.name,
       bggName: userProfile.bggName,
       currentLocation: userProfile.currentLocation,
@@ -691,6 +694,7 @@ class UserProvider extends ChangeNotifier {
 
     AppUser user = AppUser(
       id: userSnapshot.id,
+      setupIsCompleted: userSnapshot.setupIsCompleted,
       name: userSnapshot.name,
       bggName: userSnapshot.bggName,
       currentLocation: userSnapshot.currentLocation,
@@ -728,6 +732,7 @@ class UserProvider extends ChangeNotifier {
 
     AppUser user = AppUser(
       id: userSnapshot.id,
+      setupIsCompleted: userSnapshot.setupIsCompleted,
       name: userSnapshot.name,
       bggName: userSnapshot.bggName,
       currentLocation: userSnapshot.currentLocation,
@@ -765,6 +770,7 @@ class UserProvider extends ChangeNotifier {
 
     AppUser user = AppUser(
       id: userSnapshot.id,
+      setupIsCompleted: userSnapshot.setupIsCompleted,
       name: userSnapshot.name,
       bggName: userSnapshot.bggName,
       currentLocation: userSnapshot.currentLocation,
@@ -808,6 +814,7 @@ class UserProvider extends ChangeNotifier {
 
     AppUser user = AppUser(
       id: userSnapshot.id,
+      setupIsCompleted: userSnapshot.setupIsCompleted,
       name: userSnapshot.name,
       bggName: userSnapshot.bggName,
       currentLocation: userSnapshot.currentLocation,
@@ -837,6 +844,7 @@ class UserProvider extends ChangeNotifier {
       GlobalKey<ScaffoldState> errorScaffoldKey) async {
     AppUser user = AppUser(
       id: userSnapshot.id,
+      setupIsCompleted: userSnapshot.setupIsCompleted,
       name: userSnapshot.name,
       bggName: userSnapshot.bggName,
       currentLocation: userSnapshot.currentLocation,
@@ -970,6 +978,7 @@ class UserProvider extends ChangeNotifier {
 
     AppUser user = AppUser(
         id: userSnapshot.id,
+        setupIsCompleted: userSnapshot.setupIsCompleted,
         name: userSnapshot.name,
         bggName: userSnapshot.bggName,
         currentLocation: userSnapshot.currentLocation,
@@ -1001,6 +1010,7 @@ class UserProvider extends ChangeNotifier {
 
     AppUser user = AppUser(
         id: userSnapshot.id,
+        setupIsCompleted: userSnapshot.setupIsCompleted,
         name: userSnapshot.name,
         bggName: userSnapshot.bggName,
         currentLocation: address,

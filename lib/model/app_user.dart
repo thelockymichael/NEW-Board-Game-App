@@ -6,6 +6,7 @@ import 'package:flutter_demo_01/api/recommend_games_api.dart';
 class AppUser {
   late String id;
   late String email;
+  late bool setupIsCompleted;
   late String name;
   late String bggName;
   late String currentLocation;
@@ -21,6 +22,7 @@ class AppUser {
 
   AppUser(
       {required this.id,
+      required this.setupIsCompleted,
       this.email = "",
       this.name = "",
       this.bggName = "",
@@ -37,6 +39,7 @@ class AppUser {
 
   AppUser.fromSnapshot(DocumentSnapshot snapshot) {
     id = snapshot["id"];
+    setupIsCompleted = snapshot["setupIsCompleted"] ?? false;
     email = snapshot["email"] ?? '';
     name = snapshot["name"] ?? '';
     bggName = snapshot["bggName"] ?? '';
@@ -55,6 +58,7 @@ class AppUser {
 
   Map<String, dynamic> toMap() => {
         "id": id,
+        "setupIsCompleted": setupIsCompleted,
         "email": email,
         "name": name,
         "bggName": bggName,
@@ -73,6 +77,7 @@ class AppUser {
   factory AppUser.fromMap(Map<String, dynamic> map) {
     return AppUser(
         id: map['id'] ?? '',
+        setupIsCompleted: map['setupIsCompleted'] ?? false,
         email: map["email"] ?? "",
         name: map["name"] ?? "",
         bggName: map["bggName"] ?? "",
@@ -95,10 +100,6 @@ class AppUser {
   factory AppUser.fromJson(String source) =>
       AppUser.fromMap(json.decode(source));
 }
-
-// TODO 1.
-// Create single object
-// late SelectedBoardGame familyGames
 
 class FavBoardGames {
   late List<SelectedBoardGame> familyGames;

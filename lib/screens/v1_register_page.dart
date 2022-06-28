@@ -7,16 +7,16 @@ import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/utils/validator.dart';
 import 'package:provider/provider.dart';
 
-class RegisterPage extends StatefulWidget {
-  static const String id = 'register_page';
+class V1RegisterPage extends StatefulWidget {
+  static const String id = 'v1register_page';
 
-  const RegisterPage({Key? key}) : super(key: key);
+  const V1RegisterPage({Key? key}) : super(key: key);
 
   @override
-  _RegisterPageState createState() => _RegisterPageState();
+  _V1RegisterPageState createState() => _V1RegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _V1RegisterPageState extends State<V1RegisterPage> {
   final UserRegistration _userRegistration = UserRegistration();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -99,9 +99,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         controller: _passwordTextController,
                         focusNode: _focusPassword,
                         obscureText: true,
-                        validator: (value) => Validator.validatePassword(
-                          password: value,
-                        ),
+                        validator: (value) =>
+                            Validator.validatePassword(value!),
                         decoration: InputDecoration(
                           hintText: "Password",
                           errorBorder: UnderlineInputBorder(

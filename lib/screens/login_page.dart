@@ -2,10 +2,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/db/remote/response.dart';
+import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/navigation/bottom_navigation_bar.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
+import 'package:flutter_demo_01/screens/setup_screens/first_name_bgg_page.dart';
 import 'package:flutter_demo_01/screens/setup_screens/register_page.dart';
 import 'package:flutter_demo_01/screens/v1_register_page.dart';
+import 'package:flutter_demo_01/utils/utils.dart';
 import 'package:flutter_demo_01/utils/validator.dart';
 import 'package:provider/provider.dart';
 
@@ -32,12 +35,20 @@ class _LoginPageState extends State<LoginPage> {
 
   bool _isProcessing = false;
 
-  bool _testingNewRegistration = true;
-
   @override
   void initState() {
     super.initState();
     _userProvider = Provider.of(context, listen: false);
+
+    print("LOG welcome to Login Screen");
+
+    // TODO 1. Get app user id SharedPrefs
+// TODO 2. If User exists AND setup IS NOT completed
+// TODO 3. => send to setup screens
+
+    // TODO 4. IF setup IS completed
+    // TODO 5. => send to MainNavigation
+    print("LOG ${_userProvider.user}}");
   }
 
   Future<FirebaseApp> _initializeFirebase() async {
@@ -113,8 +124,7 @@ class _LoginPageState extends State<LoginPage> {
                           const SizedBox(height: 24.0),
                           _isProcessing
                               ? const CircularProgressIndicator()
-                              : _testingNewRegistration
-
+                              : Utils.testingNewRegistration
                                   // NEW REGISTRATION
                                   ? Column(
                                       children: [

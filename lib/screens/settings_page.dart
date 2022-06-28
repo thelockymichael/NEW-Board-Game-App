@@ -20,7 +20,7 @@ class _SettingsPageState extends State<SettingsPage> {
   bool _isSigningOut = false;
 
   void logoutPressed(UserProvider userProvider, BuildContext context) async {
-    userProvider.logoutUser();
+    await userProvider.logoutUser();
     Navigator.pushNamedAndRemoveUntil(context, LoginPage.id, (route) => false);
   }
 

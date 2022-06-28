@@ -594,6 +594,10 @@ class UserProvider extends ChangeNotifier {
       _databaseSource.addUser(user);
 
       SharedPreferencesUtil.setUserId(id);
+
+      print("LOG jokunen ${user.setupIsCompleted}");
+      SharedPreferencesUtil.setSetupState(user.setupIsCompleted);
+
       _user = _user;
       return Response.success(user);
     }

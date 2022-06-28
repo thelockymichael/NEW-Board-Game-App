@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 class Utils {
   static int ascendingSort(FavBgMechanicItem c1, FavBgMechanicItem c2) =>
       c1.name.compareTo(c2.name);
+  static bool testingNewRegistration = true;
 
   static List<String> bgMechanicsList = [
     "Dice Rolling",

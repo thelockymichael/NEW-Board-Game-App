@@ -11,6 +11,7 @@ import 'package:flutter_demo_01/screens/chat_screen.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/discover_page.dart';
 import 'package:flutter_demo_01/screens/matched_screen.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/profile_page.dart';
+import 'package:flutter_demo_01/screens/setup_screens/first_name_bgg_page.dart';
 import 'package:flutter_demo_01/screens/setup_screens/register_page.dart';
 import 'package:flutter_demo_01/screens/v1_register_page.dart';
 import 'package:flutter_demo_01/screens/settings_page.dart';
@@ -63,6 +64,7 @@ class MyApp extends StatelessWidget {
             // ProfilePageBgBioEdit.id: (context) => ProfilePageBgBioEdit(),
             SettingsPage.id: (context) => const SettingsPage(),
             RegisterPage.id: (context) => const RegisterPage(),
+            FirstNameBggPage.id: (context) => const FirstNameBggPage(),
             V1RegisterPage.id: (context) => const V1RegisterPage(),
             MainNavigation.id: (context) => const MainNavigation(),
             MatchedScreen.id: (context) => MatchedScreen(

@@ -318,9 +318,27 @@ String convertEpochMsToDateTime(int epochMs) {
   var date = DateTime.fromMillisecondsSinceEpoch(epochMs);
   int currentTimeMs = DateTime.now().millisecondsSinceEpoch;
   if ((currentTimeMs - epochMs) >= oneDayInMs) {
-    return '${DateFormat.yMd().format(date)}  ${DateFormat.jm().format(date)}';
+    return '${DateFormat("dd/MM/yyyy").format(date)}  ${DateFormat.jm().format(date)}';
   } else {
-    return DateFormat.jm().format(date);
+    return DateFormat("dd/MM/yyyy").format(date);
+  }
+}
+
+String calculateAgeV2(int epochMs) {
+  int oneDayInMs = 86400000;
+  var date = DateTime.fromMillisecondsSinceEpoch(epochMs);
+  int currentTimeMs = DateTime.now().millisecondsSinceEpoch;
+
+  int diff = DateTime.now().year - date.year;
+
+  if ((currentTimeMs - epochMs) >= oneDayInMs) {
+    print("LOG DIFFUS year $diff");
+
+    return diff.toString();
+    // return '${DateFormat.yMd().format(date)}  ${DateFormat.jm().format(date)}';
+  } else {
+    return diff.toString();
+    // return DateFormat.jm().format(date);
   }
 }
 

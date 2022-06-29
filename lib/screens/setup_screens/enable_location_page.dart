@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
@@ -10,7 +11,10 @@ import 'package:flutter_demo_01/model/user_registration.dart';
 import 'package:flutter_demo_01/navigation/bottom_navigation_bar.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/utils/constants.dart';
+import 'package:flutter_demo_01/utils/shared_preferences_utils.dart';
 import 'package:flutter_demo_01/utils/validator.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:loader_overlay/loader_overlay.dart';
@@ -45,11 +49,89 @@ class EnableLocationPageState extends State<EnableLocationPage> {
 
   // TODO Check if photo(s) already exist(s)
 
+  String? _currentLocation;
+  Position? _currentGeoLocation;
+
   /** 1. END Gender Select END */
   @override
   void initState() {
     super.initState();
     _userProvider = Provider.of<UserProvider>(context, listen: false);
+  }
+
+  Future<Response<String>> _getCurrentPosition() async {
+    final hasPermission = await _handleLocationPermission();
+
+    if (!hasPermission) return Response.error("Permission not granted");
+
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) {
+      setState(() => _currentGeoLocation = position);
+
+      _getAddressFromLatLng(_currentGeoLocation!);
+
+      return Response.success;
+    }).catchError((e) {
+      debugPrint(e);
+    });
+
+    return Response.error("");
+  }
+
+  Future<void> _getAddressFromLatLng(Position position) async {
+    AppUser userSnapshot = await _userProvider.user;
+
+    print("SDF ${userSnapshot.name}");
+    await placemarkFromCoordinates(position.latitude, position.longitude,
+            localeIdentifier: "fi")
+        .then((List<Placemark> placemarks) {
+      Placemark place = placemarks[0];
+
+      setState(() {
+        _currentLocation = '${place.locality}';
+        _userProvider.updateCurrentLocationAddress(
+            userSnapshot, _currentLocation!, _scaffoldKey);
+
+        _userProvider.updateCurrentGeoLocation(
+            userSnapshot, position, _scaffoldKey);
+      });
+    }).catchError((e) {
+      debugPrint(e);
+    });
+  }
+
+  Future<bool> _handleLocationPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+
+    if (!serviceEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content:
+            Text("Location services are disabled. Please enable the services"),
+      ));
+      return false;
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Location permissions are denied")));
+        return false;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text(
+            "Location permissions are permanently denied, we cannot request permissions."),
+      ));
+      return false;
+    }
+
+    return true;
   }
 
   @override
@@ -99,52 +181,28 @@ class EnableLocationPageState extends State<EnableLocationPage> {
                                         Expanded(
                                           child: ElevatedButton(
                                             onPressed: () async {
-                                              // TODO
+                                              // TODO when user presses button
+                                              // TODO => get currentLocation
+                                              // TODO 1. get locality
+                                              // TODO 2. get lat, long,
 
-                                              // bool isValidGender =
-                                              //     Validator.validatePhotosArray(
-                                              //         photosArray:
-                                              //             selectedPhotos);
-                                              // if (isValidGender) {
-                                              //   print("LOG photos are valid");
+                                              // TODO 1. update currentLocation
+                                              // TODO 2. update currentGeoLocation
 
-                                              // _userRegistration.gender =
-                                              //     selectedGender[0];
+                                              Future.delayed(
+                                                      const Duration(
+                                                          milliseconds: 2000),
+                                                      _getCurrentPosition)
+                                                  .asStream()
+                                                  .listen(((event) {
+                                                SharedPreferencesUtil
+                                                    .setSetupState(true);
 
-                                              // TODO if selectedPhotos are not empty
-
-                                              // Navigator.of(context)
-                                              //     .push(PageRouteBuilder(
-                                              //   pageBuilder: (
-                                              //     BuildContext context,
-                                              //     Animation<double>
-                                              //         animation,
-                                              //     Animation<double>
-                                              //         secondaryAnimation,
-                                              //   ) =>
-                                              //       EnableLocationPage(),
-                                              //   transitionsBuilder: (
-                                              //     BuildContext context,
-                                              //     Animation<double>
-                                              //         animation,
-                                              //     Animation<double>
-                                              //         secondaryAnimation,
-                                              //     Widget child,
-                                              //   ) =>
-                                              //       SlideTransition(
-                                              //     position: Tween<Offset>(
-                                              //       begin: const Offset(
-                                              //           1, 0),
-                                              //       end: Offset.zero,
-                                              //     ).animate(animation),
-                                              //     child: child,
-                                              //   ),
-                                              // ));
-                                              // } else {
-                                              //   setState(() {
-                                              //     errorMessageEnabled = true;
-                                              //   });
-                                              // }
+                                                Navigator.pop(context);
+                                                Navigator.pop(context);
+                                                Navigator.pushNamed(
+                                                    context, MainNavigation.id);
+                                              }));
                                             },
                                             child: const Text(
                                               'ENABLE LOCATION',

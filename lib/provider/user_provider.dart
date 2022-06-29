@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/api/recommend_games_api.dart';
@@ -17,6 +18,8 @@ import 'package:flutter_demo_01/model/user_registration.dart';
 import 'package:flutter_demo_01/utils/fire_auth.dart';
 import 'package:flutter_demo_01/utils/shared_preferences_utils.dart';
 import 'package:flutter_demo_01/utils/utils.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
 
 class UserProvider extends ChangeNotifier {
   final FireAuth _authSource = FireAuth();
@@ -324,6 +327,7 @@ class UserProvider extends ChangeNotifier {
       AppUser user = AppUser(
           id: id,
           setupIsCompleted: false,
+          // currentGeoLocation: GeoPoint(0, 0),
           name: userRegistration.name,
           age: userRegistration.age,
           profilePhotoPaths: [
@@ -682,6 +686,7 @@ class UserProvider extends ChangeNotifier {
       name: userProfile.firstName,
       bggName: userProfile.bggUsername,
       currentLocation: userSnapshot.currentLocation,
+      currentGeoLocation: userSnapshot.currentGeoLocation,
       gender: userSnapshot.gender,
       age: userSnapshot.age,
       bio: userSnapshot.bio,
@@ -714,6 +719,7 @@ class UserProvider extends ChangeNotifier {
       name: userSnapshot.name,
       bggName: userSnapshot.bggName,
       currentLocation: userSnapshot.currentLocation,
+      currentGeoLocation: userSnapshot.currentGeoLocation,
       gender: userSnapshot.gender,
       age: userProfile.birthDate,
       bio: userSnapshot.bio,
@@ -746,6 +752,7 @@ class UserProvider extends ChangeNotifier {
       name: userSnapshot.name,
       bggName: userSnapshot.bggName,
       currentLocation: userSnapshot.currentLocation,
+      currentGeoLocation: userSnapshot.currentGeoLocation,
       gender: userProfile.gender,
       age: userSnapshot.age,
       bio: userSnapshot.bio,
@@ -781,6 +788,7 @@ class UserProvider extends ChangeNotifier {
       name: userProfile.name,
       bggName: userProfile.bggName,
       currentLocation: userProfile.currentLocation,
+      currentGeoLocation: userSnapshot.currentGeoLocation,
       gender: userProfile.gender,
       age: userProfile.age,
       bio: userSnapshot.bio,
@@ -819,6 +827,7 @@ class UserProvider extends ChangeNotifier {
       name: userSnapshot.name,
       bggName: userSnapshot.bggName,
       currentLocation: userSnapshot.currentLocation,
+      currentGeoLocation: userSnapshot.currentGeoLocation,
       gender: userSnapshot.gender,
       age: userSnapshot.age,
       bio: userSnapshot.bio,
@@ -857,6 +866,7 @@ class UserProvider extends ChangeNotifier {
       name: userSnapshot.name,
       bggName: userSnapshot.bggName,
       currentLocation: userSnapshot.currentLocation,
+      currentGeoLocation: userSnapshot.currentGeoLocation,
       gender: userSnapshot.gender,
       age: userSnapshot.age,
       bio: userSnapshot.bio,
@@ -895,6 +905,7 @@ class UserProvider extends ChangeNotifier {
       name: userSnapshot.name,
       bggName: userSnapshot.bggName,
       currentLocation: userSnapshot.currentLocation,
+      currentGeoLocation: userSnapshot.currentGeoLocation,
       gender: userSnapshot.gender,
       age: userSnapshot.age,
       bio: userSnapshot.bio,
@@ -939,6 +950,7 @@ class UserProvider extends ChangeNotifier {
       name: userSnapshot.name,
       bggName: userSnapshot.bggName,
       currentLocation: userSnapshot.currentLocation,
+      currentGeoLocation: userSnapshot.currentGeoLocation,
       gender: userSnapshot.gender,
       age: userSnapshot.age,
       bio: userSnapshot.bio,
@@ -969,6 +981,7 @@ class UserProvider extends ChangeNotifier {
       name: userSnapshot.name,
       bggName: userSnapshot.bggName,
       currentLocation: userSnapshot.currentLocation,
+      currentGeoLocation: userSnapshot.currentGeoLocation,
       gender: userSnapshot.gender,
       age: userSnapshot.age,
       bio: userBioEdit.bio,
@@ -1103,6 +1116,7 @@ class UserProvider extends ChangeNotifier {
         name: userSnapshot.name,
         bggName: userSnapshot.bggName,
         currentLocation: userSnapshot.currentLocation,
+        currentGeoLocation: userSnapshot.currentGeoLocation,
         gender: userSnapshot.gender,
         age: userSnapshot.age,
         bio: userSnapshot.bio,
@@ -1135,6 +1149,46 @@ class UserProvider extends ChangeNotifier {
         name: userSnapshot.name,
         bggName: userSnapshot.bggName,
         currentLocation: address,
+        currentGeoLocation: userSnapshot.currentGeoLocation,
+        gender: userSnapshot.gender,
+        age: userSnapshot.age,
+        bio: userSnapshot.bio,
+        email: userSnapshot.email,
+        languages: userSnapshot.languages,
+        favBoardGameGenres: userSnapshot.favBoardGameGenres,
+        favBgMechanics: userSnapshot.favBgMechanics,
+        favBgThemes: userSnapshot.favBgThemes,
+        profilePhotoPaths: userSnapshot.profilePhotoPaths,
+        favBoardGames: userSnapshot.favBoardGames);
+
+    Response<dynamic> response = await _databaseSource.updateUser(user);
+
+    if (response is Success<String>) {
+      return Response.success(user);
+    }
+
+    if (response is Error) showSnackBar(errorScaffoldKey, response.message);
+    return response;
+  }
+
+  Future<Response> updateCurrentGeoLocation(AppUser userSnapshot,
+      Position geoLocation, GlobalKey<ScaffoldState> errorScaffoldKey) async {
+    // final updateFavBoardGames = _returnFavBoardGames(
+    //     userSnapshot, boardGameData, boardGameRank, boardGameGenre);
+
+    GeoPoint point = GeoPoint(geoLocation.latitude, geoLocation.longitude);
+
+    print("LOG geoPoint latitude ${point.latitude}");
+    print("LOG geoPoint longitude ${point.longitude}");
+
+// point.data
+    AppUser user = AppUser(
+        id: userSnapshot.id,
+        setupIsCompleted: userSnapshot.setupIsCompleted,
+        name: userSnapshot.name,
+        bggName: userSnapshot.bggName,
+        currentLocation: userSnapshot.currentLocation,
+        currentGeoLocation: point,
         gender: userSnapshot.gender,
         age: userSnapshot.age,
         bio: userSnapshot.bio,

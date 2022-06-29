@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_demo_01/api/recommend_games_api.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
 
 class AppUser {
   late String id;
@@ -10,6 +11,7 @@ class AppUser {
   late String name;
   late String bggName;
   late String currentLocation;
+  late GeoPoint currentGeoLocation;
   late String gender;
   late int age;
   late List<String> profilePhotoPaths;
@@ -27,6 +29,7 @@ class AppUser {
       this.name = "",
       this.bggName = "",
       this.currentLocation = "",
+      this.currentGeoLocation = const GeoPoint(0, 0),
       this.gender = "",
       this.age = 0,
       required this.profilePhotoPaths,
@@ -44,6 +47,7 @@ class AppUser {
     name = snapshot["name"] ?? '';
     bggName = snapshot["bggName"] ?? '';
     currentLocation = snapshot["currentLocation"] ?? '';
+    currentGeoLocation = snapshot["currentGeoLocation"] ?? GeoPoint(0, 0);
     gender = snapshot["gender"] ?? '';
     age = snapshot["age"] ?? '';
     // profilePhotoPath = snapshot["profilePhotoPath"] ?? '';
@@ -64,6 +68,7 @@ class AppUser {
         "name": name,
         "bggName": bggName,
         "currentLocation": currentLocation,
+        "currentGeoLocation": currentGeoLocation,
         "gender": gender,
         "age": age,
         // "profilePhotoPath": profilePhotoPath,
@@ -84,6 +89,8 @@ class AppUser {
         name: map["name"] ?? "",
         bggName: map["bggName"] ?? "",
         currentLocation: map["currentLocation"] ?? "",
+        // currentGeoLocation: userSnapshot.currentGeoLocation,
+        currentGeoLocation: map["currentGeoLocation"] ?? GeoPoint(0, 0),
         gender: map["gender"] ?? "",
         age: map["age"] ?? "",
         // profilePhotoPath: map["profilePhotoPath"] ?? "",

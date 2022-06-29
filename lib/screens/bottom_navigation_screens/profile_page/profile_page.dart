@@ -88,7 +88,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               getProfileImage(userSnapshot.data!, userProvider),
                               const SizedBox(height: 20),
                               Text(
-                                  '${userSnapshot.data?.name.capitalize()}, ${userSnapshot.data?.age}',
+                                  '${userSnapshot.data?.name.capitalize()}, ${calculateAge(userSnapshot.data!.age)}',
                                   style: Theme.of(context).textTheme.headline4),
                               const SizedBox(height: 40),
                             ],

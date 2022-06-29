@@ -17,6 +17,7 @@ import 'package:flutter_demo_01/provider/card_provider.dart';
 import 'package:flutter_demo_01/screens/matched_screen.dart';
 import 'package:flutter_demo_01/utils/shared_preferences_utils.dart';
 import 'package:flutter_demo_01/utils/utils.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:provider/provider.dart';
 

@@ -191,7 +191,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                                         alignment:
                                                             Alignment.topLeft,
                                                         child: Text(
-                                                            "${userSnapshot.data?.name.capitalize()}, ${userSnapshot.data?.age}",
+                                                            "${userSnapshot.data?.name.capitalize()}, ${calculateAge(userSnapshot.data!.age)}",
                                                             style: const TextStyle(
                                                                 fontSize: 32,
                                                                 fontWeight:

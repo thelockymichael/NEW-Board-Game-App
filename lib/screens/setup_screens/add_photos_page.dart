@@ -118,6 +118,9 @@ class AddPhotosPageState extends State<AddPhotosPage> {
                                                             selectedPhotos[
                                                                     index] =
                                                                 response.value;
+
+                                                            errorMessageEnabled =
+                                                                false;
                                                           });
 
                                                           print(

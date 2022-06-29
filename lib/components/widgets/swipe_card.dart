@@ -25,7 +25,7 @@ class _SwipeCardState extends State<SwipeCard> {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(25.0),
             child: Image.network(
-                widget.person?.profilePhotoPath ??
+                widget.person?.profilePhotoPaths[0] ??
                     "https://is3-ssl.mzstatic.com/image/thumb/Purple18/v4/28/13/02/2813028e-b3b5-8605-e890-10521a6974bf/source/256x256bb.jpg",
                 fit: BoxFit.fill),
           ),

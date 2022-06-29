@@ -33,6 +33,7 @@ class UserProvider extends ChangeNotifier {
       favBoardGameGenres: [],
       favBgMechanics: [],
       favBgThemes: [],
+      profilePhotoPaths: ["", "", "", "", "", ""],
       favBoardGames: FavBoardGames(familyGames: [
         SelectedBoardGame(
           rank: 1,
@@ -325,8 +326,14 @@ class UserProvider extends ChangeNotifier {
           setupIsCompleted: false,
           name: userRegistration.name,
           age: userRegistration.age,
-          profilePhotoPath:
-              "https://metropolia.imgix.net/tinder-profile-imgs/man_board_game.jpeg",
+          profilePhotoPaths: [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+          ],
           languages: [],
           favBoardGameGenres: [],
           favBgMechanics: [],
@@ -637,20 +644,30 @@ class UserProvider extends ChangeNotifier {
     return chatWithUserList;
   }
 
-  void updateUserProfilePhoto(
-      String localFilePath, GlobalKey<ScaffoldState> errorScaffoldKey) async {
+  Future<Response> updateUserProfilePhoto(String localFilePath,
+      GlobalKey<ScaffoldState> errorScaffoldKey, int imageNumber) async {
     isLoading = true;
     notifyListeners();
-    Response<dynamic> response =
-        await _storageSource.uploadUserProfilePhoto(localFilePath, _user.id);
+    Response<dynamic> response = await _storageSource.uploadUserProfilePhoto(
+        localFilePath, _user.id, imageNumber);
     isLoading = false;
     if (response is Success<String>) {
-      _user.profilePhotoPath = response.value;
+      // TODO Change to list Array
+      _user.profilePhotoPaths[imageNumber] = response.value;
+
       _databaseSource.updateUser(_user);
+      notifyListeners();
+
+      return Response.success(response.value);
     } else if (response is Error) {
       showSnackBar(errorScaffoldKey, response.message);
+      notifyListeners();
+
+      return response;
+      // showSnackBar(errorScaffoldKey, response.message);
     }
     notifyListeners();
+    return response;
   }
 
   /* TODO User Setup */
@@ -673,7 +690,7 @@ class UserProvider extends ChangeNotifier {
       favBoardGameGenres: userSnapshot.favBoardGameGenres,
       favBgMechanics: userSnapshot.favBgMechanics,
       favBgThemes: userSnapshot.favBgThemes,
-      profilePhotoPath: userSnapshot.profilePhotoPath,
+      profilePhotoPaths: userSnapshot.profilePhotoPaths,
       favBoardGames: userSnapshot.favBoardGames,
     );
 
@@ -705,7 +722,7 @@ class UserProvider extends ChangeNotifier {
       favBoardGameGenres: userSnapshot.favBoardGameGenres,
       favBgMechanics: userSnapshot.favBgMechanics,
       favBgThemes: userSnapshot.favBgThemes,
-      profilePhotoPath: userSnapshot.profilePhotoPath,
+      profilePhotoPaths: userSnapshot.profilePhotoPaths,
       favBoardGames: userSnapshot.favBoardGames,
     );
 
@@ -737,7 +754,7 @@ class UserProvider extends ChangeNotifier {
       favBoardGameGenres: userSnapshot.favBoardGameGenres,
       favBgMechanics: userSnapshot.favBgMechanics,
       favBgThemes: userSnapshot.favBgThemes,
-      profilePhotoPath: userSnapshot.profilePhotoPath,
+      profilePhotoPaths: userSnapshot.profilePhotoPaths,
       favBoardGames: userSnapshot.favBoardGames,
     );
 
@@ -772,7 +789,7 @@ class UserProvider extends ChangeNotifier {
       favBoardGameGenres: userSnapshot.favBoardGameGenres,
       favBgMechanics: userSnapshot.favBgMechanics,
       favBgThemes: userSnapshot.favBgThemes,
-      profilePhotoPath: userSnapshot.profilePhotoPath,
+      profilePhotoPaths: userSnapshot.profilePhotoPaths,
       favBoardGames: userSnapshot.favBoardGames,
     );
 
@@ -810,7 +827,7 @@ class UserProvider extends ChangeNotifier {
       favBoardGameGenres: mappedGenres,
       favBgMechanics: userSnapshot.favBgMechanics,
       favBgThemes: userSnapshot.favBgThemes,
-      profilePhotoPath: userSnapshot.profilePhotoPath,
+      profilePhotoPaths: userSnapshot.profilePhotoPaths,
       favBoardGames: userSnapshot.favBoardGames,
     );
 
@@ -848,7 +865,7 @@ class UserProvider extends ChangeNotifier {
       favBoardGameGenres: userSnapshot.favBoardGameGenres,
       favBgMechanics: mappedBgMechanics,
       favBgThemes: userSnapshot.favBgThemes,
-      profilePhotoPath: userSnapshot.profilePhotoPath,
+      profilePhotoPaths: userSnapshot.profilePhotoPaths,
       favBoardGames: userSnapshot.favBoardGames,
     );
 
@@ -886,7 +903,7 @@ class UserProvider extends ChangeNotifier {
       favBoardGameGenres: userSnapshot.favBoardGameGenres,
       favBgMechanics: userSnapshot.favBgMechanics,
       favBgThemes: mappedBgThemes,
-      profilePhotoPath: userSnapshot.profilePhotoPath,
+      profilePhotoPaths: userSnapshot.profilePhotoPaths,
       favBoardGames: userSnapshot.favBoardGames,
     );
 
@@ -930,7 +947,7 @@ class UserProvider extends ChangeNotifier {
       favBoardGameGenres: userSnapshot.favBoardGameGenres,
       favBgMechanics: mappedBgMechanics,
       favBgThemes: mappedBgThemes,
-      profilePhotoPath: userSnapshot.profilePhotoPath,
+      profilePhotoPaths: userSnapshot.profilePhotoPaths,
       favBoardGames: userSnapshot.favBoardGames,
     );
 
@@ -960,7 +977,7 @@ class UserProvider extends ChangeNotifier {
       favBoardGameGenres: userSnapshot.favBoardGameGenres,
       favBgMechanics: userSnapshot.favBgMechanics,
       favBgThemes: userSnapshot.favBgThemes,
-      profilePhotoPath: userSnapshot.profilePhotoPath,
+      profilePhotoPaths: userSnapshot.profilePhotoPaths,
       favBoardGames: userSnapshot.favBoardGames,
     );
 
@@ -1094,7 +1111,7 @@ class UserProvider extends ChangeNotifier {
         favBoardGameGenres: userSnapshot.favBoardGameGenres,
         favBgMechanics: userSnapshot.favBgMechanics,
         favBgThemes: userSnapshot.favBgThemes,
-        profilePhotoPath: userSnapshot.profilePhotoPath,
+        profilePhotoPaths: userSnapshot.profilePhotoPaths,
         favBoardGames: updateFavBoardGames);
 
     Response<dynamic> response = await _databaseSource.updateUser(user);
@@ -1126,7 +1143,7 @@ class UserProvider extends ChangeNotifier {
         favBoardGameGenres: userSnapshot.favBoardGameGenres,
         favBgMechanics: userSnapshot.favBgMechanics,
         favBgThemes: userSnapshot.favBgThemes,
-        profilePhotoPath: userSnapshot.profilePhotoPath,
+        profilePhotoPaths: userSnapshot.profilePhotoPaths,
         favBoardGames: userSnapshot.favBoardGames);
 
     Response<dynamic> response = await _databaseSource.updateUser(user);

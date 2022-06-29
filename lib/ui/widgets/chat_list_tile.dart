@@ -34,7 +34,7 @@ class ChatListTile extends StatelessWidget {
               child: CircleAvatar(
                   radius: 50,
                   backgroundImage:
-                      NetworkImage(chatWithUser.user.profilePhotoPath)),
+                      NetworkImage(chatWithUser.user.profilePhotoPaths[0])),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(color: kAccentColor, width: 1.0),

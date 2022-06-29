@@ -18,7 +18,7 @@ class ChatTopBar extends StatelessWidget {
             Container(
               child: CircleAvatar(
                   radius: 22,
-                  backgroundImage: NetworkImage(user.profilePhotoPath)),
+                  backgroundImage: NetworkImage(user.profilePhotoPaths[0])),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(color: kAccentColor, width: 1.0),

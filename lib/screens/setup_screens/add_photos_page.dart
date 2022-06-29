@@ -2,21 +2,30 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
 import 'package:flutter_demo_01/components/widgets/loading_overlay.dart';
+import 'package:flutter_demo_01/components/widgets/rounded_icon_button.dart';
 
 import 'package:flutter_demo_01/db/remote/response.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/model/user_registration.dart';
 import 'package:flutter_demo_01/navigation/bottom_navigation_bar.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
+import 'package:flutter_demo_01/screens/setup_screens/enable_location_page.dart';
+import 'package:flutter_demo_01/utils/constants.dart';
 import 'package:flutter_demo_01/utils/validator.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:flutter_demo_01/utils/utils.dart';
 
 class AddPhotosPage extends StatefulWidget {
-  static const String id = 'gender_page';
+  static const String id = 'add_photos_page';
 
-  const AddPhotosPage({Key? key}) : super(key: key);
+  final List<String> profilePhotoPaths;
+
+  const AddPhotosPage({
+    Key? key,
+    required this.profilePhotoPaths,
+  }) : super(key: key);
 
   @override
   AddPhotosPageState createState() => AddPhotosPageState();
@@ -28,17 +37,16 @@ class AddPhotosPageState extends State<AddPhotosPage> {
 
   // END
 
-  bool _isLoaderVisible = false;
   late UserProvider _userProvider;
 
   /* 1. Gender Select */
   // 1. Default Selected Gender
 
-  List<String> availableGenders = ["male", "female", "other"];
-
-  List<String> selectedGender = [];
+  late List<String> selectedPhotos;
 
   bool errorMessageEnabled = false;
+
+  // TODO Check if photo(s) already exist(s)
 
   // String selectedGender = defaultSelectedGender;
 
@@ -47,6 +55,12 @@ class AddPhotosPageState extends State<AddPhotosPage> {
   void initState() {
     super.initState();
     _userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    selectedPhotos = widget.profilePhotoPaths;
+
+    for (var i = 0; i < selectedPhotos.length; i++) {
+      print("LOG ALL PROFILE PHOTOS ${selectedPhotos[0]}");
+    }
   }
 
   @override
@@ -76,67 +90,78 @@ class AddPhotosPageState extends State<AddPhotosPage> {
                                           CrossAxisAlignment.start,
                                       children: <Widget>[
                                         SizedBox(
-                                          height: 200,
-                                          child: ListView(
-                                            children:
-                                                availableGenders.map((gender) {
-                                              final isSelected = selectedGender
-                                                  .contains(gender);
+                                          height: 300,
+                                          child: GridView.count(
+                                            crossAxisCount: 3,
+                                            children: List.generate(6, (index) {
+                                              return GestureDetector(
+                                                  onTap: () async {
+                                                    final pickedFile =
+                                                        await ImagePicker()
+                                                            .pickImage(
+                                                                source:
+                                                                    ImageSource
+                                                                        .gallery);
+                                                    if (pickedFile != null) {
+                                                      await userProvider
+                                                          .updateUserProfilePhoto(
+                                                              pickedFile.path,
+                                                              _scaffoldKey,
+                                                              index)
+                                                          .then((response) {
+                                                        if (response
+                                                            is Success) {
+                                                          print(
+                                                              "LOG response is success ${response.value}");
 
-                                              final selectedColor =
-                                                  Theme.of(context)
-                                                      .primaryColor;
-                                              final style = isSelected
-                                                  ? TextStyle(
-                                                      fontSize: 18,
-                                                      color: selectedColor,
-                                                      fontWeight:
-                                                          FontWeight.bold)
-                                                  : TextStyle(fontSize: 18);
+                                                          setState(() {
+                                                            selectedPhotos[
+                                                                    index] =
+                                                                response.value;
+                                                          });
 
-                                              return ListTile(
-                                                onTap: () {
-                                                  // setState(() {
-                                                  //   errorMessageEnabled = false;
-                                                  // });
-                                                  selectedGender.clear();
-
-                                                  final isSelected =
-                                                      selectedGender
-                                                          .contains(gender);
-
-                                                  setState(() {
-                                                    errorMessageEnabled = false;
-
-                                                    isSelected
-                                                        ? selectedGender
-                                                            .remove(gender)
-                                                        : selectedGender
-                                                            .add(gender);
-                                                  });
-                                                  print(
-                                                      "LOG isSelected selectedGender: $selectedGender");
-                                                  print(
-                                                      "LOG isSelected gender: $gender");
-                                                },
-                                                title: Text(
-                                                  gender.capitalize(),
-                                                  style: style,
-                                                ),
-                                                trailing: isSelected
-                                                    ? Icon(
-                                                        Icons
-                                                            .radio_button_checked,
-                                                        color: selectedColor,
-                                                        size: 26)
-                                                    : Icon(
-                                                        Icons
-                                                            .radio_button_unchecked,
-                                                        color: selectedColor,
-                                                        size: 26),
-                                              );
-                                            }).toList(),
-                                            // children: [Text("Hello")],
+                                                          print(
+                                                              "LOG selectedPhotos[0] ${selectedPhotos[0]}");
+                                                        }
+                                                      });
+                                                    }
+                                                  },
+                                                  child: Stack(
+                                                    children: [
+                                                      Container(
+                                                        width: 100,
+                                                        height: 100,
+                                                        decoration: BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        12),
+                                                            color: Colors
+                                                                .blue[200],
+                                                            image: DecorationImage(
+                                                                fit: BoxFit
+                                                                    .contain,
+                                                                image: NetworkImage(
+                                                                    userSnapshot
+                                                                            .data!
+                                                                            .profilePhotoPaths[
+                                                                        index]))),
+                                                      ),
+                                                      Positioned(
+                                                          top: 1.0,
+                                                          right: 1.0,
+                                                          child:
+                                                              RoundedIconButton(
+                                                            onPressed:
+                                                                () async {},
+                                                            iconData: Icons.add,
+                                                            iconSize: 18,
+                                                            buttonColor:
+                                                                Colors.blue,
+                                                          ))
+                                                    ],
+                                                  ));
+                                            }),
                                           ),
                                         ),
                                         errorMessageEnabled
@@ -145,7 +170,7 @@ class AddPhotosPageState extends State<AddPhotosPage> {
                                                     const EdgeInsets.fromLTRB(
                                                         0, 8, 0, 8),
                                                 child: Text(
-                                                  "Gender must be selected.",
+                                                  "At least one photo must be uploaded.",
                                                   style: TextStyle(
                                                       color: Colors.red),
                                                 ),
@@ -156,37 +181,15 @@ class AddPhotosPageState extends State<AddPhotosPage> {
                                             Expanded(
                                               child: ElevatedButton(
                                                 onPressed: () async {
-                                                  bool isValidGender =
-                                                      Validator.validateGender(
-                                                          selectedGender:
-                                                              selectedGender);
+                                                  bool isValidGender = Validator
+                                                      .validatePhotosArray(
+                                                          photosArray:
+                                                              selectedPhotos);
                                                   if (isValidGender) {
-                                                    print("LOG isValid Gender");
+                                                    print(
+                                                        "LOG photos are valid");
 
-                                                    _userRegistration.gender =
-                                                        selectedGender[0];
-
-                                                    context.loaderOverlay.show(
-                                                        widget: UpdateGender());
-                                                    setState(() {
-                                                      _isLoaderVisible = context
-                                                          .loaderOverlay
-                                                          .visible;
-                                                    });
-
-                                                    await _userProvider
-                                                        .updateGender(
-                                                            userSnapshot.data!,
-                                                            _userRegistration,
-                                                            _scaffoldKey)
-                                                        .then((response) {
-                                                      if (response is Success) {
-                                                        if (_isLoaderVisible) {
-                                                          context.loaderOverlay
-                                                              .hide();
-                                                        }
-                                                      }
-                                                    });
+                                                    // TODO if selectedPhotos are not empty
 
                                                     Navigator.of(context)
                                                         .push(PageRouteBuilder(
@@ -197,7 +200,7 @@ class AddPhotosPageState extends State<AddPhotosPage> {
                                                         Animation<double>
                                                             secondaryAnimation,
                                                       ) =>
-                                                          AddPhotosPage(),
+                                                          EnableLocationPage(),
                                                       transitionsBuilder: (
                                                         BuildContext context,
                                                         Animation<double>
@@ -244,7 +247,7 @@ class AddPhotosPageState extends State<AddPhotosPage> {
   }
 }
 
-class UpdateGender extends StatelessWidget {
+class UpdatePhotos extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Center(
           child: Container(
@@ -264,7 +267,7 @@ class UpdateGender extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Setting gender.',
+                  'Uploading photos.',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 Text(

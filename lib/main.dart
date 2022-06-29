@@ -11,7 +11,9 @@ import 'package:flutter_demo_01/screens/chat_screen.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/discover_page.dart';
 import 'package:flutter_demo_01/screens/matched_screen.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/profile_page.dart';
+import 'package:flutter_demo_01/screens/setup_screens/add_photos_page.dart';
 import 'package:flutter_demo_01/screens/setup_screens/date_of_birth_page.dart';
+import 'package:flutter_demo_01/screens/setup_screens/enable_location_page.dart';
 import 'package:flutter_demo_01/screens/setup_screens/first_name_bgg_page.dart';
 import 'package:flutter_demo_01/screens/setup_screens/gender_page.dart';
 import 'package:flutter_demo_01/screens/setup_screens/register_page.dart';
@@ -68,7 +70,15 @@ class MyApp extends StatelessWidget {
             RegisterPage.id: (context) => const RegisterPage(),
             FirstNameBggPage.id: (context) => const FirstNameBggPage(),
             DateOfBirthPage.id: (context) => const DateOfBirthPage(),
-            GenderPage.id: (context) => const GenderPage(),
+            GenderPage.id: (context) => GenderPage(
+                  gender: (ModalRoute.of(context)?.settings.arguments
+                      as Map)['gender'],
+                ),
+            AddPhotosPage.id: (context) => AddPhotosPage(
+                  profilePhotoPaths: (ModalRoute.of(context)?.settings.arguments
+                      as Map)['profilePhotoPaths'],
+                ),
+            EnableLocationPage.id: (context) => const EnableLocationPage(),
             V1RegisterPage.id: (context) => const V1RegisterPage(),
             MainNavigation.id: (context) => const MainNavigation(),
             MatchedScreen.id: (context) => MatchedScreen(

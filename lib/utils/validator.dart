@@ -78,6 +78,21 @@ class Validator {
     return true;
   }
 
+  static bool validatePhotosArray({required List<String> photosArray}) {
+    List<String> tmpPhotos = [];
+    for (var i = 0; i < photosArray.length; i++) {
+      if (photosArray[i].isNotEmpty) {
+        tmpPhotos.add(photosArray[i]);
+      }
+    }
+
+    if (tmpPhotos.isEmpty) {
+      return false;
+    }
+
+    return true;
+  }
+
   static String? validatePassword(String password) {
     RegExp regex = RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{6,}$');
     // should contain at least one upper case

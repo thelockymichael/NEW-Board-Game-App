@@ -150,7 +150,10 @@ class DateOfBirthPageState extends State<DateOfBirthPage> {
                                                           Animation<double>
                                                               secondaryAnimation,
                                                         ) =>
-                                                            GenderPage(),
+                                                            GenderPage(
+                                                          gender: userSnapshot
+                                                              .data!.gender,
+                                                        ),
                                                         transitionsBuilder: (
                                                           BuildContext context,
                                                           Animation<double>

@@ -159,8 +159,8 @@ class CardProvider extends ChangeNotifier {
 
         Navigator.pushNamed(context, MatchedScreen.id, arguments: {
           "my_user_id": myUser.id,
-          "my_profile_photo_path": myUser.profilePhotoPath,
-          "other_user_profile_photo_path": users.last.profilePhotoPath,
+          "my_profile_photo_path": myUser.profilePhotoPaths[0],
+          "other_user_profile_photo_path": users.last.profilePhotoPaths[0],
           "other_user_id": users.last.id,
           "other_user_name": users.last.name
         });

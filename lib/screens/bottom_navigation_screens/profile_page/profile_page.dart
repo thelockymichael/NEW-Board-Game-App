@@ -105,7 +105,7 @@ class _ProfilePageState extends State<ProfilePage> {
       children: [
         Container(
           child: CircleAvatar(
-            backgroundImage: NetworkImage(user.profilePhotoPath),
+            backgroundImage: NetworkImage(user.profilePhotoPaths[0]),
             radius: 75,
           ),
           decoration: BoxDecoration(

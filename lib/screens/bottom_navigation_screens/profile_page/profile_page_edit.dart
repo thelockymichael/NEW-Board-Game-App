@@ -1083,7 +1083,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
         Container(
           alignment: Alignment.bottomCenter,
           child: CircleAvatar(
-            backgroundImage: NetworkImage(user.profilePhotoPath),
+            backgroundImage: NetworkImage(user.profilePhotoPaths[0]),
             radius: 75,
           ),
           decoration: BoxDecoration(
@@ -1101,7 +1101,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                     await ImagePicker().pickImage(source: ImageSource.gallery);
                 if (pickedFile != null) {
                   firebaseProvider.updateUserProfilePhoto(
-                      pickedFile.path, _scaffoldKey);
+                      pickedFile.path, _scaffoldKey, 1);
                 }
               },
               iconData: Icons.edit,

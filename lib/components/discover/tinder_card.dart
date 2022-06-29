@@ -109,7 +109,7 @@ class _TinderCardState extends State<TinderCard> {
                 height: MediaQuery.of(context).size.height,
                 decoration: BoxDecoration(
                     image: DecorationImage(
-                        image: NetworkImage(widget.user!.profilePhotoPath),
+                        image: NetworkImage(widget.user!.profilePhotoPaths[0]),
                         fit: BoxFit.cover,
                         alignment: const Alignment(-0.3, 0))),
                 child: Container(

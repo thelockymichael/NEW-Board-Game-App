@@ -72,6 +72,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
       setupIsCompleted: false,
       name: "test name",
       email: "test@gmail.com",
+      profilePhotoPaths: [],
       languages: [],
       favBoardGameGenres: [],
       favBgMechanics: [],

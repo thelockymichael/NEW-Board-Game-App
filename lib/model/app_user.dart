@@ -12,7 +12,7 @@ class AppUser {
   late String currentLocation;
   late String gender;
   late int age;
-  late String profilePhotoPath;
+  late List<String> profilePhotoPaths;
   late String bio;
   late List<String> languages;
   late List<String> favBoardGameGenres;
@@ -29,7 +29,7 @@ class AppUser {
       this.currentLocation = "",
       this.gender = "",
       this.age = 0,
-      this.profilePhotoPath = "",
+      required this.profilePhotoPaths,
       this.bio = "",
       required this.languages,
       required this.favBoardGameGenres,
@@ -46,7 +46,8 @@ class AppUser {
     currentLocation = snapshot["currentLocation"] ?? '';
     gender = snapshot["gender"] ?? '';
     age = snapshot["age"] ?? '';
-    profilePhotoPath = snapshot["profilePhotoPath"] ?? '';
+    // profilePhotoPath = snapshot["profilePhotoPath"] ?? '';
+    profilePhotoPaths = List<String>.from(snapshot["profilePhotoPaths"]);
     bio = snapshot["bio"] ?? '';
     languages = List<String>.from(snapshot["languages"]);
     favBoardGameGenres = List<String>.from(snapshot["favBoardGameGenres"]);
@@ -65,7 +66,8 @@ class AppUser {
         "currentLocation": currentLocation,
         "gender": gender,
         "age": age,
-        "profilePhotoPath": profilePhotoPath,
+        // "profilePhotoPath": profilePhotoPath,
+        "profilePhotoPaths": profilePhotoPaths,
         "bio": bio,
         "languages": languages,
         "favBoardGameGenres": favBoardGameGenres,
@@ -84,7 +86,8 @@ class AppUser {
         currentLocation: map["currentLocation"] ?? "",
         gender: map["gender"] ?? "",
         age: map["age"] ?? "",
-        profilePhotoPath: map["profilePhotoPath"] ?? "",
+        // profilePhotoPath: map["profilePhotoPath"] ?? "",
+        profilePhotoPaths: List<String>.from(map["profilePhotoPaths"]),
         bio: map["bio"] ?? "",
         languages: List<String>.from(map["languages"]),
         favBoardGameGenres: List<String>.from(map["favBoardGameGenres"]),

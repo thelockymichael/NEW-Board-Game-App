@@ -17,7 +17,12 @@ import 'package:flutter_demo_01/utils/utils.dart';
 class GenderPage extends StatefulWidget {
   static const String id = 'gender_page';
 
-  const GenderPage({Key? key}) : super(key: key);
+  final String gender;
+
+  const GenderPage({
+    Key? key,
+    required this.gender,
+  }) : super(key: key);
 
   @override
   GenderPageState createState() => GenderPageState();
@@ -37,17 +42,19 @@ class GenderPageState extends State<GenderPage> {
 
   List<String> availableGenders = ["male", "female", "other"];
 
-  List<String> selectedGender = [];
+  late List<String> selectedGender;
 
   bool errorMessageEnabled = false;
-
-  // String selectedGender = defaultSelectedGender;
 
   /** 1. END Gender Select END */
   @override
   void initState() {
     super.initState();
     _userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    print("LOG gender jotain ${widget.gender}");
+
+    selectedGender = [widget.gender];
   }
 
   @override
@@ -197,7 +204,11 @@ class GenderPageState extends State<GenderPage> {
                                                           Animation<double>
                                                               secondaryAnimation,
                                                         ) =>
-                                                            AddPhotosPage(),
+                                                            AddPhotosPage(
+                                                          profilePhotoPaths:
+                                                              userSnapshot.data!
+                                                                  .profilePhotoPaths,
+                                                        ),
                                                         transitionsBuilder: (
                                                           BuildContext context,
                                                           Animation<double>

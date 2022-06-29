@@ -445,9 +445,11 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
       print("CVB MAX: $defaultMaxAgeValue");
 
       // 1. Age Range
-      _userList.removeWhere(((element) =>
-          element.age < defaultMinAgeValue ||
-          element.age > defaultMaxAgeValue));
+      // TODO IMPORANT !!! 29.6.22
+      // _userList.removeWhere(((element) =>
+      //     element.age < defaultMinAgeValue ||
+      //     element.age > defaultMaxAgeValue));
+
       // END 1. Age Range
 
       // 2. Bg Mechanics

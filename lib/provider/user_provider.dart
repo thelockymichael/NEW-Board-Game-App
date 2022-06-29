@@ -653,7 +653,107 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Future<Response> updateUserBasicInfo(UserProfileEdit userProfile,
+  /* TODO User Setup */
+
+  Future<Response> updateFirstNameAndBggUsername(
+      AppUser userSnapshot,
+      UserRegistration userProfile,
+      GlobalKey<ScaffoldState> errorScaffoldKey) async {
+    AppUser user = AppUser(
+      id: userSnapshot.id,
+      setupIsCompleted: userSnapshot.setupIsCompleted,
+      name: userProfile.firstName,
+      bggName: userProfile.bggUsername,
+      currentLocation: userSnapshot.currentLocation,
+      gender: userSnapshot.gender,
+      age: userSnapshot.age,
+      bio: userSnapshot.bio,
+      email: userSnapshot.email,
+      languages: userSnapshot.languages,
+      favBoardGameGenres: userSnapshot.favBoardGameGenres,
+      favBgMechanics: userSnapshot.favBgMechanics,
+      favBgThemes: userSnapshot.favBgThemes,
+      profilePhotoPath: userSnapshot.profilePhotoPath,
+      favBoardGames: userSnapshot.favBoardGames,
+    );
+
+    Response<dynamic> response = await _databaseSource.updateUser(user);
+
+    if (response is Success<String>) {
+      return Response.success(user);
+    }
+
+    if (response is Error) showSnackBar(errorScaffoldKey, response.message);
+    return response;
+  }
+
+  Future<Response> updateDateOfBirth(
+      AppUser userSnapshot,
+      UserRegistration userProfile,
+      GlobalKey<ScaffoldState> errorScaffoldKey) async {
+    AppUser user = AppUser(
+      id: userSnapshot.id,
+      setupIsCompleted: userSnapshot.setupIsCompleted,
+      name: userSnapshot.name,
+      bggName: userSnapshot.bggName,
+      currentLocation: userSnapshot.currentLocation,
+      gender: userSnapshot.gender,
+      age: userProfile.birthDate,
+      bio: userSnapshot.bio,
+      email: userSnapshot.email,
+      languages: userSnapshot.languages,
+      favBoardGameGenres: userSnapshot.favBoardGameGenres,
+      favBgMechanics: userSnapshot.favBgMechanics,
+      favBgThemes: userSnapshot.favBgThemes,
+      profilePhotoPath: userSnapshot.profilePhotoPath,
+      favBoardGames: userSnapshot.favBoardGames,
+    );
+
+    Response<dynamic> response = await _databaseSource.updateUser(user);
+
+    if (response is Success<String>) {
+      return Response.success(user);
+    }
+
+    if (response is Error) showSnackBar(errorScaffoldKey, response.message);
+    return response;
+  }
+
+  Future<Response> updateGender(
+      AppUser userSnapshot,
+      UserRegistration userProfile,
+      GlobalKey<ScaffoldState> errorScaffoldKey) async {
+    AppUser user = AppUser(
+      id: userSnapshot.id,
+      setupIsCompleted: userSnapshot.setupIsCompleted,
+      name: userSnapshot.name,
+      bggName: userSnapshot.bggName,
+      currentLocation: userSnapshot.currentLocation,
+      gender: userProfile.gender,
+      age: userSnapshot.age,
+      bio: userSnapshot.bio,
+      email: userSnapshot.email,
+      languages: userSnapshot.languages,
+      favBoardGameGenres: userSnapshot.favBoardGameGenres,
+      favBgMechanics: userSnapshot.favBgMechanics,
+      favBgThemes: userSnapshot.favBgThemes,
+      profilePhotoPath: userSnapshot.profilePhotoPath,
+      favBoardGames: userSnapshot.favBoardGames,
+    );
+
+    Response<dynamic> response = await _databaseSource.updateUser(user);
+
+    if (response is Success<String>) {
+      return Response.success(user);
+    }
+
+    if (response is Error) showSnackBar(errorScaffoldKey, response.message);
+    return response;
+  }
+
+  /* END User Setup */
+
+// TODO BACKUP updateUserBasicInfo
   Future<Response> updateUserBasicInfo(
       AppUser userSnapshot,
       UserProfileEdit userProfile,

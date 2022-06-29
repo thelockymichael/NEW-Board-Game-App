@@ -40,6 +40,44 @@ class Validator {
     return null;
   }
 
+  static String? validateFirstName({required String? firstName}) {
+    if (firstName == null) {
+      return null;
+    }
+    if (firstName.isEmpty) {
+      return 'First name can\'t be empty';
+    }
+
+    return null;
+  }
+
+  static String? validateBggUsername({required String? bggUsername}) {
+    if (bggUsername == null) {
+      return null;
+    }
+    if (bggUsername.isEmpty) {
+      return 'Bgg username can\'t be empty';
+    }
+
+    return null;
+  }
+
+  static bool validateDateTime({required DateTime? date}) {
+    if (date == null) {
+      return false;
+    }
+
+    return true;
+  }
+
+  static bool validateGender({required List<String> selectedGender}) {
+    if (selectedGender.isEmpty) {
+      return false;
+    }
+
+    return true;
+  }
+
   static String? validatePassword(String password) {
     RegExp regex = RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{6,}$');
     // should contain at least one upper case
@@ -55,34 +93,7 @@ class Validator {
         return null;
       }
     }
-    // if (password == null) {
-    //   return null;
-    // }
-
-    // if (password.isEmpty) {
-    //   return 'Password can\'t be empty.';
-    // } else if (password.length < 6) {
-    //   return 'Enter a password with a length at least 6 characters.';
-    // }
-
-    // return null;
   }
-
-  /*
-     String? validatePassword(String value) {
-    RegExp regex =
-        RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
-    if (value.isEmpty) {
-      return 'Please enter password';
-    } else {
-      if (!regex.hasMatch(value)) {
-        return 'Enter valid password';
-      } else {
-        return null;
-      }
-    }
-  }
-   */
 
   static String? confirmPassword(
       {required String? password, required String? confirmPassword}) {

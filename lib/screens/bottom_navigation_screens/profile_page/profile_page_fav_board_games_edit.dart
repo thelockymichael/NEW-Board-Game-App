@@ -116,10 +116,6 @@ class _ProfilePageFavBoardGamesEditState
                                       ProfilePageFavTopBoardGamesEdit(
                                           gameGenre: itemList[index].name,
                                           userSnapshot: userSnapshot.data!),
-                                  // ProfilePageFavBoardGamesEdit(
-                                  //     userSnapshot:
-                                  //         userSnapshot.data!,
-                                  //     notifyParent: refresh),
                                   transitionsBuilder: (
                                     BuildContext context,
                                     Animation<double> animation,

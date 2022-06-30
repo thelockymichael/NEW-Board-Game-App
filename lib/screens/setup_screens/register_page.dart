@@ -156,12 +156,6 @@ class _RegisterPageState extends State<RegisterPage> {
                                           Navigator.pop(context);
                                           Navigator.pushNamed(
                                               context, FirstNameBggPage.id);
-
-                                          // BACKUP 28.6.22
-
-                                          // Navigator.pop(context);
-                                          // Navigator.pushNamed(
-                                          //     context, MainNavigation.id);
                                         }
                                       });
                                     }

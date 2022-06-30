@@ -28,7 +28,7 @@ class DateOfBirthPageState extends State<DateOfBirthPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   // Set date of birth
-  DateTime initDateTime = DateTime(1999, 9, 7);
+  DateTime initDateTime = DateTime(1992, 9, 7);
 
   late DateTime _dateOfBirth;
   // END
@@ -79,11 +79,8 @@ class DateOfBirthPageState extends State<DateOfBirthPage> {
                                                       .fromMillisecondsSinceEpoch(
                                                           userSnapshot
                                                               .data!.age),
-                                              // initialDateTime: convertEpochMsToDateTime(userSnapshot.data!.age)
-                                              //  initDateTime
                                               mode:
                                                   CupertinoDatePickerMode.date,
-
                                               onDateTimeChanged:
                                                   (DateTime value) {
                                                 _dateOfBirth = value;

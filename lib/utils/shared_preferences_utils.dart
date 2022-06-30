@@ -19,20 +19,4 @@ class SharedPreferencesUtil {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove(keyuserId);
   }
-
-// Setup State
-  static Future<bool?> getSetupState() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(setupState);
-  }
-
-  static Future<void> setSetupState(bool state) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(setupState, state);
-  }
-
-  static Future<void> removeSetupState() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove(setupState);
-  }
 }

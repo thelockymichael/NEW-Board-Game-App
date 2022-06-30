@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
 import 'package:flutter_demo_01/components/widgets/loading_overlay.dart';
 import 'package:flutter_demo_01/components/widgets/rounded_icon_button.dart';
+import 'package:flutter_demo_01/db/remote/firebase_database_source.dart';
 
 import 'package:flutter_demo_01/db/remote/response.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
@@ -53,13 +54,15 @@ class EnableLocationPageState extends State<EnableLocationPage> {
   Position? _currentGeoLocation;
 
   /** 1. END Gender Select END */
+
+  FirebaseDatabaseSource _databaseSource = FirebaseDatabaseSource();
   @override
   void initState() {
     super.initState();
     _userProvider = Provider.of<UserProvider>(context, listen: false);
   }
 
-  Future<Response<String>> _getCurrentPosition() async {
+  Future _getCurrentPosition() async {
     final hasPermission = await _handleLocationPermission();
 
     if (!hasPermission) return Response.error("Permission not granted");
@@ -69,13 +72,9 @@ class EnableLocationPageState extends State<EnableLocationPage> {
       setState(() => _currentGeoLocation = position);
 
       _getAddressFromLatLng(_currentGeoLocation!);
-
-      return Response.success;
     }).catchError((e) {
       debugPrint(e);
     });
-
-    return Response.error("");
   }
 
   Future<void> _getAddressFromLatLng(Position position) async {
@@ -189,20 +188,35 @@ class EnableLocationPageState extends State<EnableLocationPage> {
                                               // TODO 1. update currentLocation
                                               // TODO 2. update currentGeoLocation
 
-                                              Future.delayed(
-                                                      const Duration(
-                                                          milliseconds: 2000),
-                                                      _getCurrentPosition)
-                                                  .asStream()
-                                                  .listen(((event) {
-                                                SharedPreferencesUtil
-                                                    .setSetupState(true);
+// TODO LoadingSpinner
 
-                                                Navigator.pop(context);
-                                                Navigator.pop(context);
-                                                Navigator.pushNamed(
-                                                    context, MainNavigation.id);
-                                              }));
+                                              context.loaderOverlay.show(
+                                                  widget:
+                                                      (CreateLocationOverlay()));
+                                              setState(() {
+                                                _isLoaderVisible = context
+                                                    .loaderOverlay.visible;
+                                              });
+
+                                              await _getCurrentPosition()
+                                                  .then((value) {
+                                                if (_isLoaderVisible) {
+                                                  context.loaderOverlay.hide();
+                                                }
+
+                                                userSnapshot.data!
+                                                    .setupIsCompleted = true;
+
+                                                userProvider
+                                                    .updateSetupCompleted(
+                                                        userSnapshot.data!,
+                                                        _scaffoldKey);
+
+                                                Navigator.of(context)
+                                                    .pushNamedAndRemoveUntil(
+                                                        MainNavigation.id,
+                                                        (route) => false);
+                                              });
                                             },
                                             child: const Text(
                                               'ENABLE LOCATION',
@@ -224,7 +238,7 @@ class EnableLocationPageState extends State<EnableLocationPage> {
   }
 }
 
-class UpdatePhotos extends StatelessWidget {
+class CreateLocationOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Center(
           child: Container(
@@ -244,8 +258,9 @@ class UpdatePhotos extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Uploading photos.',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  'Updating your current city\n and geo location.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 Text(
                   'Please wait...',

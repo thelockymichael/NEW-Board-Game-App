@@ -15,6 +15,8 @@ import 'package:flutter_demo_01/model/chat_with_user.dart';
 import 'package:flutter_demo_01/model/user_bio_edit.dart';
 import 'package:flutter_demo_01/model/user_profile_edit.dart';
 import 'package:flutter_demo_01/model/user_registration.dart';
+import 'package:flutter_demo_01/navigation/bottom_navigation_bar.dart';
+import 'package:flutter_demo_01/screens/setup_screens/first_name_bgg_page.dart';
 import 'package:flutter_demo_01/utils/fire_auth.dart';
 import 'package:flutter_demo_01/utils/shared_preferences_utils.dart';
 import 'package:flutter_demo_01/utils/utils.dart';
@@ -301,13 +303,29 @@ class UserProvider extends ChangeNotifier {
   Future<AppUser> get user => _getUser();
 
   Future<Response> loginUser(String email, String password,
-      GlobalKey<ScaffoldState> errorScaffoldKey) async {
+      GlobalKey<ScaffoldState> errorScaffoldKey, BuildContext context) async {
     Response<dynamic> response = await _authSource.signIn(email, password);
 
     if (response is Success<UserCredential>) {
       String id = response.value.user!.uid;
 
       SharedPreferencesUtil.setUserId(id);
+
+      var _snapshotUser = await _databaseSource.getUser(id);
+
+      AppUser _user = AppUser.fromSnapshot(_snapshotUser);
+
+      print("LOG IS SETUP COMPLETED ??? ${_user.setupIsCompleted}");
+      if (_user.setupIsCompleted) {
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil(MainNavigation.id, (route) => false);
+      } else {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const FirstNameBggPage(),
+          ),
+        );
+      }
     } else if (response is Error) {
       showSnackBar(errorScaffoldKey, response.message);
     }
@@ -605,9 +623,6 @@ class UserProvider extends ChangeNotifier {
       _databaseSource.addUser(user);
 
       SharedPreferencesUtil.setUserId(id);
-
-      print("LOG jokunen ${user.setupIsCompleted}");
-      SharedPreferencesUtil.setSetupState(user.setupIsCompleted);
 
       _user = _user;
       return Response.success(user);
@@ -1201,6 +1216,21 @@ class UserProvider extends ChangeNotifier {
         favBoardGames: userSnapshot.favBoardGames);
 
     Response<dynamic> response = await _databaseSource.updateUser(user);
+
+    if (response is Success<String>) {
+      return Response.success(user);
+    }
+
+    if (response is Error) showSnackBar(errorScaffoldKey, response.message);
+    return response;
+  }
+
+  Future<Response> updateSetupCompleted(
+      AppUser userSnapshot, GlobalKey<ScaffoldState> errorScaffoldKey) async {
+    // final updateFavBoardGames = _returnFavBoardGames(
+    //     userSnapshot, boardGameData, boardGameRank, boardGameGenre);
+
+    Response<dynamic> response = await _databaseSource.updateUser(userSnapshot);
 
     if (response is Success<String>) {
       return Response.success(user);

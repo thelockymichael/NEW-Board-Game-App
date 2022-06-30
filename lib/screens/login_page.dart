@@ -143,21 +143,20 @@ class _LoginPageState extends State<LoginPage> {
                                                 _isProcessing = true;
                                               });
 
-                                              await _userProvider
-                                                  .loginUser(
-                                                      _emailTextController.text,
-                                                      _passwordTextController
-                                                          .text,
-                                                      _scaffoldKey)
-                                                  .then((response) {
-                                                if (response is Success<
-                                                    UserCredential>) {
-                                                  Navigator.of(context)
-                                                      .pushNamedAndRemoveUntil(
-                                                          MainNavigation.id,
-                                                          (route) => false);
-                                                }
-                                              });
+                                              await _userProvider.loginUser(
+                                                  _emailTextController.text,
+                                                  _passwordTextController.text,
+                                                  _scaffoldKey,
+                                                  context);
+                                              //     .then((response) {
+                                              //   if (response is Success<
+                                              //       UserCredential>) {
+                                              //     Navigator.of(context)
+                                              //         .pushNamedAndRemoveUntil(
+                                              //             MainNavigation.id,
+                                              //             (route) => false);
+                                              //   }
+                                              // });
 
                                               setState(() {
                                                 _isProcessing = false;
@@ -216,7 +215,8 @@ class _LoginPageState extends State<LoginPage> {
                                                             .text,
                                                         _passwordTextController
                                                             .text,
-                                                        _scaffoldKey)
+                                                        _scaffoldKey,
+                                                        context)
                                                     .then((response) {
                                                   if (response is Success<
                                                       UserCredential>) {

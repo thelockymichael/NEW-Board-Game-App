@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_demo_01/db/remote/firebase_database_source.dart';
+import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/navigation/bottom_navigation_bar.dart';
 import 'package:flutter_demo_01/screens/login_page.dart';
 import 'package:flutter_demo_01/screens/setup_screens/first_name_bgg_page.dart';
@@ -24,20 +26,25 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> checkIfUserExists() async {
     String? userId = await SharedPreferencesUtil.getUserId();
-    bool? setupIsCompleted = await SharedPreferencesUtil.getSetupState();
+    FirebaseDatabaseSource _databaseSource = FirebaseDatabaseSource();
 
     print("LOG splash $userId");
     Navigator.pop(context);
+    // App does NOT have userId preference
     if (userId != null) {
       if (Utils.testingNewRegistration) {
-        if (setupIsCompleted != null) {
-          if (setupIsCompleted) {
-            Navigator.pushNamed(context, MainNavigation.id);
-          } else {
-            Navigator.pushNamed(context, FirstNameBggPage.id);
-          }
-        } else {
+        // TODO Fetch setupIsCompleted status from Firestore
+
+        var _snapshotUser = await _databaseSource.getUser(userId);
+
+        AppUser _user = AppUser.fromSnapshot(_snapshotUser);
+
+        print("LOG IS SETUP COMPLETED ??? ${_user.setupIsCompleted}");
+
+        if (_user.setupIsCompleted) {
           Navigator.pushNamed(context, MainNavigation.id);
+        } else {
+          Navigator.pushNamed(context, FirstNameBggPage.id);
         }
       }
     } else {

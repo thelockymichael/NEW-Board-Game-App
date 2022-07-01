@@ -167,10 +167,10 @@ class GenderPageState extends State<GenderPage> {
                                                   bool isValidGender =
                                                       Validator.validateGender(
                                                           selectedGender:
-                                                              selectedGender);
-                                                  if (isValidGender) {
-                                                    print("LOG isValid Gender");
+                                                              selectedGender[
+                                                                  0]);
 
+                                                  if (isValidGender) {
                                                     _userRegistration.gender =
                                                         selectedGender[0];
 

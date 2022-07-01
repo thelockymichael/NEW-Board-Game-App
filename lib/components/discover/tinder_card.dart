@@ -710,7 +710,7 @@ class _TinderCardState extends State<TinderCard> {
           ),
           const SizedBox(width: 16),
           Text(
-            calculateAge(widget.user!.age),
+            convertToAge(widget.user!.age),
             style: const TextStyle(fontSize: 32, color: Colors.white),
           ),
         ],

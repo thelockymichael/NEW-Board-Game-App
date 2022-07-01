@@ -70,7 +70,7 @@ class Validator {
     return true;
   }
 
-  static bool validateGender({required List<String> selectedGender}) {
+  static bool validateGender({required String selectedGender}) {
     if (selectedGender.isEmpty) {
       return false;
     }

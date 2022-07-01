@@ -805,7 +805,7 @@ class UserProvider extends ChangeNotifier {
       currentLocation: userProfile.currentLocation,
       currentGeoLocation: userSnapshot.currentGeoLocation,
       gender: userProfile.gender,
-      age: userProfile.age,
+      age: userProfile.dateOfBirth,
       bio: userSnapshot.bio,
       email: userSnapshot.email,
       languages: userSnapshot.languages,

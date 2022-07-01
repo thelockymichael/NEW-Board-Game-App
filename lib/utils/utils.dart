@@ -324,7 +324,20 @@ String convertEpochMsToDateTime(int epochMs) {
   }
 }
 
-String calculateAge(int epochMs) {
+int convertToEpoch(DateTime dateTime) {
+  return dateTime.millisecondsSinceEpoch;
+}
+
+String formatDateTime(DateTime? date) {
+  return DateFormat("dd/MM/yyyy").format(date!);
+}
+
+String convertToDateOfBirth(int epochMs) {
+  var date = DateTime.fromMillisecondsSinceEpoch(epochMs);
+  return '${DateFormat("dd/MM/yyyy").format(date)}';
+}
+
+String convertToAge(int epochMs) {
   int oneDayInMs = 86400000;
   var date = DateTime.fromMillisecondsSinceEpoch(epochMs);
   int currentTimeMs = DateTime.now().millisecondsSinceEpoch;
@@ -340,6 +353,12 @@ String calculateAge(int epochMs) {
     return diff.toString();
     // return DateFormat.jm().format(date);
   }
+}
+
+DateTime convertToDateTime(int epochMs) {
+  DateTime date = DateTime.fromMillisecondsSinceEpoch(epochMs);
+
+  return date;
 }
 
 extension StringExtension on String {

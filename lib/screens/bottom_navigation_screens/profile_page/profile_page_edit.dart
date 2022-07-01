@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
 import 'package:flutter_demo_01/components/widgets/rounded_icon_button.dart';
@@ -57,6 +58,11 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
 
   String? _currentAddress;
   Position? _currentPosition;
+
+  DateTime defaultSelectedDate = DateTime.now();
+  // final _birthdayTextController =
+  //     TextEditingController(text: formatDateTime(defaultSelectedDate));
+  TextEditingController _birthdayTextController = TextEditingController();
 
   void _getCurrentPosition() async {
     final hasPermission = await _handleLocationPermission();
@@ -191,7 +197,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                                         alignment:
                                                             Alignment.topLeft,
                                                         child: Text(
-                                                            "${userSnapshot.data?.name.capitalize()}, ${calculateAge(userSnapshot.data!.age)}",
+                                                            "${userSnapshot.data?.name.capitalize()}, ${convertToAge(userSnapshot.data!.age)}",
                                                             style: const TextStyle(
                                                                 fontSize: 32,
                                                                 fontWeight:
@@ -889,14 +895,74 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
     });
   }
 
+  void _changeDateOfBirth(
+      BuildContext context, AppUser userSnapshot, StateSetter setModalState) {
+    print("LOG STEP 1. ${this.defaultSelectedDate}");
+
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return Container(
+              height: 400,
+              color: const Color.fromARGB(255, 255, 255, 255),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 300,
+                    child: CupertinoDatePicker(
+                      initialDateTime: this.defaultSelectedDate,
+                      // initialDateTime: convertToDateTime(userSnapshot.age),
+                      maximumYear: DateTime.now().year,
+                      mode: CupertinoDatePickerMode.date,
+                      dateOrder: DatePickerDateOrder.dmy,
+                      onDateTimeChanged: (val) {
+                        // selectedDate = val;
+                        setModalState(() {
+                          this.defaultSelectedDate = val;
+                          // this.defaultSelectedDate = val;
+                          this._birthdayTextController = TextEditingController(
+                              text: formatDateTime(defaultSelectedDate));
+                        });
+                        // setModalState(() => this.defaultSelectedDate = val);
+
+                        // print("LOG selectedDate ${this.defaultSelectedDate}");
+                      },
+                    ),
+                  ),
+                  // Close the modal
+                  ElevatedButton(
+                    child: const Text("Apply",
+                        style: TextStyle(color: Colors.white)),
+                    onPressed: () async {
+                      // print(
+                      // "LOG selectedDate APPLY ${this.defaultSelectedDate}");
+
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              ),
+            );
+          });
+        });
+  }
+
   void _basicInfoEditModalBottomSheet(context, AppUser userSnapshot) {
     final _nameTextController = TextEditingController(text: userSnapshot.name);
     final _bggNameTextController =
         TextEditingController(text: userSnapshot.bggName);
-    final _birthdayTextController =
-        TextEditingController(text: userSnapshot.age.toString());
+
+    // Date of birth
+    defaultSelectedDate = convertToDateTime(userSnapshot.age);
+
+    _birthdayTextController =
+        TextEditingController(text: formatDateTime(defaultSelectedDate));
+
     final _genderTextController =
         TextEditingController(text: userSnapshot.gender);
+
     final _currentLocationTextController =
         TextEditingController(text: userSnapshot.currentLocation);
 
@@ -913,12 +979,12 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
           borderRadius: BorderRadius.circular(12.0),
         ),
         context: context,
-        builder: (ctx) => Padding(
+        builder: (context) => Padding(
               padding: EdgeInsets.only(
                   top: 15,
                   left: 15,
                   right: 15,
-                  bottom: MediaQuery.of(ctx).viewInsets.bottom + 15),
+                  bottom: MediaQuery.of(context).viewInsets.bottom + 15),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -965,23 +1031,30 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                         ),
                         keyboardType: TextInputType.name,
                       ),
-                      TextFormField(
-                        controller: _birthdayTextController,
-                        focusNode: _focusBirthday,
-                        validator: (value) => Validator.validateName(
-                          name: value,
-                        ),
-                        decoration: InputDecoration(
-                          labelText: "Birthday",
-                          hintText: "Birthday",
-                          errorBorder: UnderlineInputBorder(
-                            borderRadius: BorderRadius.circular(6.0),
-                            borderSide: const BorderSide(
-                              color: Colors.red,
+                      StatefulBuilder(
+                        builder: (BuildContext context, StateSetter setState) {
+                          return GestureDetector(
+                            onTap: () {
+                              print("LOG gesturedetector");
+                              _changeDateOfBirth(
+                                  context, userSnapshot, setState);
+                            },
+                            child: TextFormField(
+                              enabled: false,
+                              controller: _birthdayTextController,
+                              decoration: InputDecoration(
+                                labelStyle: TextStyle(color: Colors.black87),
+                                labelText: "Date of birth",
+                                errorBorder: UnderlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6.0),
+                                  borderSide: const BorderSide(
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                        keyboardType: TextInputType.name,
+                          );
+                        },
                       ),
                       TextFormField(
                         controller: _genderTextController,
@@ -1043,9 +1116,9 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                       _userProfileEdit.gender =
                                           _genderTextController.text;
 
-                                      // Birthday
-                                      _userProfileEdit.age =
-                                          _birthdayTextController.text as int;
+// Date of birth
+                                      _userProfileEdit.dateOfBirth =
+                                          convertToEpoch(defaultSelectedDate);
 
                                       await _userProvider
                                           .updateUserBasicInfo(userSnapshot,
@@ -1074,7 +1147,44 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                   )
                 ],
               ),
-            ));
+            )).whenComplete(() {
+      setState(() {
+        _isProcessing = true;
+      });
+      if (_userFormKey.currentState!.validate()) {
+        // First name
+        _userProfileEdit.name = _nameTextController.text;
+
+        // BGG Name
+        _userProfileEdit.bggName = _bggNameTextController.text;
+
+        // Gender
+        _userProfileEdit.gender = _genderTextController.text;
+
+        // Date of birth
+        _userProfileEdit.dateOfBirth = convertToEpoch(defaultSelectedDate);
+
+        _userProvider
+            .updateUserBasicInfo(userSnapshot, _userProfileEdit, _scaffoldKey)
+            .then((response) {
+          if (response is Success) {
+            refresh();
+          }
+        });
+
+        setState(() {
+          _isProcessing = false;
+        });
+
+        print("LOG IS SUCCESS?");
+      } else {
+        setState(() {
+          _isProcessing = false;
+        });
+
+        print("LOG FAILURE ???");
+      }
+    });
   }
 
   Widget getProfileImage(AppUser user, UserProvider firebaseProvider) {

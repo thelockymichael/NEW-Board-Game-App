@@ -6,11 +6,13 @@ import 'package:flutter_demo_01/db/remote/response.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/model/user_profile_edit.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
+import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/fullscreen_image_viewer.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/profile_page_bg_genre_edit.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/profile_page_bio_edit.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/profile_page_fav_board_games_edit.dart';
 import 'package:flutter_demo_01/utils/constants.dart';
 import 'package:flutter_demo_01/utils/validator.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import "package:flutter_demo_01/utils/utils.dart";
@@ -175,7 +177,8 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                             ),
                             SliverList(
                                 delegate: SliverChildListDelegate([
-                              getProfileImage(userSnapshot.data!, userProvider),
+                              createProfileImages(
+                                  userSnapshot.data!, userProvider),
                               const SizedBox(height: 40),
                               Column(
                                 children: [
@@ -1264,38 +1267,197 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
     });
   }
 
-  Widget getProfileImage(AppUser user, UserProvider firebaseProvider) {
-    return Stack(
-      children: [
-        Container(
-          alignment: Alignment.bottomCenter,
-          child: CircleAvatar(
-            backgroundImage: NetworkImage(user.profilePhotoPaths[0]),
-            radius: 75,
-          ),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: kAccentColor, width: 1.0),
-          ),
-        ),
-        Positioned(
-            left: 0.8,
-            right: 1.0,
-            bottom: 1.0,
-            child: RoundedIconButton(
-              onPressed: () async {
-                final pickedFile =
-                    await ImagePicker().pickImage(source: ImageSource.gallery);
-                if (pickedFile != null) {
-                  firebaseProvider.updateUserProfilePhoto(
-                      pickedFile.path, _scaffoldKey, 1);
-                }
-              },
-              iconData: Icons.edit,
-              iconSize: 18,
-              buttonColor: kAccentColor,
-            ))
-      ],
-    );
+  Widget createProfileImages(AppUser user, UserProvider firebaseProvider) {
+    // TODO Get Pictures
+    // TODO method to filter profilePhotoPaths that have imageUrl
+    // TODO Boolean to determine if contains image or NOT
+
+    print(
+        "LOG DOES EXIST ${user.profilePhotoPaths[0].isEmpty}: ${user.profilePhotoPaths[0]}");
+
+    return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+      SizedBox(
+          child: StaggeredGrid.count(
+              crossAxisCount: 3,
+              mainAxisSpacing: 3,
+              crossAxisSpacing: 3,
+              children: [
+            StaggeredGridTile.count(
+                crossAxisCellCount: 2,
+                mainAxisCellCount: 2,
+                child: GestureDetector(
+                  onTap: () async {
+                    bool noImage = user.profilePhotoPaths[0].isEmpty;
+
+                    if (noImage) {
+                      final pickedFile = await ImagePicker()
+                          .pickImage(source: ImageSource.gallery);
+                      if (pickedFile != null) {
+                        firebaseProvider.updateUserProfilePhoto(
+                            pickedFile.path, _scaffoldKey, 0);
+                      }
+                    } else {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FullScreenImageViewer(
+                                  user.profilePhotoPaths[0],
+                                  0,
+                                  _userProvider)));
+                    }
+                  },
+                  child: Stack(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.blue[200],
+                            image: user.profilePhotoPaths[0].isEmpty
+                                ? null
+                                : DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(
+                                        user.profilePhotoPaths[0]))),
+                      ),
+                      Positioned(
+                          left: 0.8,
+                          right: 1.0,
+                          bottom: 1.0,
+                          child: RoundedIconButton(
+                            onPressed: () async {},
+                            iconData: Icons.edit,
+                            iconSize: 18,
+                            buttonColor: kAccentColor,
+                          ))
+                    ],
+                  ),
+                )),
+            StaggeredGridTile.count(
+              crossAxisCellCount: 1,
+              mainAxisCellCount: 1,
+              child: Container(
+                width: 200,
+                height: 200,
+                color: Colors.green,
+              ),
+            ),
+            StaggeredGridTile.count(
+              crossAxisCellCount: 1,
+              mainAxisCellCount: 1,
+              child: Container(
+                width: 200,
+                height: 200,
+                color: Colors.red,
+              ),
+            ),
+            StaggeredGridTile.count(
+              crossAxisCellCount: 1,
+              mainAxisCellCount: 1,
+              child: Container(
+                width: 200,
+                height: 200,
+                color: Colors.pink,
+              ),
+            ),
+            StaggeredGridTile.count(
+              crossAxisCellCount: 1,
+              mainAxisCellCount: 1,
+              child: Container(
+                width: 200,
+                height: 200,
+                color: Colors.yellow,
+              ),
+            ),
+            StaggeredGridTile.count(
+              crossAxisCellCount: 1,
+              mainAxisCellCount: 1,
+              child: Container(
+                width: 200,
+                height: 200,
+                color: Colors.white,
+              ),
+            ),
+          ]))
+    ]);
+
+    // List<String> profileImages = [];
+
+    // for (var i = 0; i < user.profilePhotoPaths.length; i++) {
+    //   if (user.profilePhotoPaths[i].isNotEmpty) {
+    //     profileImages.add(user.profilePhotoPaths[i]);
+    //   }
+    // }
+
+    // print("LOG ${profileImages.length}");
+
+    // return GestureDetector(
+    //   onTap: () async {
+    //     final pickedFile =
+    //         await ImagePicker().pickImage(source: ImageSource.gallery);
+    //     if (pickedFile != null) {
+    //       firebaseProvider.updateUserProfilePhoto(
+    //           pickedFile.path, _scaffoldKey, 1);
+    //     }
+    //   },
+    //   child: Stack(
+    //     children: [
+    //       Container(
+    //         width: 200,
+    //         height: 200,
+    //         decoration: BoxDecoration(
+    //             borderRadius: BorderRadius.circular(12),
+    //             color: Colors.blue[200],
+    //             image: user.profilePhotoPaths[0].isEmpty
+    //                 ? null
+    //                 : DecorationImage(
+    //                     fit: BoxFit.contain,
+    //                     image: NetworkImage(user.profilePhotoPaths[0]))),
+    //       ),
+    //       Positioned(
+    //           left: 0.8,
+    //           right: 1.0,
+    //           bottom: 1.0,
+    //           child: RoundedIconButton(
+    //             onPressed: () async {},
+    //             iconData: Icons.edit,
+    //             iconSize: 18,
+    //             buttonColor: kAccentColor,
+    //           ))
+    //     ],
+    //   ),
+    // );
+
+    // return Stack(
+    //   children: [
+    //     Container(
+    //       alignment: Alignment.bottomCenter,
+    //       child: CircleAvatar(
+    //         backgroundImage: NetworkImage(user.profilePhotoPaths[0]),
+    //         radius: 75,
+    //       ),
+    //       decoration: BoxDecoration(
+    //         shape: BoxShape.circle,
+    //         border: Border.all(color: kAccentColor, width: 1.0),
+    //       ),
+    //     ),
+    //     Positioned(
+    //         left: 0.8,
+    //         right: 1.0,
+    //         bottom: 1.0,
+    //         child: RoundedIconButton(
+    //           onPressed: () async {
+    //             final pickedFile =
+    //                 await ImagePicker().pickImage(source: ImageSource.gallery);
+    //             if (pickedFile != null) {
+    //               firebaseProvider.updateUserProfilePhoto(
+    //                   pickedFile.path, _scaffoldKey, 1);
+    //             }
+    //           },
+    //           iconData: Icons.edit,
+    //           iconSize: 18,
+    //           buttonColor: kAccentColor,
+    //         ))
+    //   ],
+    // );
   }
 }

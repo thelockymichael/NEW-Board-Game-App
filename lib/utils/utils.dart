@@ -296,6 +296,11 @@ class Utils {
     "helsinki",
     "kajaani",
   ];
+
+  // Stock User profile
+
+  static String userProfileIcon =
+      "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/dummy-photos%2Fuser_profile_photo.png?alt=media&token=2db07520-278e-4213-acba-a0c40c654197";
 }
 
 void showSnackBar(GlobalKey<ScaffoldState> globalKey, String message) {

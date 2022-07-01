@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class RoundedIconButton extends StatelessWidget {
   final VoidCallback onPressed;
   final IconData iconData;
+  final Color iconColor;
   final double iconSize;
   // ignore: prefer_typing_uninitialized_variables
   final paddingReduce;
@@ -14,6 +15,7 @@ class RoundedIconButton extends StatelessWidget {
       required this.iconData,
       this.iconSize = 30,
       required this.buttonColor,
+      this.iconColor = Colors.black,
       this.paddingReduce = 0})
       : super(key: key);
 
@@ -26,7 +28,7 @@ class RoundedIconButton extends StatelessWidget {
       color: buttonColor,
       onPressed: onPressed,
       padding: EdgeInsets.all((iconSize / 2) - paddingReduce),
-      child: Icon(iconData, size: iconSize),
+      child: Icon(iconData, size: iconSize, color: iconColor),
       shape: const CircleBorder(),
     );
   }

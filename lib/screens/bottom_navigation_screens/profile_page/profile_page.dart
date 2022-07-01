@@ -101,11 +101,24 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget getProfileImage(AppUser user, UserProvider firebaseProvider) {
+    List<String> profileImages = [];
+
+    for (var i = 0; i < user.profilePhotoPaths.length; i++) {
+      if (user.profilePhotoPaths[i].isNotEmpty) {
+        profileImages.add(user.profilePhotoPaths[i]);
+      }
+    }
+
+    print("LOG ${profileImages.length}");
+
     return Stack(
       children: [
         Container(
           child: CircleAvatar(
-            backgroundImage: NetworkImage(user.profilePhotoPaths[0]),
+            backgroundImage: profileImages.isNotEmpty
+                ? NetworkImage(user.profilePhotoPaths[0])
+                : NetworkImage(Utils.userProfileIcon),
+            // backgroundImage: NetworkImage(user.profilePhotoPaths[0]),
             radius: 75,
           ),
           decoration: BoxDecoration(

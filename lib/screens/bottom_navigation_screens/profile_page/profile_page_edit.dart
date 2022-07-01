@@ -59,10 +59,21 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
   String? _currentAddress;
   Position? _currentPosition;
 
+// 3. Select Date of Birth
   DateTime defaultSelectedDate = DateTime.now();
-  // final _birthdayTextController =
-  //     TextEditingController(text: formatDateTime(defaultSelectedDate));
+
   TextEditingController _birthdayTextController = TextEditingController();
+
+// END Select Date of Birth
+
+// 4. Available Genders
+  List<String> availableGenders = ["male", "female", "other"];
+
+  late List<String> defaultSelectedGender;
+
+  TextEditingController _genderTextController = TextEditingController();
+
+// END Select Date of Birth
 
   void _getCurrentPosition() async {
     final hasPermission = await _handleLocationPermission();
@@ -137,7 +148,8 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
   void initState() {
     _userProvider = Provider.of<UserProvider>(context, listen: false);
 
-    _getCurrentPosition();
+// TODO Must fix this, 1.7.2022
+    // _getCurrentPosition();
 
     super.initState();
   }
@@ -895,8 +907,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
     });
   }
 
-  void _changeDateOfBirth(
-      BuildContext context, AppUser userSnapshot, StateSetter setModalState) {
+  void _changeDateOfBirth(BuildContext context, StateSetter setModalState) {
     print("LOG STEP 1. ${this.defaultSelectedDate}");
 
     showModalBottomSheet(
@@ -913,21 +924,15 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                     height: 300,
                     child: CupertinoDatePicker(
                       initialDateTime: this.defaultSelectedDate,
-                      // initialDateTime: convertToDateTime(userSnapshot.age),
                       maximumYear: DateTime.now().year,
                       mode: CupertinoDatePickerMode.date,
                       dateOrder: DatePickerDateOrder.dmy,
                       onDateTimeChanged: (val) {
-                        // selectedDate = val;
                         setModalState(() {
                           this.defaultSelectedDate = val;
-                          // this.defaultSelectedDate = val;
                           this._birthdayTextController = TextEditingController(
                               text: formatDateTime(defaultSelectedDate));
                         });
-                        // setModalState(() => this.defaultSelectedDate = val);
-
-                        // print("LOG selectedDate ${this.defaultSelectedDate}");
                       },
                     ),
                   ),
@@ -936,9 +941,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                     child: const Text("Apply",
                         style: TextStyle(color: Colors.white)),
                     onPressed: () async {
-                      // print(
-                      // "LOG selectedDate APPLY ${this.defaultSelectedDate}");
-
                       Navigator.of(context).pop();
                     },
                   )
@@ -949,19 +951,125 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
         });
   }
 
+  void _changeGender(BuildContext context, StateSetter setModalState) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+                child: Column(
+                  children: [
+                    Text("Show me",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold)),
+                    SizedBox(height: 16),
+                    Text("Which genders(s) would you like to see?",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 18, color: Colors.black54)),
+                    SizedBox(height: 16),
+                    Expanded(
+                        child: ListView(
+                            children: availableGenders.map((gender) {
+                      // final isSelected = selectedGender.contains(gender);
+                      final isSelected =
+                          this.defaultSelectedGender.contains(gender);
+
+                      print(
+                          "LOG defaultSelectedGender ${this.defaultSelectedGender}");
+
+                      final selectedColor = Theme.of(context).primaryColor;
+                      final style = isSelected
+                          ? TextStyle(
+                              fontSize: 18,
+                              color: selectedColor,
+                              fontWeight: FontWeight.bold,
+                            )
+                          : TextStyle(fontSize: 18);
+
+                      return ListTile(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          this.defaultSelectedGender.clear();
+                          // final isSelected =
+                          print("LOG selected gender ${gender}");
+
+                          final isSelected =
+                              this.defaultSelectedGender.contains(gender);
+
+                          print(
+                              "LOG part 1. DOES IT CONTAIN GENDER $isSelected");
+
+                          setModalState(() {
+                            isSelected
+                                ? this.defaultSelectedGender.remove(gender)
+                                : this.defaultSelectedGender.add(gender);
+
+                            this._genderTextController = TextEditingController(
+                                text:
+                                    this.defaultSelectedGender[0].capitalize());
+                          });
+                          print(
+                              "LOG part 2. defaultSelectedGender $defaultSelectedGender");
+
+                          // selectedGender.clear();
+
+                          // final isSelected = selectedGender.contains(gender);
+
+                          // setModalState(() => isSelected
+                          //     ? this.defaultSelectedGender.remove(gender)
+                          //     : this.defaultSelectedGender.add(gender));
+
+                          // print("selectedGender, ${selectedGender[0]}");
+
+                          // _filterSwipableUsersModalBottomSheet(
+                          //     context, filterMenuController);
+
+                          /*
+                          _filterSwipableUsersModalBottomSheet(
+                          context, selectedGender[0], controller);
+                        */
+                        },
+                        title: Text(
+                          gender.capitalize(),
+                          style: style,
+                        ),
+                        trailing: isSelected
+                            ? Icon(Icons.radio_button_checked,
+                                color: selectedColor, size: 26)
+                            : Icon(Icons.radio_button_unchecked,
+                                color: selectedColor, size: 26),
+                      );
+                    }).toList()))
+                  ],
+                ));
+          });
+        });
+  }
+
   void _basicInfoEditModalBottomSheet(context, AppUser userSnapshot) {
-    final _nameTextController = TextEditingController(text: userSnapshot.name);
+    final _nameTextController =
+        TextEditingController(text: userSnapshot.name.capitalize());
     final _bggNameTextController =
         TextEditingController(text: userSnapshot.bggName);
 
-    // Date of birth
+    // 3. Date of birth
     defaultSelectedDate = convertToDateTime(userSnapshot.age);
 
     _birthdayTextController =
         TextEditingController(text: formatDateTime(defaultSelectedDate));
 
-    final _genderTextController =
-        TextEditingController(text: userSnapshot.gender);
+    // END dateOfBirth
+
+    // 4. Select Gender
+    defaultSelectedGender = [userSnapshot.gender];
+
+    _genderTextController =
+        TextEditingController(text: defaultSelectedGender[0].capitalize());
+    // END Select Gender
 
     final _currentLocationTextController =
         TextEditingController(text: userSnapshot.currentLocation);
@@ -1035,9 +1143,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                         builder: (BuildContext context, StateSetter setState) {
                           return GestureDetector(
                             onTap: () {
-                              print("LOG gesturedetector");
-                              _changeDateOfBirth(
-                                  context, userSnapshot, setState);
+                              _changeDateOfBirth(context, setState);
                             },
                             child: TextFormField(
                               enabled: false,
@@ -1056,24 +1162,48 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                           );
                         },
                       ),
-                      TextFormField(
-                        controller: _genderTextController,
-                        focusNode: _focusGender,
-                        validator: (value) => Validator.validateName(
-                          name: value,
-                        ),
-                        decoration: InputDecoration(
-                          labelText: "Gender",
-                          hintText: "Gender",
-                          errorBorder: UnderlineInputBorder(
-                            borderRadius: BorderRadius.circular(6.0),
-                            borderSide: const BorderSide(
-                              color: Colors.red,
+                      StatefulBuilder(
+                        builder: (BuildContext context, StateSetter setState) {
+                          return GestureDetector(
+                            onTap: () {
+                              _changeGender(context, setState);
+                            },
+                            child: TextFormField(
+                              enabled: false,
+                              controller: _genderTextController,
+                              decoration: InputDecoration(
+                                labelStyle: TextStyle(color: Colors.black87),
+                                labelText: "Gender",
+                                errorBorder: UnderlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6.0),
+                                  borderSide: const BorderSide(
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                        keyboardType: TextInputType.name,
+                          );
+                        },
                       ),
+
+                      // TextFormField(
+                      //   controller: _genderTextController,
+                      //   focusNode: _focusGender,
+                      //   validator: (value) => Validator.validateName(
+                      //     name: value,
+                      //   ),
+                      //   decoration: InputDecoration(
+                      //     labelText: "Gender",
+                      //     hintText: "Gender",
+                      //     errorBorder: UnderlineInputBorder(
+                      //       borderRadius: BorderRadius.circular(6.0),
+                      //       borderSide: const BorderSide(
+                      //         color: Colors.red,
+                      //       ),
+                      //     ),
+                      //   ),
+                      //   keyboardType: TextInputType.name,
+                      // ),
                       TextFormField(
                         readOnly: true,
                         enabled: false,

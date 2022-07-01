@@ -1,19 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/api/recommend_games_api.dart';
 import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
-import 'package:flutter_demo_01/components/widgets/rounded_icon_button.dart';
 import 'package:flutter_demo_01/components/widgets/search_widget.dart';
-import 'package:flutter_demo_01/db/entity/FavGenreItem.dart';
-import 'package:flutter_demo_01/db/entity/GridItem.dart';
-import 'package:flutter_demo_01/db/remote/response.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
-import 'package:flutter_demo_01/model/bg_mechanic.dart';
-import 'package:flutter_demo_01/model/bg_theme.dart';
-import 'package:flutter_demo_01/model/user_bio_edit.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
-import 'package:flutter_demo_01/utils/constants.dart';
 import 'package:provider/provider.dart';
 import "package:flutter_demo_01/utils/utils.dart";
 
@@ -38,9 +28,10 @@ class _ProfilePageFavTopBoardGamesEditState
     extends State<ProfilePageFavTopBoardGamesEdit> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  /** Search for Board Game  */
+  /// Search for Board Game  */
   String text = '';
-  /** END Search for Board Game END */
+
+  /// END Search for Board Game END */
 
   late UserProvider _userProvider;
 
@@ -87,21 +78,7 @@ class _ProfilePageFavTopBoardGamesEditState
         '&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1');
 
     defaultBoardGames = boardGames;
-
-    // defaultBoardGames = RecommendedGamesApi().getBoardGamesData(
-    //     widget.gameGenre,
-    //     '&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1');
-
-    // widget.gameGenre,
-    //   '?game_type=5499&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1');
   }
-
-  // itemList = [];
-  // selectedList = [];
-
-  var _loadImage = new AssetImage('assets/images/white-background.jpg');
-
-  bool _checkLoaded = true;
 
   @override
   Widget build(BuildContext context) {
@@ -255,7 +232,6 @@ class _ProfilePageFavTopBoardGamesEditState
 
   void _showBoardGameModal(
       BuildContext context, AppUser userSnapshot, int boardGameRank) {
-// TODO
 // 1. Make a HTTP request to recommend.games
 //  https://recommend.games/api/games/?game_type=5499&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1
 
@@ -303,7 +279,7 @@ class _ProfilePageFavTopBoardGamesEditState
                                   print("THIS IS EMPTY TEXT");
 
                                   setState(() {
-                                    print("THIS IS ${defaultBoardGames}");
+                                    print("THIS IS $defaultBoardGames");
                                     boardGames = defaultBoardGames;
                                   });
                                 }
@@ -314,7 +290,7 @@ class _ProfilePageFavTopBoardGamesEditState
                                     print("THIS IS EMPTY TEXT");
 
                                     setState(() {
-                                      print("THIS IS ${text}");
+                                      print("THIS IS $text");
                                       boardGames = defaultBoardGames;
                                     });
                                   }

@@ -11,55 +11,55 @@ class RecommendedGamesApi {
   String _returnGameType(String gameGenre) {
     var str = "";
 
-    print("gameGenre ${gameGenre}");
+    print("gameGenre $gameGenre");
 
     switch (gameGenre) {
       case "family games":
         str += "?game_type=5499";
 
-        print("whole str ${gameGenre}");
+        print("whole str $gameGenre");
         break;
 
       case "dexterity games":
         str += "?category=1032";
 
-        print("whole str ${gameGenre}");
+        print("whole str $gameGenre");
         break;
 
       case "party games":
         str += "?game_type=5498";
 
-        print("whole str ${gameGenre}");
+        print("whole str $gameGenre");
         break;
 
       case "abstracts":
         str += "?game_type=4666";
 
-        print("whole str ${gameGenre}");
+        print("whole str $gameGenre");
         break;
       // https://recommend.games/api/games/?game_type=4666&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1
       case "thematic":
         str += "?game_type=5496";
 
-        print("whole str ${gameGenre}");
+        print("whole str $gameGenre");
         break;
 
       case "strategy":
         str += "?game_type=5497";
 
-        print("whole str ${gameGenre}");
+        print("whole str $gameGenre");
         break;
       case "wargames":
         str += "?game_type=4664";
 
-        print("whole str ${gameGenre}");
+        print("whole str $gameGenre");
         break;
 
       // https://recommend.games/api/games/?game_type=4664&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1
 
       default:
         str += "?game_type=5499";
-        print("whole str ${gameGenre}");
+        print("whole str $gameGenre");
         break;
     }
 

@@ -9,6 +9,9 @@
 .history
 .svn/
 
+# Functions build folder
+functions/build
+
 # Secrets file content
 lib/secrets.dart
 

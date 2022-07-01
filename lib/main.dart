@@ -6,7 +6,6 @@ import 'package:flutter_demo_01/navigation/bottom_navigation_bar.dart';
 import 'package:flutter_demo_01/provider/card_provider.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/profile_page_edit.dart';
-import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/profile_page_fav_board_games_edit.dart';
 import 'package:flutter_demo_01/screens/chat_screen.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/discover_page.dart';
 import 'package:flutter_demo_01/screens/matched_screen.dart';

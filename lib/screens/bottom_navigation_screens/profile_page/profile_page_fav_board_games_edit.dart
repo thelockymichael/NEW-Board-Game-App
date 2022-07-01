@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
 import 'package:flutter_demo_01/db/entity/FavGenreItem.dart';
-import 'package:flutter_demo_01/db/entity/GridItem.dart';
-import 'package:flutter_demo_01/db/remote/response.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
-import 'package:flutter_demo_01/model/user_bio_edit.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/profile_page_fav_top_board_games_edit.dart';
 import 'package:provider/provider.dart';
@@ -24,14 +21,7 @@ class ProfilePageFavBoardGamesEdit extends StatefulWidget {
 
 class _ProfilePageFavBoardGamesEditState
     extends State<ProfilePageFavBoardGamesEdit> {
-  final UserBioEdit _userBioEdit = UserBioEdit();
-
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  late UserProvider _userProvider;
-
-  final _bioFormKey = GlobalKey<FormState>();
-  bool _isProcessing = false;
 
   final List<FavGenreItem> itemList = [
     FavGenreItem(
@@ -70,13 +60,6 @@ class _ProfilePageFavBoardGamesEditState
         7,
         false)
   ];
-
-  @override
-  void initState() {
-    _userProvider = Provider.of<UserProvider>(context, listen: false);
-
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {

@@ -58,11 +58,6 @@ class _ProfilePageBgBioEditState extends State<ProfilePageBgBioEdit> {
                             SliverList(
                               delegate: SliverChildListDelegate([
                                 bioEditForm(context, userSnapshot.data!),
-                                // tripDetails(),
-                                // CalculatorWidget(trip: widget.trip),
-                                // totalBudgetCard(),
-                                // daysOutCard(),
-                                // notesCard(context),
                                 Container(
                                   height: 200,
                                 )

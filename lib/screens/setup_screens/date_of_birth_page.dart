@@ -1,18 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
-import 'package:flutter_demo_01/components/widgets/loading_overlay.dart';
 
 import 'package:flutter_demo_01/db/remote/response.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/model/user_registration.dart';
-import 'package:flutter_demo_01/navigation/bottom_navigation_bar.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/screens/setup_screens/gender_page.dart';
 import 'package:flutter_demo_01/utils/validator.dart';
 import 'package:provider/provider.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:flutter_demo_01/utils/utils.dart';
 
 class DateOfBirthPage extends StatefulWidget {
   static const String id = 'date_of_birth_page';
@@ -109,7 +106,6 @@ class DateOfBirthPageState extends State<DateOfBirthPage> {
                                                   print(
                                                       "LOG $isDateOfBirthValid");
                                                   if (isDateOfBirthValid) {
-                                                    // TODO Convert date of birth tot epochTime something
                                                     int birthDate = _dateOfBirth
                                                         .millisecondsSinceEpoch;
 

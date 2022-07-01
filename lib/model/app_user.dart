@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_demo_01/api/recommend_games_api.dart';
-import 'package:geoflutterfire/geoflutterfire.dart';
 
 class AppUser {
   late String id;

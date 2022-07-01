@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/db/entity/UserQuery.dart';
 import 'package:flutter_demo_01/model/bg_mechanic.dart';
-import 'package:flutter_demo_01/model/bg_theme.dart';
 import 'package:intl/intl.dart';
 
 class Utils {
@@ -345,8 +344,6 @@ String convertToAge(int epochMs) {
   int diff = DateTime.now().year - date.year;
 
   if ((currentTimeMs - epochMs) >= oneDayInMs) {
-    print("LOG DIFFUS year $diff");
-
     return diff.toString();
     // return '${DateFormat.yMd().format(date)}  ${DateFormat.jm().format(date)}';
   } else {

@@ -21,7 +21,6 @@ import 'package:flutter_demo_01/utils/fire_auth.dart';
 import 'package:flutter_demo_01/utils/shared_preferences_utils.dart';
 import 'package:flutter_demo_01/utils/utils.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:geoflutterfire/geoflutterfire.dart';
 
 class UserProvider extends ChangeNotifier {
   final FireAuth _authSource = FireAuth();
@@ -671,7 +670,6 @@ class UserProvider extends ChangeNotifier {
         localFilePath, _user.id, imageNumber);
     isLoading = false;
     if (response is Success<String>) {
-      // TODO Change to list Array
       _user.profilePhotoPaths[imageNumber] = response.value;
 
       _databaseSource.updateUser(_user);
@@ -688,8 +686,6 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
     return response;
   }
-
-  /* TODO User Setup */
 
   Future<Response> updateFirstNameAndBggUsername(
       AppUser userSnapshot,
@@ -792,7 +788,6 @@ class UserProvider extends ChangeNotifier {
 
   /* END User Setup */
 
-// TODO BACKUP updateUserBasicInfo
   Future<Response> updateUserBasicInfo(
       AppUser userSnapshot,
       UserProfileEdit userProfile,
@@ -1063,7 +1058,7 @@ class UserProvider extends ChangeNotifier {
         abstractGames: abstractGames,
         warGames: warGames);
 
-    print("gameGenre ${boardGameGenre}");
+    print("gameGenre $boardGameGenre");
 
     switch (boardGameGenre) {
       case "family games":
@@ -1077,25 +1072,25 @@ class UserProvider extends ChangeNotifier {
         break;
 
       case "party games":
-        print("whole str ${boardGameGenre}");
+        print("whole str $boardGameGenre");
         updateFavBoardGames.partyGames = _returnUpdatedGenreBoardGames(
             partyGames, boardGameRank, boardGameData);
         break;
 
       case "abstracts":
-        print("whole str ${boardGameGenre}");
+        print("whole str $boardGameGenre");
         updateFavBoardGames.abstractGames = _returnUpdatedGenreBoardGames(
             abstractGames, boardGameRank, boardGameData);
         break;
       // https://recommend.games/api/games/?game_type=4666&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1
       case "thematic":
-        print("whole str ${boardGameGenre}");
+        print("whole str $boardGameGenre");
         updateFavBoardGames.thematicGames = _returnUpdatedGenreBoardGames(
             thematicGames, boardGameRank, boardGameData);
         break;
 
       case "strategy":
-        print("whole str ${boardGameGenre}");
+        print("whole str $boardGameGenre");
         updateFavBoardGames.strategyGames = _returnUpdatedGenreBoardGames(
             strategyGames, boardGameRank, boardGameData);
         break;
@@ -1103,13 +1098,13 @@ class UserProvider extends ChangeNotifier {
       case "wargames":
         updateFavBoardGames.warGames = _returnUpdatedGenreBoardGames(
             warGames, boardGameRank, boardGameData);
-        print("whole str ${boardGameGenre}");
+        print("whole str $boardGameGenre");
         break;
 
       // https://recommend.games/api/games/?game_type=4664&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1
 
       default:
-        print("whole str ${boardGameGenre}");
+        print("whole str $boardGameGenre");
         break;
     }
 

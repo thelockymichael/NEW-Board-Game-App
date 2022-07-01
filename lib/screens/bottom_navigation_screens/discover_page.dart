@@ -1,23 +1,17 @@
 // ignore_for_file: prefer_function_declarations_over_variables
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/api/recommend_games_api.dart';
 import 'package:flutter_demo_01/components/discover/discover_card.dart';
 import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
 import 'package:flutter_demo_01/db/entity/UserQuery.dart';
-import 'package:flutter_demo_01/db/entity/chat.dart';
-import 'package:flutter_demo_01/db/entity/match.dart';
 import 'package:flutter_demo_01/db/entity/swipe.dart';
 import 'package:flutter_demo_01/db/remote/firebase_database_source.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
-import 'package:flutter_demo_01/model/bg_mechanic.dart';
 import 'package:flutter_demo_01/my_flutter_app_icons.dart';
 import 'package:flutter_demo_01/provider/card_provider.dart';
-import 'package:flutter_demo_01/screens/matched_screen.dart';
 import 'package:flutter_demo_01/utils/shared_preferences_utils.dart';
 import 'package:flutter_demo_01/utils/utils.dart';
-import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:provider/provider.dart';
 
@@ -417,8 +411,6 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
   }
 
   Future<List<AppUser>?> loadUsers(List<UserQuery> userQuery) async {
-    print("LOK");
-
     String? id = await SharedPreferencesUtil.getUserId();
 
     if (id != null) {
@@ -447,7 +439,6 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
       print("CVB MAX: $defaultMaxAgeValue");
 
       // 1. Age Range
-      // TODO IMPORANT !!! 29.6.22
       // _userList.removeWhere(((element) =>
       //     element.age < defaultMinAgeValue ||
       //     element.age > defaultMaxAgeValue));
@@ -501,21 +492,6 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
       }
       // END 4. Languages
 
-      // // 5. Languages
-      // if (defaultLanguages.isNotEmpty) {
-      //   for (var i = 0; i < _userList.length; i++) {
-      //     for (var j = 0; j < defaultLanguages.length; j++) {
-      //       bool doesExist =
-      //           _userList[i].languages.contains(defaultLanguages[j]);
-
-      //       if (doesExist == false) {
-      //         _usersToRemove.add(_userList[i]);
-      //       }
-      //     }
-      //   }
-      // }
-      // // END 5. Languages
-
       _usersToRemove.forEach((element) {
         _userList.remove(element);
       });
@@ -560,16 +536,6 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
             int selectedMinAge = defaultMinAgeValue;
             int selectedMaxAge = defaultMaxAgeValue;
             /* 2. END Select Age Range */
-
-            /* 3. Select Bg Mechanics */
-            List<String> selectedMechanics = defaultMechanics;
-
-            /* END Bg Mechanics END */
-
-            /* 3. Select Bg Themes */
-            List<String> selectedThemes = defaultThemes;
-
-            /* END Bg Themes END */
 
             return Padding(
                 padding:

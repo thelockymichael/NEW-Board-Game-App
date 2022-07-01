@@ -77,7 +77,6 @@ class _DiscoverCard extends State<DiscoverCard> {
 
   Widget buildButtons() {
     final provider = Provider.of<CardProvider>(context);
-    final users = provider.users;
     final status = provider.getStatus();
     final isLike = status == CardStatus.like;
     final isDislike = status == CardStatus.dislike;

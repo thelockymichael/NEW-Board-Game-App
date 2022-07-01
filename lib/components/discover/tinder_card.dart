@@ -47,7 +47,7 @@ class _TinderCardState extends State<TinderCard> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       final size = MediaQuery.of(context).size;
 
       final provider = Provider.of<CardProvider>(context, listen: false);

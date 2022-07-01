@@ -1,21 +1,14 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
-import 'package:flutter_demo_01/components/widgets/loading_overlay.dart';
 import 'package:flutter_demo_01/components/widgets/rounded_icon_button.dart';
 
 import 'package:flutter_demo_01/db/remote/response.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
-import 'package:flutter_demo_01/model/user_registration.dart';
-import 'package:flutter_demo_01/navigation/bottom_navigation_bar.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/screens/setup_screens/enable_location_page.dart';
-import 'package:flutter_demo_01/utils/constants.dart';
 import 'package:flutter_demo_01/utils/validator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:loader_overlay/loader_overlay.dart';
-import 'package:flutter_demo_01/utils/utils.dart';
 
 class AddPhotosPage extends StatefulWidget {
   static const String id = 'add_photos_page';
@@ -32,12 +25,7 @@ class AddPhotosPage extends StatefulWidget {
 }
 
 class AddPhotosPageState extends State<AddPhotosPage> {
-  final UserRegistration _userRegistration = UserRegistration();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  // END
-
-  late UserProvider _userProvider;
 
   /* 1. Gender Select */
   // 1. Default Selected Gender
@@ -46,15 +34,12 @@ class AddPhotosPageState extends State<AddPhotosPage> {
 
   bool errorMessageEnabled = false;
 
-  // TODO Check if photo(s) already exist(s)
-
   // String selectedGender = defaultSelectedGender;
 
-  /** 1. END Gender Select END */
+  /// 1. END Gender Select END */
   @override
   void initState() {
     super.initState();
-    _userProvider = Provider.of<UserProvider>(context, listen: false);
 
     selectedPhotos = widget.profilePhotoPaths;
 
@@ -191,8 +176,6 @@ class AddPhotosPageState extends State<AddPhotosPage> {
                                                   if (isValidGender) {
                                                     print(
                                                         "LOG photos are valid");
-
-                                                    // TODO if selectedPhotos are not empty
 
                                                     Navigator.of(context)
                                                         .push(PageRouteBuilder(

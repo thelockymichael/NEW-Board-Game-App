@@ -9,7 +9,6 @@ import 'package:flutter_demo_01/db/remote/firebase_database_source.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/screens/matched_screen.dart';
 import 'package:flutter_demo_01/utils/utils.dart';
-import 'package:uuid/uuid.dart';
 
 enum CardStatus { like, dislike, superLike }
 

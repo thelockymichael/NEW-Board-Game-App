@@ -1,25 +1,14 @@
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
-import 'package:flutter_demo_01/components/widgets/loading_overlay.dart';
-import 'package:flutter_demo_01/components/widgets/rounded_icon_button.dart';
-import 'package:flutter_demo_01/db/remote/firebase_database_source.dart';
 
 import 'package:flutter_demo_01/db/remote/response.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
-import 'package:flutter_demo_01/model/user_registration.dart';
 import 'package:flutter_demo_01/navigation/bottom_navigation_bar.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
-import 'package:flutter_demo_01/utils/constants.dart';
-import 'package:flutter_demo_01/utils/shared_preferences_utils.dart';
-import 'package:flutter_demo_01/utils/validator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:flutter_demo_01/utils/utils.dart';
 
 class EnableLocationPage extends StatefulWidget {
   static const String id = 'enable_location_page';
@@ -33,7 +22,6 @@ class EnableLocationPage extends StatefulWidget {
 }
 
 class EnableLocationPageState extends State<EnableLocationPage> {
-  final UserRegistration _userRegistration = UserRegistration();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   // END
@@ -48,14 +36,11 @@ class EnableLocationPageState extends State<EnableLocationPage> {
 
   bool errorMessageEnabled = false;
 
-  // TODO Check if photo(s) already exist(s)
-
   String? _currentLocation;
   Position? _currentGeoLocation;
 
-  /** 1. END Gender Select END */
+  /// 1. END Gender Select END */
 
-  FirebaseDatabaseSource _databaseSource = FirebaseDatabaseSource();
   @override
   void initState() {
     super.initState();
@@ -180,16 +165,6 @@ class EnableLocationPageState extends State<EnableLocationPage> {
                                         Expanded(
                                           child: ElevatedButton(
                                             onPressed: () async {
-                                              // TODO when user presses button
-                                              // TODO => get currentLocation
-                                              // TODO 1. get locality
-                                              // TODO 2. get lat, long,
-
-                                              // TODO 1. update currentLocation
-                                              // TODO 2. update currentGeoLocation
-
-// TODO LoadingSpinner
-
                                               context.loaderOverlay.show(
                                                   widget:
                                                       (CreateLocationOverlay()));

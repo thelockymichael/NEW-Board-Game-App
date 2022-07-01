@@ -4,8 +4,6 @@ import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dar
 import 'package:flutter_demo_01/components/widgets/rounded_icon_button.dart';
 import 'package:flutter_demo_01/db/remote/response.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
-import 'package:flutter_demo_01/model/bg_mechanic.dart';
-import 'package:flutter_demo_01/model/bg_theme.dart';
 import 'package:flutter_demo_01/model/user_profile_edit.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/profile_page_bg_genre_edit.dart';
@@ -13,8 +11,6 @@ import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/p
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/profile_page_fav_board_games_edit.dart';
 import 'package:flutter_demo_01/utils/constants.dart';
 import 'package:flutter_demo_01/utils/validator.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import "package:flutter_demo_01/utils/utils.dart";
@@ -57,7 +53,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
   ];
 
   String? _currentAddress;
-  Position? _currentPosition;
+  // Position? _currentPosition;
 
 // 3. Select Date of Birth
   DateTime defaultSelectedDate = DateTime.now();
@@ -75,80 +71,79 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
 
 // END Select Date of Birth
 
-  void _getCurrentPosition() async {
-    final hasPermission = await _handleLocationPermission();
+  // void _getCurrentPosition() async {
+  //   final hasPermission = await _handleLocationPermission();
 
-    if (!hasPermission) return;
+  //   if (!hasPermission) return;
 
-    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
-        .then((Position position) {
-      setState(() => _currentPosition = position);
+  //   await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+  //       .then((Position position) {
+  //     setState(() => _currentPosition = position);
 
-      _getAddressFromLatLng(_currentPosition!);
-    }).catchError((e) {
-      debugPrint(e);
-    });
-  }
+  //     _getAddressFromLatLng(_currentPosition!);
+  //   }).catchError((e) {
+  //     debugPrint(e);
+  //   });
+  // }
 
-  Future<void> _getAddressFromLatLng(Position position) async {
-    AppUser userSnapshot = await _userProvider.user;
+  // Future<void> _getAddressFromLatLng(Position position) async {
+  //   AppUser userSnapshot = await _userProvider.user;
 
-    print("SDF ${userSnapshot.name}");
-    await placemarkFromCoordinates(
-            _currentPosition!.latitude, _currentPosition!.longitude,
-            localeIdentifier: "fi")
-        .then((List<Placemark> placemarks) {
-      Placemark place = placemarks[0];
+  //   print("SDF ${userSnapshot.name}");
+  //   await placemarkFromCoordinates(
+  //           _currentPosition!.latitude, _currentPosition!.longitude,
+  //           localeIdentifier: "fi")
+  //       .then((List<Placemark> placemarks) {
+  //     Placemark place = placemarks[0];
 
-      setState(() {
-        _currentAddress = '${place.locality}';
-        _userProvider.updateCurrentLocationAddress(
-            userSnapshot, _currentAddress!, _scaffoldKey);
-      });
-    }).catchError((e) {
-      debugPrint(e);
-    });
-  }
+  //     setState(() {
+  //       _currentAddress = '${place.locality}';
+  //       _userProvider.updateCurrentLocationAddress(
+  //           userSnapshot, _currentAddress!, _scaffoldKey);
+  //     });
+  //   }).catchError((e) {
+  //     debugPrint(e);
+  //   });
+  // }
 
-  Future<bool> _handleLocationPermission() async {
-    bool serviceEnabled;
-    LocationPermission permission;
+  // Future<bool> _handleLocationPermission() async {
+  //   bool serviceEnabled;
+  //   LocationPermission permission;
 
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
 
-    if (!serviceEnabled) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content:
-            Text("Location services are disabled. Please enable the services"),
-      ));
-      return false;
-    }
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Location permissions are denied")));
-        return false;
-      }
-    }
+  //   if (!serviceEnabled) {
+  //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+  //       content:
+  //           Text("Location services are disabled. Please enable the services"),
+  //     ));
+  //     return false;
+  //   }
+  //   permission = await Geolocator.checkPermission();
+  //   if (permission == LocationPermission.denied) {
+  //     permission = await Geolocator.requestPermission();
+  //     if (permission == LocationPermission.denied) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //           const SnackBar(content: Text("Location permissions are denied")));
+  //       return false;
+  //     }
+  //   }
 
-    if (permission == LocationPermission.deniedForever) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text(
-            "Location permissions are permanently denied, we cannot request permissions."),
-      ));
-      return false;
-    }
+  //   if (permission == LocationPermission.deniedForever) {
+  //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+  //       content: Text(
+  //           "Location permissions are permanently denied, we cannot request permissions."),
+  //     ));
+  //     return false;
+  //   }
 
-    return true;
-  }
+  //   return true;
+  // }
 
   @override
   void initState() {
     _userProvider = Provider.of<UserProvider>(context, listen: false);
 
-// TODO Must fix this, 1.7.2022
     // _getCurrentPosition();
 
     super.initState();
@@ -768,7 +763,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
         bool b = false;
 
         return StatefulBuilder(builder: (BuildContext context, setState) {
-          print("BOOL ${b}");
+          print("BOOL $b");
 
           return DefaultTabController(
             length: 2,
@@ -876,7 +871,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                   print(
                                       "bgThemesSelectedList, ${bgThemesSelectedList.length}");
                                 },
-                                // leading: FlagWidget(code: BgMechanic),
                                 title: Text(
                                   bgTheme,
                                   style: style,
@@ -974,7 +968,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                     Expanded(
                         child: ListView(
                             children: availableGenders.map((gender) {
-                      // final isSelected = selectedGender.contains(gender);
                       final isSelected =
                           this.defaultSelectedGender.contains(gender);
 
@@ -994,8 +987,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                         onTap: () {
                           Navigator.of(context).pop();
                           this.defaultSelectedGender.clear();
-                          // final isSelected =
-                          print("LOG selected gender ${gender}");
+                          print("LOG selected gender $gender");
 
                           final isSelected =
                               this.defaultSelectedGender.contains(gender);
@@ -1012,26 +1004,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                 text:
                                     this.defaultSelectedGender[0].capitalize());
                           });
-                          print(
-                              "LOG part 2. defaultSelectedGender $defaultSelectedGender");
-
-                          // selectedGender.clear();
-
-                          // final isSelected = selectedGender.contains(gender);
-
-                          // setModalState(() => isSelected
-                          //     ? this.defaultSelectedGender.remove(gender)
-                          //     : this.defaultSelectedGender.add(gender));
-
-                          // print("selectedGender, ${selectedGender[0]}");
-
-                          // _filterSwipableUsersModalBottomSheet(
-                          //     context, filterMenuController);
-
-                          /*
-                          _filterSwipableUsersModalBottomSheet(
-                          context, selectedGender[0], controller);
-                        */
                         },
                         title: Text(
                           gender.capitalize(),
@@ -1071,14 +1043,8 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
         TextEditingController(text: defaultSelectedGender[0].capitalize());
     // END Select Gender
 
-    final _currentLocationTextController =
-        TextEditingController(text: userSnapshot.currentLocation);
-
     final _focusName = FocusNode();
     final _focusBggName = FocusNode();
-    final _focusBirthday = FocusNode();
-    final _focusGender = FocusNode();
-    final _focusCurrentLocation = FocusNode();
 
     showModalBottomSheet(
         isScrollControlled: true,
@@ -1185,25 +1151,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                           );
                         },
                       ),
-
-                      // TextFormField(
-                      //   controller: _genderTextController,
-                      //   focusNode: _focusGender,
-                      //   validator: (value) => Validator.validateName(
-                      //     name: value,
-                      //   ),
-                      //   decoration: InputDecoration(
-                      //     labelText: "Gender",
-                      //     hintText: "Gender",
-                      //     errorBorder: UnderlineInputBorder(
-                      //       borderRadius: BorderRadius.circular(6.0),
-                      //       borderSide: const BorderSide(
-                      //         color: Colors.red,
-                      //       ),
-                      //     ),
-                      //   ),
-                      //   keyboardType: TextInputType.name,
-                      // ),
                       TextFormField(
                         readOnly: true,
                         enabled: false,
@@ -1246,7 +1193,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                       _userProfileEdit.gender =
                                           _genderTextController.text;
 
-// Date of birth
+                                      // Date of birth
                                       _userProfileEdit.dateOfBirth =
                                           convertToEpoch(defaultSelectedDate);
 

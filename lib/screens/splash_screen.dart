@@ -33,8 +33,6 @@ class _SplashScreenState extends State<SplashScreen> {
     // App does NOT have userId preference
     if (userId != null) {
       if (Utils.testingNewRegistration) {
-        // TODO Fetch setupIsCompleted status from Firestore
-
         var _snapshotUser = await _databaseSource.getUser(userId);
 
         AppUser _user = AppUser.fromSnapshot(_snapshotUser);

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_demo_01/components/widgets/loading_overlay.dart';
 
 import 'package:flutter_demo_01/db/remote/response.dart';
 import 'package:flutter_demo_01/model/user_registration.dart';
-import 'package:flutter_demo_01/navigation/bottom_navigation_bar.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/screens/setup_screens/first_name_bgg_page.dart';
 import 'package:flutter_demo_01/utils/validator.dart';

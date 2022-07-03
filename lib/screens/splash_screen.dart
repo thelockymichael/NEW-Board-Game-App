@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
 import 'package:flutter_demo_01/db/remote/firebase_database_source.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/navigation/bottom_navigation_bar.dart';
@@ -49,54 +51,20 @@ class _SplashScreenState extends State<SplashScreen> {
         Navigator.pushAndRemoveUntil(context,
             MaterialPageRoute(builder: (_) => LoginPage()), (route) => false);
       }
-      // User? user = FirebaseAuth.instance.currentUser;
-
-      // user.
-
-      // if (user == null) {
-      //   print("LOG user is null");
-      //   Navigator.pushAndRemoveUntil(context,
-      //       MaterialPageRoute(builder: (_) => LoginPage()), (route) => false);
-      // } else {
-      //   Navigator.pushAndRemoveUntil(
-      //       context,
-      //       MaterialPageRoute(builder: (_) => MainNavigation()),
-      //       (route) => false);
-      // }
     });
-    // String? userId = await SharedPreferencesUtil.getUserId();
-
-    // print("LOG splash $userId");
-    // Navigator.pop(context);
-    // // App does NOT have userId preference
-    // if (userId != null) {
-    //   if (Utils.testingNewRegistration) {
-    // await _databaseSource.getUser(userId).then((value) {
-    //   AppUser _user = AppUser.fromSnapshot(value);
-
-    //   print("LOG IS SETUP COMPLETED ??? ${_user.setupIsCompleted}");
-
-    //   if (_user.setupIsCompleted) {
-    //     Navigator.pushNamed(context, MainNavigation.id);
-    //   } else {
-    //     Navigator.pushNamed(context, FirstNameBggPage.id);
-    //   }
-    // }).catchError((onError) {});
-    //   }
-    // } else {
-    //   Navigator.pushNamed(context, LoginPage.id);
-    // }
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        body: Padding(
-          padding: kDefaultPadding,
-          child: Container(),
-        ),
-      ),
-    );
+        child: Scaffold(
+            body: Padding(
+                padding: kDefaultPadding,
+                child: Center(
+                  child: Text(
+                    "Welcome to Lautapelisovellus",
+                    style: TextStyle(fontSize: 32),
+                  ),
+                ))));
   }
 }

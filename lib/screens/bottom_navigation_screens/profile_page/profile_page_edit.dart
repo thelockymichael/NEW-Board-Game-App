@@ -1301,9 +1301,11 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                           context,
                           MaterialPageRoute(
                               builder: (context) => FullScreenImageViewer(
-                                  user.profilePhotoPaths[0],
-                                  0,
-                                  _userProvider)));
+                                    url: user.profilePhotoPaths[0],
+                                    photoNumber: 0,
+                                    userProvider: _userProvider,
+                                    profilePhotoPaths: user.profilePhotoPaths,
+                                  )));
                     }
                   },
                   child: Stack(
@@ -1319,64 +1321,219 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                     image: NetworkImage(
                                         user.profilePhotoPaths[0]))),
                       ),
-                      Positioned(
-                          left: 0.8,
-                          right: 1.0,
-                          bottom: 1.0,
-                          child: RoundedIconButton(
-                            onPressed: () async {},
-                            iconData: Icons.edit,
-                            iconSize: 18,
-                            buttonColor: kAccentColor,
-                          ))
                     ],
                   ),
                 )),
             StaggeredGridTile.count(
-              crossAxisCellCount: 1,
-              mainAxisCellCount: 1,
-              child: Container(
-                width: 200,
-                height: 200,
-                color: Colors.green,
-              ),
-            ),
+                crossAxisCellCount: 1,
+                mainAxisCellCount: 1,
+                child: GestureDetector(
+                  onTap: () async {
+                    bool noImage = user.profilePhotoPaths[1].isEmpty;
+
+                    if (noImage) {
+                      final pickedFile = await ImagePicker()
+                          .pickImage(source: ImageSource.gallery);
+                      if (pickedFile != null) {
+                        firebaseProvider.updateUserProfilePhoto(
+                            pickedFile.path, _scaffoldKey, 1);
+                      }
+                    } else {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FullScreenImageViewer(
+                                    url: user.profilePhotoPaths[1],
+                                    photoNumber: 1,
+                                    userProvider: _userProvider,
+                                    profilePhotoPaths: user.profilePhotoPaths,
+                                  )));
+                    }
+                  },
+                  child: Stack(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.blue[200],
+                            image: user.profilePhotoPaths[1].isEmpty
+                                ? null
+                                : DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(
+                                        user.profilePhotoPaths[1]))),
+                      ),
+                    ],
+                  ),
+                )),
             StaggeredGridTile.count(
-              crossAxisCellCount: 1,
-              mainAxisCellCount: 1,
-              child: Container(
-                width: 200,
-                height: 200,
-                color: Colors.red,
-              ),
-            ),
+                crossAxisCellCount: 1,
+                mainAxisCellCount: 1,
+                child: GestureDetector(
+                  onTap: () async {
+                    bool noImage = user.profilePhotoPaths[2].isEmpty;
+
+                    if (noImage) {
+                      final pickedFile = await ImagePicker()
+                          .pickImage(source: ImageSource.gallery);
+                      if (pickedFile != null) {
+                        firebaseProvider.updateUserProfilePhoto(
+                            pickedFile.path, _scaffoldKey, 2);
+                      }
+                    } else {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FullScreenImageViewer(
+                                    url: user.profilePhotoPaths[2],
+                                    photoNumber: 2,
+                                    userProvider: _userProvider,
+                                    profilePhotoPaths: user.profilePhotoPaths,
+                                  )));
+                    }
+                  },
+                  child: Stack(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.blue[200],
+                            image: user.profilePhotoPaths[2].isEmpty
+                                ? null
+                                : DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(
+                                        user.profilePhotoPaths[2]))),
+                      ),
+                    ],
+                  ),
+                )),
             StaggeredGridTile.count(
-              crossAxisCellCount: 1,
-              mainAxisCellCount: 1,
-              child: Container(
-                width: 200,
-                height: 200,
-                color: Colors.pink,
-              ),
-            ),
+                crossAxisCellCount: 1,
+                mainAxisCellCount: 1,
+                child: GestureDetector(
+                  onTap: () async {
+                    bool noImage = user.profilePhotoPaths[3].isEmpty;
+
+                    if (noImage) {
+                      final pickedFile = await ImagePicker()
+                          .pickImage(source: ImageSource.gallery);
+                      if (pickedFile != null) {
+                        firebaseProvider.updateUserProfilePhoto(
+                            pickedFile.path, _scaffoldKey, 3);
+                      }
+                    } else {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FullScreenImageViewer(
+                                    url: user.profilePhotoPaths[3],
+                                    photoNumber: 3,
+                                    userProvider: _userProvider,
+                                    profilePhotoPaths: user.profilePhotoPaths,
+                                  )));
+                    }
+                  },
+                  child: Stack(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.blue[200],
+                            image: user.profilePhotoPaths[3].isEmpty
+                                ? null
+                                : DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(
+                                        user.profilePhotoPaths[3]))),
+                      ),
+                    ],
+                  ),
+                )),
             StaggeredGridTile.count(
-              crossAxisCellCount: 1,
-              mainAxisCellCount: 1,
-              child: Container(
-                width: 200,
-                height: 200,
-                color: Colors.yellow,
-              ),
-            ),
+                crossAxisCellCount: 1,
+                mainAxisCellCount: 1,
+                child: GestureDetector(
+                  onTap: () async {
+                    bool noImage = user.profilePhotoPaths[4].isEmpty;
+
+                    if (noImage) {
+                      final pickedFile = await ImagePicker()
+                          .pickImage(source: ImageSource.gallery);
+                      if (pickedFile != null) {
+                        firebaseProvider.updateUserProfilePhoto(
+                            pickedFile.path, _scaffoldKey, 4);
+                      }
+                    } else {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FullScreenImageViewer(
+                                    url: user.profilePhotoPaths[4],
+                                    photoNumber: 4,
+                                    userProvider: _userProvider,
+                                    profilePhotoPaths: user.profilePhotoPaths,
+                                  )));
+                    }
+                  },
+                  child: Stack(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.blue[200],
+                            image: user.profilePhotoPaths[4].isEmpty
+                                ? null
+                                : DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(
+                                        user.profilePhotoPaths[4]))),
+                      ),
+                    ],
+                  ),
+                )),
             StaggeredGridTile.count(
-              crossAxisCellCount: 1,
-              mainAxisCellCount: 1,
-              child: Container(
-                width: 200,
-                height: 200,
-                color: Colors.white,
-              ),
-            ),
+                crossAxisCellCount: 1,
+                mainAxisCellCount: 1,
+                child: GestureDetector(
+                  onTap: () async {
+                    bool noImage = user.profilePhotoPaths[5].isEmpty;
+
+                    if (noImage) {
+                      final pickedFile = await ImagePicker()
+                          .pickImage(source: ImageSource.gallery);
+                      if (pickedFile != null) {
+                        firebaseProvider.updateUserProfilePhoto(
+                            pickedFile.path, _scaffoldKey, 5);
+                      }
+                    } else {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FullScreenImageViewer(
+                                    url: user.profilePhotoPaths[5],
+                                    photoNumber: 5,
+                                    userProvider: _userProvider,
+                                    profilePhotoPaths: user.profilePhotoPaths,
+                                  )));
+                    }
+                  },
+                  child: Stack(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.blue[200],
+                            image: user.profilePhotoPaths[5].isEmpty
+                                ? null
+                                : DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(
+                                        user.profilePhotoPaths[5]))),
+                      ),
+                    ],
+                  ),
+                )),
           ]))
     ]);
 

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-class RecommendedGamesApi {
+class RecommendGames {
 // http://recommend.games/api/games/?ordering=-rec_rating,-bayes_rating,-avg_rating&page=1
 
   final String _url = "http://recommend.games/api/games/";

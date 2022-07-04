@@ -150,6 +150,8 @@ class _ProfilePageBgGenreEditState extends State<ProfilePageBgGenreEdit> {
                       userSnapshot!, selectedList, errorScaffoldKey);
 
                   widget.notifyParent();
+
+                  Navigator.of(context).pop();
                 },
                 child: const Padding(
                   padding: EdgeInsets.all(8.0),

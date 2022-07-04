@@ -112,14 +112,6 @@ class _TinderCardState extends State<TinderCard> {
                         image: NetworkImage(widget.user!.profilePhotoPaths[0]),
                         fit: BoxFit.cover,
                         alignment: const Alignment(-0.3, 0))),
-                child: Container(
-                  decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                          colors: [Colors.transparent, Colors.black],
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
-                          stops: [0.7, 1])),
-                ),
               ),
 
               // Board Game Geek Username
@@ -142,10 +134,68 @@ class _TinderCardState extends State<TinderCard> {
             ],
           ),
         ),
-        Padding(
+        // Container(
+        //   child:  ,
+        //   decoration: const BoxDecoration(
+        //       gradient: LinearGradient(
+        //           colors: [Colors.transparent, Colors.black],
+        //           begin: Alignment.bottomCenter,
+        //           end: Alignment.topCenter,
+        //           stops: [0.7, 1])),
+        // ),
+
+        // Padding(
+        //     padding: const EdgeInsets.all(20),
+        // child:
+
+        IgnorePointer(
+            child: Container(
+          child: Padding(
             padding: const EdgeInsets.all(20),
-            child: Align(child: Column(children: [buildName()]))),
+            child: Align(child: Column(children: [buildName()])),
+          ),
+          decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                  colors: [Colors.transparent, Colors.black87],
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  stops: [0.85, 1.0])),
+        ))
+
+        // )
+        // Container(
+        //   decoration: const BoxDecoration(
+        //       gradient: LinearGradient(
+        //           colors: [Colors.transparent, Colors.black],
+        //           begin: Alignment.bottomCenter,
+        //           end: Alignment.topCenter,
+        //           stops: [0.7, 1])),
+        //   child: Center(
+        //       child: Text(
+        //     "Hello Gradient!",
+        //     style: TextStyle(
+        //         fontSize: 48.0,
+        //         fontWeight: FontWeight.bold,
+        //         color: Colors.white),
+        //   )),
+        // ),
       ]));
+  /**Container(
+                alignment: Alignment.center,
+                height: MediaQuery.of(context).size.height,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: NetworkImage(widget.user!.profilePhotoPaths[0]),
+                        fit: BoxFit.cover,
+                        alignment: const Alignment(-0.3, 0))),
+                // child: Container(
+                //   decoration: const BoxDecoration(
+                //       gradient: LinearGradient(
+                //           colors: [Colors.transparent, Colors.black],
+                //           begin: Alignment.bottomCenter,
+                //           end: Alignment.topCenter,
+                //           stops: [0.7, 1])),
+                // ),),*/
 
   Widget buildBgMechanics() {
     final favBgMechanics = widget.user!.favBgMechanics;
@@ -279,7 +329,7 @@ class _TinderCardState extends State<TinderCard> {
     bool isDexGamesEmpty = favBoardGames.dexterityGames
         .every((element) => element.boardGame.name.isEmpty);
 
-    bool isThemGamesEmpty = favBoardGames.abstractGames
+    bool isThemGamesEmpty = favBoardGames.thematicGames
         .every((element) => element.boardGame.name.isEmpty);
 
     bool isStratGamesEmpty = favBoardGames.strategyGames

@@ -74,7 +74,7 @@ class _ProfilePageFavTopBoardGamesEditState
     super.initState();
     _userProvider = Provider.of<UserProvider>(context, listen: false);
 
-    boardGames = RecommendedGamesApi().getBoardGamesData(widget.gameGenre,
+    boardGames = RecommendGames().getBoardGamesData(widget.gameGenre,
         '&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1');
 
     defaultBoardGames = boardGames;
@@ -269,9 +269,9 @@ class _ProfilePageFavTopBoardGamesEditState
                                 if (searchStr.isNotEmpty) {
                                   print("STR jotain $searchStr");
                                   setState(() {
-                                    boardGames = RecommendedGamesApi()
-                                        .getBoardGamesData(widget.gameGenre,
-                                            '&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1&search=$searchStr');
+                                    boardGames = RecommendGames().getBoardGamesData(
+                                        widget.gameGenre,
+                                        '&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1&search=$searchStr');
                                   });
                                 }
 
@@ -299,6 +299,19 @@ class _ProfilePageFavTopBoardGamesEditState
                                 });
                               },
                               hintText: 'Search for a board game',
+                            ),
+                            Row(
+                              children: [
+                                Text("Powered by ",
+                                    style: TextStyle(
+                                        color: Colors.black54,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w500)),
+                                Text("Recommend.Games API",
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w400)),
+                              ],
                             ),
                             Expanded(
                                 child: snapshot.data!.isEmpty

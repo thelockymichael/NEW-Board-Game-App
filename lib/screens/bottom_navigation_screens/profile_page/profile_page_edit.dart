@@ -177,7 +177,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                             ),
                             SliverList(
                                 delegate: SliverChildListDelegate([
-                              createProfileImages(
+                              buildProfileImages(
                                   userSnapshot.data!, userProvider),
                               const SizedBox(height: 40),
                               Column(
@@ -217,7 +217,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                                         alignment:
                                                             Alignment.topLeft,
                                                         child: Text(
-                                                            "${userSnapshot.data?.gender.capitalize()}, ${userSnapshot.data?.currentLocation.capitalize()}",
+                                                            "${userSnapshot.data?.gender.capitalize()}${userSnapshot.data!.currentLocation.isEmpty ? "" : ", ${userSnapshot.data!.currentLocation.capitalize()}"}",
                                                             style:
                                                                 const TextStyle(
                                                               fontSize: 20,
@@ -501,299 +501,232 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                                   ),
                                                 ),
                                               ]))),
-                                  GestureDetector(
-                                      onTap: () {
-                                        Navigator.of(context)
-                                            .push(PageRouteBuilder(
-                                          pageBuilder: (
-                                            BuildContext context,
-                                            Animation<double> animation,
-                                            Animation<double>
-                                                secondaryAnimation,
-                                          ) =>
-                                              ProfilePageFavBoardGamesEdit(
-                                                  userSnapshot:
-                                                      userSnapshot.data!),
-                                          transitionsBuilder: (
-                                            BuildContext context,
-                                            Animation<double> animation,
-                                            Animation<double>
-                                                secondaryAnimation,
-                                            Widget child,
-                                          ) =>
-                                              SlideTransition(
-                                            position: Tween<Offset>(
-                                              begin: const Offset(1, 0),
-                                              end: Offset.zero,
-                                            ).animate(animation),
-                                            child: child,
-                                          ),
-                                        ));
-                                      },
-                                      child: Container(
-                                          margin: const EdgeInsets.fromLTRB(
-                                              0, 0, 0, 12),
-                                          color: Colors.white,
-                                          width: double.infinity,
-                                          child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Padding(
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      horizontal: 20,
-                                                      vertical: 20),
-                                                  child: Column(
-                                                    children: [
-                                                      Align(
-                                                          alignment: Alignment
-                                                              .centerLeft,
-                                                          child: Text(
-                                                              "Favourite Board Games",
-                                                              style: TextStyle(
-                                                                  fontSize: 32,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold))),
-                                                      SafeArea(
-                                                          child: SizedBox(
-                                                              width: double
-                                                                  .infinity,
-                                                              height: 300,
-                                                              child: new ListView
-                                                                      .builder(
-                                                                  itemCount:
-                                                                      listHeader
-                                                                          .length,
-                                                                  itemBuilder:
-                                                                      (context,
-                                                                          index) {
-                                                                    var tempBoardGames =
-                                                                        <SelectedBoardGame>[];
+                                  buildFavouriteBoardGames(
+                                      userSnapshot.data!, userProvider)
+                                  // GestureDetector(
+                                  //     onTap: () {
+                                  //       Navigator.of(context)
+                                  //           .push(PageRouteBuilder(
+                                  //         pageBuilder: (
+                                  //           BuildContext context,
+                                  //           Animation<double> animation,
+                                  //           Animation<double>
+                                  //               secondaryAnimation,
+                                  //         ) =>
+                                  //             ProfilePageFavBoardGamesEdit(
+                                  //                 userSnapshot:
+                                  //                     userSnapshot.data!),
+                                  //         transitionsBuilder: (
+                                  //           BuildContext context,
+                                  //           Animation<double> animation,
+                                  //           Animation<double>
+                                  //               secondaryAnimation,
+                                  //           Widget child,
+                                  //         ) =>
+                                  //             SlideTransition(
+                                  //           position: Tween<Offset>(
+                                  //             begin: const Offset(1, 0),
+                                  //             end: Offset.zero,
+                                  //           ).animate(animation),
+                                  //           child: child,
+                                  //         ),
+                                  //       ));
+                                  //     },
+                                  //     child: Container(
+                                  //         margin: const EdgeInsets.fromLTRB(
+                                  //             0, 0, 0, 12),
+                                  //         color: Colors.white,
+                                  //         width: double.infinity,
+                                  //         child: Column(
+                                  //             crossAxisAlignment:
+                                  //                 CrossAxisAlignment.start,
+                                  //             children: [
+                                  //               Padding(
+                                  //                 padding: const EdgeInsets
+                                  //                         .symmetric(
+                                  //                     horizontal: 20,
+                                  //                     vertical: 20),
+                                  //                 child: Column(
+                                  //                   children: [
+                                  //                     Align(
+                                  //                         alignment: Alignment
+                                  //                             .centerLeft,
+                                  //                         child: Text(
+                                  //                             "Favourite Board Games",
+                                  //                             style: TextStyle(
+                                  //                                 fontSize: 32,
+                                  //                                 fontWeight:
+                                  //                                     FontWeight
+                                  //                                         .bold))),
+                                  //                     SafeArea(
+                                  //                         child: SizedBox(
+                                  //                             width: double
+                                  //                                 .infinity,
+                                  //                             height: 300,
+                                  //                             child: new ListView
+                                  //                                     .builder(
+                                  //                                 itemCount:
+                                  //                                     listHeader
+                                  //                                         .length,
+                                  //                                 itemBuilder:
+                                  //                                     (context,
+                                  //                                         index) {
+                                  //                                   var tempBoardGames =
+                                  //                                       <SelectedBoardGame>[];
 
-                                                                    FavBoardGames
-                                                                        favBoardGames =
-                                                                        userSnapshot
-                                                                            .data!
-                                                                            .favBoardGames;
-                                                                    bool isFamGamesEmpty = favBoardGames
-                                                                        .familyGames
-                                                                        .every((element) => element
-                                                                            .boardGame
-                                                                            .name
-                                                                            .isEmpty);
+                                  //                                   switch (listHeader[
+                                  //                                       index]) {
+                                  //                                     case "Family Games":
+                                  //                                       tempBoardGames = userSnapshot
+                                  //                                           .data!
+                                  //                                           .favBoardGames
+                                  //                                           .familyGames;
+                                  //                                       break;
 
-                                                                    bool isPartyGamesEmpty = favBoardGames
-                                                                        .partyGames
-                                                                        .every((element) => element
-                                                                            .boardGame
-                                                                            .name
-                                                                            .isEmpty);
+                                  //                                     case "Dexterity Games":
+                                  //                                       tempBoardGames = userSnapshot
+                                  //                                           .data!
+                                  //                                           .favBoardGames
+                                  //                                           .dexterityGames;
+                                  //                                       break;
 
-                                                                    bool isAbstrGamesEmpty = favBoardGames
-                                                                        .abstractGames
-                                                                        .every((element) => element
-                                                                            .boardGame
-                                                                            .name
-                                                                            .isEmpty);
+                                  //                                     case "Party Games":
+                                  //                                       tempBoardGames = userSnapshot
+                                  //                                           .data!
+                                  //                                           .favBoardGames
+                                  //                                           .partyGames;
+                                  //                                       break;
 
-                                                                    bool isDexGamesEmpty = favBoardGames
-                                                                        .dexterityGames
-                                                                        .every((element) => element
-                                                                            .boardGame
-                                                                            .name
-                                                                            .isEmpty);
+                                  //                                     case "Abstracts":
+                                  //                                       tempBoardGames = userSnapshot
+                                  //                                           .data!
+                                  //                                           .favBoardGames
+                                  //                                           .abstractGames;
+                                  //                                       break;
 
-                                                                    bool isThemGamesEmpty = favBoardGames
-                                                                        .abstractGames
-                                                                        .every((element) => element
-                                                                            .boardGame
-                                                                            .name
-                                                                            .isEmpty);
+                                  //                                     case "Thematic":
+                                  //                                       tempBoardGames = userSnapshot
+                                  //                                           .data!
+                                  //                                           .favBoardGames
+                                  //                                           .thematicGames;
+                                  //                                       break;
 
-                                                                    bool isStratGamesEmpty = favBoardGames
-                                                                        .strategyGames
-                                                                        .every((element) => element
-                                                                            .boardGame
-                                                                            .name
-                                                                            .isEmpty);
+                                  //                                     case "Strategy":
+                                  //                                       tempBoardGames = userSnapshot
+                                  //                                           .data!
+                                  //                                           .favBoardGames
+                                  //                                           .strategyGames;
+                                  //                                       break;
 
-                                                                    bool isWargamesEmpty = favBoardGames
-                                                                        .warGames
-                                                                        .every((element) => element
-                                                                            .boardGame
-                                                                            .name
-                                                                            .isEmpty);
+                                  //                                     case "Wargames":
+                                  //                                       tempBoardGames = userSnapshot
+                                  //                                           .data!
+                                  //                                           .favBoardGames
+                                  //                                           .warGames;
+                                  //                                       break;
 
-                                                                    if (isFamGamesEmpty &&
-                                                                        isPartyGamesEmpty &&
-                                                                        isAbstrGamesEmpty &&
-                                                                        isDexGamesEmpty &&
-                                                                        isThemGamesEmpty &&
-                                                                        isStratGamesEmpty &&
-                                                                        isWargamesEmpty) {
-                                                                      return Container();
-                                                                    }
-
-                                                                    switch (listHeader[
-                                                                        index]) {
-                                                                      case "Family Games":
-                                                                        tempBoardGames = userSnapshot
-                                                                            .data!
-                                                                            .favBoardGames
-                                                                            .familyGames;
-                                                                        break;
-
-                                                                      case "Dexterity Games":
-                                                                        tempBoardGames = userSnapshot
-                                                                            .data!
-                                                                            .favBoardGames
-                                                                            .dexterityGames;
-                                                                        break;
-
-                                                                      case "Party Games":
-                                                                        tempBoardGames = userSnapshot
-                                                                            .data!
-                                                                            .favBoardGames
-                                                                            .partyGames;
-                                                                        break;
-
-                                                                      case "Abstracts":
-                                                                        tempBoardGames = userSnapshot
-                                                                            .data!
-                                                                            .favBoardGames
-                                                                            .abstractGames;
-                                                                        break;
-
-                                                                      case "Thematic":
-                                                                        tempBoardGames = userSnapshot
-                                                                            .data!
-                                                                            .favBoardGames
-                                                                            .thematicGames;
-                                                                        break;
-
-                                                                      case "Strategy":
-                                                                        tempBoardGames = userSnapshot
-                                                                            .data!
-                                                                            .favBoardGames
-                                                                            .strategyGames;
-                                                                        break;
-
-                                                                      case "Wargames":
-                                                                        tempBoardGames = userSnapshot
-                                                                            .data!
-                                                                            .favBoardGames
-                                                                            .warGames;
-                                                                        break;
-
-                                                                      default:
-                                                                        tempBoardGames = userSnapshot
-                                                                            .data!
-                                                                            .favBoardGames
-                                                                            .familyGames;
-                                                                        break;
-                                                                    }
-                                                                    return new StickyHeader(
-                                                                        header:
-                                                                            new Container(
-                                                                          height:
-                                                                              38.0,
-                                                                          color:
-                                                                              Colors.white,
-                                                                          padding:
-                                                                              new EdgeInsets.symmetric(horizontal: 12.0),
-                                                                          alignment:
-                                                                              Alignment.centerLeft,
-                                                                          child:
-                                                                              new Text(
-                                                                            listHeader[index],
-                                                                            style: const TextStyle(
-                                                                                color: Colors.purple,
-                                                                                fontSize: 20,
-                                                                                fontWeight: FontWeight.bold),
-                                                                          ),
-                                                                        ),
-                                                                        content: Container(
-                                                                            child: GridView.builder(
-                                                                                shrinkWrap: true,
-                                                                                physics: NeverScrollableScrollPhysics(),
-                                                                                itemCount: listTitle.length,
-                                                                                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                                                                                  maxCrossAxisExtent: 180,
-                                                                                  childAspectRatio: 2 / 3,
-                                                                                ),
-                                                                                itemBuilder: (context, index) {
-                                                                                  return Stack(
-                                                                                    children: [
-                                                                                      Container(
-                                                                                          height: 200,
-                                                                                          decoration: BoxDecoration(
-                                                                                              image: tempBoardGames[index].boardGame.imageUrl[0].isEmpty
-                                                                                                  ? null
-                                                                                                  : DecorationImage(
-                                                                                                      fit: BoxFit.cover,
-                                                                                                      image: NetworkImage(tempBoardGames[index].boardGame.imageUrl[0]),
-                                                                                                    ))),
-                                                                                      Container(
-                                                                                        decoration: BoxDecoration(
-                                                                                            gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [
-                                                                                          Colors.grey.withOpacity(0.0),
-                                                                                          Colors.black.withOpacity(0.6)
-                                                                                        ], stops: const [
-                                                                                          0.0,
-                                                                                          1.0
-                                                                                        ])),
-                                                                                      ),
-                                                                                      Positioned(
-                                                                                          top: 0,
-                                                                                          left: 0,
-                                                                                          //you can use "right" and "bottom" too
-                                                                                          child: Container(
-                                                                                            height: 40,
-                                                                                            width: 40,
-                                                                                            decoration: BoxDecoration(color: Colors.green, borderRadius: BorderRadius.circular(20)),
-                                                                                            child: Center(
-                                                                                                child: Text(
-                                                                                              tempBoardGames[index].rank.toString(),
-                                                                                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 32),
-                                                                                            )),
-                                                                                          )),
-                                                                                      Positioned(
-                                                                                          top: 0,
-                                                                                          right: 0,
-                                                                                          //you can use "right" and "bottom" too
-                                                                                          child: Container(
-                                                                                            decoration: BoxDecoration(color: Colors.green, borderRadius: BorderRadius.circular(8)),
-                                                                                            child: Padding(
-                                                                                                padding: EdgeInsets.all(6),
-                                                                                                child: Column(children: [
-                                                                                                  Text(
-                                                                                                    "#${tempBoardGames[index].boardGame.recRank.toString()}",
-                                                                                                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
-                                                                                                  ),
-                                                                                                  Text(
-                                                                                                    "(${tempBoardGames[index].boardGame.recRating.toStringAsFixed(1)})",
-                                                                                                    style: TextStyle(fontWeight: FontWeight.w200, color: Colors.white, fontSize: 18),
-                                                                                                  )
-                                                                                                ])),
-                                                                                          )),
-                                                                                      Column(
-                                                                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                                                                        mainAxisSize: MainAxisSize.max,
-                                                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                                                        children: [
-                                                                                          Center(child: Text(tempBoardGames[index].boardGame.name.isEmpty ? "Not selected" : tempBoardGames[index].boardGame.name, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20)))
-                                                                                        ],
-                                                                                      )
-                                                                                    ],
-                                                                                  );
-                                                                                })));
-                                                                  })))
-                                                    ],
-                                                  ),
-                                                ),
-                                              ]))),
+                                  //                                     default:
+                                  //                                       tempBoardGames = userSnapshot
+                                  //                                           .data!
+                                  //                                           .favBoardGames
+                                  //                                           .familyGames;
+                                  //                                       break;
+                                  //                                   }
+                                  //                                   return tempBoardGames
+                                  //                                           .isEmpty
+                                  //                                       ? Container()
+                                  //                                       : new StickyHeader(
+                                  //                                           header:
+                                  //                                               new Container(
+                                  //                                             height: 38.0,
+                                  //                                             color: Colors.white,
+                                  //                                             padding: new EdgeInsets.symmetric(horizontal: 12.0),
+                                  //                                             alignment: Alignment.centerLeft,
+                                  //                                             child: new Text(
+                                  //                                               listHeader[index],
+                                  //                                               style: const TextStyle(color: Colors.purple, fontSize: 20, fontWeight: FontWeight.bold),
+                                  //                                             ),
+                                  //                                           ),
+                                  //                                           content: Container(
+                                  //                                               child: GridView.builder(
+                                  //                                                   shrinkWrap: true,
+                                  //                                                   physics: NeverScrollableScrollPhysics(),
+                                  //                                                   itemCount: listTitle.length,
+                                  //                                                   gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                                  //                                                     maxCrossAxisExtent: 180,
+                                  //                                                     childAspectRatio: 2 / 3,
+                                  //                                                   ),
+                                  //                                                   itemBuilder: (context, index) {
+                                  //                                                     return Stack(
+                                  //                                                       children: [
+                                  //                                                         Container(
+                                  //                                                             height: 200,
+                                  //                                                             decoration: BoxDecoration(
+                                  //                                                                 image: tempBoardGames[index].boardGame.imageUrl[0].isEmpty
+                                  //                                                                     ? null
+                                  //                                                                     : DecorationImage(
+                                  //                                                                         fit: BoxFit.cover,
+                                  //                                                                         image: NetworkImage(tempBoardGames[index].boardGame.imageUrl[0]),
+                                  //                                                                       ))),
+                                  //                                                         Container(
+                                  //                                                           decoration: BoxDecoration(
+                                  //                                                               gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [
+                                  //                                                             Colors.grey.withOpacity(0.0),
+                                  //                                                             Colors.black.withOpacity(0.6)
+                                  //                                                           ], stops: const [
+                                  //                                                             0.0,
+                                  //                                                             1.0
+                                  //                                                           ])),
+                                  //                                                         ),
+                                  //                                                         Positioned(
+                                  //                                                             top: 0,
+                                  //                                                             left: 0,
+                                  //                                                             //you can use "right" and "bottom" too
+                                  //                                                             child: Container(
+                                  //                                                               height: 40,
+                                  //                                                               width: 40,
+                                  //                                                               decoration: BoxDecoration(color: Colors.green, borderRadius: BorderRadius.circular(20)),
+                                  //                                                               child: Center(
+                                  //                                                                   child: Text(
+                                  //                                                                 tempBoardGames[index].rank.toString(),
+                                  //                                                                 style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 32),
+                                  //                                                               )),
+                                  //                                                             )),
+                                  //                                                         Positioned(
+                                  //                                                             top: 0,
+                                  //                                                             right: 0,
+                                  //                                                             //you can use "right" and "bottom" too
+                                  //                                                             child: Container(
+                                  //                                                               decoration: BoxDecoration(color: Colors.green, borderRadius: BorderRadius.circular(8)),
+                                  //                                                               child: Padding(
+                                  //                                                                   padding: EdgeInsets.all(6),
+                                  //                                                                   child: Column(children: [
+                                  //                                                                     Text(
+                                  //                                                                       "#${tempBoardGames[index].boardGame.recRank.toString()}",
+                                  //                                                                       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
+                                  //                                                                     ),
+                                  //                                                                     Text(
+                                  //                                                                       "(${tempBoardGames[index].boardGame.recRating.toStringAsFixed(1)})",
+                                  //                                                                       style: TextStyle(fontWeight: FontWeight.w200, color: Colors.white, fontSize: 18),
+                                  //                                                                     )
+                                  //                                                                   ])),
+                                  //                                                             )),
+                                  //                                                         Column(
+                                  //                                                           crossAxisAlignment: CrossAxisAlignment.center,
+                                  //                                                           mainAxisSize: MainAxisSize.max,
+                                  //                                                           mainAxisAlignment: MainAxisAlignment.center,
+                                  //                                                           children: [
+                                  //                                                             Center(child: Text(tempBoardGames[index].boardGame.name.isEmpty ? "Not selected" : tempBoardGames[index].boardGame.name, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20)))
+                                  //                                                           ],
+                                  //                                                         )
+                                  //                                                       ],
+                                  //                                                     );
+                                  //                                                   })));
+                                  //                                 })))
+                                  //                   ],
+                                  //                 ),
+                                  //               ),
+                                  //             ]))),
                                 ],
                               )
                             ]))
@@ -1323,19 +1256,363 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
         setState(() {
           _isProcessing = false;
         });
-
-        print("LOG IS SUCCESS?");
       } else {
         setState(() {
           _isProcessing = false;
         });
-
-        print("LOG FAILURE ???");
       }
     });
   }
 
-  Widget createProfileImages(AppUser user, UserProvider firebaseProvider) {
+  Widget buildFavouriteBoardGames(AppUser user, UserProvider firebaseProvider) {
+    final favBoardGames = user.favBoardGames;
+
+    // 2.
+    bool isFamGamesEmpty = favBoardGames.familyGames
+        .every((element) => element.boardGame.name.isEmpty);
+
+    bool isPartyGamesEmpty = favBoardGames.partyGames
+        .every((element) => element.boardGame.name.isEmpty);
+
+    bool isAbstrGamesEmpty = favBoardGames.abstractGames
+        .every((element) => element.boardGame.name.isEmpty);
+
+    bool isDexGamesEmpty = favBoardGames.dexterityGames
+        .every((element) => element.boardGame.name.isEmpty);
+
+    bool isThemGamesEmpty = favBoardGames.thematicGames
+        .every((element) => element.boardGame.name.isEmpty);
+
+    bool isStratGamesEmpty = favBoardGames.strategyGames
+        .every((element) => element.boardGame.name.isEmpty);
+
+    bool isWargamesEmpty = favBoardGames.warGames
+        .every((element) => element.boardGame.name.isEmpty);
+
+    if (isFamGamesEmpty &&
+        isPartyGamesEmpty &&
+        isAbstrGamesEmpty &&
+        isDexGamesEmpty &&
+        isThemGamesEmpty &&
+        isStratGamesEmpty &&
+        isWargamesEmpty) {
+      return GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(PageRouteBuilder(
+              pageBuilder: (
+                BuildContext context,
+                Animation<double> animation,
+                Animation<double> secondaryAnimation,
+              ) =>
+                  ProfilePageFavBoardGamesEdit(userSnapshot: user),
+              transitionsBuilder: (
+                BuildContext context,
+                Animation<double> animation,
+                Animation<double> secondaryAnimation,
+                Widget child,
+              ) =>
+                  SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(1, 0),
+                  end: Offset.zero,
+                ).animate(animation),
+                child: child,
+              ),
+            ));
+          },
+          child: Container(
+              margin: const EdgeInsets.fromLTRB(0, 0, 0, 12),
+              color: Colors.white,
+              width: double.infinity,
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 20),
+                        child: Column(children: [
+                          Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text("Favourite Board Games",
+                                  style: TextStyle(
+                                      fontSize: 32,
+                                      fontWeight: FontWeight.bold))),
+                          Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                  "What are your favourite board games?",
+                                  style: TextStyle(fontSize: 20)))
+                        ]))
+                  ])));
+    }
+
+    return GestureDetector(
+        onTap: () {
+          Navigator.of(context).push(PageRouteBuilder(
+            pageBuilder: (
+              BuildContext context,
+              Animation<double> animation,
+              Animation<double> secondaryAnimation,
+            ) =>
+                ProfilePageFavBoardGamesEdit(userSnapshot: user),
+            transitionsBuilder: (
+              BuildContext context,
+              Animation<double> animation,
+              Animation<double> secondaryAnimation,
+              Widget child,
+            ) =>
+                SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(1, 0),
+                end: Offset.zero,
+              ).animate(animation),
+              child: child,
+            ),
+          ));
+        },
+        child: Container(
+            margin: const EdgeInsets.fromLTRB(0, 0, 0, 12),
+            color: Colors.white,
+            width: double.infinity,
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 20),
+                    child: Column(
+                      children: [
+                        Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text("Favourite Board Games",
+                                style: TextStyle(
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.bold))),
+                        SafeArea(
+                            child: SizedBox(
+                                width: double.infinity,
+                                height: 300,
+                                child: new ListView.builder(
+                                    itemCount: listHeader.length,
+                                    itemBuilder: (context, index) {
+                                      var tempBoardGames =
+                                          <SelectedBoardGame>[];
+
+                                      switch (listHeader[index]) {
+                                        case "Family Games":
+                                          if (!isFamGamesEmpty)
+                                            tempBoardGames =
+                                                user.favBoardGames.familyGames;
+                                          break;
+
+                                        case "Dexterity Games":
+                                          if (!isDexGamesEmpty)
+                                            tempBoardGames = user
+                                                .favBoardGames.dexterityGames;
+                                          break;
+
+                                        case "Party Games":
+                                          if (!isPartyGamesEmpty)
+                                            tempBoardGames =
+                                                user.favBoardGames.partyGames;
+                                          break;
+
+                                        case "Abstracts":
+                                          if (!isAbstrGamesEmpty)
+                                            tempBoardGames = user
+                                                .favBoardGames.abstractGames;
+                                          break;
+
+                                        case "Thematic":
+                                          if (!isThemGamesEmpty)
+                                            tempBoardGames = user
+                                                .favBoardGames.thematicGames;
+                                          break;
+
+                                        case "Strategy":
+                                          if (!isStratGamesEmpty)
+                                            tempBoardGames = user
+                                                .favBoardGames.strategyGames;
+                                          break;
+
+                                        case "Wargames":
+                                          if (!isWargamesEmpty)
+                                            tempBoardGames =
+                                                user.favBoardGames.warGames;
+                                          break;
+
+                                        default:
+                                          if (!isFamGamesEmpty)
+                                            tempBoardGames =
+                                                user.favBoardGames.familyGames;
+                                          break;
+                                      }
+                                      return tempBoardGames.isEmpty
+                                          ? Container()
+                                          : new StickyHeader(
+                                              header: new Container(
+                                                height: 38.0,
+                                                color: Colors.white,
+                                                padding:
+                                                    new EdgeInsets.symmetric(
+                                                        horizontal: 12.0),
+                                                alignment: Alignment.centerLeft,
+                                                child: new Text(
+                                                  listHeader[index],
+                                                  style: const TextStyle(
+                                                      color: Colors.purple,
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                              content: Container(
+                                                  child: GridView.builder(
+                                                      shrinkWrap: true,
+                                                      physics:
+                                                          NeverScrollableScrollPhysics(),
+                                                      itemCount:
+                                                          listTitle.length,
+                                                      gridDelegate:
+                                                          SliverGridDelegateWithMaxCrossAxisExtent(
+                                                        maxCrossAxisExtent: 180,
+                                                        childAspectRatio: 2 / 3,
+                                                      ),
+                                                      itemBuilder:
+                                                          (context, index) {
+                                                        return Stack(
+                                                          children: [
+                                                            Container(
+                                                                height: 200,
+                                                                decoration: BoxDecoration(
+                                                                    image: tempBoardGames[index].boardGame.imageUrl[0].isEmpty
+                                                                        ? null
+                                                                        : DecorationImage(
+                                                                            fit:
+                                                                                BoxFit.cover,
+                                                                            image:
+                                                                                NetworkImage(tempBoardGames[index].boardGame.imageUrl[0]),
+                                                                          ))),
+                                                            Container(
+                                                              decoration: BoxDecoration(
+                                                                  gradient: LinearGradient(
+                                                                      begin: Alignment
+                                                                          .topCenter,
+                                                                      end: Alignment.bottomCenter,
+                                                                      colors: [
+                                                                    Colors.grey
+                                                                        .withOpacity(
+                                                                            0.0),
+                                                                    Colors.black
+                                                                        .withOpacity(
+                                                                            0.6)
+                                                                  ],
+                                                                      stops: const [
+                                                                    0.0,
+                                                                    1.0
+                                                                  ])),
+                                                            ),
+                                                            Positioned(
+                                                                top: 0,
+                                                                left: 0,
+                                                                //you can use "right" and "bottom" too
+                                                                child:
+                                                                    Container(
+                                                                  height: 40,
+                                                                  width: 40,
+                                                                  decoration: BoxDecoration(
+                                                                      color: Colors
+                                                                          .green,
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              20)),
+                                                                  child: Center(
+                                                                      child:
+                                                                          Text(
+                                                                    tempBoardGames[
+                                                                            index]
+                                                                        .rank
+                                                                        .toString(),
+                                                                    style: TextStyle(
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            32),
+                                                                  )),
+                                                                )),
+                                                            Positioned(
+                                                                top: 0,
+                                                                right: 0,
+                                                                //you can use "right" and "bottom" too
+                                                                child:
+                                                                    Container(
+                                                                  decoration: BoxDecoration(
+                                                                      color: Colors
+                                                                          .green,
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              8)),
+                                                                  child: Padding(
+                                                                      padding: EdgeInsets.all(6),
+                                                                      child: Column(children: [
+                                                                        Text(
+                                                                          "#${tempBoardGames[index].boardGame.recRank.toString()}",
+                                                                          style: TextStyle(
+                                                                              fontWeight: FontWeight.bold,
+                                                                              color: Colors.white,
+                                                                              fontSize: 18),
+                                                                        ),
+                                                                        Text(
+                                                                          "(${tempBoardGames[index].boardGame.recRating.toStringAsFixed(1)})",
+                                                                          style: TextStyle(
+                                                                              fontWeight: FontWeight.w200,
+                                                                              color: Colors.white,
+                                                                              fontSize: 18),
+                                                                        )
+                                                                      ])),
+                                                                )),
+                                                            Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .center,
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .max,
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              children: [
+                                                                Center(
+                                                                    child: Text(
+                                                                        tempBoardGames[index].boardGame.name.isEmpty
+                                                                            ? "Not selected"
+                                                                            : tempBoardGames[index]
+                                                                                .boardGame
+                                                                                .name,
+                                                                        textAlign:
+                                                                            TextAlign
+                                                                                .center,
+                                                                        style: const TextStyle(
+                                                                            color:
+                                                                                Colors.white,
+                                                                            fontWeight: FontWeight.bold,
+                                                                            fontSize: 20)))
+                                                              ],
+                                                            )
+                                                          ],
+                                                        );
+                                                      })));
+                                    })))
+                      ],
+                    ),
+                  ),
+                ])));
+  }
+
+  Widget buildProfileImages(AppUser user, UserProvider firebaseProvider) {
     // TODO Get Pictures
     // TODO method to filter profilePhotoPaths that have imageUrl
     // TODO Boolean to determine if contains image or NOT

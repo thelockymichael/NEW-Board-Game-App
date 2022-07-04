@@ -77,6 +77,7 @@ class UserProvider extends ChangeNotifier {
           setupIsCompleted: false,
           // currentGeoLocation: GeoPoint(0, 0),
           name: userRegistration.name,
+          email: userRegistration.email,
           age: userRegistration.age,
           profilePhotoPaths: [
             "",

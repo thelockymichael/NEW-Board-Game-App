@@ -272,41 +272,51 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                                       Align(
                                                         alignment: Alignment
                                                             .centerLeft,
-                                                        child: Wrap(
-                                                          children: userSnapshot
-                                                              .data!
-                                                              .favBoardGameGenres
-                                                              .map((gameGenre) {
-                                                            return Container(
-                                                              margin:
-                                                                  const EdgeInsets
-                                                                          .only(
-                                                                      right: 10,
-                                                                      top: 10),
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(8),
-                                                              decoration:
-                                                                  const BoxDecoration(
-                                                                color: Colors
-                                                                    .green,
-                                                                borderRadius: BorderRadius
-                                                                    .all(Radius
-                                                                        .circular(
-                                                                            12.0)),
-                                                              ),
-                                                              child: Text(
-                                                                gameGenre
-                                                                    .capitalize(),
-                                                                style: const TextStyle(
+                                                        child: userSnapshot
+                                                                .data!
+                                                                .favBoardGameGenres
+                                                                .isEmpty
+                                                            ? Text(
+                                                                "What are your favourite game genres?",
+                                                                style: TextStyle(
                                                                     fontSize:
-                                                                        20,
-                                                                    color: Colors
-                                                                        .white),
+                                                                        20))
+                                                            : Wrap(
+                                                                children: userSnapshot
+                                                                    .data!
+                                                                    .favBoardGameGenres
+                                                                    .map(
+                                                                        (gameGenre) {
+                                                                  return Container(
+                                                                    margin: const EdgeInsets
+                                                                            .only(
+                                                                        right:
+                                                                            10,
+                                                                        top:
+                                                                            10),
+                                                                    padding:
+                                                                        const EdgeInsets
+                                                                            .all(8),
+                                                                    decoration:
+                                                                        const BoxDecoration(
+                                                                      color: Colors
+                                                                          .green,
+                                                                      borderRadius:
+                                                                          BorderRadius.all(
+                                                                              Radius.circular(12.0)),
+                                                                    ),
+                                                                    child: Text(
+                                                                      gameGenre
+                                                                          .capitalize(),
+                                                                      style: const TextStyle(
+                                                                          fontSize:
+                                                                              20,
+                                                                          color:
+                                                                              Colors.white),
+                                                                    ),
+                                                                  );
+                                                                }).toList(),
                                                               ),
-                                                            );
-                                                          }).toList(),
-                                                        ),
                                                       ),
                                                     ],
                                                   ),
@@ -370,13 +380,22 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                                       Align(
                                                         alignment: Alignment
                                                             .centerLeft,
-                                                        child: Text(
-                                                            userSnapshot
-                                                                .data!.bio,
-                                                            style:
-                                                                const TextStyle(
-                                                              fontSize: 20,
-                                                            )),
+                                                        child: userSnapshot
+                                                                .data!
+                                                                .bio
+                                                                .isEmpty
+                                                            ? Text(
+                                                                "Write about your board game hobby.",
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        20))
+                                                            : Text(
+                                                                userSnapshot
+                                                                    .data!.bio,
+                                                                style:
+                                                                    const TextStyle(
+                                                                  fontSize: 20,
+                                                                )),
                                                       )
                                                     ],
                                                   ),
@@ -416,81 +435,68 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                                       Align(
                                                           alignment: Alignment
                                                               .centerLeft,
-                                                          child: Column(
-                                                              children: [
-                                                                Wrap(
-                                                                  children: userSnapshot
+                                                          child: userSnapshot
                                                                       .data!
                                                                       .favBgMechanics
-                                                                      .map(
-                                                                          (gameGenre) {
-                                                                    return Container(
-                                                                      margin: const EdgeInsets
-                                                                              .only(
-                                                                          right:
-                                                                              10,
-                                                                          top:
-                                                                              10),
-                                                                      padding:
-                                                                          const EdgeInsets.all(
-                                                                              8),
-                                                                      decoration:
-                                                                          const BoxDecoration(
-                                                                        color: Colors
-                                                                            .green,
-                                                                        borderRadius:
-                                                                            BorderRadius.all(Radius.circular(12.0)),
-                                                                      ),
-                                                                      child:
-                                                                          Text(
-                                                                        gameGenre
-                                                                            .capitalize(),
-                                                                        style: const TextStyle(
-                                                                            fontSize:
-                                                                                20,
-                                                                            color:
-                                                                                Colors.white),
-                                                                      ),
-                                                                    );
-                                                                  }).toList(),
-                                                                ),
-                                                                Wrap(
-                                                                  children: userSnapshot
+                                                                      .isEmpty &&
+                                                                  userSnapshot
                                                                       .data!
                                                                       .favBgThemes
-                                                                      .map(
-                                                                          (gameGenre) {
-                                                                    return Container(
-                                                                      margin: const EdgeInsets
-                                                                              .only(
-                                                                          right:
-                                                                              10,
-                                                                          top:
-                                                                              10),
-                                                                      padding:
-                                                                          const EdgeInsets.all(
-                                                                              8),
-                                                                      decoration:
-                                                                          const BoxDecoration(
-                                                                        color: Colors
-                                                                            .green,
-                                                                        borderRadius:
-                                                                            BorderRadius.all(Radius.circular(12.0)),
+                                                                      .isEmpty
+                                                              ? Text(
+                                                                  "What are your favourite mechanics and themes?",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          20))
+                                                              : Column(
+                                                                  children: [
+                                                                      Wrap(
+                                                                        children: userSnapshot
+                                                                            .data!
+                                                                            .favBgMechanics
+                                                                            .map((gameGenre) {
+                                                                          return Container(
+                                                                            margin:
+                                                                                const EdgeInsets.only(right: 10, top: 10),
+                                                                            padding:
+                                                                                const EdgeInsets.all(8),
+                                                                            decoration:
+                                                                                const BoxDecoration(
+                                                                              color: Colors.green,
+                                                                              borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                                                                            ),
+                                                                            child:
+                                                                                Text(
+                                                                              gameGenre.capitalize(),
+                                                                              style: const TextStyle(fontSize: 20, color: Colors.white),
+                                                                            ),
+                                                                          );
+                                                                        }).toList(),
                                                                       ),
-                                                                      child:
-                                                                          Text(
-                                                                        gameGenre
-                                                                            .capitalize(),
-                                                                        style: const TextStyle(
-                                                                            fontSize:
-                                                                                20,
-                                                                            color:
-                                                                                Colors.white),
-                                                                      ),
-                                                                    );
-                                                                  }).toList(),
-                                                                )
-                                                              ])),
+                                                                      Wrap(
+                                                                        children: userSnapshot
+                                                                            .data!
+                                                                            .favBgThemes
+                                                                            .map((gameGenre) {
+                                                                          return Container(
+                                                                            margin:
+                                                                                const EdgeInsets.only(right: 10, top: 10),
+                                                                            padding:
+                                                                                const EdgeInsets.all(8),
+                                                                            decoration:
+                                                                                const BoxDecoration(
+                                                                              color: Colors.green,
+                                                                              borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                                                                            ),
+                                                                            child:
+                                                                                Text(
+                                                                              gameGenre.capitalize(),
+                                                                              style: const TextStyle(fontSize: 20, color: Colors.white),
+                                                                            ),
+                                                                          );
+                                                                        }).toList(),
+                                                                      )
+                                                                    ])),
                                                     ],
                                                   ),
                                                 ),

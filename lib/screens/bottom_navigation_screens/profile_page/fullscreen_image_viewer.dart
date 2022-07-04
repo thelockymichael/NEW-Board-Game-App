@@ -40,14 +40,10 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
 
   final CarouselController _controller = CarouselController();
 
-  late UserProvider _userProvider;
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    _userProvider = Provider.of<UserProvider>(context, listen: false);
 
     // TODO Remove ALL IMAGES THAT DON'T EXIST
 
@@ -71,7 +67,7 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Image slider demo')),
+        appBar: AppBar(),
         body: Consumer<UserProvider>(builder: (context, userProvider, child) {
           return FutureBuilder<AppUser>(
               future: userProvider.user,
@@ -145,10 +141,11 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
                                                   print(
                                                       "LOG rf Uploaded new photo");
 
-                                                  int updateImageNum = widget
-                                                      .profilePhotoPaths
-                                                      .indexOf(
-                                                          imgList[indexOfItem]);
+                                                  int updateImageNum =
+                                                      userSnapshot.data!
+                                                          .profilePhotoPaths
+                                                          .indexOf(imgList[
+                                                              indexOfItem]);
 
                                                   print(
                                                       "LOG jotain updateImageNum $updateImageNum");
@@ -162,8 +159,9 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
                                                               source:
                                                                   ImageSource
                                                                       .gallery);
+
                                                   if (pickedFile != null) {
-                                                    _userProvider
+                                                    userProvider
                                                         .updateUserProfilePhoto(
                                                             pickedFile.path,
                                                             _scaffoldKey,
@@ -217,6 +215,9 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
                                                       //   imgList[indexOfItem] =
                                                       //       response.value;
                                                       // });
+                                                      Navigator.of(context)
+                                                          .pop();
+
                                                       print(
                                                           "LOG jotain deleteUserProfilePhoto ${response.value}");
                                                       // TODO Remove ALL IMAGES THAT DON'T EXIST
@@ -230,6 +231,11 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
                                                         imgList.removeAt(
                                                             indexOfItem);
                                                       });
+
+                                                      if (imgList.isEmpty)
+                                                        return Navigator.of(
+                                                                context)
+                                                            .pop();
 
                                                       for (var i = 0;
                                                           i < imgList.length;
@@ -254,11 +260,40 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
                                       iconSize: 24,
                                       buttonColor: Colors.black,
                                     )),
-                              )
+                              ),
+                              buildMainProfileImage(userSnapshot.data!),
                             ],
                           )
                         : Container());
               });
         }));
+  }
+
+  Widget buildMainProfileImage(AppUser userSnapshot) {
+    print(
+        "LOG vcx ${userSnapshot.profilePhotoPaths.indexOf(imgList[indexOfItem])}");
+
+    if (userSnapshot.profilePhotoPaths.indexOf(imgList[indexOfItem]) != 0) {
+      return Container();
+    }
+
+    return Positioned(
+        right: 1.0,
+        left: 1.0,
+        top: 1.0,
+        child: Align(
+            alignment: Alignment.center,
+            child: Container(
+              margin: const EdgeInsets.only(right: 10, top: 10),
+              padding: const EdgeInsets.all(8),
+              decoration: const BoxDecoration(
+                color: Colors.green,
+                borderRadius: BorderRadius.all(Radius.circular(12.0)),
+              ),
+              child: Text(
+                "Main Profile Image",
+                style: const TextStyle(fontSize: 20, color: Colors.white),
+              ),
+            )));
   }
 }

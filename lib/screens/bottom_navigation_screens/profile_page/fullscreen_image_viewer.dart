@@ -16,15 +16,12 @@ class FullScreenImageViewer extends StatefulWidget {
 
   final int photoNumber;
 
-  final UserProvider userProvider;
-
   final List<String> profilePhotoPaths;
 
   const FullScreenImageViewer(
       {Key? key,
       required this.url,
       required this.photoNumber,
-      required this.userProvider,
       required this.profilePhotoPaths})
       : super(key: key);
 
@@ -33,214 +30,235 @@ class FullScreenImageViewer extends StatefulWidget {
 }
 
 class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
-// class FullScreenImageViewer extends StatelessWidget {
-  // FullScreenImageViewer(
-  //     this.url, this.photoNumber, this.userProvider, this.profilePhotoPaths,
-  //     {Key? key})
-  //     : super(key: key);
-
   late List<String> imgList = [];
+
+  String reason = '';
+
+  int indexOfItem = 0;
+
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  final CarouselController _controller = CarouselController();
+
+  late UserProvider _userProvider;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
+    _userProvider = Provider.of<UserProvider>(context, listen: false);
+
     // TODO Remove ALL IMAGES THAT DON'T EXIST
 
     for (var i = 0; i < widget.profilePhotoPaths.length; i++) {
-      if (widget.profilePhotoPaths[i].isEmpty) {
-        continue;
-      }
-
+      if (widget.profilePhotoPaths[i].isEmpty) continue;
       imgList.add(widget.profilePhotoPaths[i]);
     }
 
-    print("LOG widget.profilePhotoPaths ${widget.profilePhotoPaths.length}");
-
-    // imgList = widget.profilePhotoPaths;
+    indexOfItem = imgList.indexOf(widget.url);
   }
-
-  String reason = '';
-
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  final CarouselController _controller = CarouselController();
 
   void onPageChange(int index, CarouselPageChangedReason changeReason) {
-    print("LOG onPageChange ${index}");
-    print("LOG onPageChange ${changeReason}");
-
     setState(() {
       reason = changeReason.toString();
+      indexOfItem = index;
     });
-  }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //       body: Stack(
-  //     children: [
-  //       GestureDetector(
-  //         child: SizedBox(
-  //           width: MediaQuery.of(context).size.width,
-  //           height: MediaQuery.of(context).size.height,
-  //           child: Hero(
-  //             tag: 'imageHero',
-  //             child: Image.network(url),
-  //           ),
-  //         ),
-  //         onTap: () {
-  //           Navigator.pop(context);
-  //         },
-  //       ),
-  //       Positioned(
-  //         right: 1.0,
-  //         bottom: 1.0,
-  //         child: Padding(
-  //             padding: EdgeInsets.fromLTRB(0, 0, 12, 40),
-  //             child: RoundedIconButton(
-  //               onPressed: () async {
-  //                 showModalBottomSheet(
-  //                   isScrollControlled: true,
-  //                   barrierColor: Colors.black54,
-  //                   elevation: 5,
-  //                   context: context,
-  //                   builder: (BuildContext context) {
-  //                     return Wrap(children: <Widget>[
-  //                       ListTile(
-  //                         leading: Text("Upload new photo",
-  //                             style: TextStyle(
-  //                                 fontSize: 24, fontWeight: FontWeight.bold)),
-  //                         onTap: () async {
-  //                           final pickedFile = await ImagePicker()
-  //                               .pickImage(source: ImageSource.gallery);
-  //                           if (pickedFile != null) {
-  //                             userProvider.updateUserProfilePhoto(
-  //                                 pickedFile.path, _scaffoldKey, 0);
-  //                           }
-  //                         },
-  //                       )
-  //                     ]);
-  //                   },
-  //                 );
-  //               },
-  //               iconData: Icons.more_horiz,
-  //               iconColor: Colors.white,
-  //               iconSize: 24,
-  //               buttonColor: Colors.black,
-  //             )),
-  //       )
-  //     ],
-  //   ));
-  // }
+    print("LOG indexOfItem $indexOfItem");
+  }
 
   @override
   Widget build(BuildContext context) {
-    print("LOG allProfilePhotos ${widget.profilePhotoPaths}");
-
     return Scaffold(
         appBar: AppBar(title: Text('Image slider demo')),
-        body: Builder(
-          builder: (context) {
-            final double height = MediaQuery.of(context).size.height;
-            return CarouselSlider(
-              options: CarouselOptions(
-                height: height,
-                viewportFraction: 1.0,
-                enlargeCenterPage: true,
-                aspectRatio: 16 / 9,
-                onPageChanged: onPageChange,
-                enableInfiniteScroll: false,
-              ),
-              carouselController: _controller,
-              items: imgList
-                  .map((item) => Stack(
-                        children: [
-                          GestureDetector(
-                            child: SizedBox(
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.height,
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image: NetworkImage(item),
-                                          fit: BoxFit.contain))),
-                            ),
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                          ),
-                          Positioned(
-                            right: 1.0,
-                            bottom: 1.0,
-                            child: Padding(
-                                padding: EdgeInsets.fromLTRB(0, 0, 12, 40),
-                                child: RoundedIconButton(
-                                  onPressed: () async {
-                                    showModalBottomSheet(
-                                      isScrollControlled: true,
-                                      barrierColor: Colors.black54,
-                                      elevation: 5,
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return Wrap(children: <Widget>[
-                                          ListTile(
-                                            leading: Text("Upload new photo",
-                                                style: TextStyle(
-                                                    fontSize: 24,
-                                                    fontWeight:
-                                                        FontWeight.bold)),
-                                            onTap: () async {
-                                              // print("LOG indexOf ${widget.profilePhotoPaths.indexOf(item)}");
-                                              int indexOfItem =
-                                                  imgList.indexOf(item);
+        body: Consumer<UserProvider>(builder: (context, userProvider, child) {
+          return FutureBuilder<AppUser>(
+              future: userProvider.user,
+              builder: (context, userSnapshot) {
+                final double height = MediaQuery.of(context).size.height;
 
-                                              final pickedFile =
-                                                  await ImagePicker().pickImage(
-                                                      source:
-                                                          ImageSource.gallery);
-                                              if (pickedFile != null) {
-                                                widget.userProvider
-                                                    .updateUserProfilePhoto(
-                                                        pickedFile.path,
-                                                        _scaffoldKey,
-                                                        indexOfItem)
-                                                    .then((response) {
-                                                  if (response is Success) {
-                                                    print(
-                                                        "LOG jotain success asdas");
-                                                    print(
-                                                        "LOG jotain ${response.value}");
-                                                    // TODO userProvider.isLoading
-                                                    setState(() {
-                                                      // imgList.replaceRange(
-                                                      //     indexOfItem,
-                                                      //     indexOfItem + 1,
-                                                      //     response.value);
-                                                      imgList[indexOfItem] =
-                                                          response.value;
+                return CustomModalProgressHUD(
+                    inAsyncCall: userProvider.isLoading,
+                    child: userSnapshot.hasData
+                        ? Stack(
+                            children: [
+                              CarouselSlider(
+                                options: CarouselOptions(
+                                    height: height,
+                                    viewportFraction: 1.0,
+                                    enlargeCenterPage: true,
+                                    aspectRatio: 16 / 9,
+                                    onPageChanged: onPageChange,
+                                    enableInfiniteScroll: false,
+                                    initialPage: indexOfItem),
+                                carouselController: _controller,
+                                items: imgList
+                                    .map((item) => Stack(
+                                          children: [
+                                            GestureDetector(
+                                              child: SizedBox(
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                height: MediaQuery.of(context)
+                                                    .size
+                                                    .height,
+                                                child: Container(
+                                                    decoration: BoxDecoration(
+                                                        image: DecorationImage(
+                                                            image: NetworkImage(
+                                                                item),
+                                                            fit: BoxFit
+                                                                .contain))),
+                                              ),
+                                              onTap: () {
+                                                Navigator.pop(context);
+                                              },
+                                            ),
+                                          ],
+                                        ))
+                                    .toList(),
+                              ),
+                              Positioned(
+                                right: 1.0,
+                                bottom: 1.0,
+                                child: Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 0, 12, 40),
+                                    child: RoundedIconButton(
+                                      onPressed: () async {
+                                        showModalBottomSheet(
+                                          isScrollControlled: true,
+                                          barrierColor: Colors.black54,
+                                          elevation: 5,
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return Wrap(children: <Widget>[
+                                              ListTile(
+                                                leading: Text(
+                                                    "Upload new photo",
+                                                    style: TextStyle(
+                                                        fontSize: 24,
+                                                        fontWeight:
+                                                            FontWeight.bold)),
+                                                onTap: () async {
+                                                  print(
+                                                      "LOG rf Uploaded new photo");
+
+                                                  int updateImageNum = widget
+                                                      .profilePhotoPaths
+                                                      .indexOf(
+                                                          imgList[indexOfItem]);
+
+                                                  print(
+                                                      "LOG jotain updateImageNum $updateImageNum");
+
+                                                  print(
+                                                      "LOG jotain profilePhotoPaths ${widget.profilePhotoPaths.length}");
+
+                                                  final pickedFile =
+                                                      await ImagePicker()
+                                                          .pickImage(
+                                                              source:
+                                                                  ImageSource
+                                                                      .gallery);
+                                                  if (pickedFile != null) {
+                                                    _userProvider
+                                                        .updateUserProfilePhoto(
+                                                            pickedFile.path,
+                                                            _scaffoldKey,
+                                                            updateImageNum)
+                                                        .then((response) {
+                                                      if (response is Success) {
+                                                        print(
+                                                            "LOG jotain ${response.value}");
+                                                        // TODO userProvider.isLoading
+                                                        setState(() {
+                                                          imgList[indexOfItem] =
+                                                              response.value;
+                                                        });
+
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      }
                                                     });
                                                   }
-                                                });
-                                              }
-                                            },
-                                          )
-                                        ]);
+                                                },
+                                              ),
+                                              ListTile(
+                                                leading: Text("Delete",
+                                                    style: TextStyle(
+                                                        fontSize: 24,
+                                                        fontWeight:
+                                                            FontWeight.bold)),
+                                                onTap: () async {
+                                                  // print("LOG indexOf ${widget.profilePhotoPaths.indexOf(item)}");
+                                                  // int indexOfItem = imgList.indexOf(item);
+                                                  // setState(() {
+                                                  //   imgList[indexOfItem] = "";
+                                                  // });
+                                                  int deleteImageNum =
+                                                      userSnapshot.data!
+                                                          .profilePhotoPaths
+                                                          .indexOf(imgList[
+                                                              indexOfItem]);
+
+                                                  print(
+                                                      "LOG jotain does It exist ${deleteImageNum}");
+
+                                                  userProvider
+                                                      .deleteUserProfilePhoto(
+                                                          _scaffoldKey,
+                                                          deleteImageNum)
+                                                      .then((response) {
+                                                    if (response is Success) {
+                                                      // TODO userProvider.isLoading
+                                                      // setState(() {
+                                                      //   imgList[indexOfItem] =
+                                                      //       response.value;
+                                                      // });
+                                                      print(
+                                                          "LOG jotain deleteUserProfilePhoto ${response.value}");
+                                                      // TODO Remove ALL IMAGES THAT DON'T EXIST
+                                                      // for (var i = 0; i < userSnapshot.data!.profilePhotoPaths.length; i++) {
+
+                                                      // }
+
+                                                      setState(() {
+                                                        imgList[indexOfItem] =
+                                                            "";
+                                                        imgList.removeAt(
+                                                            indexOfItem);
+                                                      });
+
+                                                      for (var i = 0;
+                                                          i < imgList.length;
+                                                          i++) {
+                                                        if (imgList
+                                                            .isNotEmpty) {
+                                                          _controller
+                                                              .jumpToPage(i);
+                                                          break;
+                                                        }
+                                                      }
+                                                    }
+                                                  });
+                                                },
+                                              )
+                                            ]);
+                                          },
+                                        );
                                       },
-                                    );
-                                  },
-                                  iconData: Icons.more_horiz,
-                                  iconColor: Colors.white,
-                                  iconSize: 24,
-                                  buttonColor: Colors.black,
-                                )),
+                                      iconData: Icons.more_horiz,
+                                      iconColor: Colors.white,
+                                      iconSize: 24,
+                                      buttonColor: Colors.black,
+                                    )),
+                              )
+                            ],
                           )
-                        ],
-                      ))
-                  .toList(),
-            );
-          },
-        ));
+                        : Container());
+              });
+        }));
   }
 }

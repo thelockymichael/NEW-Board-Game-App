@@ -18,4 +18,19 @@ class FirebaseStorageSource {
       return Response.error(((e as FirebaseException).message ?? e.toString()));
     }
   }
+
+  Future<Response<String>> deleteUserProfilePhoto(
+      String userId, int imageNumber) async {
+    String userPhotoPath =
+        "user_photos/$userId/profile_photo_${imageNumber.toString()}";
+
+    try {
+      // String downloadUrl = await instance.ref(userPhotoPath).getDownloadURL();
+
+      await instance.ref(userPhotoPath).delete();
+      return Response.success("");
+    } catch (e) {
+      return Response.error(((e as FirebaseException).message ?? e.toString()));
+    }
+  }
 }

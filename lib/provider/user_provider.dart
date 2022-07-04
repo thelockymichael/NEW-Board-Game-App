@@ -408,11 +408,34 @@ class UserProvider extends ChangeNotifier {
 
       return Response.success(response.value);
     } else if (response is Error) {
-      showSnackBar(errorScaffoldKey, response.message);
       notifyListeners();
+      showSnackBar(errorScaffoldKey, response.message);
 
       return response;
-      // showSnackBar(errorScaffoldKey, response.message);
+    }
+    notifyListeners();
+    return response;
+  }
+
+  Future<Response> deleteUserProfilePhoto(
+      GlobalKey<ScaffoldState> errorScaffoldKey, int imageNumber) async {
+    isLoading = true;
+    notifyListeners();
+    Response<dynamic> response =
+        await _storageSource.deleteUserProfilePhoto(_user.id, imageNumber);
+    isLoading = false;
+    if (response is Success<String>) {
+      _user.profilePhotoPaths[imageNumber] = response.value;
+
+      _databaseSource.updateUser(_user);
+      notifyListeners();
+
+      return Response.success(response.value);
+    } else if (response is Error) {
+      notifyListeners();
+      showSnackBar(errorScaffoldKey, response.message);
+
+      return response;
     }
     notifyListeners();
     return response;

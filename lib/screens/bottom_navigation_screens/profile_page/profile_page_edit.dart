@@ -862,8 +862,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
 
                               return ListTile(
                                 onTap: () {
-                                  print("HELLO WORLD");
-
                                   final isSelected =
                                       bgThemesSelectedList.contains(bgTheme);
 
@@ -1279,8 +1277,8 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
       SizedBox(
           child: StaggeredGrid.count(
               crossAxisCount: 3,
-              mainAxisSpacing: 3,
-              crossAxisSpacing: 3,
+              mainAxisSpacing: 4,
+              crossAxisSpacing: 4,
               children: [
             StaggeredGridTile.count(
                 crossAxisCellCount: 2,
@@ -1303,7 +1301,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                               builder: (context) => FullScreenImageViewer(
                                     url: user.profilePhotoPaths[0],
                                     photoNumber: 0,
-                                    userProvider: _userProvider,
                                     profilePhotoPaths: user.profilePhotoPaths,
                                   )));
                     }
@@ -1345,7 +1342,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                               builder: (context) => FullScreenImageViewer(
                                     url: user.profilePhotoPaths[1],
                                     photoNumber: 1,
-                                    userProvider: _userProvider,
                                     profilePhotoPaths: user.profilePhotoPaths,
                                   )));
                     }
@@ -1371,6 +1367,9 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                 mainAxisCellCount: 1,
                 child: GestureDetector(
                   onTap: () async {
+                    print("LOG hasta la vista 3 ");
+
+                    print("LOG noImage ${user.profilePhotoPaths[2]}");
                     bool noImage = user.profilePhotoPaths[2].isEmpty;
 
                     if (noImage) {
@@ -1387,7 +1386,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                               builder: (context) => FullScreenImageViewer(
                                     url: user.profilePhotoPaths[2],
                                     photoNumber: 2,
-                                    userProvider: _userProvider,
                                     profilePhotoPaths: user.profilePhotoPaths,
                                   )));
                     }
@@ -1429,7 +1427,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                               builder: (context) => FullScreenImageViewer(
                                     url: user.profilePhotoPaths[3],
                                     photoNumber: 3,
-                                    userProvider: _userProvider,
                                     profilePhotoPaths: user.profilePhotoPaths,
                                   )));
                     }
@@ -1471,7 +1468,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                               builder: (context) => FullScreenImageViewer(
                                     url: user.profilePhotoPaths[4],
                                     photoNumber: 4,
-                                    userProvider: _userProvider,
                                     profilePhotoPaths: user.profilePhotoPaths,
                                   )));
                     }
@@ -1513,7 +1509,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                               builder: (context) => FullScreenImageViewer(
                                     url: user.profilePhotoPaths[5],
                                     photoNumber: 5,
-                                    userProvider: _userProvider,
                                     profilePhotoPaths: user.profilePhotoPaths,
                                   )));
                     }

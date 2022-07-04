@@ -139,7 +139,7 @@ class BoardGameData {
   int year;
   int recRank;
   double recRating;
-  num recStars;
+  double recStars;
   String name;
 
   Map<String, dynamic> toMap() => {
@@ -157,8 +157,8 @@ class BoardGameData {
         bggId: map['bggId'] ?? 0,
         year: map['year'] ?? 0,
         recRank: map['recRank'] ?? 0,
-        recRating: map['recRating'] ?? 0,
-        recStars: map['recStars'] ?? 0,
+        recRating: map['recRating'] ?? 0.0,
+        recStars: map['recStars'] ?? 0.0,
         name: map['name'] ?? "0",
         imageUrl: List<String>.from(map["imageUrl"]));
   }

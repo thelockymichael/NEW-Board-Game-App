@@ -572,6 +572,70 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                                                     var tempBoardGames =
                                                                         <SelectedBoardGame>[];
 
+                                                                    FavBoardGames
+                                                                        favBoardGames =
+                                                                        userSnapshot
+                                                                            .data!
+                                                                            .favBoardGames;
+                                                                    bool isFamGamesEmpty = favBoardGames
+                                                                        .familyGames
+                                                                        .every((element) => element
+                                                                            .boardGame
+                                                                            .name
+                                                                            .isEmpty);
+
+                                                                    bool isPartyGamesEmpty = favBoardGames
+                                                                        .partyGames
+                                                                        .every((element) => element
+                                                                            .boardGame
+                                                                            .name
+                                                                            .isEmpty);
+
+                                                                    bool isAbstrGamesEmpty = favBoardGames
+                                                                        .abstractGames
+                                                                        .every((element) => element
+                                                                            .boardGame
+                                                                            .name
+                                                                            .isEmpty);
+
+                                                                    bool isDexGamesEmpty = favBoardGames
+                                                                        .dexterityGames
+                                                                        .every((element) => element
+                                                                            .boardGame
+                                                                            .name
+                                                                            .isEmpty);
+
+                                                                    bool isThemGamesEmpty = favBoardGames
+                                                                        .abstractGames
+                                                                        .every((element) => element
+                                                                            .boardGame
+                                                                            .name
+                                                                            .isEmpty);
+
+                                                                    bool isStratGamesEmpty = favBoardGames
+                                                                        .strategyGames
+                                                                        .every((element) => element
+                                                                            .boardGame
+                                                                            .name
+                                                                            .isEmpty);
+
+                                                                    bool isWargamesEmpty = favBoardGames
+                                                                        .warGames
+                                                                        .every((element) => element
+                                                                            .boardGame
+                                                                            .name
+                                                                            .isEmpty);
+
+                                                                    if (isFamGamesEmpty &&
+                                                                        isPartyGamesEmpty &&
+                                                                        isAbstrGamesEmpty &&
+                                                                        isDexGamesEmpty &&
+                                                                        isThemGamesEmpty &&
+                                                                        isStratGamesEmpty &&
+                                                                        isWargamesEmpty) {
+                                                                      return Container();
+                                                                    }
+
                                                                     switch (listHeader[
                                                                         index]) {
                                                                       case "Family Games":

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
 
@@ -173,12 +175,11 @@ class EnableLocationPageState extends State<EnableLocationPage> {
                                                     .loaderOverlay.visible;
                                               });
 
-                                              await _getCurrentPosition()
-                                                  .then((value) {
+                                              Timer(Duration(seconds: 1),
+                                                  () async {
                                                 if (_isLoaderVisible) {
                                                   context.loaderOverlay.hide();
-                                                }
-
+                                                } //   userSnapshot.data!
                                                 userSnapshot.data!
                                                     .setupIsCompleted = true;
 
@@ -192,6 +193,26 @@ class EnableLocationPageState extends State<EnableLocationPage> {
                                                         MainNavigation.id,
                                                         (route) => false);
                                               });
+
+                                              // await _getCurrentPosition()
+                                              //     .then((value) {
+                                              //   if (_isLoaderVisible) {
+                                              //     context.loaderOverlay.hide();
+                                              //   }
+
+                                              //   userSnapshot.data!
+                                              //       .setupIsCompleted = true;
+
+                                              //   userProvider
+                                              //       .updateSetupCompleted(
+                                              //           userSnapshot.data!,
+                                              //           _scaffoldKey);
+
+                                              //   Navigator.of(context)
+                                              //       .pushNamedAndRemoveUntil(
+                                              //           MainNavigation.id,
+                                              //           (route) => false);
+                                              // });
                                             },
                                             child: const Text(
                                               'ENABLE LOCATION',

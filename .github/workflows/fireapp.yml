@@ -22,9 +22,6 @@ jobs:
       FASTFILE: ${{ secrets.FASTFILE }}
     steps: 
       - uses: actions/checkout@v2
-      - uses: dart-lang/setup-dart@v1.3
-        with:
-          sdk: '2.7.0'
       - uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
@@ -42,6 +39,9 @@ jobs:
       - uses: subosito/flutter-action@v1
         with: 
           flutter-version: '2.10.5'
+      - uses: dart-lang/setup-dart@v1.3
+        with:
+          sdk: '2.7.0'
       - run: flutter pub get
       - run: flutter build apk --release --split-per-abi
       - run: flutter build apk --debug

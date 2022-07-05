@@ -1135,12 +1135,11 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
 
                           setModalState(() {
                             isSelected
-                                ? this.defaultSelectedGender.remove(gender)
-                                : this.defaultSelectedGender.add(gender);
+                                ? defaultSelectedGender.remove(gender)
+                                : defaultSelectedGender.add(gender);
 
-                            this._genderTextController = TextEditingController(
-                                text:
-                                    this.defaultSelectedGender[0].capitalize());
+                            _genderTextController = TextEditingController(
+                                text: defaultSelectedGender[0].capitalize());
                           });
                         },
                         title: Text(

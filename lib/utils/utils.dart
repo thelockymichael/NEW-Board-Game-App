@@ -292,8 +292,9 @@ class Utils {
     "german",
     "dutch",
     "arabic",
-    "somalian",
     "mandarin",
+    "japanese",
+    "somalian",
     "persian",
     "vietnamese",
   ];

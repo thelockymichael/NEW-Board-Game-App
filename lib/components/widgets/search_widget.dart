@@ -38,9 +38,10 @@ class _SearchWidgetState extends State<SearchWidget> {
       child: TextField(
         controller: controller,
         onEditingComplete: () {
-          print("EDITING IS COMPLETUS MAXIMUS VIV");
           widget.onEditingComplete(widget.text);
-          // return widget.onChanged;
+
+          FocusManager.instance.primaryFocus
+              ?.unfocus(); // return widget.onChanged;
         },
         decoration: InputDecoration(
           icon: Icon(Icons.search, color: style.color),

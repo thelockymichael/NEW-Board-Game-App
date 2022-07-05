@@ -124,6 +124,8 @@ class _ProfilePageBgBioEditState extends State<ProfilePageBgBioEdit> {
                                       .then((response) {
                                     if (response is Success) {
                                       widget.notifyParent();
+
+                                      Navigator.of(context).pop();
                                     }
                                   });
 

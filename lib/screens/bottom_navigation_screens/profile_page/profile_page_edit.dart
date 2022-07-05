@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
 import 'package:flutter_demo_01/components/widgets/rounded_icon_button.dart';
+import 'package:flutter_demo_01/components/widgets/search_widget.dart';
 import 'package:flutter_demo_01/db/remote/response.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/model/user_profile_edit.dart';
@@ -70,6 +71,10 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
   late List<String> defaultSelectedGender;
 
   TextEditingController _genderTextController = TextEditingController();
+
+  List<String> bgMechanicsList = Utils.bgMechanicsList;
+
+  List<String> bgThemesList = Utils.bgThemesList;
 
 // END Select Date of Birth
 
@@ -229,19 +234,33 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                   ),
                                   GestureDetector(
                                       onTap: () {
-                                        Navigator.of(context).push(
-                                          PageRouteBuilder(
-                                            pageBuilder: (context, animation1,
-                                                    animation2) =>
-                                                ProfilePageBgGenreEdit(
-                                                    userSnapshot:
-                                                        userSnapshot.data!,
-                                                    notifyParent: refresh),
-                                            transitionDuration: Duration.zero,
-                                            reverseTransitionDuration:
-                                                Duration.zero,
+                                        Navigator.of(context)
+                                            .push(PageRouteBuilder(
+                                          pageBuilder: (
+                                            BuildContext context,
+                                            Animation<double> animation,
+                                            Animation<double>
+                                                secondaryAnimation,
+                                          ) =>
+                                              ProfilePageBgGenreEdit(
+                                                  userSnapshot:
+                                                      userSnapshot.data!,
+                                                  notifyParent: refresh),
+                                          transitionsBuilder: (
+                                            BuildContext context,
+                                            Animation<double> animation,
+                                            Animation<double>
+                                                secondaryAnimation,
+                                            Widget child,
+                                          ) =>
+                                              SlideTransition(
+                                            position: Tween<Offset>(
+                                              begin: const Offset(1, 0),
+                                              end: Offset.zero,
+                                            ).animate(animation),
+                                            child: child,
                                           ),
-                                        );
+                                        ));
                                       },
                                       child: Container(
                                           margin: const EdgeInsets.fromLTRB(
@@ -741,7 +760,10 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
   void _showBgMechanicAndThemeModal(
       BuildContext context, AppUser userSnapshot) {
     /* Board Game Mechanics  */
-    List<String> bgMechanicsList = Utils.bgMechanicsList;
+    bgMechanicsList = Utils.bgMechanicsList;
+
+    /// Search for Game Mechanic  */
+    String mechanicSearchText = '';
 
     List<String> bgMechanicsSelectedList = [];
     for (var i = 0; i < userSnapshot.favBgMechanics.length; i++) {
@@ -750,14 +772,31 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
 
     /* END Board Game Mechanics END */
 
+    /// Search for Game Mechanic  */
+    String themeSearchText = '';
+
+    /* Filter Game Mechanics */
+    List<String> filterBgMechanics = [];
+    filterBgMechanics.addAll(Utils.bgMechanicsList);
+
+    print("LOG filterBgMechanics.isEmpty ${filterBgMechanics.length}");
+    /* END Filter Game Mechanics */
+
     /* Board Game Themes  */
-    List<String> bgThemesList = Utils.bgThemesList;
+    bgThemesList = Utils.bgThemesList;
 
     List<String> bgThemesSelectedList = [];
     for (var i = 0; i < userSnapshot.favBgThemes.length; i++) {
       bgThemesSelectedList.add(userSnapshot.favBgThemes[i]);
     }
     /* END Board Game Themes END */
+
+    /* Filter Game Mechanics */
+    List<String> filterBgThemes = [];
+    filterBgThemes.addAll(Utils.bgThemesList);
+
+    print("LOG filterBgThemes.isEmpty ${filterBgThemes.length}");
+    /* END Filter Game Mechanics */
 
     showModalBottomSheet(
       elevation: 5,
@@ -766,11 +805,8 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
       ),
       context: context,
       builder: (BuildContext context) {
-        bool b = false;
-
-        return StatefulBuilder(builder: (BuildContext context, setState) {
-          print("BOOL $b");
-
+        return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
           return DefaultTabController(
             length: 2,
             child: Padding(
@@ -794,97 +830,195 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                     children: [
                       Column(
                         children: [
-                          Text("Here are your favourite mechanics",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 24)),
-                          SizedBox(height: 26),
+                          SearchWidget(
+                            text: mechanicSearchText,
+                            onEditingComplete: (searchStr) {
+                              print("LOG THIS IS TEXT $searchStr");
+
+                              if (searchStr.isNotEmpty) {
+                                print("LOG STR jotain $searchStr");
+                                setState(() {
+                                  filterBgMechanics = [];
+
+                                  filterBgMechanics
+                                      .addAll(Utils.bgMechanicsList);
+
+                                  filterBgMechanics.retainWhere((bgMechanic) {
+                                    return bgMechanic
+                                        .toLowerCase()
+                                        .contains(searchStr.toLowerCase());
+                                  });
+
+                                  bgMechanicsList = filterBgMechanics;
+                                });
+                              }
+
+                              if (searchStr.isEmpty) {
+                                print("LOG THIS IS EMPTY TEXT");
+
+                                setState(() {
+                                  bgMechanicsList = Utils.bgMechanicsList;
+                                  filterBgMechanics = Utils.bgMechanicsList;
+                                });
+                              }
+                            },
+                            onChanged: (searchStr) {
+                              setState(() {
+                                if (searchStr.isEmpty) {
+                                  print("THIS IS EMPTY searchStr");
+
+                                  setState(() {
+                                    bgMechanicsList = Utils.bgMechanicsList;
+                                    filterBgMechanics = Utils.bgMechanicsList;
+                                  });
+                                }
+
+                                mechanicSearchText = searchStr;
+                              });
+                            },
+                            hintText: 'Search for game mechanics',
+                          ),
                           Expanded(
-                            child: ListView(
-                                children: bgMechanicsList.map((bgMechanic) {
-                              final isSelected =
-                                  bgMechanicsSelectedList.contains(bgMechanic);
+                            child: filterBgMechanics.isEmpty
+                                ? Text("No results",
+                                    style:
+                                        Theme.of(context).textTheme.headline4)
+                                : ListView(
+                                    children: bgMechanicsList.map((bgMechanic) {
+                                    final isSelected = bgMechanicsSelectedList
+                                        .contains(bgMechanic);
 
-                              final selectedColor =
-                                  Theme.of(context).primaryColor;
-                              final style = isSelected
-                                  ? TextStyle(
-                                      fontSize: 18,
-                                      color: selectedColor,
-                                      fontWeight: FontWeight.bold,
-                                    )
-                                  : TextStyle(fontSize: 18);
+                                    final selectedColor =
+                                        Theme.of(context).primaryColor;
+                                    final style = isSelected
+                                        ? TextStyle(
+                                            fontSize: 18,
+                                            color: selectedColor,
+                                            fontWeight: FontWeight.bold,
+                                          )
+                                        : TextStyle(fontSize: 18);
 
-                              return ListTile(
-                                onTap: () {
-                                  final isSelected = bgMechanicsSelectedList
-                                      .contains(bgMechanic);
+                                    return ListTile(
+                                      onTap: () {
+                                        final isSelected =
+                                            bgMechanicsSelectedList
+                                                .contains(bgMechanic);
 
-                                  setState(() => isSelected
-                                      ? bgMechanicsSelectedList
-                                          .remove(bgMechanic)
-                                      : bgMechanicsSelectedList
-                                          .add(bgMechanic));
+                                        setState(() => isSelected
+                                            ? bgMechanicsSelectedList
+                                                .remove(bgMechanic)
+                                            : bgMechanicsSelectedList
+                                                .add(bgMechanic));
 
-                                  print(
-                                      "bgMechanicsSelectedList, ${bgMechanicsSelectedList.length}");
-                                },
-                                title: Text(
-                                  bgMechanic,
-                                  style: style,
-                                ),
-                                trailing: isSelected
-                                    ? Icon(Icons.check,
-                                        color: selectedColor, size: 26)
-                                    : null,
-                              );
-                            }).toList()),
+                                        print(
+                                            "bgMechanicsSelectedList, ${bgMechanicsSelectedList.length}");
+                                      },
+                                      title: Text(
+                                        bgMechanic,
+                                        style: style,
+                                      ),
+                                      trailing: isSelected
+                                          ? Icon(Icons.check,
+                                              color: selectedColor, size: 26)
+                                          : null,
+                                    );
+                                  }).toList()),
                           ),
                         ],
                       ),
                       Column(
                         children: [
-                          Text("Here are your favourite themes",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 24)),
-                          SizedBox(height: 26),
+                          SearchWidget(
+                            text: themeSearchText,
+                            onEditingComplete: (searchStr) {
+                              print("LOG THIS IS TEXT $searchStr");
+
+                              if (searchStr.isNotEmpty) {
+                                print("LOG STR jotain $searchStr");
+                                setState(() {
+                                  filterBgThemes = [];
+
+                                  filterBgThemes.addAll(Utils.bgThemesList);
+
+                                  filterBgThemes.retainWhere((bgTheme) {
+                                    return bgTheme
+                                        .toLowerCase()
+                                        .contains(searchStr.toLowerCase());
+                                  });
+
+                                  bgThemesList = filterBgThemes;
+                                });
+                              }
+
+                              if (searchStr.isEmpty) {
+                                print("LOG THIS IS EMPTY TEXT");
+
+                                setState(() {
+                                  bgThemesList = Utils.bgThemesList;
+                                  filterBgThemes = Utils.bgThemesList;
+                                });
+                              }
+                            },
+                            onChanged: (searchStr) {
+                              setState(() {
+                                if (searchStr.isEmpty) {
+                                  print("THIS IS EMPTY searchStr");
+
+                                  setState(() {
+                                    bgMechanicsList = Utils.bgThemesList;
+                                    filterBgThemes = Utils.bgThemesList;
+                                  });
+                                }
+
+                                themeSearchText = searchStr;
+                              });
+                            },
+                            hintText: 'Search for game mechanics',
+                          ),
                           Expanded(
-                            child: ListView(
-                                children: bgThemesList.map((bgTheme) {
-                              final isSelected =
-                                  bgThemesSelectedList.contains(bgTheme);
+                            child: filterBgThemes.isEmpty
+                                ? Text("No results",
+                                    style:
+                                        Theme.of(context).textTheme.headline4)
+                                : ListView(
+                                    children: bgThemesList.map((bgTheme) {
+                                    final isSelected =
+                                        bgThemesSelectedList.contains(bgTheme);
 
-                              final selectedColor =
-                                  Theme.of(context).primaryColor;
-                              final style = isSelected
-                                  ? TextStyle(
-                                      fontSize: 18,
-                                      color: selectedColor,
-                                      fontWeight: FontWeight.bold,
-                                    )
-                                  : TextStyle(fontSize: 18);
+                                    final selectedColor =
+                                        Theme.of(context).primaryColor;
+                                    final style = isSelected
+                                        ? TextStyle(
+                                            fontSize: 18,
+                                            color: selectedColor,
+                                            fontWeight: FontWeight.bold,
+                                          )
+                                        : TextStyle(fontSize: 18);
 
-                              return ListTile(
-                                onTap: () {
-                                  final isSelected =
-                                      bgThemesSelectedList.contains(bgTheme);
+                                    return ListTile(
+                                      onTap: () {
+                                        final isSelected = bgThemesSelectedList
+                                            .contains(bgTheme);
 
-                                  setState(() => isSelected
-                                      ? bgThemesSelectedList.remove(bgTheme)
-                                      : bgThemesSelectedList.add(bgTheme));
+                                        setState(() => isSelected
+                                            ? bgThemesSelectedList
+                                                .remove(bgTheme)
+                                            : bgThemesSelectedList
+                                                .add(bgTheme));
 
-                                  print(
-                                      "bgThemesSelectedList, ${bgThemesSelectedList.length}");
-                                },
-                                title: Text(
-                                  bgTheme,
-                                  style: style,
-                                ),
-                                trailing: isSelected
-                                    ? Icon(Icons.check,
-                                        color: selectedColor, size: 26)
-                                    : null,
-                              );
-                            }).toList()),
+                                        print(
+                                            "bgThemesSelectedList, ${bgThemesSelectedList.length}");
+                                      },
+                                      title: Text(
+                                        bgTheme,
+                                        style: style,
+                                      ),
+                                      trailing: isSelected
+                                          ? Icon(Icons.check,
+                                              color: selectedColor, size: 26)
+                                          : null,
+                                    );
+                                  }).toList()),
                           ),
                         ],
                       ),
@@ -1211,6 +1345,8 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                       setState(() {
                                         _isProcessing = false;
                                       });
+
+                                      Navigator.of(context).pop();
                                     } else {
                                       setState(() {
                                         _isProcessing = false;

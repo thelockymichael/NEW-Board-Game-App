@@ -22,7 +22,9 @@ jobs:
       FASTFILE: ${{ secrets.FASTFILE }}
     steps: 
       - uses: actions/checkout@v2
-      - uses: dart-lang/setup-dart@v2.7.0
+      - uses: dart-lang/setup-dart@v1.3
+        with:
+          sdk: '2.7.0'
       - uses: actions/setup-java@v2
         with:
           distribution: 'adopt'

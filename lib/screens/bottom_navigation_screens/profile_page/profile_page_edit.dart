@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
-import 'package:flutter_demo_01/components/widgets/rounded_icon_button.dart';
 import 'package:flutter_demo_01/components/widgets/search_widget.dart';
 import 'package:flutter_demo_01/db/remote/response.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
@@ -11,7 +10,6 @@ import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/f
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/profile_page_bg_genre_edit.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/profile_page_bio_edit.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/profile_page_fav_board_games_edit.dart';
-import 'package:flutter_demo_01/utils/constants.dart';
 import 'package:flutter_demo_01/utils/validator.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:image_picker/image_picker.dart';

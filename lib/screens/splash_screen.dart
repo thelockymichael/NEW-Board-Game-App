@@ -1,9 +1,7 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
 import 'package:flutter_demo_01/db/remote/firebase_database_source.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/navigation/bottom_navigation_bar.dart';
@@ -11,7 +9,6 @@ import 'package:flutter_demo_01/screens/login_page.dart';
 import 'package:flutter_demo_01/screens/setup_screens/first_name_bgg_page.dart';
 import 'package:flutter_demo_01/utils/constants.dart';
 import 'package:flutter_demo_01/utils/shared_preferences_utils.dart';
-import 'package:flutter_demo_01/utils/utils.dart';
 
 class SplashScreen extends StatefulWidget {
   static const String id = 'splash_screen';

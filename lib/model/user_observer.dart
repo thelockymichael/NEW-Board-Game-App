@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_demo_01/db/remote/firebase_database_source.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
-import 'package:flutter_demo_01/utils/utils.dart';
 
 class UserObserver {
   final FirebaseDatabaseSource _databaseSource = FirebaseDatabaseSource();

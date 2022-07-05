@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_function_declarations_over_variables
 
 import 'package:flutter/material.dart';
-import 'package:flutter_demo_01/api/recommend_games_api.dart';
 import 'package:flutter_demo_01/components/discover/discover_card.dart';
 import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
 import 'package:flutter_demo_01/db/entity/UserQuery.dart';

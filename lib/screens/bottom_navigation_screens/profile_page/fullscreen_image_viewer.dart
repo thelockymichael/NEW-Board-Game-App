@@ -2,12 +2,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
 import 'package:flutter_demo_01/components/widgets/rounded_icon_button.dart';
-import 'package:flutter_demo_01/db/entity/GridItem.dart';
-import 'package:flutter_demo_01/db/entity/FavGenreItem.dart';
 import 'package:flutter_demo_01/db/remote/response.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
-import 'package:flutter_demo_01/utils/constants.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -202,7 +199,7 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
                                                               indexOfItem]);
 
                                                   print(
-                                                      "LOG jotain does It exist ${deleteImageNum}");
+                                                      "LOG jotain does It exist $deleteImageNum");
 
                                                   userProvider
                                                       .deleteUserProfilePhoto(

@@ -136,7 +136,7 @@ class _V1RegisterPageState extends State<V1RegisterPage> {
 
                                         await _userProvider
                                             .registerUser(
-                                                _userRegistration, _scaffoldKey)
+                                                _userRegistration, context)
                                             .then((response) {
                                           if (response is Success) {
                                             Navigator.pop(context);

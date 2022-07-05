@@ -412,7 +412,7 @@ class _ProfilePageFavTopBoardGamesEditState
       if (boardGameSelected != null) {
         print("boardGame Rank $boardGameRank");
         _userProvider.updateFavouriteBoardGamesByGenre(userSnapshot,
-            boardGameSelected!, boardGameRank, widget.gameGenre, _scaffoldKey);
+            boardGameSelected!, boardGameRank, widget.gameGenre, context);
 
         print("boardGameSelected ${boardGameSelected?.name}");
       }

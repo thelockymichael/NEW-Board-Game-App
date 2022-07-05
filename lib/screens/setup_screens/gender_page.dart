@@ -69,179 +69,196 @@ class GenderPageState extends State<GenderPage> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(24.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "My Gender is",
-                                      style: TextStyle(fontSize: 32),
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        SizedBox(
-                                          height: 200,
-                                          child: ListView(
-                                            children:
-                                                availableGenders.map((gender) {
-                                              final isSelected = selectedGender
-                                                  .contains(gender);
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.max,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "My Gender is",
+                                        style: TextStyle(fontSize: 32),
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          SizedBox(
+                                            height: 200,
+                                            child: ListView(
+                                              children: availableGenders
+                                                  .map((gender) {
+                                                final isSelected =
+                                                    selectedGender
+                                                        .contains(gender);
 
-                                              final selectedColor =
-                                                  Theme.of(context)
-                                                      .primaryColor;
-                                              final style = isSelected
-                                                  ? TextStyle(
-                                                      fontSize: 18,
-                                                      color: selectedColor,
-                                                      fontWeight:
-                                                          FontWeight.bold)
-                                                  : TextStyle(fontSize: 18);
-
-                                              return ListTile(
-                                                onTap: () {
-                                                  selectedGender.clear();
-
-                                                  final isSelected =
-                                                      selectedGender
-                                                          .contains(gender);
-
-                                                  setState(() {
-                                                    errorMessageEnabled = false;
-
-                                                    isSelected
-                                                        ? selectedGender
-                                                            .remove(gender)
-                                                        : selectedGender
-                                                            .add(gender);
-                                                  });
-                                                  print(
-                                                      "LOG isSelected selectedGender: $selectedGender");
-                                                  print(
-                                                      "LOG isSelected gender: $gender");
-                                                },
-                                                title: Text(
-                                                  gender.capitalize(),
-                                                  style: style,
-                                                ),
-                                                trailing: isSelected
-                                                    ? Icon(
-                                                        Icons
-                                                            .radio_button_checked,
+                                                final selectedColor =
+                                                    Theme.of(context)
+                                                        .primaryColor;
+                                                final style = isSelected
+                                                    ? TextStyle(
+                                                        fontSize: 18,
                                                         color: selectedColor,
-                                                        size: 26)
-                                                    : Icon(
-                                                        Icons
-                                                            .radio_button_unchecked,
-                                                        color: selectedColor,
-                                                        size: 26),
-                                              );
-                                            }).toList(),
-                                          ),
-                                        ),
-                                        errorMessageEnabled
-                                            ? Container(
-                                                margin:
-                                                    const EdgeInsets.fromLTRB(
-                                                        0, 8, 0, 8),
-                                                child: Text(
-                                                  "Gender must be selected.",
-                                                  style: TextStyle(
-                                                      color: Colors.red),
-                                                ),
-                                              )
-                                            : Container(),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: ElevatedButton(
-                                                onPressed: () async {
-                                                  bool isValidGender =
-                                                      Validator.validateGender(
-                                                          selectedGender:
-                                                              selectedGender[
-                                                                  0]);
+                                                        fontWeight:
+                                                            FontWeight.bold)
+                                                    : TextStyle(fontSize: 18);
 
-                                                  if (isValidGender) {
-                                                    _userRegistration.gender =
-                                                        selectedGender[0];
+                                                return ListTile(
+                                                  onTap: () {
+                                                    selectedGender.clear();
 
-                                                    context.loaderOverlay.show(
-                                                        widget: UpdateGender());
-                                                    setState(() {
-                                                      _isLoaderVisible = context
-                                                          .loaderOverlay
-                                                          .visible;
-                                                    });
+                                                    final isSelected =
+                                                        selectedGender
+                                                            .contains(gender);
 
-                                                    await _userProvider
-                                                        .updateGender(
-                                                            userSnapshot.data!,
-                                                            _userRegistration,
-                                                            _scaffoldKey)
-                                                        .then((response) {
-                                                      if (response is Success) {
-                                                        if (_isLoaderVisible) {
-                                                          context.loaderOverlay
-                                                              .hide();
-                                                        }
-                                                      }
-                                                      Navigator.of(context)
-                                                          .push(
-                                                              PageRouteBuilder(
-                                                        pageBuilder: (
-                                                          BuildContext context,
-                                                          Animation<double>
-                                                              animation,
-                                                          Animation<double>
-                                                              secondaryAnimation,
-                                                        ) =>
-                                                            AddPhotosPage(
-                                                          profilePhotoPaths:
-                                                              userSnapshot.data!
-                                                                  .profilePhotoPaths,
-                                                        ),
-                                                        transitionsBuilder: (
-                                                          BuildContext context,
-                                                          Animation<double>
-                                                              animation,
-                                                          Animation<double>
-                                                              secondaryAnimation,
-                                                          Widget child,
-                                                        ) =>
-                                                            SlideTransition(
-                                                          position:
-                                                              Tween<Offset>(
-                                                            begin: const Offset(
-                                                                1, 0),
-                                                            end: Offset.zero,
-                                                          ).animate(animation),
-                                                          child: child,
-                                                        ),
-                                                      ));
-                                                    });
-                                                  } else {
                                                     setState(() {
                                                       errorMessageEnabled =
-                                                          true;
+                                                          false;
+
+                                                      isSelected
+                                                          ? selectedGender
+                                                              .remove(gender)
+                                                          : selectedGender
+                                                              .add(gender);
                                                     });
-                                                  }
-                                                },
-                                                child: const Text(
-                                                  'Next',
-                                                  style: TextStyle(
-                                                      color: Colors.white),
+                                                    print(
+                                                        "LOG isSelected selectedGender: $selectedGender");
+                                                    print(
+                                                        "LOG isSelected gender: $gender");
+                                                  },
+                                                  title: Text(
+                                                    gender.capitalize(),
+                                                    style: style,
+                                                  ),
+                                                  trailing: isSelected
+                                                      ? Icon(
+                                                          Icons
+                                                              .radio_button_checked,
+                                                          color: selectedColor,
+                                                          size: 26)
+                                                      : Icon(
+                                                          Icons
+                                                              .radio_button_unchecked,
+                                                          color: selectedColor,
+                                                          size: 26),
+                                                );
+                                              }).toList(),
+                                            ),
+                                          ),
+                                          errorMessageEnabled
+                                              ? Container(
+                                                  margin:
+                                                      const EdgeInsets.fromLTRB(
+                                                          0, 8, 0, 8),
+                                                  child: Text(
+                                                    "Gender must be selected.",
+                                                    style: TextStyle(
+                                                        color: Colors.red),
+                                                  ),
+                                                )
+                                              : Container(),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: ElevatedButton(
+                                                  onPressed: () async {
+                                                    bool isValidGender =
+                                                        Validator.validateGender(
+                                                            selectedGender:
+                                                                selectedGender[
+                                                                    0]);
+
+                                                    if (isValidGender) {
+                                                      _userRegistration.gender =
+                                                          selectedGender[0];
+
+                                                      context.loaderOverlay.show(
+                                                          widget:
+                                                              UpdateGender());
+                                                      setState(() {
+                                                        _isLoaderVisible =
+                                                            context
+                                                                .loaderOverlay
+                                                                .visible;
+                                                      });
+
+                                                      await _userProvider
+                                                          .updateGender(
+                                                              userSnapshot
+                                                                  .data!,
+                                                              _userRegistration,
+                                                              context)
+                                                          .then((response) {
+                                                        if (response
+                                                            is Success) {
+                                                          if (_isLoaderVisible) {
+                                                            context
+                                                                .loaderOverlay
+                                                                .hide();
+                                                          }
+                                                        }
+                                                        Navigator.of(context)
+                                                            .push(
+                                                                PageRouteBuilder(
+                                                          pageBuilder: (
+                                                            BuildContext
+                                                                context,
+                                                            Animation<double>
+                                                                animation,
+                                                            Animation<double>
+                                                                secondaryAnimation,
+                                                          ) =>
+                                                              AddPhotosPage(
+                                                            profilePhotoPaths:
+                                                                userSnapshot
+                                                                    .data!
+                                                                    .profilePhotoPaths,
+                                                          ),
+                                                          transitionsBuilder: (
+                                                            BuildContext
+                                                                context,
+                                                            Animation<double>
+                                                                animation,
+                                                            Animation<double>
+                                                                secondaryAnimation,
+                                                            Widget child,
+                                                          ) =>
+                                                              SlideTransition(
+                                                            position:
+                                                                Tween<Offset>(
+                                                              begin:
+                                                                  const Offset(
+                                                                      1, 0),
+                                                              end: Offset.zero,
+                                                            ).animate(
+                                                                    animation),
+                                                            child: child,
+                                                          ),
+                                                        ));
+                                                      });
+                                                    } else {
+                                                      setState(() {
+                                                        errorMessageEnabled =
+                                                            true;
+                                                      });
+                                                    }
+                                                  },
+                                                  child: const Text(
+                                                    'Next',
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  ],
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
+                              )
                             ],
                           )
                         : Container());

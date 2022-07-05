@@ -63,168 +63,176 @@ class AddPhotosPageState extends State<AddPhotosPage> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(24.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Add Photos",
-                                      style: TextStyle(fontSize: 32),
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        SizedBox(
-                                          height: 300,
-                                          child: GridView.count(
-                                            crossAxisCount: 3,
-                                            children: List.generate(6, (index) {
-                                              return GestureDetector(
-                                                  onTap: () async {
-                                                    final pickedFile =
-                                                        await ImagePicker()
-                                                            .pickImage(
-                                                                source:
-                                                                    ImageSource
-                                                                        .gallery);
-                                                    if (pickedFile != null) {
-                                                      await userProvider
-                                                          .updateUserProfilePhoto(
-                                                              pickedFile.path,
-                                                              _scaffoldKey,
-                                                              index)
-                                                          .then((response) {
-                                                        if (response
-                                                            is Success) {
-                                                          print(
-                                                              "LOG response is success ${response.value}");
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.max,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Add Photos",
+                                        style: TextStyle(fontSize: 32),
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          SizedBox(
+                                            height: 300,
+                                            child: GridView.count(
+                                              crossAxisCount: 3,
+                                              children:
+                                                  List.generate(6, (index) {
+                                                return GestureDetector(
+                                                    onTap: () async {
+                                                      final pickedFile =
+                                                          await ImagePicker()
+                                                              .pickImage(
+                                                                  source: ImageSource
+                                                                      .gallery);
+                                                      if (pickedFile != null) {
+                                                        await userProvider
+                                                            .updateUserProfilePhoto(
+                                                                pickedFile.path,
+                                                                context,
+                                                                index)
+                                                            .then((response) {
+                                                          if (response
+                                                              is Success) {
+                                                            print(
+                                                                "LOG response is success ${response.value}");
 
-                                                          setState(() {
-                                                            selectedPhotos[
-                                                                    index] =
-                                                                response.value;
+                                                            setState(() {
+                                                              selectedPhotos[
+                                                                      index] =
+                                                                  response
+                                                                      .value;
 
-                                                            errorMessageEnabled =
-                                                                false;
-                                                          });
+                                                              errorMessageEnabled =
+                                                                  false;
+                                                            });
 
-                                                          print(
-                                                              "LOG selectedPhotos[0] ${selectedPhotos[0]}");
-                                                        }
+                                                            print(
+                                                                "LOG selectedPhotos[0] ${selectedPhotos[0]}");
+                                                          }
+                                                        });
+                                                      }
+                                                    },
+                                                    child: Stack(
+                                                      children: [
+                                                        Container(
+                                                          width: 100,
+                                                          height: 100,
+                                                          decoration: BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          12),
+                                                              color: Colors
+                                                                  .blue[200],
+                                                              image: DecorationImage(
+                                                                  fit: BoxFit
+                                                                      .contain,
+                                                                  image: NetworkImage(
+                                                                      userSnapshot
+                                                                          .data!
+                                                                          .profilePhotoPaths[index]))),
+                                                        ),
+                                                        Positioned(
+                                                            top: 1.0,
+                                                            right: 1.0,
+                                                            child:
+                                                                RoundedIconButton(
+                                                              onPressed:
+                                                                  () async {},
+                                                              iconData:
+                                                                  Icons.add,
+                                                              iconSize: 18,
+                                                              buttonColor:
+                                                                  Colors.blue,
+                                                            ))
+                                                      ],
+                                                    ));
+                                              }),
+                                            ),
+                                          ),
+                                          errorMessageEnabled
+                                              ? Container(
+                                                  margin:
+                                                      const EdgeInsets.fromLTRB(
+                                                          0, 8, 0, 8),
+                                                  child: Text(
+                                                    "At least one photo must be uploaded.",
+                                                    style: TextStyle(
+                                                        color: Colors.red),
+                                                  ),
+                                                )
+                                              : Container(),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: ElevatedButton(
+                                                  onPressed: () async {
+                                                    bool isValidGender = Validator
+                                                        .validatePhotosArray(
+                                                            photosArray:
+                                                                selectedPhotos);
+                                                    if (isValidGender) {
+                                                      print(
+                                                          "LOG photos are valid");
+
+                                                      Navigator.of(context)
+                                                          .push(
+                                                              PageRouteBuilder(
+                                                        pageBuilder: (
+                                                          BuildContext context,
+                                                          Animation<double>
+                                                              animation,
+                                                          Animation<double>
+                                                              secondaryAnimation,
+                                                        ) =>
+                                                            EnableLocationPage(),
+                                                        transitionsBuilder: (
+                                                          BuildContext context,
+                                                          Animation<double>
+                                                              animation,
+                                                          Animation<double>
+                                                              secondaryAnimation,
+                                                          Widget child,
+                                                        ) =>
+                                                            SlideTransition(
+                                                          position:
+                                                              Tween<Offset>(
+                                                            begin: const Offset(
+                                                                1, 0),
+                                                            end: Offset.zero,
+                                                          ).animate(animation),
+                                                          child: child,
+                                                        ),
+                                                      ));
+                                                    } else {
+                                                      setState(() {
+                                                        errorMessageEnabled =
+                                                            true;
                                                       });
                                                     }
                                                   },
-                                                  child: Stack(
-                                                    children: [
-                                                      Container(
-                                                        width: 100,
-                                                        height: 100,
-                                                        decoration: BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        12),
-                                                            color: Colors
-                                                                .blue[200],
-                                                            image: DecorationImage(
-                                                                fit: BoxFit
-                                                                    .contain,
-                                                                image: NetworkImage(
-                                                                    userSnapshot
-                                                                            .data!
-                                                                            .profilePhotoPaths[
-                                                                        index]))),
-                                                      ),
-                                                      Positioned(
-                                                          top: 1.0,
-                                                          right: 1.0,
-                                                          child:
-                                                              RoundedIconButton(
-                                                            onPressed:
-                                                                () async {},
-                                                            iconData: Icons.add,
-                                                            iconSize: 18,
-                                                            buttonColor:
-                                                                Colors.blue,
-                                                          ))
-                                                    ],
-                                                  ));
-                                            }),
-                                          ),
-                                        ),
-                                        errorMessageEnabled
-                                            ? Container(
-                                                margin:
-                                                    const EdgeInsets.fromLTRB(
-                                                        0, 8, 0, 8),
-                                                child: Text(
-                                                  "At least one photo must be uploaded.",
-                                                  style: TextStyle(
-                                                      color: Colors.red),
-                                                ),
-                                              )
-                                            : Container(),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: ElevatedButton(
-                                                onPressed: () async {
-                                                  bool isValidGender = Validator
-                                                      .validatePhotosArray(
-                                                          photosArray:
-                                                              selectedPhotos);
-                                                  if (isValidGender) {
-                                                    print(
-                                                        "LOG photos are valid");
-
-                                                    Navigator.of(context)
-                                                        .push(PageRouteBuilder(
-                                                      pageBuilder: (
-                                                        BuildContext context,
-                                                        Animation<double>
-                                                            animation,
-                                                        Animation<double>
-                                                            secondaryAnimation,
-                                                      ) =>
-                                                          EnableLocationPage(),
-                                                      transitionsBuilder: (
-                                                        BuildContext context,
-                                                        Animation<double>
-                                                            animation,
-                                                        Animation<double>
-                                                            secondaryAnimation,
-                                                        Widget child,
-                                                      ) =>
-                                                          SlideTransition(
-                                                        position: Tween<Offset>(
-                                                          begin: const Offset(
-                                                              1, 0),
-                                                          end: Offset.zero,
-                                                        ).animate(animation),
-                                                        child: child,
-                                                      ),
-                                                    ));
-                                                  } else {
-                                                    setState(() {
-                                                      errorMessageEnabled =
-                                                          true;
-                                                    });
-                                                  }
-                                                },
-                                                child: const Text(
-                                                  'Next',
-                                                  style: TextStyle(
-                                                      color: Colors.white),
+                                                  child: const Text(
+                                                    'Next',
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  ],
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
+                              )
                             ],
                           )
                         : Container());

@@ -34,7 +34,7 @@ class Validator {
     if (email.isEmpty) {
       return 'Email can\'t be empty.';
     } else if (!emailRegExp.hasMatch(email)) {
-      return 'Enter a correct email.';
+      return 'Enter an email address.';
     }
 
     return null;

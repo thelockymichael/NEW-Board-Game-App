@@ -76,10 +76,9 @@ class EnableLocationPageState extends State<EnableLocationPage> {
       setState(() {
         _currentLocation = '${place.locality}';
         _userProvider.updateCurrentLocationAddress(
-            userSnapshot, _currentLocation!, _scaffoldKey);
+            userSnapshot, _currentLocation!, context);
 
-        _userProvider.updateCurrentGeoLocation(
-            userSnapshot, position, _scaffoldKey);
+        _userProvider.updateCurrentGeoLocation(userSnapshot, position, context);
       });
     }).catchError((e) {
       debugPrint(e);
@@ -134,98 +133,112 @@ class EnableLocationPageState extends State<EnableLocationPage> {
                         ? Stack(
                             children: [
                               Padding(
-                                padding: const EdgeInsets.all(24.0),
-                                child: Column(
-                                  children: <Widget>[
-                                    const Icon(Icons.location_pin,
-                                        size: 120, color: Colors.grey),
-                                    const Text(
-                                      "Enable location",
-                                      style: TextStyle(
-                                          fontSize: 26,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    const Text(
-                                      "With access to location data app can find you the best users near you.",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: 16, color: Colors.black87),
-                                    ),
-                                    errorMessageEnabled
-                                        ? Container(
-                                            margin: const EdgeInsets.fromLTRB(
-                                                0, 8, 0, 8),
-                                            child: Text(
-                                              "At least one photo must be uploaded.",
-                                              style:
-                                                  TextStyle(color: Colors.red),
-                                            ),
-                                          )
-                                        : Container(),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: ElevatedButton(
-                                            onPressed: () async {
-                                              context.loaderOverlay.show(
-                                                  widget:
-                                                      (CreateLocationOverlay()));
-                                              setState(() {
-                                                _isLoaderVisible = context
-                                                    .loaderOverlay.visible;
-                                              });
-
-                                              Timer(Duration(seconds: 1),
-                                                  () async {
-                                                if (_isLoaderVisible) {
-                                                  context.loaderOverlay.hide();
-                                                } //   userSnapshot.data!
-                                                userSnapshot.data!
-                                                    .setupIsCompleted = true;
-
-                                                userProvider
-                                                    .updateSetupCompleted(
-                                                        userSnapshot.data!,
-                                                        _scaffoldKey);
-
-                                                Navigator.of(context)
-                                                    .pushNamedAndRemoveUntil(
-                                                        MainNavigation.id,
-                                                        (route) => false);
-                                              });
-
-                                              // await _getCurrentPosition()
-                                              //     .then((value) {
-                                              //   if (_isLoaderVisible) {
-                                              //     context.loaderOverlay.hide();
-                                              //   }
-
-                                              //   userSnapshot.data!
-                                              //       .setupIsCompleted = true;
-
-                                              //   userProvider
-                                              //       .updateSetupCompleted(
-                                              //           userSnapshot.data!,
-                                              //           _scaffoldKey);
-
-                                              //   Navigator.of(context)
-                                              //       .pushNamedAndRemoveUntil(
-                                              //           MainNavigation.id,
-                                              //           (route) => false);
-                                              // });
-                                            },
-                                            child: const Text(
-                                              'ENABLE LOCATION',
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            ),
+                                  padding: const EdgeInsets.all(24.0),
+                                  child: Center(
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.max,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          const Icon(Icons.location_pin,
+                                              size: 120, color: Colors.grey),
+                                          const Text(
+                                            "Enable location",
+                                            style: TextStyle(
+                                                fontSize: 26,
+                                                fontWeight: FontWeight.bold),
                                           ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
+                                          const Text(
+                                            "With access to location data app can find you the best users near you.",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.black87),
+                                          ),
+                                          errorMessageEnabled
+                                              ? Container(
+                                                  margin:
+                                                      const EdgeInsets.fromLTRB(
+                                                          0, 8, 0, 8),
+                                                  child: Text(
+                                                    "At least one photo must be uploaded.",
+                                                    style: TextStyle(
+                                                        color: Colors.red),
+                                                  ),
+                                                )
+                                              : Container(),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: ElevatedButton(
+                                                  onPressed: () async {
+                                                    context.loaderOverlay.show(
+                                                        widget:
+                                                            (CreateLocationOverlay()));
+                                                    setState(() {
+                                                      _isLoaderVisible = context
+                                                          .loaderOverlay
+                                                          .visible;
+                                                    });
+
+                                                    Timer(Duration(seconds: 1),
+                                                        () async {
+                                                      if (_isLoaderVisible) {
+                                                        context.loaderOverlay
+                                                            .hide();
+                                                      } //   userSnapshot.data!
+                                                      userSnapshot.data!
+                                                              .setupIsCompleted =
+                                                          true;
+
+                                                      userProvider
+                                                          .updateSetupCompleted(
+                                                              userSnapshot
+                                                                  .data!,
+                                                              context);
+
+                                                      Navigator.of(context)
+                                                          .pushNamedAndRemoveUntil(
+                                                              MainNavigation.id,
+                                                              (route) => false);
+                                                    });
+
+                                                    // await _getCurrentPosition()
+                                                    //     .then((value) {
+                                                    //   if (_isLoaderVisible) {
+                                                    //     context.loaderOverlay.hide();
+                                                    //   }
+
+                                                    //   userSnapshot.data!
+                                                    //       .setupIsCompleted = true;
+
+                                                    //   userProvider
+                                                    //       .updateSetupCompleted(
+                                                    //           userSnapshot.data!,
+                                                    //           _scaffoldKey);
+
+                                                    //   Navigator.of(context)
+                                                    //       .pushNamedAndRemoveUntil(
+                                                    //           MainNavigation.id,
+                                                    //           (route) => false);
+                                                    // });
+                                                  },
+                                                  child: const Text(
+                                                    'ENABLE LOCATION',
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ))
                             ],
                           )
                         : Container());

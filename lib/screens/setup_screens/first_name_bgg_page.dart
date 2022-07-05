@@ -62,186 +62,199 @@ class FirstNameBggPageState extends State<FirstNameBggPage> {
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.all(24.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "First name",
-                                          style: TextStyle(fontSize: 32),
-                                        ),
-                                        Form(
-                                          key: _registerFormKey,
-                                          child: Column(
-                                            children: <Widget>[
-                                              TextFormField(
-                                                controller:
-                                                    _firstNameTextController
-                                                      ..text = userSnapshot
-                                                              .data?.name
-                                                              .capitalize() ??
-                                                          "",
-                                                focusNode: _focusFirstName,
-                                                validator: (value) =>
-                                                    Validator.validateFirstName(
-                                                  firstName: value,
-                                                ),
-                                                decoration: InputDecoration(
-                                                  hintText: "First name",
-                                                  errorBorder:
-                                                      UnderlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            6.0),
-                                                    borderSide:
-                                                        const BorderSide(
-                                                      color: Colors.red,
-                                                    ),
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.max,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "First name",
+                                            style: TextStyle(fontSize: 32),
+                                          ),
+                                          Form(
+                                            key: _registerFormKey,
+                                            child: Column(
+                                              children: <Widget>[
+                                                TextFormField(
+                                                  controller:
+                                                      _firstNameTextController
+                                                        ..text = userSnapshot
+                                                                .data?.name
+                                                                .capitalize() ??
+                                                            "",
+                                                  focusNode: _focusFirstName,
+                                                  validator: (value) =>
+                                                      Validator
+                                                          .validateFirstName(
+                                                    firstName: value,
                                                   ),
-                                                ),
-                                              ),
-                                              const SizedBox(height: 16.0),
-                                              Text(
-                                                "Board Game Geek username",
-                                                style: TextStyle(fontSize: 32),
-                                              ),
-                                              TextFormField(
-                                                controller:
-                                                    _bggUsernameTextController
-                                                      ..text = userSnapshot
-                                                              .data?.bggName
-                                                              .capitalize() ??
-                                                          "",
-                                                focusNode: _focusBggUsername,
-                                                validator: (value) => Validator
-                                                    .validateBggUsername(
-                                                        bggUsername: value),
-                                                decoration: InputDecoration(
-                                                  hintText: "BGG username",
-                                                  errorBorder:
-                                                      UnderlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            999.0),
-                                                    borderSide:
-                                                        const BorderSide(
-                                                      color: Colors.red,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                margin:
-                                                    const EdgeInsets.fromLTRB(
-                                                        0, 8, 0, 8),
-                                                child: Text(
-                                                    "Your first name and board game geek username will be visible to other users. You can edit these later."),
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: ElevatedButton(
-                                                      onPressed: () async {
-                                                        if (_registerFormKey
-                                                            .currentState!
-                                                            .validate()) {
-                                                          _userRegistration
-                                                                  .firstName =
-                                                              _firstNameTextController
-                                                                  .text;
-
-                                                          _userRegistration
-                                                                  .bggUsername =
-                                                              _bggUsernameTextController
-                                                                  .text;
-
-                                                          // Loader Overlay
-                                                          context.loaderOverlay
-                                                              .show(
-                                                                  widget:
-                                                                      UpdateFirstNameAndBggUsername());
-                                                          setState(() {
-                                                            _isLoaderVisible =
-                                                                context
-                                                                    .loaderOverlay
-                                                                    .visible;
-                                                          });
-
-                                                          await _userProvider
-                                                              .updateFirstNameAndBggUsername(
-                                                                  userSnapshot
-                                                                      .data!,
-                                                                  _userRegistration,
-                                                                  _scaffoldKey)
-                                                              .then((response) {
-                                                            if (response
-                                                                is Success) {
-                                                              if (_isLoaderVisible) {
-                                                                context
-                                                                    .loaderOverlay
-                                                                    .hide();
-                                                              }
-
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .push(
-                                                                      PageRouteBuilder(
-                                                                pageBuilder: (
-                                                                  BuildContext
-                                                                      context,
-                                                                  Animation<
-                                                                          double>
-                                                                      animation,
-                                                                  Animation<
-                                                                          double>
-                                                                      secondaryAnimation,
-                                                                ) =>
-                                                                    DateOfBirthPage(),
-                                                                transitionsBuilder: (
-                                                                  BuildContext
-                                                                      context,
-                                                                  Animation<
-                                                                          double>
-                                                                      animation,
-                                                                  Animation<
-                                                                          double>
-                                                                      secondaryAnimation,
-                                                                  Widget child,
-                                                                ) =>
-                                                                    SlideTransition(
-                                                                  position: Tween<
-                                                                      Offset>(
-                                                                    begin:
-                                                                        const Offset(
-                                                                            1,
-                                                                            0),
-                                                                    end: Offset
-                                                                        .zero,
-                                                                  ).animate(
-                                                                      animation),
-                                                                  child: child,
-                                                                ),
-                                                              ));
-                                                            }
-                                                          });
-                                                        }
-                                                      },
-                                                      child: const Text(
-                                                        'Next',
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.white),
+                                                  decoration: InputDecoration(
+                                                    hintText: "First name",
+                                                    errorBorder:
+                                                        UnderlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              6.0),
+                                                      borderSide:
+                                                          const BorderSide(
+                                                        color: Colors.red,
                                                       ),
                                                     ),
                                                   ),
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        )
-                                      ],
+                                                ),
+                                                const SizedBox(height: 16.0),
+                                                Text(
+                                                  "Board Game Geek username",
+                                                  style:
+                                                      TextStyle(fontSize: 32),
+                                                ),
+                                                TextFormField(
+                                                  controller:
+                                                      _bggUsernameTextController
+                                                        ..text = userSnapshot
+                                                                .data?.bggName
+                                                                .capitalize() ??
+                                                            "",
+                                                  focusNode: _focusBggUsername,
+                                                  validator: (value) =>
+                                                      Validator
+                                                          .validateBggUsername(
+                                                              bggUsername:
+                                                                  value),
+                                                  decoration: InputDecoration(
+                                                    hintText: "BGG username",
+                                                    errorBorder:
+                                                        UnderlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              999.0),
+                                                      borderSide:
+                                                          const BorderSide(
+                                                        color: Colors.red,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  margin:
+                                                      const EdgeInsets.fromLTRB(
+                                                          0, 8, 0, 8),
+                                                  child: Text(
+                                                      "Your first name and board game geek username will be visible to other users. You can edit these later."),
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: ElevatedButton(
+                                                        onPressed: () async {
+                                                          if (_registerFormKey
+                                                              .currentState!
+                                                              .validate()) {
+                                                            _userRegistration
+                                                                    .firstName =
+                                                                _firstNameTextController
+                                                                    .text;
+
+                                                            _userRegistration
+                                                                    .bggUsername =
+                                                                _bggUsernameTextController
+                                                                    .text;
+
+                                                            // Loader Overlay
+                                                            context
+                                                                .loaderOverlay
+                                                                .show(
+                                                                    widget:
+                                                                        UpdateFirstNameAndBggUsername());
+                                                            setState(() {
+                                                              _isLoaderVisible =
+                                                                  context
+                                                                      .loaderOverlay
+                                                                      .visible;
+                                                            });
+
+                                                            await _userProvider
+                                                                .updateFirstNameAndBggUsername(
+                                                                    userSnapshot
+                                                                        .data!,
+                                                                    _userRegistration,
+                                                                    context)
+                                                                .then(
+                                                                    (response) {
+                                                              if (response
+                                                                  is Success) {
+                                                                if (_isLoaderVisible) {
+                                                                  context
+                                                                      .loaderOverlay
+                                                                      .hide();
+                                                                }
+
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .push(
+                                                                        PageRouteBuilder(
+                                                                  pageBuilder: (
+                                                                    BuildContext
+                                                                        context,
+                                                                    Animation<
+                                                                            double>
+                                                                        animation,
+                                                                    Animation<
+                                                                            double>
+                                                                        secondaryAnimation,
+                                                                  ) =>
+                                                                      DateOfBirthPage(),
+                                                                  transitionsBuilder: (
+                                                                    BuildContext
+                                                                        context,
+                                                                    Animation<
+                                                                            double>
+                                                                        animation,
+                                                                    Animation<
+                                                                            double>
+                                                                        secondaryAnimation,
+                                                                    Widget
+                                                                        child,
+                                                                  ) =>
+                                                                      SlideTransition(
+                                                                    position: Tween<
+                                                                        Offset>(
+                                                                      begin:
+                                                                          const Offset(
+                                                                              1,
+                                                                              0),
+                                                                      end: Offset
+                                                                          .zero,
+                                                                    ).animate(
+                                                                        animation),
+                                                                    child:
+                                                                        child,
+                                                                  ),
+                                                                ));
+                                                              }
+                                                            });
+                                                          }
+                                                        },
+                                                        child: const Text(
+                                                          'Next',
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     ),
-                                  ),
+                                  )
                                 ],
                               )
                             : Container());

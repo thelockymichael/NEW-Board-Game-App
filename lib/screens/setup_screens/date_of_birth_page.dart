@@ -56,132 +56,143 @@ class DateOfBirthPageState extends State<DateOfBirthPage> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(24.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "My Birthday is",
-                                      style: TextStyle(fontSize: 32),
-                                    ),
-                                    Column(
-                                      children: <Widget>[
-                                        SizedBox(
-                                            height: 180,
-                                            child: CupertinoDatePicker(
-                                              initialDateTime: userSnapshot
-                                                          .data!.age ==
-                                                      0
-                                                  ? initDateTime
-                                                  : DateTime
-                                                      .fromMillisecondsSinceEpoch(
-                                                          userSnapshot
-                                                              .data!.age),
-                                              mode:
-                                                  CupertinoDatePickerMode.date,
-                                              onDateTimeChanged:
-                                                  (DateTime value) {
-                                                _dateOfBirth = value;
-
-                                                print(
-                                                    "LOG ${_dateOfBirth.toString()}");
-                                              },
-                                            )),
-                                        Container(
-                                          margin: const EdgeInsets.fromLTRB(
-                                              0, 8, 0, 8),
-                                          child: Text(
-                                              "Your birthday is private information. Only your age is visible to other users."),
-                                        ),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: ElevatedButton(
-                                                onPressed: () async {
-                                                  bool isDateOfBirthValid =
-                                                      Validator
-                                                          .validateDateTime(
-                                                              date:
-                                                                  _dateOfBirth);
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.max,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "My Birthday is",
+                                        style: TextStyle(fontSize: 32),
+                                      ),
+                                      Column(
+                                        children: <Widget>[
+                                          SizedBox(
+                                              height: 180,
+                                              child: CupertinoDatePicker(
+                                                initialDateTime: userSnapshot
+                                                            .data!.age ==
+                                                        0
+                                                    ? initDateTime
+                                                    : DateTime
+                                                        .fromMillisecondsSinceEpoch(
+                                                            userSnapshot
+                                                                .data!.age),
+                                                mode: CupertinoDatePickerMode
+                                                    .date,
+                                                onDateTimeChanged:
+                                                    (DateTime value) {
+                                                  _dateOfBirth = value;
 
                                                   print(
-                                                      "LOG $isDateOfBirthValid");
-                                                  if (isDateOfBirthValid) {
-                                                    int birthDate = _dateOfBirth
-                                                        .millisecondsSinceEpoch;
-
-                                                    _userRegistration
-                                                        .birthDate = birthDate;
-                                                  }
-
-                                                  context.loaderOverlay.show(
-                                                      widget:
-                                                          UpdateDateOfBirth());
-                                                  setState(() {
-                                                    _isLoaderVisible = context
-                                                        .loaderOverlay.visible;
-                                                  });
-
-                                                  await _userProvider
-                                                      .updateDateOfBirth(
-                                                          userSnapshot.data!,
-                                                          _userRegistration,
-                                                          _scaffoldKey)
-                                                      .then((response) {
-                                                    if (response is Success) {
-                                                      if (_isLoaderVisible) {
-                                                        context.loaderOverlay
-                                                            .hide();
-                                                      }
-
-                                                      Navigator.of(context)
-                                                          .push(
-                                                              PageRouteBuilder(
-                                                        pageBuilder: (
-                                                          BuildContext context,
-                                                          Animation<double>
-                                                              animation,
-                                                          Animation<double>
-                                                              secondaryAnimation,
-                                                        ) =>
-                                                            GenderPage(
-                                                          gender: userSnapshot
-                                                              .data!.gender,
-                                                        ),
-                                                        transitionsBuilder: (
-                                                          BuildContext context,
-                                                          Animation<double>
-                                                              animation,
-                                                          Animation<double>
-                                                              secondaryAnimation,
-                                                          Widget child,
-                                                        ) =>
-                                                            SlideTransition(
-                                                          position:
-                                                              Tween<Offset>(
-                                                            begin: const Offset(
-                                                                1, 0),
-                                                            end: Offset.zero,
-                                                          ).animate(animation),
-                                                          child: child,
-                                                        ),
-                                                      ));
-                                                    }
-                                                  });
+                                                      "LOG ${_dateOfBirth.toString()}");
                                                 },
-                                                child: const Text(
-                                                  'Next',
-                                                  style: TextStyle(
-                                                      color: Colors.white),
+                                              )),
+                                          Container(
+                                            margin: const EdgeInsets.fromLTRB(
+                                                0, 8, 0, 8),
+                                            child: Text(
+                                                "Your birthday is private information. Only your age is visible to other users."),
+                                          ),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: ElevatedButton(
+                                                  onPressed: () async {
+                                                    bool isDateOfBirthValid =
+                                                        Validator
+                                                            .validateDateTime(
+                                                                date:
+                                                                    _dateOfBirth);
+
+                                                    print(
+                                                        "LOG $isDateOfBirthValid");
+                                                    if (isDateOfBirthValid) {
+                                                      int birthDate = _dateOfBirth
+                                                          .millisecondsSinceEpoch;
+
+                                                      _userRegistration
+                                                              .birthDate =
+                                                          birthDate;
+                                                    }
+
+                                                    context.loaderOverlay.show(
+                                                        widget:
+                                                            UpdateDateOfBirth());
+                                                    setState(() {
+                                                      _isLoaderVisible = context
+                                                          .loaderOverlay
+                                                          .visible;
+                                                    });
+
+                                                    await _userProvider
+                                                        .updateDateOfBirth(
+                                                            userSnapshot.data!,
+                                                            _userRegistration,
+                                                            context)
+                                                        .then((response) {
+                                                      if (response is Success) {
+                                                        if (_isLoaderVisible) {
+                                                          context.loaderOverlay
+                                                              .hide();
+                                                        }
+
+                                                        Navigator.of(context)
+                                                            .push(
+                                                                PageRouteBuilder(
+                                                          pageBuilder: (
+                                                            BuildContext
+                                                                context,
+                                                            Animation<double>
+                                                                animation,
+                                                            Animation<double>
+                                                                secondaryAnimation,
+                                                          ) =>
+                                                              GenderPage(
+                                                            gender: userSnapshot
+                                                                .data!.gender,
+                                                          ),
+                                                          transitionsBuilder: (
+                                                            BuildContext
+                                                                context,
+                                                            Animation<double>
+                                                                animation,
+                                                            Animation<double>
+                                                                secondaryAnimation,
+                                                            Widget child,
+                                                          ) =>
+                                                              SlideTransition(
+                                                            position:
+                                                                Tween<Offset>(
+                                                              begin:
+                                                                  const Offset(
+                                                                      1, 0),
+                                                              end: Offset.zero,
+                                                            ).animate(
+                                                                    animation),
+                                                            child: child,
+                                                          ),
+                                                        ));
+                                                      }
+                                                    });
+                                                  },
+                                                  child: const Text(
+                                                    'Next',
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  ],
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
+                              )
                             ],
                           )
                         : Container());

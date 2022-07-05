@@ -13,6 +13,9 @@ class Utils {
       c1.name.compareTo(c2.name);
   static bool testingNewRegistration = true;
 
+  static String stockUserProfileUrl =
+      "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/tinder-profile-imgs%2Fman_board_game.jpeg?alt=media&token=ffba108e-93be-4617-9bbd-b723657da525";
+
   static List<String> bgMechanicsList = [
     "Dice Rolling",
     "Roll / Spin and Move",
@@ -281,14 +284,16 @@ class Utils {
   static List<String> languages = [
     "finnish",
     "swedish",
+    "danish",
+    "norwegian",
     "english",
     "russian",
     "estonian",
     "german",
     "dutch",
-    "arabian",
+    "arabic",
     "somalian",
-    "chinese",
+    "mandarin",
     "persian",
     "vietnamese",
   ];
@@ -576,10 +581,18 @@ class Utils {
       ]));
 }
 
-void showSnackBar(GlobalKey<ScaffoldState> globalKey, String message) {
-  final snackBar = SnackBar(content: Text(message));
-  globalKey.currentState?.hideCurrentSnackBar();
-  globalKey.currentState?.showSnackBar(snackBar);
+void showSnackBar(BuildContext context, String message) {
+  // final snackBar = SnackBar(content: Text(message));
+  // globalKey.currentState?.hideCurrentSnackBar();
+  // globalKey.currentState?.showSnackBar(snackBar);
+
+  final snackBar = SnackBar(
+    backgroundColor: Colors.red,
+    duration: Duration(seconds: 7),
+    content: Text(message, style: TextStyle(fontSize: 18)),
+  );
+
+  ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }
 
 String compareAndCombineIds(String userID1, String userID2) {

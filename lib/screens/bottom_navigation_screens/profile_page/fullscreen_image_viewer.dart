@@ -164,7 +164,7 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
                                                     userProvider
                                                         .updateUserProfilePhoto(
                                                             pickedFile.path,
-                                                            _scaffoldKey,
+                                                            context,
                                                             updateImageNum)
                                                         .then((response) {
                                                       if (response is Success) {
@@ -206,7 +206,7 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
 
                                                   userProvider
                                                       .deleteUserProfilePhoto(
-                                                          _scaffoldKey,
+                                                          context,
                                                           deleteImageNum)
                                                       .then((response) {
                                                     if (response is Success) {

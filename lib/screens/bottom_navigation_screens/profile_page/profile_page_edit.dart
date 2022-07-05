@@ -106,7 +106,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
   //     setState(() {
   //       _currentAddress = '${place.locality}';
   //       _userProvider.updateCurrentLocationAddress(
-  //           userSnapshot, _currentAddress!, _scaffoldKey);
+  //           userSnapshot, _currentAddress!, context);
   //     });
   //   }).catchError((e) {
   //     debugPrint(e);
@@ -1031,8 +1031,8 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
         });
       },
     ).whenComplete(() {
-      _userProvider.updateBgMechanicsAndThemes(userSnapshot,
-          bgMechanicsSelectedList, bgThemesSelectedList, _scaffoldKey);
+      _userProvider.updateBgMechanicsAndThemes(
+          userSnapshot, bgMechanicsSelectedList, bgThemesSelectedList, context);
 
       refresh();
       print('Hey there, I\'m calling after hide bottomSheet');
@@ -1337,7 +1337,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
 
                                       await _userProvider
                                           .updateUserBasicInfo(userSnapshot,
-                                              _userProfileEdit, _scaffoldKey)
+                                              _userProfileEdit, context)
                                           .then((response) {
                                         if (response is Success) {}
                                       });
@@ -1382,7 +1382,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
         _userProfileEdit.dateOfBirth = convertToEpoch(defaultSelectedDate);
 
         _userProvider
-            .updateUserBasicInfo(userSnapshot, _userProfileEdit, _scaffoldKey)
+            .updateUserBasicInfo(userSnapshot, _userProfileEdit, context)
             .then((response) {
           if (response is Success) {
             refresh();
@@ -1775,7 +1775,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                           .pickImage(source: ImageSource.gallery);
                       if (pickedFile != null) {
                         firebaseProvider.updateUserProfilePhoto(
-                            pickedFile.path, _scaffoldKey, 0);
+                            pickedFile.path, context, 0);
                       }
                     } else {
                       Navigator.push(
@@ -1816,7 +1816,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                           .pickImage(source: ImageSource.gallery);
                       if (pickedFile != null) {
                         firebaseProvider.updateUserProfilePhoto(
-                            pickedFile.path, _scaffoldKey, 1);
+                            pickedFile.path, context, 1);
                       }
                     } else {
                       Navigator.push(
@@ -1860,7 +1860,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                           .pickImage(source: ImageSource.gallery);
                       if (pickedFile != null) {
                         firebaseProvider.updateUserProfilePhoto(
-                            pickedFile.path, _scaffoldKey, 2);
+                            pickedFile.path, context, 2);
                       }
                     } else {
                       Navigator.push(
@@ -1901,7 +1901,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                           .pickImage(source: ImageSource.gallery);
                       if (pickedFile != null) {
                         firebaseProvider.updateUserProfilePhoto(
-                            pickedFile.path, _scaffoldKey, 3);
+                            pickedFile.path, context, 3);
                       }
                     } else {
                       Navigator.push(
@@ -1942,7 +1942,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                           .pickImage(source: ImageSource.gallery);
                       if (pickedFile != null) {
                         firebaseProvider.updateUserProfilePhoto(
-                            pickedFile.path, _scaffoldKey, 4);
+                            pickedFile.path, context, 4);
                       }
                     } else {
                       Navigator.push(
@@ -1983,7 +1983,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                           .pickImage(source: ImageSource.gallery);
                       if (pickedFile != null) {
                         firebaseProvider.updateUserProfilePhoto(
-                            pickedFile.path, _scaffoldKey, 5);
+                            pickedFile.path, context, 5);
                       }
                     } else {
                       Navigator.push(
@@ -2031,7 +2031,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
     //         await ImagePicker().pickImage(source: ImageSource.gallery);
     //     if (pickedFile != null) {
     //       firebaseProvider.updateUserProfilePhoto(
-    //           pickedFile.path, _scaffoldKey, 1);
+    //           pickedFile.path, context, 1);
     //     }
     //   },
     //   child: Stack(
@@ -2085,7 +2085,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
     //                 await ImagePicker().pickImage(source: ImageSource.gallery);
     //             if (pickedFile != null) {
     //               firebaseProvider.updateUserProfilePhoto(
-    //                   pickedFile.path, _scaffoldKey, 1);
+    //                   pickedFile.path, context, 1);
     //             }
     //           },
     //           iconData: Icons.edit,

@@ -53,197 +53,231 @@ class _LoginPageState extends State<LoginPage> {
         _focusPassword.unfocus();
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Firebase Authentication'),
-        ),
         body: FutureBuilder(
           future: _initializeFirebase(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               return Padding(
-                padding: const EdgeInsets.only(left: 24.0, right: 24.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 24.0),
-                      child: Text(
-                        'Login',
-                        style: Theme.of(context).textTheme.headline1,
-                      ),
-                    ),
-                    Form(
-                      key: _formKey,
-                      child: Column(
-                        children: <Widget>[
-                          TextFormField(
-                            controller: _emailTextController,
-                            focusNode: _focusEmail,
-                            validator: (value) => Validator.validateEmail(
-                              email: value,
-                            ),
-                            decoration: InputDecoration(
-                              hintText: "Email",
-                              errorBorder: UnderlineInputBorder(
-                                borderRadius: BorderRadius.circular(6.0),
-                                borderSide: const BorderSide(
-                                  color: Colors.red,
+                  padding: const EdgeInsets.only(left: 24.0, right: 24.0),
+                  child: Center(
+                      child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 24.0),
+                          child: Text(
+                            'Login',
+                            style: Theme.of(context).textTheme.headline1,
+                          ),
+                        ),
+
+                        // Padding(
+                        //       padding: const EdgeInsets.all(24.0),
+                        //       child: SingleChildScrollView(
+                        //         child: Column(
+                        //           mainAxisAlignment: MainAxisAlignment.center,
+                        //           mainAxisSize: MainAxisSize.max,
+                        //           crossAxisAlignment: CrossAxisAlignment.start,
+                        //           children: [
+
+                        Form(
+                          key: _formKey,
+                          child: Column(
+                            children: <Widget>[
+                              TextFormField(
+                                controller: _emailTextController,
+                                focusNode: _focusEmail,
+                                validator: (value) => Validator.validateEmail(
+                                  email: value,
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: "Email",
+                                  errorBorder: UnderlineInputBorder(
+                                    borderRadius: BorderRadius.circular(6.0),
+                                    borderSide: const BorderSide(
+                                      color: Colors.red,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                          const SizedBox(height: 8.0),
-                          TextFormField(
-                            controller: _passwordTextController,
-                            focusNode: _focusPassword,
-                            obscureText: true,
-                            validator: (value) =>
-                                Validator.validatePassword(value!),
-                            decoration: InputDecoration(
-                              hintText: "Password",
-                              errorBorder: UnderlineInputBorder(
-                                borderRadius: BorderRadius.circular(6.0),
-                                borderSide: const BorderSide(
-                                  color: Colors.red,
+                              const SizedBox(height: 8.0),
+                              TextFormField(
+                                controller: _passwordTextController,
+                                focusNode: _focusPassword,
+                                obscureText: true,
+                                validator: (value) =>
+                                    Validator.validatePassword(value!),
+                                decoration: InputDecoration(
+                                  hintText: "Password",
+                                  errorBorder: UnderlineInputBorder(
+                                    borderRadius: BorderRadius.circular(6.0),
+                                    borderSide: const BorderSide(
+                                      color: Colors.red,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                          const SizedBox(height: 24.0),
-                          _isProcessing
-                              ? const CircularProgressIndicator()
-                              : Utils.testingNewRegistration
-                                  // NEW REGISTRATION
-                                  ? Column(
-                                      children: [
-                                        ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            minimumSize: const Size.fromHeight(
-                                                40), // NEW
-                                          ),
-                                          onPressed: () async {
-                                            _focusEmail.unfocus();
-                                            _focusPassword.unfocus();
-
-                                            if (_formKey.currentState!
-                                                .validate()) {
-                                              setState(() {
-                                                _isProcessing = true;
-                                              });
-
-                                              await _userProvider.loginUser(
-                                                  _emailTextController.text,
-                                                  _passwordTextController.text,
-                                                  _scaffoldKey,
-                                                  context);
-
-                                              setState(() {
-                                                _isProcessing = false;
-                                              });
-                                            }
-                                          },
-                                          child: const Text(
-                                            'Login',
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 24.0),
-                                        ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            primary:
-                                                Colors.black.withOpacity(0.05),
-                                            minimumSize: const Size.fromHeight(
-                                                40), // NEW
-                                          ),
-                                          onPressed: () {
-                                            Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const RegisterPage(),
+                              const SizedBox(height: 24.0),
+                              _isProcessing
+                                  ? const CircularProgressIndicator()
+                                  : Utils.testingNewRegistration
+                                      // NEW REGISTRATION
+                                      ? Column(
+                                          children: [
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                minimumSize:
+                                                    const Size.fromHeight(
+                                                        40), // NEW
                                               ),
-                                            );
-                                          },
-                                          child: const Text(
-                                            'Register',
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  : Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Expanded(
-                                          child: ElevatedButton(
-                                            onPressed: () async {
-                                              _focusEmail.unfocus();
-                                              _focusPassword.unfocus();
+                                              onPressed: () async {
+                                                _focusEmail.unfocus();
+                                                _focusPassword.unfocus();
 
-                                              if (_formKey.currentState!
-                                                  .validate()) {
-                                                setState(() {
-                                                  _isProcessing = true;
-                                                });
+                                                if (_formKey.currentState!
+                                                    .validate()) {
+                                                  // showSnackBar(_scaffoldKey,
+                                                  //     "I am the real dujoin.");
+// TODO LOGIN
+// TODO Login wrong credentials => Show message: "Incorrect password or email"
 
-                                                await _userProvider
-                                                    .loginUser(
-                                                        _emailTextController
-                                                            .text,
-                                                        _passwordTextController
-                                                            .text,
-                                                        _scaffoldKey,
-                                                        context)
-                                                    .then((response) {
-                                                  if (response is Success<
-                                                      UserCredential>) {
-                                                    Navigator.of(context)
-                                                        .pushNamedAndRemoveUntil(
-                                                            MainNavigation.id,
-                                                            (route) => false);
+                                                  setState(() {
+                                                    _isProcessing = true;
+                                                  });
+
+                                                  // final snackBar = SnackBar(
+                                                  //   content: const Text(
+                                                  //       'Yay! A SnackBar!',
+                                                  //       style: TextStyle(
+                                                  //           fontSize: 18)),
+                                                  //   action: SnackBarAction(
+                                                  //     label: 'Undo',
+                                                  //     onPressed: () {
+                                                  //       // Some code to undo the change.
+                                                  //     },
+                                                  //   ),
+                                                  // );
+
+                                                  // ScaffoldMessenger.of(context)
+                                                  //     .showSnackBar(snackBar);
+                                                  await _userProvider.loginUser(
+                                                      _emailTextController.text,
+                                                      _passwordTextController
+                                                          .text,
+                                                      context);
+
+                                                  setState(() {
+                                                    _isProcessing = false;
+                                                  });
+                                                }
+                                              },
+                                              child: const Text(
+                                                'Login',
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 24.0),
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                primary: Colors.black
+                                                    .withOpacity(0.05),
+                                                minimumSize:
+                                                    const Size.fromHeight(
+                                                        40), // NEW
+                                              ),
+                                              onPressed: () {
+                                                Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const RegisterPage(),
+                                                  ),
+                                                );
+                                              },
+                                              child: const Text(
+                                                'Register',
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      : Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Expanded(
+                                              child: ElevatedButton(
+                                                onPressed: () async {
+                                                  _focusEmail.unfocus();
+                                                  _focusPassword.unfocus();
+
+                                                  if (_formKey.currentState!
+                                                      .validate()) {
+                                                    setState(() {
+                                                      _isProcessing = true;
+                                                    });
+
+                                                    await _userProvider
+                                                        .loginUser(
+                                                            _emailTextController
+                                                                .text,
+                                                            _passwordTextController
+                                                                .text,
+                                                            context)
+                                                        .then((response) {
+                                                      if (response is Success<
+                                                          UserCredential>) {
+                                                        Navigator.of(context)
+                                                            .pushNamedAndRemoveUntil(
+                                                                MainNavigation
+                                                                    .id,
+                                                                (route) =>
+                                                                    false);
+                                                      }
+                                                    });
+
+                                                    setState(() {
+                                                      _isProcessing = false;
+                                                    });
                                                   }
-                                                });
-
-                                                setState(() {
-                                                  _isProcessing = false;
-                                                });
-                                              }
-                                            },
-                                            child: const Text(
-                                              'Sign In',
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 24.0),
-                                        Expanded(
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const V1RegisterPage(),
+                                                },
+                                                child: const Text(
+                                                  'Sign In',
+                                                  style: TextStyle(
+                                                      color: Colors.white),
                                                 ),
-                                              );
-                                            },
-                                            child: const Text(
-                                              'Register',
-                                              style: TextStyle(
-                                                  color: Colors.white),
+                                              ),
                                             ),
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              );
+                                            const SizedBox(width: 24.0),
+                                            Expanded(
+                                              child: ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          const V1RegisterPage(),
+                                                    ),
+                                                  );
+                                                },
+                                                child: const Text(
+                                                  'Register',
+                                                  style: TextStyle(
+                                                      color: Colors.white),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  )));
             }
 
             return const Center(

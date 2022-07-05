@@ -32,8 +32,8 @@ class UserProvider extends ChangeNotifier {
 
   Future<AppUser> get user => _getUser();
 
-  Future<Response> loginUser(String email, String password,
-      GlobalKey<ScaffoldState> errorScaffoldKey, BuildContext context) async {
+  Future<Response> loginUser(
+      String email, String password, BuildContext context) async {
     Response<dynamic> response = await _authSource.signIn(email, password);
 
     if (response is Success<UserCredential>) {
@@ -57,15 +57,15 @@ class UserProvider extends ChangeNotifier {
         );
       }
     } else if (response is Error) {
-      showSnackBar(errorScaffoldKey, response.message);
+      showSnackBar(context, response.message);
     }
 
     return response;
   }
 
   // RegisterUser
-  Future<Response> registerUser(UserRegistration userRegistration,
-      GlobalKey<ScaffoldState> errorScaffoldKey) async {
+  Future<Response> registerUser(
+      UserRegistration userRegistration, BuildContext context) async {
     Response<dynamic> response = await _authSource.register(
         userRegistration.email, userRegistration.password);
 
@@ -358,7 +358,7 @@ class UserProvider extends ChangeNotifier {
       _user = _user;
       return Response.success(user);
     }
-    if (response is Error) showSnackBar(errorScaffoldKey, response.message);
+    if (response is Error) showSnackBar(context, response.message);
     return response;
   }
 
@@ -394,8 +394,8 @@ class UserProvider extends ChangeNotifier {
     return chatWithUserList;
   }
 
-  Future<Response> updateUserProfilePhoto(String localFilePath,
-      GlobalKey<ScaffoldState> errorScaffoldKey, int imageNumber) async {
+  Future<Response> updateUserProfilePhoto(
+      String localFilePath, BuildContext context, int imageNumber) async {
     isLoading = true;
     notifyListeners();
     Response<dynamic> response = await _storageSource.uploadUserProfilePhoto(
@@ -410,7 +410,7 @@ class UserProvider extends ChangeNotifier {
       return Response.success(response.value);
     } else if (response is Error) {
       notifyListeners();
-      showSnackBar(errorScaffoldKey, response.message);
+      showSnackBar(context, response.message);
 
       return response;
     }
@@ -419,7 +419,7 @@ class UserProvider extends ChangeNotifier {
   }
 
   Future<Response> deleteUserProfilePhoto(
-      GlobalKey<ScaffoldState> errorScaffoldKey, int imageNumber) async {
+      BuildContext context, int imageNumber) async {
     isLoading = true;
     notifyListeners();
     Response<dynamic> response =
@@ -434,7 +434,7 @@ class UserProvider extends ChangeNotifier {
       return Response.success(response.value);
     } else if (response is Error) {
       notifyListeners();
-      showSnackBar(errorScaffoldKey, response.message);
+      showSnackBar(context, response.message);
 
       return response;
     }
@@ -442,10 +442,8 @@ class UserProvider extends ChangeNotifier {
     return response;
   }
 
-  Future<Response> updateFirstNameAndBggUsername(
-      AppUser userSnapshot,
-      UserRegistration userProfile,
-      GlobalKey<ScaffoldState> errorScaffoldKey) async {
+  Future<Response> updateFirstNameAndBggUsername(AppUser userSnapshot,
+      UserRegistration userProfile, BuildContext context) async {
     AppUser user = AppUser(
       id: userSnapshot.id,
       setupIsCompleted: userSnapshot.setupIsCompleted,
@@ -471,14 +469,12 @@ class UserProvider extends ChangeNotifier {
       return Response.success(user);
     }
 
-    if (response is Error) showSnackBar(errorScaffoldKey, response.message);
+    if (response is Error) showSnackBar(context, response.message);
     return response;
   }
 
-  Future<Response> updateDateOfBirth(
-      AppUser userSnapshot,
-      UserRegistration userProfile,
-      GlobalKey<ScaffoldState> errorScaffoldKey) async {
+  Future<Response> updateDateOfBirth(AppUser userSnapshot,
+      UserRegistration userProfile, BuildContext context) async {
     AppUser user = AppUser(
       id: userSnapshot.id,
       setupIsCompleted: userSnapshot.setupIsCompleted,
@@ -504,14 +500,12 @@ class UserProvider extends ChangeNotifier {
       return Response.success(user);
     }
 
-    if (response is Error) showSnackBar(errorScaffoldKey, response.message);
+    if (response is Error) showSnackBar(context, response.message);
     return response;
   }
 
-  Future<Response> updateGender(
-      AppUser userSnapshot,
-      UserRegistration userProfile,
-      GlobalKey<ScaffoldState> errorScaffoldKey) async {
+  Future<Response> updateGender(AppUser userSnapshot,
+      UserRegistration userProfile, BuildContext context) async {
     AppUser user = AppUser(
       id: userSnapshot.id,
       setupIsCompleted: userSnapshot.setupIsCompleted,
@@ -537,16 +531,14 @@ class UserProvider extends ChangeNotifier {
       return Response.success(user);
     }
 
-    if (response is Error) showSnackBar(errorScaffoldKey, response.message);
+    if (response is Error) showSnackBar(context, response.message);
     return response;
   }
 
   /* END User Setup */
 
-  Future<Response> updateUserBasicInfo(
-      AppUser userSnapshot,
-      UserProfileEdit userProfile,
-      GlobalKey<ScaffoldState> errorScaffoldKey) async {
+  Future<Response> updateUserBasicInfo(AppUser userSnapshot,
+      UserProfileEdit userProfile, BuildContext context) async {
     AppUser user = AppUser(
       id: userSnapshot.id,
       setupIsCompleted: userSnapshot.setupIsCompleted,
@@ -572,14 +564,12 @@ class UserProvider extends ChangeNotifier {
       return Response.success(user);
     }
 
-    if (response is Error) showSnackBar(errorScaffoldKey, response.message);
+    if (response is Error) showSnackBar(context, response.message);
     return response;
   }
 
-  Future<Response> updateFavouriteBoardGameGenres(
-      AppUser userSnapshot,
-      List<FavGenreItem> favBoardGameGenres,
-      GlobalKey<ScaffoldState> errorScaffoldKey) async {
+  Future<Response> updateFavouriteBoardGameGenres(AppUser userSnapshot,
+      List<FavGenreItem> favBoardGameGenres, BuildContext context) async {
     final mappedGenres = <String>[];
 
     for (var element in favBoardGameGenres) {
@@ -611,14 +601,12 @@ class UserProvider extends ChangeNotifier {
       return Response.success(user);
     }
 
-    if (response is Error) showSnackBar(errorScaffoldKey, response.message);
+    if (response is Error) showSnackBar(context, response.message);
     return response;
   }
 
-  Future<Response> updateFavouriteBgMechanics(
-      AppUser userSnapshot,
-      List<FavBgMechanicItem> favBgMechanics,
-      GlobalKey<ScaffoldState> errorScaffoldKey) async {
+  Future<Response> updateFavouriteBgMechanics(AppUser userSnapshot,
+      List<FavBgMechanicItem> favBgMechanics, BuildContext context) async {
     final mappedBgMechanics = <String>[];
 
     for (var element in favBgMechanics) {
@@ -650,14 +638,12 @@ class UserProvider extends ChangeNotifier {
       return Response.success(user);
     }
 
-    if (response is Error) showSnackBar(errorScaffoldKey, response.message);
+    if (response is Error) showSnackBar(context, response.message);
     return response;
   }
 
-  Future<Response> updateFavouriteBgThemes(
-      AppUser userSnapshot,
-      List<FavBgThemeItem> favBgThemes,
-      GlobalKey<ScaffoldState> errorScaffoldKey) async {
+  Future<Response> updateFavouriteBgThemes(AppUser userSnapshot,
+      List<FavBgThemeItem> favBgThemes, BuildContext context) async {
     final mappedBgThemes = <String>[];
 
     for (var element in favBgThemes) {
@@ -689,7 +675,7 @@ class UserProvider extends ChangeNotifier {
       return Response.success(user);
     }
 
-    if (response is Error) showSnackBar(errorScaffoldKey, response.message);
+    if (response is Error) showSnackBar(context, response.message);
     return response;
   }
 
@@ -697,7 +683,7 @@ class UserProvider extends ChangeNotifier {
       AppUser userSnapshot,
       List<String> favBgMechanics,
       List<String> favBgThemes,
-      GlobalKey<ScaffoldState> errorScaffoldKey) async {
+      BuildContext context) async {
     final mappedBgMechanics = <String>[];
     final mappedBgThemes = <String>[];
 
@@ -734,12 +720,12 @@ class UserProvider extends ChangeNotifier {
       return Response.success(user);
     }
 
-    if (response is Error) showSnackBar(errorScaffoldKey, response.message);
+    if (response is Error) showSnackBar(context, response.message);
     return response;
   }
 
   Future<Response> updateUserBio(AppUser userSnapshot, UserBioEdit userBioEdit,
-      GlobalKey<ScaffoldState> errorScaffoldKey) async {
+      BuildContext context) async {
     AppUser user = AppUser(
       id: userSnapshot.id,
       setupIsCompleted: userSnapshot.setupIsCompleted,
@@ -765,7 +751,7 @@ class UserProvider extends ChangeNotifier {
       return Response.success(user);
     }
 
-    if (response is Error) showSnackBar(errorScaffoldKey, response.message);
+    if (response is Error) showSnackBar(context, response.message);
     return response;
   }
 
@@ -871,7 +857,7 @@ class UserProvider extends ChangeNotifier {
       BoardGameData boardGameData,
       int boardGameRank,
       String boardGameGenre,
-      GlobalKey<ScaffoldState> errorScaffoldKey) async {
+      BuildContext context) async {
     final updateFavBoardGames = _returnFavBoardGames(
         userSnapshot, boardGameData, boardGameRank, boardGameGenre);
 
@@ -899,12 +885,12 @@ class UserProvider extends ChangeNotifier {
       return Response.success(user);
     }
 
-    if (response is Error) showSnackBar(errorScaffoldKey, response.message);
+    if (response is Error) showSnackBar(context, response.message);
     return response;
   }
 
-  Future<Response> updateCurrentLocationAddress(AppUser userSnapshot,
-      String address, GlobalKey<ScaffoldState> errorScaffoldKey) async {
+  Future<Response> updateCurrentLocationAddress(
+      AppUser userSnapshot, String address, BuildContext context) async {
     // final updateFavBoardGames = _returnFavBoardGames(
     //     userSnapshot, boardGameData, boardGameRank, boardGameGenre);
 
@@ -932,12 +918,12 @@ class UserProvider extends ChangeNotifier {
       return Response.success(user);
     }
 
-    if (response is Error) showSnackBar(errorScaffoldKey, response.message);
+    if (response is Error) showSnackBar(context, response.message);
     return response;
   }
 
-  Future<Response> updateCurrentGeoLocation(AppUser userSnapshot,
-      Position geoLocation, GlobalKey<ScaffoldState> errorScaffoldKey) async {
+  Future<Response> updateCurrentGeoLocation(
+      AppUser userSnapshot, Position geoLocation, BuildContext context) async {
     // final updateFavBoardGames = _returnFavBoardGames(
     //     userSnapshot, boardGameData, boardGameRank, boardGameGenre);
 
@@ -971,12 +957,12 @@ class UserProvider extends ChangeNotifier {
       return Response.success(user);
     }
 
-    if (response is Error) showSnackBar(errorScaffoldKey, response.message);
+    if (response is Error) showSnackBar(context, response.message);
     return response;
   }
 
   Future<Response> updateSetupCompleted(
-      AppUser userSnapshot, GlobalKey<ScaffoldState> errorScaffoldKey) async {
+      AppUser userSnapshot, BuildContext context) async {
     // final updateFavBoardGames = _returnFavBoardGames(
     //     userSnapshot, boardGameData, boardGameRank, boardGameGenre);
 
@@ -986,7 +972,7 @@ class UserProvider extends ChangeNotifier {
       return Response.success(user);
     }
 
-    if (response is Error) showSnackBar(errorScaffoldKey, response.message);
+    if (response is Error) showSnackBar(context, response.message);
     return response;
   }
 }

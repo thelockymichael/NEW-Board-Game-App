@@ -119,8 +119,8 @@ class _ProfilePageBgBioEditState extends State<ProfilePageBgBioEdit> {
                                   _userBioEdit.bio = _bioTextController.text;
 
                                   await _userProvider
-                                      .updateUserBio(userSnapshot, _userBioEdit,
-                                          _scaffoldKey)
+                                      .updateUserBio(
+                                          userSnapshot, _userBioEdit, context)
                                       .then((response) {
                                     if (response is Success) {
                                       widget.notifyParent();

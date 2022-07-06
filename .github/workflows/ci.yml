@@ -23,9 +23,9 @@ jobs:
         with:
           java-version: '11'
           distribution: 'zulu'
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '2.10.5'
+      - uses: subosito/flutter-action@v1
+        with: 
+          flutter-version: '3.0.0'
       - name: Create key file
         run: |
           echo $KEY_JKS | base64 -di > upload-keystore.jks

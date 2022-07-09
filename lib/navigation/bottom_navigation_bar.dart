@@ -62,10 +62,6 @@ class _MainNavigation extends State<MainNavigation> {
       Placemark place = placemarks[0];
       print("LOG place ${place.locality}");
 
-      // setState(() {
-      //   _currentAddress = '${place.locality}';
-      // });
-
       _userProvider.updateCurrentLocationAddress(
           userSnapshot, place.locality!, context);
 
@@ -82,27 +78,6 @@ class _MainNavigation extends State<MainNavigation> {
         _myFuture(position, userSnapshot),
         onCancel: () => 'Future has been cancelled',
       );
-
-      print("LOG myCancelableFuture VALUE ");
-
-      // await placemarkFromCoordinates(position.latitude, position.longitude,
-      //         localeIdentifier: "fi")
-      //     .then((List<Placemark> placemarks) {
-      //   Placemark place = placemarks[0];
-
-      //   setState(() {
-      //     _currentAddress = '${place.locality}';
-      //   });
-
-      //   _userProvider.updateCurrentLocationAddress(
-      //       userSnapshot, _currentAddress!, context);
-
-      //   _userProvider.updateCurrentGeoLocation(userSnapshot, position, context);
-
-      //   print("LOG _currentAddress ${place.locality}");
-      // }).catchError((e) {
-      //   debugPrint(e);
-      // });
     }
   }
 
@@ -110,7 +85,7 @@ class _MainNavigation extends State<MainNavigation> {
 
   @override
   void dispose() {
-    // _myCancelableFuture?.cancel();
+    _myCancelableFuture?.cancel();
 
     super.dispose();
   }

@@ -117,6 +117,12 @@ class _TinderCardState extends State<TinderCard> {
                         alignment: const Alignment(-0.3, 0))),
               ),
 
+              // In what city or place user is currently located
+              buildLocality(),
+
+              // How far away is the user
+              buildUserDistance(),
+
               // Board Game Geek Username
               buildBggName(),
 
@@ -137,25 +143,14 @@ class _TinderCardState extends State<TinderCard> {
             ],
           ),
         ),
-        // Container(
-        //   child:  ,
-        //   decoration: const BoxDecoration(
-        //       gradient: LinearGradient(
-        //           colors: [Colors.transparent, Colors.black],
-        //           begin: Alignment.bottomCenter,
-        //           end: Alignment.topCenter,
-        //           stops: [0.7, 1])),
-        // ),
-
-        // Padding(
-        //     padding: const EdgeInsets.all(20),
-        // child:
-
         IgnorePointer(
             child: Container(
           child: Padding(
             padding: const EdgeInsets.all(20),
-            child: Align(child: Column(children: [buildName()])),
+            child: Align(
+                child: Column(children: [
+              buildName(),
+            ])),
           ),
           decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -164,41 +159,7 @@ class _TinderCardState extends State<TinderCard> {
                   end: Alignment.topCenter,
                   stops: [0.85, 1.0])),
         ))
-
-        // )
-        // Container(
-        //   decoration: const BoxDecoration(
-        //       gradient: LinearGradient(
-        //           colors: [Colors.transparent, Colors.black],
-        //           begin: Alignment.bottomCenter,
-        //           end: Alignment.topCenter,
-        //           stops: [0.7, 1])),
-        //   child: Center(
-        //       child: Text(
-        //     "Hello Gradient!",
-        //     style: TextStyle(
-        //         fontSize: 48.0,
-        //         fontWeight: FontWeight.bold,
-        //         color: Colors.white),
-        //   )),
-        // ),
       ]));
-  /**Container(
-                alignment: Alignment.center,
-                height: MediaQuery.of(context).size.height,
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: NetworkImage(widget.user!.profilePhotoPaths[0]),
-                        fit: BoxFit.cover,
-                        alignment: const Alignment(-0.3, 0))),
-                // child: Container(
-                //   decoration: const BoxDecoration(
-                //       gradient: LinearGradient(
-                //           colors: [Colors.transparent, Colors.black],
-                //           begin: Alignment.bottomCenter,
-                //           end: Alignment.topCenter,
-                //           stops: [0.7, 1])),
-                // ),),*/
 
   Widget buildBgMechanics() {
     final favBgMechanics = widget.user!.favBgMechanics;
@@ -594,6 +555,95 @@ class _TinderCardState extends State<TinderCard> {
                                           })));
                         })))
           ]),
+        ],
+      ),
+    );
+  }
+
+  Widget buildLocality() {
+    final geoLocation = widget.user!.currentLocation;
+
+    if (geoLocation.isEmpty) {
+      return Container();
+    }
+    // TODO 10 miles away
+    // TODO Calculate user's distance from other user
+
+    return Container(
+      padding: const EdgeInsets.all(8),
+      color: Colors.white,
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+            child: Column(children: [
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  const Icon(Icons.location_city, color: Colors.black),
+                  const SizedBox(width: 8),
+                  Text(
+                    "${geoLocation.capitalize()}",
+                    style: const TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                ],
+              ),
+            ]),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget buildUserDistance() {
+    final geoLocation = widget.user!.currentGeoLocation;
+
+    if (geoLocation.latitude == 0 && geoLocation.longitude == 0) {
+      return Container();
+    }
+    // TODO 10 miles away
+    // TODO Calculate user's distance from other user
+
+    final myUser = widget.myUser!.currentGeoLocation;
+    final user = widget.user!.currentGeoLocation;
+
+    final userDistance = int.parse(Utils.calculateDistance(
+            myUser.latitude, myUser.longitude, user.latitude, user.longitude)
+        .toStringAsFixed(0));
+
+    final roundedUserDistance = Utils.roundToMostSignificantDigit(userDistance);
+
+    print("LOG roundToMostSignificantDigit ${roundedUserDistance}");
+
+    return Container(
+      padding: const EdgeInsets.all(8),
+      color: Colors.white,
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+            child: Column(children: [
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  const Icon(Icons.pin_drop, color: Colors.black),
+                  const SizedBox(width: 8),
+                  Text(
+                    "${roundedUserDistance.toString()} kilometers away",
+                    style: const TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                ],
+              ),
+            ]),
+          )
         ],
       ),
     );

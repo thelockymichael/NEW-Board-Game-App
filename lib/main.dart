@@ -105,20 +105,4 @@ class MyApp extends StatelessWidget {
           },
         )));
   }
-  // @override
-  // Widget build(BuildContext context) => ChangeNotifierProvider(
-  //     create: (context) => CardProvider(),
-  //     child: MaterialApp(
-  //         title: 'Flutter Authentication',
-  //         debugShowCheckedModeBanner: false,
-  //         theme: ThemeData(
-  //           primarySwatch: Colors.cyan,
-  //           // elevatedButtonTheme: ElevatedButtonThemeData(
-  //           //     style: ElevatedButton.styleFrom(
-  //           //   elevation: 8,
-  //           //   primary: Colors.white,
-  //           //   shape: CircleBorder(),
-  //           //   minimumSize: Size.square(80),
-  //         ),
-  //         home: const LoginPage()));
 }

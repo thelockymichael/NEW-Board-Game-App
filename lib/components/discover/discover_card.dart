@@ -33,7 +33,7 @@ class _DiscoverCard extends State<DiscoverCard> {
 
   @override
   Widget build(BuildContext context) {
-    print("VMK card build users length ${cardProvider.users.length}");
+    // print("VMK card build users length ${cardProvider.users.length}");
 
     return cardProvider.users.isEmpty
         ? Center(

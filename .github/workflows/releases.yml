@@ -38,7 +38,7 @@ jobs:
           echo $FASTFILE | base64 -di > android/fastlane/Fastfile
       - uses: subosito/flutter-action@v1
         with: 
-          flutter-version: '2.10.5'
+          flutter-version: '3.0.0'
       - run: flutter pub get
       - run: flutter build apk --release --split-per-abi
       - run: flutter build apk --debug

@@ -384,6 +384,11 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
                       style:
                           TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                   SizedBox(height: 16),
+                  Text("Distance",
+                      textAlign: TextAlign.center,
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 16),
                   Text("Which genders(s) would you like to see?",
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 18, color: Colors.black54)),

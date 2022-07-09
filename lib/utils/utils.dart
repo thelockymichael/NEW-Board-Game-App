@@ -7,6 +7,7 @@ import 'package:flutter_demo_01/db/entity/UserQuery.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/model/bg_mechanic.dart';
 import 'package:intl/intl.dart';
+import 'dart:math' show asin, cos, pow, sqrt;
 
 class Utils {
   static int ascendingSort(FavBgMechanicItem c1, FavBgMechanicItem c2) =>
@@ -580,6 +581,29 @@ class Utils {
           ),
         )
       ]));
+
+  static double calculateDistance(lat1, lon1, lat2, lon2) {
+    var p = 0.017453292519943295;
+    var c = cos;
+    var a = 0.5 -
+        c((lat2 - lat1) * p) / 2 +
+        c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
+    return 12742 * asin(sqrt(a));
+  }
+
+  /// Rounds [n] to the nearest multiple of [multiple].
+  static int roundToMultiple(int n, int multiple) {
+    assert(n >= 0);
+    assert(multiple > 0);
+    return (n + (multiple ~/ 2)) ~/ multiple * multiple;
+  }
+
+  static int roundToMostSignificantDigit(int n) {
+    assert(n >= 0);
+    var numDigits = n.toString().length;
+    var magnitude = pow(10, numDigits - 1) as int;
+    return roundToMultiple(n, magnitude);
+  }
 }
 
 void showSnackBar(BuildContext context, String message) {

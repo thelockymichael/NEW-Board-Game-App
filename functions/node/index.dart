@@ -4,9 +4,20 @@ import 'package:firebase_functions_interop/firebase_functions_interop.dart';
 
 void main() {
   // Users.handle();
+  functions['helloWorld'] = functions.https.onRequest(helloWorld);
   functions['logAuth'] = functions.auth.user().onCreate(logAuth);
   functions['makeLowercase'] =
       functions.firestore.document("/users/{userId}").onWrite(makeLowercase);
+}
+
+/// Example HTTPS function.
+Future<void> helloWorld(ExpressHttpRequest request) async {
+  try {
+    /// If there are any config parameters we can access them as follows:
+    request.response.writeln('Hello world');
+  } finally {
+    request.response.close();
+  }
 }
 
 /// Example Auth

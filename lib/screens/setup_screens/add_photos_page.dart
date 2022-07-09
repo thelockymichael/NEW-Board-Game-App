@@ -131,11 +131,16 @@ class AddPhotosPageState extends State<AddPhotosPage> {
                                                                           12),
                                                               color: Colors
                                                                   .blue[200],
-                                                              image: DecorationImage(
-                                                                  fit: BoxFit
-                                                                      .contain,
-                                                                  image: NetworkImage(
-                                                                      userSnapshot
+                                                              image: userSnapshot
+                                                                      .data!
+                                                                      .profilePhotoPaths[
+                                                                          index]
+                                                                      .isEmpty
+                                                                  ? null
+                                                                  : DecorationImage(
+                                                                      fit: BoxFit
+                                                                          .contain,
+                                                                      image: NetworkImage(userSnapshot
                                                                           .data!
                                                                           .profilePhotoPaths[index]))),
                                                         ),

@@ -72,7 +72,6 @@ class _MainNavigation extends State<MainNavigation> {
   Future _getAddressFromLatLng(Position? position) async {
     AppUser userSnapshot = await _userProvider.user;
 
-    print("SDF ${userSnapshot.name}");
     if (position != null) {
       _myCancelableFuture = CancelableOperation.fromFuture(
         _myFuture(position, userSnapshot),

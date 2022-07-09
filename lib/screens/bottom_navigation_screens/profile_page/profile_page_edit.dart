@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:async/async.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
@@ -12,10 +15,24 @@ import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/p
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/profile_page_fav_board_games_edit.dart';
 import 'package:flutter_demo_01/utils/validator.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import "package:flutter_demo_01/utils/utils.dart";
 import 'package:sticky_headers/sticky_headers.dart';
+
+enum _PositionItemType {
+  log,
+  position,
+}
+
+class _PositionItem {
+  _PositionItem(this.type, this.displayValue);
+
+  final _PositionItemType type;
+  final String displayValue;
+}
 
 class ProfilePageEdit extends StatefulWidget {
   static const String id = 'profile_page_edit';
@@ -53,8 +70,9 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
     'title3',
   ];
 
+  // Location and locale, e.g. Espoo
   String? _currentAddress;
-  // Position? _currentPosition;
+  Position? _currentPosition;
 
 // 3. Select Date of Birth
   DateTime defaultSelectedDate = DateTime.now();
@@ -74,7 +92,19 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
 
   List<String> bgThemesList = Utils.bgThemesList;
 
-// END Select Date of Birth
+  // END Select Date of Birth
+  static const String _kLocationServicesDisabledMessage =
+      'Location services are disabled.';
+  static const String _kPermissionDeniedMessage = 'Permission denied.';
+  static const String _kPermissionDeniedForeverMessage =
+      'Permission denied forever.';
+  static const String _kPermissionGrantedMessage = 'Permission granted.';
+
+  final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
+  final List<_PositionItem> _positionItems = <_PositionItem>[];
+  StreamSubscription<Position>? _positionStreamSubscription;
+  StreamSubscription<ServiceStatus>? _serviceStatusStreamSubscription;
+  bool positionStreamStarted = false;
 
   // void _getCurrentPosition() async {
   //   final hasPermission = await _handleLocationPermission();
@@ -83,6 +113,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
 
   //   await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
   //       .then((Position position) {
+
   //     setState(() => _currentPosition = position);
 
   //     _getAddressFromLatLng(_currentPosition!);
@@ -91,65 +122,255 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
   //   });
   // }
 
-  // Future<void> _getAddressFromLatLng(Position position) async {
-  //   AppUser userSnapshot = await _userProvider.user;
+  void _updatePositionList(_PositionItemType type, String displayValue) {
+    _positionItems.add(_PositionItem(type, displayValue));
+    setState(() {});
+  }
 
-  //   print("SDF ${userSnapshot.name}");
-  //   await placemarkFromCoordinates(
-  //           _currentPosition!.latitude, _currentPosition!.longitude,
-  //           localeIdentifier: "fi")
-  //       .then((List<Placemark> placemarks) {
-  //     Placemark place = placemarks[0];
+  Future<bool> _handlePermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
 
-  //     setState(() {
-  //       _currentAddress = '${place.locality}';
-  //       _userProvider.updateCurrentLocationAddress(
-  //           userSnapshot, _currentAddress!, context);
-  //     });
+    // Test if location services are enabled.
+    serviceEnabled = await _geolocatorPlatform.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      _updatePositionList(
+        _PositionItemType.log,
+        _kLocationServicesDisabledMessage,
+      );
+
+      return false;
+    }
+
+    permission = await _geolocatorPlatform.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await _geolocatorPlatform.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        _updatePositionList(
+          _PositionItemType.log,
+          _kPermissionDeniedMessage,
+        );
+
+        return false;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      _updatePositionList(
+        _PositionItemType.log,
+        _kPermissionDeniedForeverMessage,
+      );
+
+      return false;
+    }
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    _updatePositionList(
+      _PositionItemType.log,
+      _kPermissionGrantedMessage,
+    );
+    return true;
+  }
+
+  void _toggleListening() {
+    if (_positionStreamSubscription == null) {
+      final positionStream = _geolocatorPlatform.getPositionStream();
+      _positionStreamSubscription = positionStream.handleError((error) {
+        _positionStreamSubscription?.cancel();
+        _positionStreamSubscription = null;
+      }).listen((position) {
+        print("LOG position.toString() ${position.toString()}");
+        // _updatePositionList(
+        //   _PositionItemType.position,
+        //   position.toString(),
+        // );
+      });
+
+      print("LOG _positionList ${_positionItems.length}");
+
+      _positionStreamSubscription?.pause();
+    }
+
+    setState(() {
+      if (_positionStreamSubscription == null) {
+        return;
+      }
+
+      String statusDisplayValue;
+      if (_positionStreamSubscription!.isPaused) {
+        _positionStreamSubscription!.resume();
+        statusDisplayValue = 'resumed';
+      } else {
+        _positionStreamSubscription!.pause();
+        statusDisplayValue = 'paused';
+      }
+
+      _updatePositionList(
+        _PositionItemType.log,
+        'Listening for position updates $statusDisplayValue',
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _myCancelableFuture?.cancel();
+    print("LOG WAS I DISPOSED?");
+
+    if (_positionStreamSubscription != null) {
+      _positionStreamSubscription!.cancel();
+      _positionStreamSubscription = null;
+    }
+
+    super.dispose();
+  }
+
+  bool _isListening() => !(_positionStreamSubscription == null ||
+      _positionStreamSubscription!.isPaused);
+
+  Color _determineButtonColor() {
+    return _isListening() ? Colors.green : Colors.red;
+  }
+
+  // BACKUP 9.7.2022
+  // void _getCurrentPosition() async {
+  //   final hasPermission = await _handleLocationPermission();
+
+  //   if (!hasPermission) return;
+
+  //   await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+  //       .then((Position position) {
+
+  //     setState(() => _currentPosition = position);
+
+  //     _getAddressFromLatLng(_currentPosition!);
   //   }).catchError((e) {
   //     debugPrint(e);
   //   });
-  // }
+  // }ll
+  // keep a reference to CancelableOperation
+  CancelableOperation? _myCancelableFuture;
 
-  // Future<bool> _handleLocationPermission() async {
-  //   bool serviceEnabled;
-  //   LocationPermission permission;
+  Future _getCurrentPosition() async {
+    print("LOG GET CURRENT LOCATION BUTTON WAS PRESSED");
+    final hasPermission = await _handleLocationPermission();
 
-  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!hasPermission) {
+      return;
+    }
 
-  //   if (!serviceEnabled) {
-  //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-  //       content:
-  //           Text("Location services are disabled. Please enable the services"),
-  //     ));
-  //     return false;
-  //   }
-  //   permission = await Geolocator.checkPermission();
-  //   if (permission == LocationPermission.denied) {
-  //     permission = await Geolocator.requestPermission();
-  //     if (permission == LocationPermission.denied) {
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //           const SnackBar(content: Text("Location permissions are denied")));
-  //       return false;
-  //     }
-  //   }
+    final position = await _geolocatorPlatform.getCurrentPosition();
 
-  //   if (permission == LocationPermission.deniedForever) {
-  //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-  //       content: Text(
-  //           "Location permissions are permanently denied, we cannot request permissions."),
-  //     ));
-  //     return false;
-  //   }
+    print("LOG position latitude ${position.latitude.toString()}");
+    print("LOG position longitude ${position.longitude.toString()}");
 
-  //   return true;
-  // }
+    _getAddressFromLatLng(position);
+  }
+
+  Future _myFuture(Position position, AppUser userSnapshot) async {
+    // await Future.delayed(const Duration(seconds: 5));
+    // return 'Future completed';
+
+    await placemarkFromCoordinates(position.latitude, position.longitude,
+            localeIdentifier: "fi")
+        .asStream()
+        .listen((placemarks) {
+      Placemark place = placemarks[0];
+      print("LOG place ${place.locality}");
+
+      setState(() {
+        _currentAddress = '${place.locality}';
+      });
+
+      _userProvider.updateCurrentLocationAddress(
+          userSnapshot, _currentAddress!, context);
+
+      _userProvider.updateCurrentGeoLocation(userSnapshot, position, context);
+    });
+  }
+
+  Future _getAddressFromLatLng(Position? position) async {
+    AppUser userSnapshot = await _userProvider.user;
+
+    print("SDF ${userSnapshot.name}");
+    if (position != null) {
+      _myCancelableFuture = CancelableOperation.fromFuture(
+        _myFuture(position, userSnapshot),
+        onCancel: () => 'Future has been cancelled',
+      );
+
+      print("LOG myCancelableFuture VALUE ");
+
+      // await placemarkFromCoordinates(position.latitude, position.longitude,
+      //         localeIdentifier: "fi")
+      //     .then((List<Placemark> placemarks) {
+      //   Placemark place = placemarks[0];
+
+      //   setState(() {
+      //     _currentAddress = '${place.locality}';
+      //   });
+
+      //   _userProvider.updateCurrentLocationAddress(
+      //       userSnapshot, _currentAddress!, context);
+
+      //   _userProvider.updateCurrentGeoLocation(userSnapshot, position, context);
+
+      //   print("LOG _currentAddress ${place.locality}");
+      // }).catchError((e) {
+      //   debugPrint(e);
+      // });
+    }
+  }
+
+  Future<bool> _handleLocationPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+
+    if (!serviceEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content:
+            Text("Location services are disabled. Please enable the services"),
+      ));
+      return false;
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Location permissions are denied")));
+        return false;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text(
+            "Location permissions are permanently denied, we cannot request permissions."),
+      ));
+      return false;
+    }
+
+    return true;
+  }
 
   @override
   void initState() {
     _userProvider = Provider.of<UserProvider>(context, listen: false);
 
-    // _getCurrentPosition();
+    _getCurrentPosition();
 
     super.initState();
   }
@@ -180,6 +401,26 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                             ),
                             SliverList(
                                 delegate: SliverChildListDelegate([
+                              FloatingActionButton(onPressed: () {
+                                _getCurrentPosition();
+                              }),
+                              FloatingActionButton(
+                                child: (_positionStreamSubscription == null ||
+                                        _positionStreamSubscription!.isPaused)
+                                    ? const Icon(Icons.play_arrow)
+                                    : const Icon(Icons.pause),
+                                onPressed: () {
+                                  positionStreamStarted =
+                                      !positionStreamStarted;
+                                  _toggleListening();
+                                },
+                                tooltip: (_positionStreamSubscription == null)
+                                    ? 'Start position updates'
+                                    : _positionStreamSubscription!.isPaused
+                                        ? 'Resume'
+                                        : 'Pause',
+                                backgroundColor: _determineButtonColor(),
+                              ),
                               buildProfileImages(
                                   userSnapshot.data!, userProvider),
                               const SizedBox(height: 40),
@@ -520,230 +761,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                               ]))),
                                   buildFavouriteBoardGames(
                                       userSnapshot.data!, userProvider)
-                                  // GestureDetector(
-                                  //     onTap: () {
-                                  //       Navigator.of(context)
-                                  //           .push(PageRouteBuilder(
-                                  //         pageBuilder: (
-                                  //           BuildContext context,
-                                  //           Animation<double> animation,
-                                  //           Animation<double>
-                                  //               secondaryAnimation,
-                                  //         ) =>
-                                  //             ProfilePageFavBoardGamesEdit(
-                                  //                 userSnapshot:
-                                  //                     userSnapshot.data!),
-                                  //         transitionsBuilder: (
-                                  //           BuildContext context,
-                                  //           Animation<double> animation,
-                                  //           Animation<double>
-                                  //               secondaryAnimation,
-                                  //           Widget child,
-                                  //         ) =>
-                                  //             SlideTransition(
-                                  //           position: Tween<Offset>(
-                                  //             begin: const Offset(1, 0),
-                                  //             end: Offset.zero,
-                                  //           ).animate(animation),
-                                  //           child: child,
-                                  //         ),
-                                  //       ));
-                                  //     },
-                                  //     child: Container(
-                                  //         margin: const EdgeInsets.fromLTRB(
-                                  //             0, 0, 0, 12),
-                                  //         color: Colors.white,
-                                  //         width: double.infinity,
-                                  //         child: Column(
-                                  //             crossAxisAlignment:
-                                  //                 CrossAxisAlignment.start,
-                                  //             children: [
-                                  //               Padding(
-                                  //                 padding: const EdgeInsets
-                                  //                         .symmetric(
-                                  //                     horizontal: 20,
-                                  //                     vertical: 20),
-                                  //                 child: Column(
-                                  //                   children: [
-                                  //                     Align(
-                                  //                         alignment: Alignment
-                                  //                             .centerLeft,
-                                  //                         child: Text(
-                                  //                             "Favourite Board Games",
-                                  //                             style: TextStyle(
-                                  //                                 fontSize: 32,
-                                  //                                 fontWeight:
-                                  //                                     FontWeight
-                                  //                                         .bold))),
-                                  //                     SafeArea(
-                                  //                         child: SizedBox(
-                                  //                             width: double
-                                  //                                 .infinity,
-                                  //                             height: 300,
-                                  //                             child: new ListView
-                                  //                                     .builder(
-                                  //                                 itemCount:
-                                  //                                     listHeader
-                                  //                                         .length,
-                                  //                                 itemBuilder:
-                                  //                                     (context,
-                                  //                                         index) {
-                                  //                                   var tempBoardGames =
-                                  //                                       <SelectedBoardGame>[];
-
-                                  //                                   switch (listHeader[
-                                  //                                       index]) {
-                                  //                                     case "Family Games":
-                                  //                                       tempBoardGames = userSnapshot
-                                  //                                           .data!
-                                  //                                           .favBoardGames
-                                  //                                           .familyGames;
-                                  //                                       break;
-
-                                  //                                     case "Dexterity Games":
-                                  //                                       tempBoardGames = userSnapshot
-                                  //                                           .data!
-                                  //                                           .favBoardGames
-                                  //                                           .dexterityGames;
-                                  //                                       break;
-
-                                  //                                     case "Party Games":
-                                  //                                       tempBoardGames = userSnapshot
-                                  //                                           .data!
-                                  //                                           .favBoardGames
-                                  //                                           .partyGames;
-                                  //                                       break;
-
-                                  //                                     case "Abstracts":
-                                  //                                       tempBoardGames = userSnapshot
-                                  //                                           .data!
-                                  //                                           .favBoardGames
-                                  //                                           .abstractGames;
-                                  //                                       break;
-
-                                  //                                     case "Thematic":
-                                  //                                       tempBoardGames = userSnapshot
-                                  //                                           .data!
-                                  //                                           .favBoardGames
-                                  //                                           .thematicGames;
-                                  //                                       break;
-
-                                  //                                     case "Strategy":
-                                  //                                       tempBoardGames = userSnapshot
-                                  //                                           .data!
-                                  //                                           .favBoardGames
-                                  //                                           .strategyGames;
-                                  //                                       break;
-
-                                  //                                     case "Wargames":
-                                  //                                       tempBoardGames = userSnapshot
-                                  //                                           .data!
-                                  //                                           .favBoardGames
-                                  //                                           .warGames;
-                                  //                                       break;
-
-                                  //                                     default:
-                                  //                                       tempBoardGames = userSnapshot
-                                  //                                           .data!
-                                  //                                           .favBoardGames
-                                  //                                           .familyGames;
-                                  //                                       break;
-                                  //                                   }
-                                  //                                   return tempBoardGames
-                                  //                                           .isEmpty
-                                  //                                       ? Container()
-                                  //                                       : new StickyHeader(
-                                  //                                           header:
-                                  //                                               new Container(
-                                  //                                             height: 38.0,
-                                  //                                             color: Colors.white,
-                                  //                                             padding: new EdgeInsets.symmetric(horizontal: 12.0),
-                                  //                                             alignment: Alignment.centerLeft,
-                                  //                                             child: new Text(
-                                  //                                               listHeader[index],
-                                  //                                               style: const TextStyle(color: Colors.purple, fontSize: 20, fontWeight: FontWeight.bold),
-                                  //                                             ),
-                                  //                                           ),
-                                  //                                           content: Container(
-                                  //                                               child: GridView.builder(
-                                  //                                                   shrinkWrap: true,
-                                  //                                                   physics: NeverScrollableScrollPhysics(),
-                                  //                                                   itemCount: listTitle.length,
-                                  //                                                   gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                                  //                                                     maxCrossAxisExtent: 180,
-                                  //                                                     childAspectRatio: 2 / 3,
-                                  //                                                   ),
-                                  //                                                   itemBuilder: (context, index) {
-                                  //                                                     return Stack(
-                                  //                                                       children: [
-                                  //                                                         Container(
-                                  //                                                             height: 200,
-                                  //                                                             decoration: BoxDecoration(
-                                  //                                                                 image: tempBoardGames[index].boardGame.imageUrl[0].isEmpty
-                                  //                                                                     ? null
-                                  //                                                                     : DecorationImage(
-                                  //                                                                         fit: BoxFit.cover,
-                                  //                                                                         image: NetworkImage(tempBoardGames[index].boardGame.imageUrl[0]),
-                                  //                                                                       ))),
-                                  //                                                         Container(
-                                  //                                                           decoration: BoxDecoration(
-                                  //                                                               gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [
-                                  //                                                             Colors.grey.withOpacity(0.0),
-                                  //                                                             Colors.black.withOpacity(0.6)
-                                  //                                                           ], stops: const [
-                                  //                                                             0.0,
-                                  //                                                             1.0
-                                  //                                                           ])),
-                                  //                                                         ),
-                                  //                                                         Positioned(
-                                  //                                                             top: 0,
-                                  //                                                             left: 0,
-                                  //                                                             //you can use "right" and "bottom" too
-                                  //                                                             child: Container(
-                                  //                                                               height: 40,
-                                  //                                                               width: 40,
-                                  //                                                               decoration: BoxDecoration(color: Colors.green, borderRadius: BorderRadius.circular(20)),
-                                  //                                                               child: Center(
-                                  //                                                                   child: Text(
-                                  //                                                                 tempBoardGames[index].rank.toString(),
-                                  //                                                                 style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 32),
-                                  //                                                               )),
-                                  //                                                             )),
-                                  //                                                         Positioned(
-                                  //                                                             top: 0,
-                                  //                                                             right: 0,
-                                  //                                                             //you can use "right" and "bottom" too
-                                  //                                                             child: Container(
-                                  //                                                               decoration: BoxDecoration(color: Colors.green, borderRadius: BorderRadius.circular(8)),
-                                  //                                                               child: Padding(
-                                  //                                                                   padding: EdgeInsets.all(6),
-                                  //                                                                   child: Column(children: [
-                                  //                                                                     Text(
-                                  //                                                                       "#${tempBoardGames[index].boardGame.recRank.toString()}",
-                                  //                                                                       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
-                                  //                                                                     ),
-                                  //                                                                     Text(
-                                  //                                                                       "(${tempBoardGames[index].boardGame.recRating.toStringAsFixed(1)})",
-                                  //                                                                       style: TextStyle(fontWeight: FontWeight.w200, color: Colors.white, fontSize: 18),
-                                  //                                                                     )
-                                  //                                                                   ])),
-                                  //                                                             )),
-                                  //                                                         Column(
-                                  //                                                           crossAxisAlignment: CrossAxisAlignment.center,
-                                  //                                                           mainAxisSize: MainAxisSize.max,
-                                  //                                                           mainAxisAlignment: MainAxisAlignment.center,
-                                  //                                                           children: [
-                                  //                                                             Center(child: Text(tempBoardGames[index].boardGame.name.isEmpty ? "Not selected" : tempBoardGames[index].boardGame.name, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20)))
-                                  //                                                           ],
-                                  //                                                         )
-                                  //                                                       ],
-                                  //                                                     );
-                                  //                                                   })));
-                                  //                                 })))
-                                  //                   ],
-                                  //                 ),
-                                  //               ),
-                                  //             ]))),
                                 ],
                               )
                             ]))
@@ -2011,85 +2028,5 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                 )),
           ]))
     ]);
-
-    // List<String> profileImages = [];
-
-    // for (var i = 0; i < user.profilePhotoPaths.length; i++) {
-    //   if (user.profilePhotoPaths[i].isNotEmpty) {
-    //     profileImages.add(user.profilePhotoPaths[i]);
-    //   }
-    // }
-
-    // print("LOG ${profileImages.length}");
-
-    // return GestureDetector(
-    //   onTap: () async {
-    //     final pickedFile =
-    //         await ImagePicker().pickImage(source: ImageSource.gallery);
-    //     if (pickedFile != null) {
-    //       firebaseProvider.updateUserProfilePhoto(
-    //           pickedFile.path, context, 1);
-    //     }
-    //   },
-    //   child: Stack(
-    //     children: [
-    //       Container(
-    //         width: 200,
-    //         height: 200,
-    //         decoration: BoxDecoration(
-    //             borderRadius: BorderRadius.circular(12),
-    //             color: Colors.blue[200],
-    //             image: user.profilePhotoPaths[0].isEmpty
-    //                 ? null
-    //                 : DecorationImage(
-    //                     fit: BoxFit.contain,
-    //                     image: NetworkImage(user.profilePhotoPaths[0]))),
-    //       ),
-    //       Positioned(
-    //           left: 0.8,
-    //           right: 1.0,
-    //           bottom: 1.0,
-    //           child: RoundedIconButton(
-    //             onPressed: () async {},
-    //             iconData: Icons.edit,
-    //             iconSize: 18,
-    //             buttonColor: kAccentColor,
-    //           ))
-    //     ],
-    //   ),
-    // );
-
-    // return Stack(
-    //   children: [
-    //     Container(
-    //       alignment: Alignment.bottomCenter,
-    //       child: CircleAvatar(
-    //         backgroundImage: NetworkImage(user.profilePhotoPaths[0]),
-    //         radius: 75,
-    //       ),
-    //       decoration: BoxDecoration(
-    //         shape: BoxShape.circle,
-    //         border: Border.all(color: kAccentColor, width: 1.0),
-    //       ),
-    //     ),
-    //     Positioned(
-    //         left: 0.8,
-    //         right: 1.0,
-    //         bottom: 1.0,
-    //         child: RoundedIconButton(
-    //           onPressed: () async {
-    //             final pickedFile =
-    //                 await ImagePicker().pickImage(source: ImageSource.gallery);
-    //             if (pickedFile != null) {
-    //               firebaseProvider.updateUserProfilePhoto(
-    //                   pickedFile.path, context, 1);
-    //             }
-    //           },
-    //           iconData: Icons.edit,
-    //           iconSize: 18,
-    //           buttonColor: kAccentColor,
-    //         ))
-    //   ],
-    // );
   }
 }

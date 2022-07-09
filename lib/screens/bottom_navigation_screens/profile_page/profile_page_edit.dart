@@ -93,284 +93,128 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
   List<String> bgThemesList = Utils.bgThemesList;
 
   // END Select Date of Birth
-  static const String _kLocationServicesDisabledMessage =
-      'Location services are disabled.';
-  static const String _kPermissionDeniedMessage = 'Permission denied.';
-  static const String _kPermissionDeniedForeverMessage =
-      'Permission denied forever.';
-  static const String _kPermissionGrantedMessage = 'Permission granted.';
 
-  final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
-  final List<_PositionItem> _positionItems = <_PositionItem>[];
-  StreamSubscription<Position>? _positionStreamSubscription;
-  StreamSubscription<ServiceStatus>? _serviceStatusStreamSubscription;
-  bool positionStreamStarted = false;
-
-  // void _getCurrentPosition() async {
-  //   final hasPermission = await _handleLocationPermission();
-
-  //   if (!hasPermission) return;
-
-  //   await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
-  //       .then((Position position) {
-
-  //     setState(() => _currentPosition = position);
-
-  //     _getAddressFromLatLng(_currentPosition!);
-  //   }).catchError((e) {
-  //     debugPrint(e);
-  //   });
-  // }
-
-  void _updatePositionList(_PositionItemType type, String displayValue) {
-    _positionItems.add(_PositionItem(type, displayValue));
-    setState(() {});
-  }
-
-  Future<bool> _handlePermission() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Test if location services are enabled.
-    serviceEnabled = await _geolocatorPlatform.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      // Location services are not enabled don't continue
-      // accessing the position and request users of the
-      // App to enable the location services.
-      _updatePositionList(
-        _PositionItemType.log,
-        _kLocationServicesDisabledMessage,
-      );
-
-      return false;
-    }
-
-    permission = await _geolocatorPlatform.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await _geolocatorPlatform.requestPermission();
-      if (permission == LocationPermission.denied) {
-        // Permissions are denied, next time you could try
-        // requesting permissions again (this is also where
-        // Android's shouldShowRequestPermissionRationale
-        // returned true. According to Android guidelines
-        // your App should show an explanatory UI now.
-        _updatePositionList(
-          _PositionItemType.log,
-          _kPermissionDeniedMessage,
-        );
-
-        return false;
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
-      _updatePositionList(
-        _PositionItemType.log,
-        _kPermissionDeniedForeverMessage,
-      );
-
-      return false;
-    }
-
-    // When we reach here, permissions are granted and we can
-    // continue accessing the position of the device.
-    _updatePositionList(
-      _PositionItemType.log,
-      _kPermissionGrantedMessage,
-    );
-    return true;
-  }
-
-  void _toggleListening() {
-    if (_positionStreamSubscription == null) {
-      final positionStream = _geolocatorPlatform.getPositionStream();
-      _positionStreamSubscription = positionStream.handleError((error) {
-        _positionStreamSubscription?.cancel();
-        _positionStreamSubscription = null;
-      }).listen((position) {
-        print("LOG position.toString() ${position.toString()}");
-        // _updatePositionList(
-        //   _PositionItemType.position,
-        //   position.toString(),
-        // );
-      });
-
-      print("LOG _positionList ${_positionItems.length}");
-
-      _positionStreamSubscription?.pause();
-    }
-
-    setState(() {
-      if (_positionStreamSubscription == null) {
-        return;
-      }
-
-      String statusDisplayValue;
-      if (_positionStreamSubscription!.isPaused) {
-        _positionStreamSubscription!.resume();
-        statusDisplayValue = 'resumed';
-      } else {
-        _positionStreamSubscription!.pause();
-        statusDisplayValue = 'paused';
-      }
-
-      _updatePositionList(
-        _PositionItemType.log,
-        'Listening for position updates $statusDisplayValue',
-      );
-    });
-  }
+  // final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
 
   @override
   void dispose() {
-    _myCancelableFuture?.cancel();
-    print("LOG WAS I DISPOSED?");
-
-    if (_positionStreamSubscription != null) {
-      _positionStreamSubscription!.cancel();
-      _positionStreamSubscription = null;
-    }
+    // _myCancelableFuture?.cancel();
 
     super.dispose();
   }
 
-  bool _isListening() => !(_positionStreamSubscription == null ||
-      _positionStreamSubscription!.isPaused);
+  // CancelableOperation? _myCancelableFuture;
 
-  Color _determineButtonColor() {
-    return _isListening() ? Colors.green : Colors.red;
-  }
-
-  // BACKUP 9.7.2022
-  // void _getCurrentPosition() async {
+  // Future _getCurrentPosition() async {
+  //   print("LOG GET CURRENT LOCATION BUTTON WAS PRESSED");
   //   final hasPermission = await _handleLocationPermission();
 
-  //   if (!hasPermission) return;
+  //   if (!hasPermission) {
+  //     return;
+  //   }
 
-  //   await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
-  //       .then((Position position) {
+  //   final position = await _geolocatorPlatform.getCurrentPosition();
 
-  //     setState(() => _currentPosition = position);
+  //   print("LOG position latitude ${position.latitude.toString()}");
+  //   print("LOG position longitude ${position.longitude.toString()}");
 
-  //     _getAddressFromLatLng(_currentPosition!);
-  //   }).catchError((e) {
-  //     debugPrint(e);
+  //   _getAddressFromLatLng(position);
+  // }
+
+  // Future _myFuture(Position position, AppUser userSnapshot) async {
+  //   // await Future.delayed(const Duration(seconds: 5));
+  //   // return 'Future completed';
+
+  //   placemarkFromCoordinates(position.latitude, position.longitude,
+  //           localeIdentifier: "fi")
+  //       .asStream()
+  //       .listen((placemarks) {
+  //     Placemark place = placemarks[0];
+  //     print("LOG place ${place.locality}");
+
+  //     setState(() {
+  //       _currentAddress = '${place.locality}';
+  //     });
+
+  //     _userProvider.updateCurrentLocationAddress(
+  //         userSnapshot, _currentAddress!, context);
+
+  //     _userProvider.updateCurrentGeoLocation(userSnapshot, position, context);
   //   });
-  // }ll
-  // keep a reference to CancelableOperation
-  CancelableOperation? _myCancelableFuture;
+  // }
 
-  Future _getCurrentPosition() async {
-    print("LOG GET CURRENT LOCATION BUTTON WAS PRESSED");
-    final hasPermission = await _handleLocationPermission();
+  // Future _getAddressFromLatLng(Position? position) async {
+  //   AppUser userSnapshot = await _userProvider.user;
 
-    if (!hasPermission) {
-      return;
-    }
+  //   print("SDF ${userSnapshot.name}");
+  //   if (position != null) {
+  //     _myCancelableFuture = CancelableOperation.fromFuture(
+  //       _myFuture(position, userSnapshot),
+  //       onCancel: () => 'Future has been cancelled',
+  //     );
 
-    final position = await _geolocatorPlatform.getCurrentPosition();
+  //     print("LOG myCancelableFuture VALUE ");
 
-    print("LOG position latitude ${position.latitude.toString()}");
-    print("LOG position longitude ${position.longitude.toString()}");
+  //     // await placemarkFromCoordinates(position.latitude, position.longitude,
+  //     //         localeIdentifier: "fi")
+  //     //     .then((List<Placemark> placemarks) {
+  //     //   Placemark place = placemarks[0];
 
-    _getAddressFromLatLng(position);
-  }
+  //     //   setState(() {
+  //     //     _currentAddress = '${place.locality}';
+  //     //   });
 
-  Future _myFuture(Position position, AppUser userSnapshot) async {
-    // await Future.delayed(const Duration(seconds: 5));
-    // return 'Future completed';
+  //     //   _userProvider.updateCurrentLocationAddress(
+  //     //       userSnapshot, _currentAddress!, context);
 
-    await placemarkFromCoordinates(position.latitude, position.longitude,
-            localeIdentifier: "fi")
-        .asStream()
-        .listen((placemarks) {
-      Placemark place = placemarks[0];
-      print("LOG place ${place.locality}");
+  //     //   _userProvider.updateCurrentGeoLocation(userSnapshot, position, context);
 
-      setState(() {
-        _currentAddress = '${place.locality}';
-      });
+  //     //   print("LOG _currentAddress ${place.locality}");
+  //     // }).catchError((e) {
+  //     //   debugPrint(e);
+  //     // });
+  //   }
+  // }
 
-      _userProvider.updateCurrentLocationAddress(
-          userSnapshot, _currentAddress!, context);
+  // Future<bool> _handleLocationPermission() async {
+  //   bool serviceEnabled;
+  //   LocationPermission permission;
 
-      _userProvider.updateCurrentGeoLocation(userSnapshot, position, context);
-    });
-  }
+  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
 
-  Future _getAddressFromLatLng(Position? position) async {
-    AppUser userSnapshot = await _userProvider.user;
+  //   if (!serviceEnabled) {
+  //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+  //       content:
+  //           Text("Location services are disabled. Please enable the services"),
+  //     ));
+  //     return false;
+  //   }
+  //   permission = await Geolocator.checkPermission();
+  //   if (permission == LocationPermission.denied) {
+  //     permission = await Geolocator.requestPermission();
+  //     if (permission == LocationPermission.denied) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //           const SnackBar(content: Text("Location permissions are denied")));
+  //       return false;
+  //     }
+  //   }
 
-    print("SDF ${userSnapshot.name}");
-    if (position != null) {
-      _myCancelableFuture = CancelableOperation.fromFuture(
-        _myFuture(position, userSnapshot),
-        onCancel: () => 'Future has been cancelled',
-      );
+  //   if (permission == LocationPermission.deniedForever) {
+  //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+  //       content: Text(
+  //           "Location permissions are permanently denied, we cannot request permissions."),
+  //     ));
+  //     return false;
+  //   }
 
-      print("LOG myCancelableFuture VALUE ");
-
-      // await placemarkFromCoordinates(position.latitude, position.longitude,
-      //         localeIdentifier: "fi")
-      //     .then((List<Placemark> placemarks) {
-      //   Placemark place = placemarks[0];
-
-      //   setState(() {
-      //     _currentAddress = '${place.locality}';
-      //   });
-
-      //   _userProvider.updateCurrentLocationAddress(
-      //       userSnapshot, _currentAddress!, context);
-
-      //   _userProvider.updateCurrentGeoLocation(userSnapshot, position, context);
-
-      //   print("LOG _currentAddress ${place.locality}");
-      // }).catchError((e) {
-      //   debugPrint(e);
-      // });
-    }
-  }
-
-  Future<bool> _handleLocationPermission() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-
-    if (!serviceEnabled) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content:
-            Text("Location services are disabled. Please enable the services"),
-      ));
-      return false;
-    }
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Location permissions are denied")));
-        return false;
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text(
-            "Location permissions are permanently denied, we cannot request permissions."),
-      ));
-      return false;
-    }
-
-    return true;
-  }
+  //   return true;
+  // }
 
   @override
   void initState() {
     _userProvider = Provider.of<UserProvider>(context, listen: false);
 
-    _getCurrentPosition();
+    // _getCurrentPosition();
 
     super.initState();
   }
@@ -401,26 +245,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                             ),
                             SliverList(
                                 delegate: SliverChildListDelegate([
-                              FloatingActionButton(onPressed: () {
-                                _getCurrentPosition();
-                              }),
-                              FloatingActionButton(
-                                child: (_positionStreamSubscription == null ||
-                                        _positionStreamSubscription!.isPaused)
-                                    ? const Icon(Icons.play_arrow)
-                                    : const Icon(Icons.pause),
-                                onPressed: () {
-                                  positionStreamStarted =
-                                      !positionStreamStarted;
-                                  _toggleListening();
-                                },
-                                tooltip: (_positionStreamSubscription == null)
-                                    ? 'Start position updates'
-                                    : _positionStreamSubscription!.isPaused
-                                        ? 'Resume'
-                                        : 'Pause',
-                                backgroundColor: _determineButtonColor(),
-                              ),
                               buildProfileImages(
                                   userSnapshot.data!, userProvider),
                               const SizedBox(height: 40),
@@ -461,7 +285,8 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                                         alignment:
                                                             Alignment.topLeft,
                                                         child: Text(
-                                                            "${userSnapshot.data?.gender.capitalize()}${userSnapshot.data!.currentLocation.isEmpty ? "" : ", ${userSnapshot.data!.currentLocation.capitalize()}"}",
+                                                            // "${userSnapshot.data?.gender.capitalize()}${userSnapshot.data!.currentLocation.isEmpty ? "" : ", ${userSnapshot.data!.currentLocation.capitalize()}"}",
+                                                            "${userSnapshot.data?.gender.capitalize()}${userSnapshot.data?.currentLocation == null ? "" : ", ${userSnapshot.data?.currentLocation.capitalize()}"}",
                                                             style:
                                                                 const TextStyle(
                                                               fontSize: 20,

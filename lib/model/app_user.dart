@@ -5,6 +5,7 @@ import 'package:flutter_demo_01/api/recommend_games_api.dart';
 
 class AppUser {
   late String id;
+  final DateTime createdAt;
   late String email;
   late bool setupIsCompleted;
   late String name;
@@ -24,6 +25,7 @@ class AppUser {
   AppUser(
       {required this.id,
       required this.setupIsCompleted,
+      required this.createdAt,
       this.email = "",
       this.name = "",
       this.bggName = "",

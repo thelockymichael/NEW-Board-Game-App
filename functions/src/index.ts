@@ -3,21 +3,13 @@ import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
 import cors from 'cors'
 import express, { Request, Response } from 'express'
-// import firebase from 'firebase/app'
-// import { IMessage } from './types/AppUser'
-
-// const db = firebase.firestore()
+import { AppUser } from './types/AppUser'
 
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded())
 
 admin.initializeApp()
-
-// CORS configuration.
-// const options: cors.CorsOptions = {
-//   origin: true,
-// }
 
 app.use(cors({ origin: true }))
 
@@ -41,76 +33,122 @@ function getDistanceFromLatLonInKm(lat1: number, lon1: number, lat2: number, lon
   return d
 }
 
-app.get('/api/getNearestUsers', async (req: Request, res: Response) => {
-  // TODO get query, 1. lat, 2. long and 3. distance
+// app.get('/api/getNearestUsers', async (req: Request, res: Response) => {
+// TODO get query, 1. lat, 2. long and 3. distance
+// exports.getNearestUsers = functions.https.onRequest(app)
 
-  const {
-    lat, long, distance, ignoreId,
-  } = req.query
+exports.getNearestUsers = functions.https.onRequest(
+  async (req: Request, res: Response) => {
+    const {
+      lat, long, distance, ignoreId,
+    } = req.query
 
-  console.log('LOG lat', lat)
-  console.log('LOG long', long)
-  console.log('LOG distance', distance)
+    console.log('LOG lat', lat)
+    console.log('LOG long', long)
+    console.log('LOG distance', distance)
 
-  // TODO req: contains user's geo location and distance in km
-  // TODO IGNORE SWIPE IDs
+    const usersRef: admin.firestore.Query<admin.firestore.DocumentData> = db.collection('users')
 
-  // TODO push all user's that are within the radius of e.g. 50 km
+    const users = await usersRef.get()
 
-  const usersRef: admin.firestore.Query<admin.firestore.DocumentData> = db.collection('users')
+    const newPromise = await new Promise((resolve, reject) => {
+      const tmpUsers: Array<any> = []
 
-  const users = await usersRef.get()
+      users.docs.forEach((doc) => {
+        console.log(doc.id, '=>', doc.data().currentGeoLocation)
 
-  // messages.docs.forEach(async (doc) => {
-  const newPromise = await new Promise((resolve, reject) => {
-    const tmpUsers: Array<any> = []
+        const user = doc.data() as AppUser
 
-    users.docs.forEach((doc) => {
-      console.log(doc.id, '=>', doc.data().currentGeoLocation)
+        if (ignoreId === user.id) {
+          return
+        }
+        // tmpUsers.push(doc.data().currentGeoLocation.longitude)
+        // 1. My user
+        const myUserLat: number = lat as unknown as number
+        const myUserLong: number = long as unknown as number
+        // 2. Other user
+        const otherLat = user.currentGeoLocation.latitude
+        const otherLong = user.currentGeoLocation.longitude
 
-      if (ignoreId === doc.data().id) {
-        return
-      }
-      // tmpUsers.push(doc.data().currentGeoLocation.longitude)
-      // 1. My user
-      const myUserLat: number = lat as unknown as number
-      const myUserLong: number = long as unknown as number
-      // 2. Other user
-      const otherLat = doc.data().currentGeoLocation.latitude
-      const otherLong = doc.data().currentGeoLocation.longitude
+        // TODO req: contains user's geo location and distance in km
+        // TODO IGNORE SWIPE IDs
 
-      const distanceFromMyUser = getDistanceFromLatLonInKm(
-        myUserLat,
-        myUserLong,
-        otherLat,
-        otherLong,
-      )
+        // TODO push all user's that are within the radius of e.g. 50 km
+        // TODO GET all users by updatedAt
 
-      console.log('LOG distanceFromMyUser', distanceFromMyUser)
-      // tmpUsers.push(distanceFromMyUser)
-      tmpUsers.push({ user: doc.data(), distance: distanceFromMyUser })
+        const distanceFromMyUser = getDistanceFromLatLonInKm(
+          myUserLat,
+          myUserLong,
+          otherLat,
+          otherLong,
+        )
 
-      tmpUsers.sort((a, b) => ((a.distance > b.distance) ? 1 : -1))
+        console.log('LOG distanceFromMyUser', distanceFromMyUser)
+        // tmpUsers.push(distanceFromMyUser)
+        tmpUsers.push({
+          user,
+          distance: distanceFromMyUser,
+          jotainMuutakin: user.favBoardGames.abstractGames[0].boardGame.recRating,
+        })
+
+        tmpUsers.sort((a, b) => ((a.distance > b.distance) ? 1 : -1))
+      })
+
+      const newDistance = distance as unknown as number
+      // Filter all users that are NOT within radius of e.g. 20 km
+      const shortestDistances = tmpUsers.filter((item) => item.distance < newDistance)
+
+      // TODO for each user's currentLocation
+      // TODO Display the distance
+      resolve(shortestDistances)
     })
 
-    const newDistance = distance as unknown as number
-    // Filter all users that are NOT within radius of e.g. 20 km
-    const shortestDistances = tmpUsers.filter((item) => item.distance < newDistance)
+    res.json({
+      results: newPromise,
+    })
+  },
+)
 
-    // TODO for each user's currentLocation
-    // TODO Display the distance
-    resolve(shortestDistances)
-  })
+exports.newUserSignup = functions.auth.user().onCreate((user) => {
+  console.log('LOG user created', user.email, user.uid)
 
-  res.json({
-    results: newPromise,
-  })
+  admin.firestore().collection('users').doc(user.uid).set({
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+  }, { merge: true })
 })
 
-app.get('/api', (req, res) => {
-  const date = new Date()
-  const hours = (date.getHours() % 12) + 1 // London is UTC + 1hr;
-  res.json({ bongs: 'BONG '.repeat(hours) })
-})
+exports.updatedUser = functions.firestore.document('users/{userId}')
+  .onUpdate((change) => {
+    // Retrieve the current and previous value
+    const data = change.after.data()
+    const previousData = change.before.data()
 
-exports.app = functions.https.onRequest(app)
+    // We'll only update if the name has changed.
+    // This is crucial to prevent infinite loops.
+    // TODO add all other fields as well
+    if (data.name === previousData.name) {
+      return null
+    }
+
+    // Return a promise of a set operation to update the count
+    return change.after.ref.set({
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    }, { merge: true })
+  })
+
+// .user().onCreate((user) => {
+//   console.log('LOG user created', user.email, user.uid)
+
+//   admin.firestore().collection('users').doc(user.uid).set({
+//     createdAt: admin.firestore.FieldValue.serverTimestamp(),
+//   })
+// })
+
+// app.get('/api', (req, res) => {
+//   const date = new Date()
+//   const hours = (date.getHours() % 12) + 1 // London is UTC + 1hr;
+//   res.json({ bongs: 'BONG '.repeat(hours) })
+// })
+
+// exports.app = functions.https.onRequest(app)

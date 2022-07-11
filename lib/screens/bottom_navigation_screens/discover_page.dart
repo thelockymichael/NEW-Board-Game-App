@@ -177,7 +177,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
     _ignoreSwipeIds.add(_myUser.id);
 
     // BACKUP 11.7.22
-    await GetNearestUsers().getNearestUsers(_ignoreSwipeIds, 10, _myUser, 20);
+    // await GetNearestUsers().getNearestUsers(_ignoreSwipeIds, 10, _myUser, 20);
 
     var res = await _databaseSource.getPersonsToMatchWith(
         100, _ignoreSwipeIds, userQuery);

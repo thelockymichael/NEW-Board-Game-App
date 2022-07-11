@@ -1,35 +1,50 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_demo_01/model/app_user.dart';
+import 'package:flutter_demo_01/secrets/api_urls.dart';
 import 'package:http/http.dart' as http;
 
 class GetNearestUsers {
-// http://recommend.games/api/games/?ordering=-rec_rating,-bayes_rating,-avg_rating&page=1
-
-  final String _url = "http://recommend.games/api/games/";
-
-  Future<List<BoardGameData>> getNearestUsers(
-      List<String> ignoreSwipeIds, gameGenre, apiUrl) async {
+  Future<List<Result>> getNearestUsers(List<String> ignoreSwipeIds, int limit,
+      AppUser myUser, int distance) async {
+    // TODO git ignore my cloud function URL STRING !
     // TODO ignoreId
+    // TODO limitToUsers => limit
+
     // TODO myUser lat & long
     // TODO distance e.g. 20 km
+    http.Response response = await http.get(Uri.parse(ApiUrls
+            .getNearestUserUrl +
+        "ignoreId=qyQQEUgqXYRIRRai7KUesdC9gWi1&lat=60.2034712&long=24.6560609&distance=25"));
 
-    // String gameType = _returnGameType(gameGenre);
+    if (response.statusCode == 200) {
+      final parsedJson = json.decode(response.body);
 
-    // http.Response response =
-    //     await http.get(Uri.parse(_url + gameType + apiUrl));
+      print("LOG guf ${parsedJson.toString()}");
 
-    // //'?game_type=5499&ordering=-rec_rating,-bayes_rating,-avg_rating&page=1');
+      print(
+          "LOG guf ${ApiUrls.getNearestUserUrl + "ignoreId=qyQQEUgqXYRIRRai7KUesdC9gWi1&lat=60.2034712&long=24.6560609&distance=25"}");
+      // final finalResponse = ResponseData(parsedJson);
 
-    // if (response.statusCode == 200) {
-    //   final parsedJson = json.decode(response.body);
-    //   final finalResponse = ResponseData.fromJson(parsedJson);
+      final finalResponse = ResponseData.fromJson(parsedJson);
+      print(
+          "LOG guf finalResponse ${finalResponse.results[1].user.currentGeoLocation.latitude}");
 
-    //   // print("JOTAIN ${finalResponse.results[0].name}");
-    //   return finalResponse.results;
-    //   // return response;
-    // } else {
-    //   throw Exception('Failed to load board games');
-    // }
+      print(
+          "LOG guf finalResponse ${finalResponse.results[1].user.currentGeoLocation.longitude}");
+
+      print("LOG guf finalResponse ${finalResponse.results[1].user.name}");
+
+      // final finalResponse = ResponseData.fromJson(parsedJson);
+
+      // print("LOG guf ${finalResponse}");
+
+      // return finalResponse.results;
+      return [];
+    } else {
+      throw Exception("Failed to load users");
+    }
   }
 }
 
@@ -40,91 +55,166 @@ String responseDataToJson(ResponseData data) => json.encode(data.toJson());
 
 class ResponseData {
   ResponseData({
-    required this.count,
-    required this.next,
-    required this.previous,
     required this.results,
   });
 
-  int count;
-  String? next;
-  String? previous;
-  List<BoardGameData> results;
+  List<Result> results;
 
   factory ResponseData.fromJson(Map<String, dynamic> json) => ResponseData(
-        count: json["count"],
-        next: json["next"],
-        previous: json["previous"],
-        results: List<BoardGameData>.from(
-            json["results"].map((x) => BoardGameData.fromJson(x))),
+        results:
+            List<Result>.from(json["results"].map((x) => Result.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
-        "count": count,
-        "next": next,
-        "previous": previous,
         "results": List<dynamic>.from(results.map((x) => x.toJson())),
       };
 }
 
-class BoardGameData {
-  BoardGameData({
-    required this.bggId,
-    required this.imageUrl,
-    required this.year,
-    required this.recRank,
-    required this.recRating,
-    required this.recStars,
-    required this.name,
+class Result {
+  Result({
+    required this.user,
+    required this.distance,
   });
 
-  int bggId;
-  List<String> imageUrl;
-  int year;
-  int recRank;
-  double recRating;
-  double recStars;
-  String name;
+  ResultAppUser user;
+  double distance;
 
-  Map<String, dynamic> toMap() => {
-        "bggId": bggId,
-        "imageUrl": imageUrl,
-        "year": year,
-        "recRank": recRank,
-        "recRating": recRating,
-        "recStars": recStars,
-        "name": name,
-      };
-
-  factory BoardGameData.fromMap(Map<String, dynamic> map) {
-    return BoardGameData(
-        bggId: map['bggId'] ?? 0,
-        year: map['year'] ?? 0,
-        recRank: map['recRank'] ?? 0,
-        recRating: map['recRating'] ?? 0.0,
-        recStars: map['recStars'] ?? 0.0,
-        name: map['name'] ?? "0",
-        imageUrl: List<String>.from(map["imageUrl"]));
-  }
-  // favBoardGames: List<String>.from(map["favBoardGames"]),
-
-  factory BoardGameData.fromJson(Map<String, dynamic> json) => BoardGameData(
-        bggId: json["bgg_id"],
-        imageUrl: List<String>.from(json["image_url"].map((x) => x)),
-        year: json["year"] ?? 0,
-        recRank: json["rec_rank"] ?? 0,
-        recRating: json["rec_rating"].toDouble(),
-        recStars: json["rec_stars"].toDouble(),
-        name: json["name"],
+  factory Result.fromJson(Map<String, dynamic> json) => Result(
+        user: ResultAppUser.fromMap(json["user"]),
+        distance: json["distance"].toDouble(),
       );
 
   Map<String, dynamic> toJson() => {
-        "bgg_id": bggId,
-        "image_url": List<dynamic>.from(imageUrl.map((x) => x)),
-        "year": year,
-        "rec_rank": recRank,
-        "rec_rating": recRating,
-        "rec_stars": recStars,
+        "user": user.toMap(),
+        "distance": distance,
+      };
+}
+
+class ResultAppUser {
+  late String bio;
+  late String name;
+  late CurrentGeoLocation currentGeoLocation;
+
+  // late String id;
+  // late String email;
+  // late bool setupIsCompleted;
+  // late String bggName;
+  // late String currentLocation;
+  // late String gender;
+  // late int age;
+  // late List<String> profilePhotoPaths;
+  // late List<String> languages;
+  // late List<String> favBoardGameGenres;
+  // late List<String> favBgMechanics;
+  // late List<String> favBgThemes;
+  // late FavBoardGames favBoardGames;
+
+  ResultAppUser({
+    required this.currentGeoLocation,
+    this.name = "",
+    this.bio = "",
+    // required this.id,
+    // required this.setupIsCompleted,
+    // this.email = "",
+    // this.bggName = "",
+    // this.currentLocation = "",
+    // this.gender = "",
+    // this.age = 0,
+    // required this.profilePhotoPaths,
+    // required this.languages,
+    // required this.favBoardGameGenres,
+    // required this.favBgMechanics,
+    // required this.favBgThemes,
+    // required this.favBoardGames
+  });
+
+  ResultAppUser.fromSnapshot(DocumentSnapshot snapshot) {
+    currentGeoLocation = snapshot["currentGeoLocation"] ?? GeoPoint(0, 0);
+    name = snapshot["name"] ?? '';
+    bio = snapshot["bio"] ?? '';
+
+    // id = snapshot["id"];
+    // setupIsCompleted = snapshot["setupIsCompleted"] ?? false;
+    // email = snapshot["email"] ?? '';
+    // bggName = snapshot["bggName"] ?? '';
+    // currentLocation = snapshot["currentLocation"] ?? '';
+    // gender = snapshot["gender"] ?? '';
+    // age = snapshot["age"] ?? '';
+    // profilePhotoPaths = List<String>.from(snapshot["profilePhotoPaths"]);
+    // languages = List<String>.from(snapshot["languages"]);
+    // favBoardGameGenres = List<String>.from(snapshot["favBoardGameGenres"]);
+    // favBgMechanics = List<String>.from(snapshot["favBgMechanics"]);
+    // favBgThemes = List<String>.from(snapshot["favBgThemes"]);
+    // favBoardGames = FavBoardGames.fromMap(snapshot["favBoardGames"]);
+  }
+
+  Map<String, dynamic> toMap() => {
+        "currentGeoLocation": currentGeoLocation.toMap(),
         "name": name,
+        "bio": bio,
+
+        // "id": id,
+        // "setupIsCompleted": setupIsCompleted,
+        // "email": email,
+        // "bggName": bggName,
+        // "currentLocation": currentLocation,
+        // "gender": gender,
+        // "age": age,
+        // "profilePhotoPaths": profilePhotoPaths,
+        // "languages": languages,
+        // "favBoardGameGenres": favBoardGameGenres,
+        // "favBgMechanics": favBgMechanics,
+        // "favBgThemes": favBgThemes,
+        // "favBoardGames": favBoardGames.toMap(),
+      };
+
+  factory ResultAppUser.fromMap(Map<String, dynamic> map) {
+    return ResultAppUser(
+      currentGeoLocation: CurrentGeoLocation.fromMap(map["currentGeoLocation"]),
+      name: map["name"] ?? "",
+      bio: map["bio"] ?? "",
+    );
+
+    // id: map['id'] ?? '',
+    // setupIsCompleted: map['setupIsCompleted'] ?? false,
+    // email: map["email"] ?? "",
+    // bggName: map["bggName"] ?? "",
+    // currentLocation: map["currentLocation"] ?? "",
+    // // currentGeoLocation: userSnapshot.currentGeoLocation,
+
+    // gender: map["gender"] ?? "",
+    // age: map["age"] ?? "",
+    // profilePhotoPaths: List<String>.from(map["profilePhotoPaths"]),
+    // languages: List<String>.from(map["languages"]),
+    // favBoardGameGenres: List<String>.from(map["favBoardGameGenres"]),
+    // favBgMechanics: List<String>.from(map["favBgMechanics"]),
+    // favBgThemes: List<String>.from(map["favBgThemes"]),
+    // favBoardGames: FavBoardGames.fromMap(map["favBoardGames"]));
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory ResultAppUser.fromJson(String source) =>
+      ResultAppUser.fromMap(json.decode(source));
+}
+
+class CurrentGeoLocation {
+  CurrentGeoLocation({
+    required this.latitude,
+    required this.longitude,
+  });
+
+  double latitude;
+  double longitude;
+
+  factory CurrentGeoLocation.fromMap(Map<String, dynamic> json) =>
+      CurrentGeoLocation(
+        latitude: json["_latitude"].toDouble(),
+        longitude: json["_longitude"].toDouble(),
+      );
+
+  Map<String, dynamic> toMap() => {
+        "_latitude": latitude,
+        "_longitude": longitude,
       };
 }

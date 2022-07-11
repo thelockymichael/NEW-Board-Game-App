@@ -3,7 +3,6 @@ import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
 import cors from 'cors'
 import express, { Request, Response } from 'express'
-import { WhereFilterOp } from '@firebase/firestore-types'
 // import firebase from 'firebase/app'
 // import { IMessage } from './types/AppUser'
 
@@ -15,9 +14,6 @@ app.use(express.urlencoded())
 
 admin.initializeApp()
 
-// isNumber validation function
-const isNumber = (text: string) => !Number.isNaN(Number(text))
-
 // CORS configuration.
 // const options: cors.CorsOptions = {
 //   origin: true,
@@ -25,13 +21,6 @@ const isNumber = (text: string) => !Number.isNaN(Number(text))
 
 app.use(cors({ origin: true }))
 
-type ValueType = string | number | undefined | string[]
-
-type FireStoreQuery = {
-  field: string;
-  operator: WhereFilterOp,
-  value: ValueType
-}
 // TODO Convert searchPhotographers to express function
 
 const db = admin.firestore()
@@ -113,7 +102,9 @@ app.get('/api/getNearestUsers', async (req: Request, res: Response) => {
     resolve(shortestDistances)
   })
 
-  res.json(newPromise)
+  res.json({
+    results: newPromise,
+  })
 })
 
 app.get('/api', (req, res) => {
@@ -121,21 +112,5 @@ app.get('/api', (req, res) => {
   const hours = (date.getHours() % 12) + 1 // London is UTC + 1hr;
   res.json({ bongs: 'BONG '.repeat(hours) })
 })
-
-enum PhotographerType {
-  All = 'all',
-  Individual = 'individual',
-  Company = 'company',
-}
-
-interface IFilterPhotographers {
-  location?: string
-  priceRange?: {
-    minPrice?: number,
-    maxPrice?: number
-  }
-  speciality?: Array<string>
-  photographerType?: PhotographerType
-}
 
 exports.app = functions.https.onRequest(app)

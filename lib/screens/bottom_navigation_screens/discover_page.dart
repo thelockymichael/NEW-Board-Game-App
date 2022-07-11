@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_function_declarations_over_variables
 
 import 'package:flutter/material.dart';
+import 'package:flutter_demo_01/api/get_nearest_users_api.dart';
 import 'package:flutter_demo_01/components/discover/discover_card.dart';
 import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
 import 'package:flutter_demo_01/db/entity/UserQuery.dart';
@@ -174,6 +175,9 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
       _ignoreSwipeIds.add(swipe.id);
     }
     _ignoreSwipeIds.add(_myUser.id);
+
+    // BACKUP 11.7.22
+    await GetNearestUsers().getNearestUsers(_ignoreSwipeIds, 10, _myUser, 20);
 
     var res = await _databaseSource.getPersonsToMatchWith(
         100, _ignoreSwipeIds, userQuery);

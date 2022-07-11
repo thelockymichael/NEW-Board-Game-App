@@ -1045,6 +1045,8 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                       _isProcessing = true;
                                     });
                                     if (_userFormKey.currentState!.validate()) {
+                                      print(
+                                          "LOG guf ${userSnapshot.currentGeoLocation.latitude}");
                                       // First name
                                       _userProfileEdit.name =
                                           _nameTextController.text;

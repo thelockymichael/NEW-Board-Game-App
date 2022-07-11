@@ -9,6 +9,9 @@
 .history
 .svn/
 
+# Secret API URLs
+lib/secrets
+
 # Functions build folder
 functions/build
 

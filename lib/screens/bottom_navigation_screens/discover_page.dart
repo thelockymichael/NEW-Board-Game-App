@@ -29,7 +29,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
   final FirebaseDatabaseSource _databaseSource = FirebaseDatabaseSource();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   late List<String> _ignoreSwipeIds;
-  late List<AppUser> _userList;
+  late List<Result> _userList;
 
   // 1. Default Selected Gender
   List<String> defaultSelectedGender = ["everyone"];
@@ -138,7 +138,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
     // getFunction();
 
     _ignoreSwipeIds = <String>[];
-    _userList = <AppUser>[];
+    _userList = <Result>[];
 
     cardProvider = Provider.of<CardProvider>(context, listen: false);
 
@@ -159,7 +159,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  Future<List<AppUser>?> loadUsers(List<UserQuery> userQuery) async {
+  Future<List<Result>?> loadUsers(List<UserQuery> userQuery) async {
     String? id = await SharedPreferencesUtil.getUserId();
 
     if (id != null) {
@@ -167,7 +167,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
     }
 
     _ignoreSwipeIds = <String>[];
-    _userList = <AppUser>[];
+    _userList = <Result>[];
 
     var swipes = await _databaseSource.getSwipes(_myUser.id);
     for (var i = 0; i < swipes.size; i++) {
@@ -177,86 +177,103 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
     _ignoreSwipeIds.add(_myUser.id);
 
     // BACKUP 11.7.22
-    // await GetNearestUsers().getNearestUsers(_ignoreSwipeIds, 10, _myUser, 20);
+    var res = await GetNearestUsers().getNearestUsers(
+      10,
+      _myUser,
+      2000,
+    );
 
-    var res = await _databaseSource.getPersonsToMatchWith(
-        100, _ignoreSwipeIds, userQuery);
+    if (res.isNotEmpty) {
+      //   for (var element in res.docs) {
+      //     _userList.add(AppUser.fromSnapshot(element));
+      //   }
 
-    if (res.docs.isNotEmpty) {
-      for (var element in res.docs) {
-        _userList.add(AppUser.fromSnapshot(element));
-      }
-
-      print("CVB MIN: $defaultMinAgeValue");
-      print("CVB MAX: $defaultMaxAgeValue");
-
-      // 1. Age Range
-      // _userList.removeWhere(((element) =>
-      //     element.age < defaultMinAgeValue ||
-      //     element.age > defaultMaxAgeValue));
-
-      // END 1. Age Range
-
-      // 2. Bg Mechanics
-      List<AppUser> _usersToRemove = [];
-
-      if (defaultMechanics.isNotEmpty) {
-        for (var i = 0; i < _userList.length; i++) {
-          for (var j = 0; j < defaultMechanics.length; j++) {
-            bool doesExist =
-                _userList[i].favBgMechanics.contains(defaultMechanics[j]);
-
-            if (doesExist == false) {
-              _usersToRemove.add(_userList[i]);
-            }
-          }
-        }
-      }
-      // END 2. Bg Mechanics
-
-      // 3. Bg Themes
-      if (defaultThemes.isNotEmpty) {
-        for (var i = 0; i < _userList.length; i++) {
-          for (var j = 0; j < defaultThemes.length; j++) {
-            bool doesExist =
-                _userList[i].favBgThemes.contains(defaultThemes[j]);
-
-            if (doesExist == false) {
-              _usersToRemove.add(_userList[i]);
-            }
-          }
-        }
-      }
-      // END 3. Bg Themes
-
-      // 4. Languages
-      if (defaultLanguages.isNotEmpty) {
-        for (var i = 0; i < _userList.length; i++) {
-          for (var j = 0; j < defaultLanguages.length; j++) {
-            bool doesExist =
-                _userList[i].languages.contains(defaultLanguages[j]);
-
-            if (doesExist == false) {
-              _usersToRemove.add(_userList[i]);
-            }
-          }
-        }
-      }
-      // END 4. Languages
-
-      _usersToRemove.forEach((element) {
-        _userList.remove(element);
-      });
-
-      print("VMK FINAL ${_userList.length}");
-
-      print(
-          "VMK !!LOAD PERSON!! length of users ${_userList.reversed.toList().length}");
-
-      cardProvider.setUsers(_userList.reversed.toList());
+      print("LOG gufus ${res[0].distance}");
+      print("LOG gufus ${res[0].user.name}");
+      print("LOG gufus ${res[0].distance}");
+      cardProvider.setUsers(res.reversed.toList());
 
       return _userList.reversed.toList();
     }
+
+    // var res = await _databaseSource.getPersonsToMatchWith(
+    //     100, _ignoreSwipeIds, userQuery);
+
+    // if (res.docs.isNotEmpty) {
+    //   for (var element in res.docs) {
+    //     _userList.add(AppUser.fromSnapshot(element));
+    //   }
+
+    //   print("CVB MIN: $defaultMinAgeValue");
+    //   print("CVB MAX: $defaultMaxAgeValue");
+
+    //   // 1. Age Range
+    //   // _userList.removeWhere(((element) =>
+    //   //     element.age < defaultMinAgeValue ||
+    //   //     element.age > defaultMaxAgeValue));
+
+    //   // END 1. Age Range
+
+    //   // 2. Bg Mechanics
+    //   List<AppUser> _usersToRemove = [];
+
+    //   if (defaultMechanics.isNotEmpty) {
+    //     for (var i = 0; i < _userList.length; i++) {
+    //       for (var j = 0; j < defaultMechanics.length; j++) {
+    //         bool doesExist =
+    //             _userList[i].favBgMechanics.contains(defaultMechanics[j]);
+
+    //         if (doesExist == false) {
+    //           _usersToRemove.add(_userList[i]);
+    //         }
+    //       }
+    //     }
+    //   }
+    //   // END 2. Bg Mechanics
+
+    //   // 3. Bg Themes
+    //   if (defaultThemes.isNotEmpty) {
+    //     for (var i = 0; i < _userList.length; i++) {
+    //       for (var j = 0; j < defaultThemes.length; j++) {
+    //         bool doesExist =
+    //             _userList[i].favBgThemes.contains(defaultThemes[j]);
+
+    //         if (doesExist == false) {
+    //           _usersToRemove.add(_userList[i]);
+    //         }
+    //       }
+    //     }
+    //   }
+    //   // END 3. Bg Themes
+
+    //   // 4. Languages
+    //   if (defaultLanguages.isNotEmpty) {
+    //     for (var i = 0; i < _userList.length; i++) {
+    //       for (var j = 0; j < defaultLanguages.length; j++) {
+    //         bool doesExist =
+    //             _userList[i].languages.contains(defaultLanguages[j]);
+
+    //         if (doesExist == false) {
+    //           _usersToRemove.add(_userList[i]);
+    //         }
+    //       }
+    //     }
+    //   }
+    //   // END 4. Languages
+
+    //   _usersToRemove.forEach((element) {
+    //     _userList.remove(element);
+    //   });
+
+    //   print("VMK FINAL ${_userList.length}");
+
+    //   print(
+    //       "VMK !!LOAD PERSON!! length of users ${_userList.reversed.toList().length}");
+
+    //   cardProvider.setUsers(_userList.reversed.toList());
+
+    //   return _userList.reversed.toList();
+    // }
 
     return null;
   }
@@ -1065,7 +1082,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
           ],
         ),
         key: _scaffoldKey,
-        body: FutureBuilder<List<AppUser>?>(
+        body: FutureBuilder<List<Result>?>(
             future: loadUsers(userQuery),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done &&

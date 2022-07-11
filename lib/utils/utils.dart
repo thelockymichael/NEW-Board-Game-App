@@ -313,6 +313,8 @@ class Utils {
 
   static AppUser user = AppUser(
       id: "test id",
+      createdAt: new Timestamp.now(),
+      updatedAt: new Timestamp.now(),
       setupIsCompleted: false,
       name: "test name",
       email: "test@gmail.com",

@@ -39,20 +39,32 @@ function getDistanceFromLatLonInKm(lat1: number, lon1: number, lat2: number, lon
 
 exports.getNearestUsers = functions.https.onRequest(
   async (req: Request, res: Response) => {
-    const {
-      lat, long, distance, ignoreId,
-    } = req.query
+    const ignoreId = req.query.ignoreId as string
+    const lat = req.query.lat as unknown as number
+    const long = req.query.long as unknown as number
+    const distance = req.query.distance as unknown as number
+    const limit = parseInt(req.query.limit as unknown as string, 10)
 
     console.log('LOG lat', lat)
     console.log('LOG long', long)
     console.log('LOG distance', distance)
+    console.log('LOG limit', limit)
 
-    const usersRef: admin.firestore.Query<admin.firestore.DocumentData> = db.collection('users')
+    const usersRef: admin.firestore.Query<admin.firestore.DocumentData> = db
+      .collection('users')
+      .limit(limit)
+      .orderBy('updatedAt', 'desc')
 
     const users = await usersRef.get()
 
-    const newPromise = await new Promise((resolve, reject) => {
-      const tmpUsers: Array<any> = []
+    const newPromise: Array<{
+      user: AppUser,
+      distance: number
+    }> = await new Promise((resolve, reject) => {
+      const tmpUsers:Array<{
+        user: AppUser,
+        distance: number
+      }> = []
 
       users.docs.forEach((doc) => {
         console.log(doc.id, '=>', doc.data().currentGeoLocation)
@@ -86,9 +98,9 @@ exports.getNearestUsers = functions.https.onRequest(
         console.log('LOG distanceFromMyUser', distanceFromMyUser)
         // tmpUsers.push(distanceFromMyUser)
         tmpUsers.push({
+
           user,
           distance: distanceFromMyUser,
-          jotainMuutakin: user.favBoardGames.abstractGames[0].boardGame.recRating,
         })
 
         tmpUsers.sort((a, b) => ((a.distance > b.distance) ? 1 : -1))
@@ -103,7 +115,11 @@ exports.getNearestUsers = functions.https.onRequest(
       resolve(shortestDistances)
     })
 
+    console.log('LOG newPromise results', newPromise.length)
+
     res.json({
+      // count: newPromise.results.length,
+      count: newPromise.length,
       results: newPromise,
     })
   },

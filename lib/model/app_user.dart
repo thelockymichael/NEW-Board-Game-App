@@ -5,7 +5,8 @@ import 'package:flutter_demo_01/api/recommend_games_api.dart';
 
 class AppUser {
   late String id;
-  final DateTime createdAt;
+  late Timestamp createdAt;
+  late Timestamp updatedAt;
   late String email;
   late bool setupIsCompleted;
   late String name;
@@ -26,15 +27,16 @@ class AppUser {
       {required this.id,
       required this.setupIsCompleted,
       required this.createdAt,
-      this.email = "",
+      required this.updatedAt,
+      this.bio = "",
       this.name = "",
+      this.currentGeoLocation = const GeoPoint(0, 0),
+      this.email = "",
       this.bggName = "",
       this.currentLocation = "",
-      this.currentGeoLocation = const GeoPoint(0, 0),
       this.gender = "",
       this.age = 0,
       required this.profilePhotoPaths,
-      this.bio = "",
       required this.languages,
       required this.favBoardGameGenres,
       required this.favBgMechanics,
@@ -43,38 +45,41 @@ class AppUser {
 
   AppUser.fromSnapshot(DocumentSnapshot snapshot) {
     id = snapshot["id"];
+
+    currentGeoLocation = snapshot["currentGeoLocation"] ?? GeoPoint(0, 0);
+    createdAt = snapshot["createdAt"] ?? new Timestamp.now();
+    updatedAt = snapshot["updatedAt"] ?? new Timestamp.now();
+    name = snapshot["name"] ?? '';
+    bio = snapshot["bio"] ?? '';
+
     setupIsCompleted = snapshot["setupIsCompleted"] ?? false;
     email = snapshot["email"] ?? '';
-    name = snapshot["name"] ?? '';
     bggName = snapshot["bggName"] ?? '';
     currentLocation = snapshot["currentLocation"] ?? '';
-    currentGeoLocation = snapshot["currentGeoLocation"] ?? GeoPoint(0, 0);
     gender = snapshot["gender"] ?? '';
     age = snapshot["age"] ?? '';
-    // profilePhotoPath = snapshot["profilePhotoPath"] ?? '';
     profilePhotoPaths = List<String>.from(snapshot["profilePhotoPaths"]);
-    bio = snapshot["bio"] ?? '';
     languages = List<String>.from(snapshot["languages"]);
     favBoardGameGenres = List<String>.from(snapshot["favBoardGameGenres"]);
     favBgMechanics = List<String>.from(snapshot["favBgMechanics"]);
     favBgThemes = List<String>.from(snapshot["favBgThemes"]);
-    // favBoardGames = List<String>.from(snapshot["favBoardGames"]);
     favBoardGames = FavBoardGames.fromMap(snapshot["favBoardGames"]);
   }
 
   Map<String, dynamic> toMap() => {
         "id": id,
+        "createdAt": createdAt,
+        "updatedAt": updatedAt,
+        "name": name,
+        "currentGeoLocation": currentGeoLocation,
+        "bio": bio,
         "setupIsCompleted": setupIsCompleted,
         "email": email,
-        "name": name,
         "bggName": bggName,
         "currentLocation": currentLocation,
-        "currentGeoLocation": currentGeoLocation,
         "gender": gender,
         "age": age,
-        // "profilePhotoPath": profilePhotoPath,
         "profilePhotoPaths": profilePhotoPaths,
-        "bio": bio,
         "languages": languages,
         "favBoardGameGenres": favBoardGameGenres,
         "favBgMechanics": favBgMechanics,
@@ -84,26 +89,24 @@ class AppUser {
 
   factory AppUser.fromMap(Map<String, dynamic> map) {
     return AppUser(
+        createdAt: map["createdAt"] ?? new Timestamp.now(),
+        updatedAt: map["updatedAt"] ?? new Timestamp.now(),
+        name: map["name"] ?? "",
+        bio: map["bio"] ?? "",
+        currentGeoLocation: map["currentGeoLocation"] ?? GeoPoint(0, 0),
         id: map['id'] ?? '',
         setupIsCompleted: map['setupIsCompleted'] ?? false,
         email: map["email"] ?? "",
-        name: map["name"] ?? "",
         bggName: map["bggName"] ?? "",
         currentLocation: map["currentLocation"] ?? "",
-        // currentGeoLocation: userSnapshot.currentGeoLocation,
-        currentGeoLocation: map["currentGeoLocation"] ?? GeoPoint(0, 0),
         gender: map["gender"] ?? "",
         age: map["age"] ?? "",
-        // profilePhotoPath: map["profilePhotoPath"] ?? "",
         profilePhotoPaths: List<String>.from(map["profilePhotoPaths"]),
-        bio: map["bio"] ?? "",
         languages: List<String>.from(map["languages"]),
         favBoardGameGenres: List<String>.from(map["favBoardGameGenres"]),
         favBgMechanics: List<String>.from(map["favBgMechanics"]),
         favBgThemes: List<String>.from(map["favBgThemes"]),
-        favBoardGames: FavBoardGames.fromMap(map["favBoardGames"])
-        // favBoardGames: List<String>.from(map["favBoardGames"]),
-        );
+        favBoardGames: FavBoardGames.fromMap(map["favBoardGames"]));
   }
 
   String toJson() => json.encode(toMap());

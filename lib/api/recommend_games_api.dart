@@ -157,12 +157,11 @@ class BoardGameData {
         bggId: map['bggId'] ?? 0,
         year: map['year'] ?? 0,
         recRank: map['recRank'] ?? 0,
-        recRating: map['recRating'] ?? 0.0,
-        recStars: map['recStars'] ?? 0.0,
+        recRating: map['recRating'].toDouble() ?? 0.0,
+        recStars: map['recStars'].toDouble() ?? 0.0,
         name: map['name'] ?? "0",
         imageUrl: List<String>.from(map["imageUrl"]));
   }
-  // favBoardGames: List<String>.from(map["favBoardGames"]),
 
   factory BoardGameData.fromJson(Map<String, dynamic> json) => BoardGameData(
         bggId: json["bgg_id"],

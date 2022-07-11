@@ -1,3 +1,7 @@
+// interface AppUserPromise {
+//   results:
+// }
+
 interface AppUser {
   id: string,
   setupIsCompleted: boolean,

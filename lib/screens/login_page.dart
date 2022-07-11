@@ -44,6 +44,9 @@ class _LoginPageState extends State<LoginPage> {
   double doubleInRange(Random source, num start, num end) =>
       source.nextDouble() * (end - start) + start;
 
+  int intInRange(Random source, int min, int max) =>
+      min + source.nextInt(max - min);
+
   Future createFiftyUsers() async {
     // print("LOG ${doubleInRange(random, 20, 60)}");
 
@@ -62,18 +65,48 @@ class _LoginPageState extends State<LoginPage> {
       "Sanni"
     ];
 
-    for (var i = 0; i < amount; i++) {
+    for (var i = 0; i <= amount; i++) {
       // TODO 1. Random name
       // TODO 2. Random currentGeoLocation, latitude & longitude
-      Random random = Random();
 
-      double lat = doubleInRange(random, 20, 60);
-      double long = doubleInRange(random, 20, 60);
+      // Timestamp
+
+// 1. DateTime
+      Random intRandom = Random();
+
+      int year = intInRange(intRandom, 1981, 2021);
+
+      int day = intInRange(intRandom, 1, 31);
+      int month = intInRange(intRandom, 1, 12);
+
+      int createdAtYear = intInRange(intRandom, 1970, 1980);
+      int createdAtDay = intInRange(intRandom, 1, 31);
+      int createdAtMonth = intInRange(intRandom, 1, 12);
+
+      DateTime dateTime = new DateTime(
+        year,
+        month,
+        day,
+      );
+      DateTime createdAtDateTime = new DateTime(
+        createdAtYear,
+        createdAtMonth,
+        createdAtDay,
+      );
+      Timestamp timestamp = Timestamp.fromDate(dateTime);
+      Timestamp createdAtTimestamp = Timestamp.fromDate(createdAtDateTime);
+      // END Timestamp
+      Random doubleRandom = Random();
+
+      double lat = doubleInRange(doubleRandom, 20, 60);
+      double long = doubleInRange(doubleRandom, 20, 60);
       GeoPoint point = GeoPoint(lat, long);
 
       randomNames.shuffle();
       AppUser user = AppUser(
           id: "${i}",
+          createdAt: createdAtTimestamp,
+          updatedAt: timestamp,
           setupIsCompleted: false,
           currentGeoLocation: point,
           name: "${randomNames[0]}",
@@ -351,7 +384,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    createFiftyUsers();
+    // createFiftyUsers();
     _userProvider = Provider.of(context, listen: false);
   }
 

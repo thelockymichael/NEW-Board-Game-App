@@ -74,6 +74,8 @@ class UserProvider extends ChangeNotifier {
 
       AppUser user = AppUser(
           id: id,
+          createdAt: new Timestamp.now(),
+          updatedAt: Timestamp.now(),
           setupIsCompleted: false,
           // currentGeoLocation: GeoPoint(0, 0),
           name: userRegistration.name,
@@ -446,6 +448,8 @@ class UserProvider extends ChangeNotifier {
       UserRegistration userProfile, BuildContext context) async {
     AppUser user = AppUser(
       id: userSnapshot.id,
+      createdAt: userSnapshot.createdAt,
+      updatedAt: userSnapshot.updatedAt,
       setupIsCompleted: userSnapshot.setupIsCompleted,
       name: userProfile.firstName,
       bggName: userProfile.bggUsername,
@@ -477,6 +481,8 @@ class UserProvider extends ChangeNotifier {
       UserRegistration userProfile, BuildContext context) async {
     AppUser user = AppUser(
       id: userSnapshot.id,
+      createdAt: userSnapshot.createdAt,
+      updatedAt: userSnapshot.updatedAt,
       setupIsCompleted: userSnapshot.setupIsCompleted,
       name: userSnapshot.name,
       bggName: userSnapshot.bggName,
@@ -508,6 +514,8 @@ class UserProvider extends ChangeNotifier {
       UserRegistration userProfile, BuildContext context) async {
     AppUser user = AppUser(
       id: userSnapshot.id,
+      createdAt: userSnapshot.createdAt,
+      updatedAt: userSnapshot.updatedAt,
       setupIsCompleted: userSnapshot.setupIsCompleted,
       name: userSnapshot.name,
       bggName: userSnapshot.bggName,
@@ -541,6 +549,8 @@ class UserProvider extends ChangeNotifier {
       UserProfileEdit userProfile, BuildContext context) async {
     AppUser user = AppUser(
       id: userSnapshot.id,
+      createdAt: userSnapshot.createdAt,
+      updatedAt: userSnapshot.updatedAt,
       setupIsCompleted: userSnapshot.setupIsCompleted,
       name: userProfile.name,
       bggName: userProfile.bggName,
@@ -578,6 +588,8 @@ class UserProvider extends ChangeNotifier {
 
     AppUser user = AppUser(
       id: userSnapshot.id,
+      createdAt: userSnapshot.createdAt,
+      updatedAt: userSnapshot.updatedAt,
       setupIsCompleted: userSnapshot.setupIsCompleted,
       name: userSnapshot.name,
       bggName: userSnapshot.bggName,
@@ -615,6 +627,8 @@ class UserProvider extends ChangeNotifier {
 
     AppUser user = AppUser(
       id: userSnapshot.id,
+      createdAt: userSnapshot.createdAt,
+      updatedAt: userSnapshot.updatedAt,
       setupIsCompleted: userSnapshot.setupIsCompleted,
       name: userSnapshot.name,
       bggName: userSnapshot.bggName,
@@ -652,6 +666,8 @@ class UserProvider extends ChangeNotifier {
 
     AppUser user = AppUser(
       id: userSnapshot.id,
+      createdAt: userSnapshot.createdAt,
+      updatedAt: userSnapshot.updatedAt,
       setupIsCompleted: userSnapshot.setupIsCompleted,
       name: userSnapshot.name,
       bggName: userSnapshot.bggName,
@@ -697,6 +713,8 @@ class UserProvider extends ChangeNotifier {
 
     AppUser user = AppUser(
       id: userSnapshot.id,
+      createdAt: userSnapshot.createdAt,
+      updatedAt: userSnapshot.updatedAt,
       setupIsCompleted: userSnapshot.setupIsCompleted,
       name: userSnapshot.name,
       bggName: userSnapshot.bggName,
@@ -728,6 +746,8 @@ class UserProvider extends ChangeNotifier {
       BuildContext context) async {
     AppUser user = AppUser(
       id: userSnapshot.id,
+      createdAt: userSnapshot.createdAt,
+      updatedAt: userSnapshot.updatedAt,
       setupIsCompleted: userSnapshot.setupIsCompleted,
       name: userSnapshot.name,
       bggName: userSnapshot.bggName,
@@ -863,6 +883,8 @@ class UserProvider extends ChangeNotifier {
 
     AppUser user = AppUser(
         id: userSnapshot.id,
+        createdAt: userSnapshot.createdAt,
+        updatedAt: userSnapshot.updatedAt,
         setupIsCompleted: userSnapshot.setupIsCompleted,
         name: userSnapshot.name,
         bggName: userSnapshot.bggName,
@@ -891,11 +913,10 @@ class UserProvider extends ChangeNotifier {
 
   Future<Response> updateCurrentLocationAddress(
       AppUser userSnapshot, String address, BuildContext context) async {
-    // final updateFavBoardGames = _returnFavBoardGames(
-    //     userSnapshot, boardGameData, boardGameRank, boardGameGenre);
-
     AppUser user = AppUser(
         id: userSnapshot.id,
+        createdAt: userSnapshot.createdAt,
+        updatedAt: userSnapshot.updatedAt,
         setupIsCompleted: userSnapshot.setupIsCompleted,
         name: userSnapshot.name,
         bggName: userSnapshot.bggName,
@@ -924,9 +945,6 @@ class UserProvider extends ChangeNotifier {
 
   Future<Response> updateCurrentGeoLocation(
       AppUser userSnapshot, Position geoLocation, BuildContext context) async {
-    // final updateFavBoardGames = _returnFavBoardGames(
-    //     userSnapshot, boardGameData, boardGameRank, boardGameGenre);
-
     GeoPoint point = GeoPoint(geoLocation.latitude, geoLocation.longitude);
 
     print("LOG geoPoint latitude ${point.latitude}");
@@ -935,6 +953,8 @@ class UserProvider extends ChangeNotifier {
 // point.data
     AppUser user = AppUser(
         id: userSnapshot.id,
+        createdAt: userSnapshot.createdAt,
+        updatedAt: userSnapshot.updatedAt,
         setupIsCompleted: userSnapshot.setupIsCompleted,
         name: userSnapshot.name,
         bggName: userSnapshot.bggName,

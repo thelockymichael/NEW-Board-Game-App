@@ -13,6 +13,7 @@ import 'package:flutter_demo_01/utils/shared_preferences_utils.dart';
 import 'package:flutter_demo_01/utils/utils.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:provider/provider.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 class DiscoverPage extends StatefulWidget {
   static const String id = 'discover_page';
@@ -120,9 +121,21 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
     localityController.duration = Duration(microseconds: 0);
   }
 
+  // Future<void> getFunction() async {
+  //   HttpsCallable callable = FirebaseFunctions.instance.httpsCallable(
+  //       'app/api/getNearestUsers',
+  //       options: HttpsCallableOptions(timeout: Duration(seconds: 5)));
+  //   final results = await callable.call(<dynamic, String>{
+  //     'message': 'hello',
+  //   });
+  //   print('LOG gfs${results.data}');
+  // }
+
   @override
   void initState() {
     super.initState();
+    // getFunction();
+
     _ignoreSwipeIds = <String>[];
     _userList = <AppUser>[];
 

@@ -9,7 +9,6 @@ import "package:flutter_demo_01/utils/utils.dart";
 
 class ProfilePageFavTopBoardGamesEdit extends StatefulWidget {
   static const String id = 'profile_page_fav_board_games_edit';
-  // final Function() notifyParent;
   final String gameGenre;
   final AppUser? userSnapshot;
 

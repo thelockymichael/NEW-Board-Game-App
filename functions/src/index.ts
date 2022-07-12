@@ -1,3 +1,5 @@
+/* eslint-disable arrow-body-style */
+/* eslint-disable no-multi-spaces */
 /* eslint-disable import/no-import-module-exports */
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
@@ -33,22 +35,25 @@ function getDistanceFromLatLonInKm(lat1: number, lon1: number, lat2: number, lon
   return d
 }
 
+function roundNearest10(num: number) {
+  return Math.round(num / 10) * 10
+}
+
 // app.get('/api/getNearestUsers', async (req: Request, res: Response) => {
 // TODO get query, 1. lat, 2. long and 3. distance
 // exports.getNearestUsers = functions.https.onRequest(app)
 
 exports.getNearestUsers = functions.https.onRequest(
   async (req: Request, res: Response) => {
-    const ignoreIds = req.query.ignoreId as Array<string>
-
-    ignoreIds.forEach((ignoreId) => {
-      console.log('LOG ignoreId', ignoreId)
-    })
-
     const lat = req.query.lat as unknown as number
     const long = req.query.long as unknown as number
     const distance = req.query.distance as unknown as number
     const limit = parseInt(req.query.limit as unknown as string, 10)
+    let ignoreIds = req.query.ignoreId as unknown as Array<string>
+
+    if (!Array.isArray(ignoreIds)) {
+      ignoreIds = [ignoreIds]
+    }
 
     console.log('LOG lat', lat)
     console.log('LOG long', long)
@@ -124,7 +129,7 @@ exports.getNearestUsers = functions.https.onRequest(
       shortestDistances.forEach((element) => {
         removeDecimals.push({
           ...element,
-          distance: Math.round(element.distance),
+          distance: roundNearest10(element.distance),
         })
       })
 

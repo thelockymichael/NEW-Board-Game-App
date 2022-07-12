@@ -29,7 +29,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
   final FirebaseDatabaseSource _databaseSource = FirebaseDatabaseSource();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   late List<String> _ignoreSwipeIds;
-  late List<Result> _userList;
+  late List<ResultAppUser> _userList;
 
   // 1. Default Selected Gender
   List<String> defaultSelectedGender = ["everyone"];
@@ -138,7 +138,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
     // getFunction();
 
     _ignoreSwipeIds = <String>[];
-    _userList = <Result>[];
+    _userList = <ResultAppUser>[];
 
     cardProvider = Provider.of<CardProvider>(context, listen: false);
 
@@ -159,7 +159,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  Future<List<Result>?> loadUsers(List<UserQuery> userQuery) async {
+  Future<List<ResultAppUser>?> loadUsers(List<UserQuery> userQuery) async {
     String? id = await SharedPreferencesUtil.getUserId();
 
     if (id != null) {
@@ -167,7 +167,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
     }
 
     _ignoreSwipeIds = <String>[];
-    _userList = <Result>[];
+    _userList = <ResultAppUser>[];
 
     var swipes = await _databaseSource.getSwipes(_myUser.id);
     for (var i = 0; i < swipes.size; i++) {
@@ -178,19 +178,22 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
 
     // BACKUP 11.7.22
     var res = await GetNearestUsers().getNearestUsers(
-      10,
-      _myUser,
-      2000,
+      // TODO !!! userQuery (e.g. distance, gender, age range, mechanics, themes, languages, locality) !!!
+      limit: 10,
+      myUser: _myUser,
+      distance: 2000,
+      ignoreSwipeIds: _ignoreSwipeIds,
     );
 
     if (res.isNotEmpty) {
+      print("LOG guf juk ${res}");
       //   for (var element in res.docs) {
       //     _userList.add(AppUser.fromSnapshot(element));
       //   }
 
-      print("LOG gufus ${res[0].distance}");
-      print("LOG gufus ${res[0].user.name}");
-      print("LOG gufus ${res[0].distance}");
+      // print("LOG gufus ${res[0].distance}");
+      // print("LOG gufus ${res[0].user.name}");
+      // print("LOG gufus ${res[0].distance}");
       cardProvider.setUsers(res.reversed.toList());
 
       return _userList.reversed.toList();
@@ -1082,7 +1085,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
           ],
         ),
         key: _scaffoldKey,
-        body: FutureBuilder<List<Result>?>(
+        body: FutureBuilder<List<ResultAppUser>?>(
             future: loadUsers(userQuery),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done &&

@@ -11,7 +11,7 @@ import 'package:sticky_headers/sticky_headers/widget.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class TinderCard extends StatefulWidget {
-  final Result? user;
+  final ResultAppUser? user;
   final Function notifyParent;
   final AppUser? myUser;
   final bool isFront;
@@ -111,9 +111,9 @@ class _TinderCardState extends State<TinderCard> {
                 decoration: BoxDecoration(
                     image: DecorationImage(
                         image: NetworkImage(
-                            widget.user!.user.profilePhotoPaths[0].isEmpty
+                            widget.user!.profilePhotoPaths[0].isEmpty
                                 ? Utils.stockUserProfileUrl
-                                : widget.user!.user.profilePhotoPaths[0]),
+                                : widget.user!.profilePhotoPaths[0]),
                         fit: BoxFit.cover,
                         alignment: const Alignment(-0.3, 0))),
               ),
@@ -163,7 +163,7 @@ class _TinderCardState extends State<TinderCard> {
       ]));
 
   Widget buildBgMechanics() {
-    final favBgMechanics = widget.user!.user.favBgMechanics;
+    final favBgMechanics = widget.user!.favBgMechanics;
 
     if (favBgMechanics.isEmpty) {
       return Container();
@@ -221,7 +221,7 @@ class _TinderCardState extends State<TinderCard> {
   }
 
   Widget buildBgThemes() {
-    final favBgThemes = widget.user!.user.favBgThemes;
+    final favBgThemes = widget.user!.favBgThemes;
 
     if (favBgThemes.isEmpty) {
       return Container();
@@ -279,7 +279,7 @@ class _TinderCardState extends State<TinderCard> {
   }
 
   Widget buildFavBoardGames() {
-    final favBoardGames = widget.user!.user.favBoardGames;
+    final favBoardGames = widget.user!.favBoardGames;
 
     // 2.
     bool isFamGamesEmpty = favBoardGames.familyGames
@@ -346,49 +346,49 @@ class _TinderCardState extends State<TinderCard> {
                             case "Family Games":
                               if (!isFamGamesEmpty)
                                 tempBoardGames =
-                                    widget.user!.user.favBoardGames.familyGames;
+                                    widget.user!.favBoardGames.familyGames;
                               break;
 
                             case "Dexterity Games":
                               if (!isDexGamesEmpty)
-                                tempBoardGames = widget
-                                    .user!.user.favBoardGames.dexterityGames;
+                                tempBoardGames =
+                                    widget.user!.favBoardGames.dexterityGames;
                               break;
 
                             case "Party Games":
                               if (!isPartyGamesEmpty)
                                 tempBoardGames =
-                                    widget.user!.user.favBoardGames.partyGames;
+                                    widget.user!.favBoardGames.partyGames;
                               break;
 
                             case "Abstracts":
                               if (!isAbstrGamesEmpty)
-                                tempBoardGames = widget
-                                    .user!.user.favBoardGames.abstractGames;
+                                tempBoardGames =
+                                    widget.user!.favBoardGames.abstractGames;
                               break;
 
                             case "Thematic":
                               if (!isThemGamesEmpty)
-                                tempBoardGames = widget
-                                    .user!.user.favBoardGames.thematicGames;
+                                tempBoardGames =
+                                    widget.user!.favBoardGames.thematicGames;
                               break;
 
                             case "Strategy":
                               if (!isStratGamesEmpty)
-                                tempBoardGames = widget
-                                    .user!.user.favBoardGames.strategyGames;
+                                tempBoardGames =
+                                    widget.user!.favBoardGames.strategyGames;
                               break;
 
                             case "Wargames":
                               if (!isWargamesEmpty)
                                 tempBoardGames =
-                                    widget.user!.user.favBoardGames.warGames;
+                                    widget.user!.favBoardGames.warGames;
                               break;
 
                             default:
                               if (!isFamGamesEmpty)
                                 tempBoardGames =
-                                    widget.user!.user.favBoardGames.familyGames;
+                                    widget.user!.favBoardGames.familyGames;
                               break;
                           }
                           return tempBoardGames.isEmpty
@@ -562,7 +562,7 @@ class _TinderCardState extends State<TinderCard> {
   }
 
   Widget buildLocality() {
-    final geoLocation = widget.user!.user.currentLocation;
+    final geoLocation = widget.user!.currentLocation;
 
     if (geoLocation.isEmpty) {
       return Container();
@@ -601,24 +601,13 @@ class _TinderCardState extends State<TinderCard> {
   }
 
   Widget buildUserDistance() {
-    final geoLocation = widget.user!.user.currentGeoLocation;
+    final geoLocation = widget.user!.currentGeoLocation;
 
     if (geoLocation.latitude == 0 && geoLocation.longitude == 0) {
       return Container();
     }
     // TODO 10 miles away
     // TODO Calculate user's distance from other user
-
-    final myUser = widget.myUser!.currentGeoLocation;
-    final user = widget.user!.user.currentGeoLocation;
-
-    final userDistance = int.parse(Utils.calculateDistance(
-            myUser.latitude, myUser.longitude, user.latitude, user.longitude)
-        .toStringAsFixed(0));
-
-    final roundedUserDistance = Utils.roundToMostSignificantDigit(userDistance);
-
-    print("LOG roundToMostSignificantDigit ${roundedUserDistance}");
 
     return Container(
       padding: const EdgeInsets.all(8),
@@ -636,7 +625,7 @@ class _TinderCardState extends State<TinderCard> {
                   const Icon(Icons.pin_drop, color: Colors.black),
                   const SizedBox(width: 8),
                   Text(
-                    "${roundedUserDistance.toString()} kilometers away",
+                    "${widget.user?.distance.toString()} kilometers away",
                     style: const TextStyle(
                       fontSize: 20,
                     ),
@@ -651,7 +640,7 @@ class _TinderCardState extends State<TinderCard> {
   }
 
   Widget buildBggName() {
-    final bggName = widget.user!.user.bggName;
+    final bggName = widget.user!.bggName;
 
     if (bggName.isEmpty) {
       return Container();
@@ -703,7 +692,7 @@ class _TinderCardState extends State<TinderCard> {
   }
 
   Widget buildBio() {
-    final bio = widget.user!.user.bio;
+    final bio = widget.user!.bio;
 
     if (bio.isEmpty) {
       return Container();
@@ -743,7 +732,7 @@ class _TinderCardState extends State<TinderCard> {
   }
 
   Widget buildFavGameGenres() {
-    final favBoardGameGenres = widget.user!.user.favBoardGameGenres;
+    final favBoardGameGenres = widget.user!.favBoardGameGenres;
 
     if (favBoardGameGenres.isEmpty) {
       return Container();
@@ -803,12 +792,7 @@ class _TinderCardState extends State<TinderCard> {
         children: [
           const Icon(Icons.check_circle, color: Colors.blue),
           const SizedBox(width: 8),
-          Text("${widget.user!.distance} km",
-              style: const TextStyle(
-                  fontSize: 32,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold)),
-          Text(widget.user!.user.name.capitalize(),
+          Text(widget.user!.name.capitalize(),
               style: const TextStyle(
                   fontSize: 32,
                   color: Colors.white,
@@ -819,7 +803,7 @@ class _TinderCardState extends State<TinderCard> {
           ),
           const SizedBox(width: 16),
           Text(
-            convertToAge(widget.user!.user.age),
+            convertToAge(widget.user!.age),
             style: const TextStyle(fontSize: 32, color: Colors.white),
           ),
         ],
@@ -835,20 +819,20 @@ class _TinderCardState extends State<TinderCard> {
   }
 
   Widget buildBGGName() {
-    if (widget.user!.user.bggName.isEmpty) {
+    if (widget.user!.bggName.isEmpty) {
       return Container();
     }
 
     return GestureDetector(
         onTap: () {
-          showBggUserInWebBrowser(widget.user!.user.bggName);
+          showBggUserInWebBrowser(widget.user!.bggName);
         },
         child: Row(
           children: [
             const Icon(Icons.gamepad_rounded, color: Colors.black),
             const SizedBox(width: 8),
             Text(
-              widget.user!.user.bggName,
+              widget.user!.bggName,
               style: const TextStyle(
                   fontSize: 20,
                   color: Colors.white,

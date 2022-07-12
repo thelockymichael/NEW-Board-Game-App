@@ -22,22 +22,22 @@ class CardProvider extends ChangeNotifier {
   Offset _position = Offset.zero;
   Size _screenSize = Size.zero;
 
-  List<Result> _users = [];
-  List<Result> get users => _users;
+  List<ResultAppUser> _users = [];
+  List<ResultAppUser> get users => _users;
   bool get isDragging => _isDragging;
   Offset get position => _position;
   double get angle => _angle;
 
   Size get size => _screenSize;
 
-  void setUsers(List<Result> users) {
+  void setUsers(List<ResultAppUser> users) {
     _users = [];
     _users = users;
   }
 
-  Future<bool> isMatch(AppUser myUser, Result otherUser) async {
+  Future<bool> isMatch(AppUser myUser, ResultAppUser otherUser) async {
     DocumentSnapshot swipeSnapshot =
-        await _databaseSource.getSwipe(otherUser.user.id, myUser.id);
+        await _databaseSource.getSwipe(otherUser.id, myUser.id);
 
     if (swipeSnapshot.exists) {
       Swipe swipe = Swipe.fromSnapshot(swipeSnapshot);
@@ -145,26 +145,24 @@ class CardProvider extends ChangeNotifier {
   }
 
   void personSwiped(BuildContext context, AppUser myUser, bool isLiked) async {
-    _databaseSource.addSwipedUser(
-        myUser.id, Swipe(users.last.user.id, isLiked));
-    _ignoreSwipeIds.add(users.last.user.id);
+    _databaseSource.addSwipedUser(myUser.id, Swipe(users.last.id, isLiked));
+    _ignoreSwipeIds.add(users.last.id);
 
     if (isLiked = true) {
       if (await isMatch(myUser, users.last) == true) {
-        _databaseSource.addMatch(myUser.id, Match(users.last.user.id));
-        _databaseSource.addMatch(users.last.user.id, Match(myUser.id));
+        _databaseSource.addMatch(myUser.id, Match(users.last.id));
+        _databaseSource.addMatch(users.last.id, Match(myUser.id));
 
-        String chatId = compareAndCombineIds(myUser.id, users.last.user.id);
+        String chatId = compareAndCombineIds(myUser.id, users.last.id);
 
-        _databaseSource
-            .addChat(Chat(chatId, myUser.id, users.last.user.id, null));
+        _databaseSource.addChat(Chat(chatId, myUser.id, users.last.id, null));
 
         Navigator.pushNamed(context, MatchedScreen.id, arguments: {
           "my_user_id": myUser.id,
           "my_profile_photo_path": myUser.profilePhotoPaths[0],
-          "other_user_profile_photo_path": users.last.user.profilePhotoPaths[0],
-          "other_user_id": users.last.user.id,
-          "other_user_name": users.last.user.name
+          "other_user_profile_photo_path": users.last.profilePhotoPaths[0],
+          "other_user_id": users.last.id,
+          "other_user_name": users.last.name
         });
       }
     }

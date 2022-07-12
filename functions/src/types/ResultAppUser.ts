@@ -1,9 +1,10 @@
-// interface AppUserPromise {
+// interface ResultAppUserPromise {
 //   results:
 // }
 
-interface AppUser {
+interface ResultAppUser {
   id: string,
+  distance: number,
   setupIsCompleted: boolean,
   email: string,
   age: number,
@@ -50,4 +51,4 @@ interface BoardGameData {
   name: string,
 }
 
-export type { AppUser, CurrentGeoLocation }
+export type { ResultAppUser, CurrentGeoLocation }

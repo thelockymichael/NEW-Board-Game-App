@@ -3,7 +3,7 @@ import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
 import cors from 'cors'
 import express, { Request, Response } from 'express'
-import { AppUser } from './types/AppUser'
+import { ResultAppUser } from './types/ResultAppUser'
 
 const app = express()
 app.use(express.json())
@@ -39,7 +39,12 @@ function getDistanceFromLatLonInKm(lat1: number, lon1: number, lat2: number, lon
 
 exports.getNearestUsers = functions.https.onRequest(
   async (req: Request, res: Response) => {
-    const ignoreId = req.query.ignoreId as string
+    const ignoreIds = req.query.ignoreId as Array<string>
+
+    ignoreIds.forEach((ignoreId) => {
+      console.log('LOG ignoreId', ignoreId)
+    })
+
     const lat = req.query.lat as unknown as number
     const long = req.query.long as unknown as number
     const distance = req.query.distance as unknown as number
@@ -57,21 +62,20 @@ exports.getNearestUsers = functions.https.onRequest(
 
     const users = await usersRef.get()
 
-    const newPromise: Array<{
-      user: AppUser,
-      distance: number
-    }> = await new Promise((resolve, reject) => {
-      const tmpUsers:Array<{
-        user: AppUser,
-        distance: number
-      }> = []
+    const newPromise: Array<ResultAppUser> = await new Promise((resolve, reject) => {
+      const tmpUsers:Array<ResultAppUser> = []
 
       users.docs.forEach((doc) => {
         console.log(doc.id, '=>', doc.data().currentGeoLocation)
 
-        const user = doc.data() as AppUser
+        const user = doc.data() as ResultAppUser
 
-        if (ignoreId === user.id) {
+        // if (ignoreId === user.id) {
+        //   return
+        // }
+        // IF ignoreId exists
+        const ignoreIdExists = ignoreIds.some((ignoreId) => user.id === ignoreId)
+        if (ignoreIdExists) {
           return
         }
         // tmpUsers.push(doc.data().currentGeoLocation.longitude)
@@ -98,10 +102,14 @@ exports.getNearestUsers = functions.https.onRequest(
         console.log('LOG distanceFromMyUser', distanceFromMyUser)
         // tmpUsers.push(distanceFromMyUser)
         tmpUsers.push({
-
-          user,
+          ...user,
           distance: distanceFromMyUser,
         })
+        // tmpUsers.push({
+
+        //   user,
+        //   distance: distanceFromMyUser,
+        // })
 
         tmpUsers.sort((a, b) => ((a.distance > b.distance) ? 1 : -1))
       })
@@ -110,9 +118,19 @@ exports.getNearestUsers = functions.https.onRequest(
       // Filter all users that are NOT within radius of e.g. 20 km
       const shortestDistances = tmpUsers.filter((item) => item.distance < newDistance)
 
+      // TODO Remove deciamls from distances
+
+      const removeDecimals: Array<ResultAppUser> = []
+      shortestDistances.forEach((element) => {
+        removeDecimals.push({
+          ...element,
+          distance: Math.round(element.distance),
+        })
+      })
+
       // TODO for each user's currentLocation
       // TODO Display the distance
-      resolve(shortestDistances)
+      resolve(removeDecimals)
     })
 
     console.log('LOG newPromise results', newPromise.length)

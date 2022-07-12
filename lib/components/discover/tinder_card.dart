@@ -1,6 +1,7 @@
 // ignore_for_file: must_be_immutable
 
 import 'dart:math';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_demo_01/api/get_nearest_users_api.dart';
 import "package:flutter_demo_01/utils/utils.dart";
 import 'package:flutter/material.dart';
@@ -105,17 +106,22 @@ class _TinderCardState extends State<TinderCard> {
         SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              Container(
+              CachedNetworkImage(
                 alignment: Alignment.center,
                 height: MediaQuery.of(context).size.height,
-                decoration: BoxDecoration(
+                imageUrl: widget.user!.profilePhotoPaths[0].isEmpty
+                    ? Utils.stockUserProfileUrl
+                    : widget.user!.profilePhotoPaths[0],
+                imageBuilder: (context, imageProvider) => Container(
+                  decoration: BoxDecoration(
                     image: DecorationImage(
-                        image: NetworkImage(
-                            widget.user!.profilePhotoPaths[0].isEmpty
-                                ? Utils.stockUserProfileUrl
-                                : widget.user!.profilePhotoPaths[0]),
-                        fit: BoxFit.cover,
-                        alignment: const Alignment(-0.3, 0))),
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                placeholder: (context, url) => CircularProgressIndicator(),
+                errorWidget: (context, url, error) => Icon(Icons.error),
               ),
 
               // In what city or place user is currently located

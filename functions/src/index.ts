@@ -55,11 +55,6 @@ exports.getNearestUsers = functions.https.onRequest(
       ignoreIds = [ignoreIds]
     }
 
-    console.log('LOG lat', lat)
-    console.log('LOG long', long)
-    console.log('LOG distance', distance)
-    console.log('LOG limit', limit)
-
     const usersRef: admin.firestore.Query<admin.firestore.DocumentData> = db
       .collection('users')
       .limit(limit)
@@ -71,8 +66,6 @@ exports.getNearestUsers = functions.https.onRequest(
       const tmpUsers:Array<ResultAppUser> = []
 
       users.docs.forEach((doc) => {
-        console.log(doc.id, '=>', doc.data().currentGeoLocation)
-
         const user = doc.data() as ResultAppUser
 
         // if (ignoreId === user.id) {
@@ -104,7 +97,6 @@ exports.getNearestUsers = functions.https.onRequest(
           otherLong,
         )
 
-        console.log('LOG distanceFromMyUser', distanceFromMyUser)
         // tmpUsers.push(distanceFromMyUser)
         tmpUsers.push({
           ...user,
@@ -138,8 +130,6 @@ exports.getNearestUsers = functions.https.onRequest(
       resolve(removeDecimals)
     })
 
-    console.log('LOG newPromise results', newPromise.length)
-
     res.json({
       // count: newPromise.results.length,
       count: newPromise.length,
@@ -149,8 +139,6 @@ exports.getNearestUsers = functions.https.onRequest(
 )
 
 exports.newUserSignup = functions.auth.user().onCreate((user) => {
-  console.log('LOG user created', user.email, user.uid)
-
   admin.firestore().collection('users').doc(user.uid).set({
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
     updatedAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -175,19 +163,3 @@ exports.updatedUser = functions.firestore.document('users/{userId}')
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     }, { merge: true })
   })
-
-// .user().onCreate((user) => {
-//   console.log('LOG user created', user.email, user.uid)
-
-//   admin.firestore().collection('users').doc(user.uid).set({
-//     createdAt: admin.firestore.FieldValue.serverTimestamp(),
-//   })
-// })
-
-// app.get('/api', (req, res) => {
-//   const date = new Date()
-//   const hours = (date.getHours() % 12) + 1 // London is UTC + 1hr;
-//   res.json({ bongs: 'BONG '.repeat(hours) })
-// })
-
-// exports.app = functions.https.onRequest(app)

@@ -63,8 +63,6 @@ class MyApp extends StatelessWidget {
             DiscoverPage.id: (context) => const DiscoverPage(),
             ProfilePage.id: (context) => const ProfilePage(),
             ProfilePageEdit.id: (context) => const ProfilePageEdit(),
-            // ProfilePageBgGenreEdit.id: (context) => ProfilePageBgGenreEdit(),
-            // ProfilePageBgBioEdit.id: (context) => ProfilePageBgBioEdit(),
             SettingsPage.id: (context) => const SettingsPage(),
             RegisterPage.id: (context) => const RegisterPage(),
             FirstNameBggPage.id: (context) => const FirstNameBggPage(),

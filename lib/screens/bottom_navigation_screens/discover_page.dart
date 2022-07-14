@@ -136,7 +136,10 @@ class _Page1State extends State<Page1> {
         _showGendersPage(setState), // 1. Gender
         _showAgePage(setState), // 2. Age
         _showMoreOptions(setState), // 3. Show more options
-        _showGameMechanics(setState), // 4. Show more options
+        _showGameMechanics(setState),
+        _showGameThemes(setState), // 4. Show more options
+        _showLanguages(setState), // 5. Show more options
+        _showLocalities(setState), // 4. Show more options
       ];
 
       return pages[_currentView];
@@ -159,7 +162,6 @@ class _Page1State extends State<Page1> {
           children: [
             ListTile(
               leading: SizedBox(
-                  height: 100,
                   width: 100,
                   child: Text("Show me",
                       style: TextStyle(
@@ -182,8 +184,7 @@ class _Page1State extends State<Page1> {
             ),
             ListTile(
               leading: SizedBox(
-                  height: 100,
-                  width: 100,
+                  width: 200,
                   child: Text("Age range",
                       style: TextStyle(
                           fontSize: 24, fontWeight: FontWeight.bold))),
@@ -205,8 +206,7 @@ class _Page1State extends State<Page1> {
             ),
             ListTile(
               leading: SizedBox(
-                  height: 100,
-                  width: 100,
+                  width: 200,
                   child: Text("More options",
                       style: TextStyle(
                           fontSize: 24, fontWeight: FontWeight.bold))),
@@ -233,32 +233,12 @@ class _Page1State extends State<Page1> {
               child: const Text("Apply filters",
                   style: TextStyle(color: Colors.white)),
               onPressed: () async {
-                // List<UserQuery> updateUserQuery = [
-                //   UserQuery("gender", "isEqualToGender",
-                //       selectedGender[0]),
-                //   UserQuery("currentLocation",
-                //       "isEqualToCurrentLocation", defaultLocality)
-                // ];
-
-                // this.setState(() {
-                //   userQuery = updateUserQuery;
-                // });
-
                 Navigator.of(context).pop();
               },
             )
           ],
         ));
   }
-
-  // TODO Gender Modal X
-  // TODO Age Modal
-  // TODO More Modal
-// More Options
-  // TODO Game Mechanics
-  // TODO Game Themes
-  // TODO Languages
-  // TODO Locality
 
   Widget _showGendersPage(StateSetter setModalState) {
     return WillPopScope(
@@ -323,11 +303,9 @@ class _Page1State extends State<Page1> {
           ]),
         ),
         onWillPop: () async {
-          if (_currentView == 1) {
-            setState(() {
-              _currentView = 0;
-            });
-          }
+          setState(() {
+            _currentView = 0;
+          });
 
           return false;
         });
@@ -392,11 +370,9 @@ class _Page1State extends State<Page1> {
           ]),
         ),
         onWillPop: () async {
-          if (_currentView == 2) {
-            setState(() {
-              _currentView = 0;
-            });
-          }
+          setState(() {
+            _currentView = 0;
+          });
 
           return false;
         });
@@ -411,6 +387,23 @@ class _Page1State extends State<Page1> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Align(
+                    alignment: Alignment.topRight,
+                    child: ElevatedButton(
+                      // CLEAR FILTERS
+                      onPressed: widget.defaultMechanics.isNotEmpty ||
+                              widget.defaultThemes.isNotEmpty ||
+                              widget.defaultLanguages.isNotEmpty ||
+                              widget.defaultLocality.isNotEmpty
+                          ? () => setModalState((() {
+                                widget.defaultMechanics.clear();
+                                widget.defaultThemes.clear();
+                                widget.defaultLanguages.clear();
+                                widget.defaultLocality.clear();
+                              }))
+                          : null,
+                      child: Text("Clear all"),
+                    )),
                 ListTile(
                   leading: SizedBox(
                       width: 300,
@@ -427,7 +420,7 @@ class _Page1State extends State<Page1> {
                           ),
                           Text(
                             selectedMechanics.isNotEmpty
-                                ? "You're seeing: ${selectedMechanics.map((mechanic) => "$mechanic")}"
+                                ? "You're seeing: ${selectedMechanics.map((mechanic) => "${mechanic.capitalize()}")}"
                                 : "What game mechanics do they like?",
                             style: TextStyle(fontSize: 14),
                           )
@@ -448,15 +441,121 @@ class _Page1State extends State<Page1> {
                       print("LOG page1 _currentView ${_currentView}");
                     });
                   },
+                ),
+                ListTile(
+                  leading: SizedBox(
+                      width: 300,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Themes",
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            selectedThemes.isNotEmpty
+                                ? "You're seeing: ${selectedThemes.map((theme) => "${theme.capitalize()}")}"
+                                : "What game themes do they like?",
+                            style: TextStyle(fontSize: 14),
+                          )
+                        ],
+                      )),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(width: 12),
+                      const Icon(CustomIcons.right_open)
+                    ],
+                  ),
+                  onTap: () {
+                    setState(() {
+                      _currentView = 5;
+                      print("LOG page1 _currentView ${_currentView}");
+                    });
+                  },
+                ),
+                ListTile(
+                  leading: SizedBox(
+                      width: 300,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Languages",
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            selectedLanguages.isNotEmpty
+                                ? "You're seeing: ${selectedLanguages.map((language) => "${language.capitalize()}")}"
+                                : "Will you understand each other?",
+                            style: TextStyle(fontSize: 14),
+                          )
+                        ],
+                      )),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(width: 12),
+                      const Icon(CustomIcons.right_open)
+                    ],
+                  ),
+                  onTap: () {
+                    setState(() {
+                      _currentView = 6;
+                      print("LOG page1 _currentView ${_currentView}");
+                    });
+                  },
+                ),
+                ListTile(
+                  leading: SizedBox(
+                      width: 300,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Locality",
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            selectedLocalities.isNotEmpty
+                                ? "You're seeing: ${selectedLocalities.map((locality) => "${locality.capitalize()}")}"
+                                : "Where are they based?",
+                            style: TextStyle(fontSize: 14),
+                          )
+                        ],
+                      )),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(width: 12),
+                      const Icon(CustomIcons.right_open)
+                    ],
+                  ),
+                  onTap: () {
+                    setState(() {
+                      _currentView = 7;
+                      print("LOG page1 _currentView ${_currentView}");
+                    });
+                  },
                 )
               ],
             )),
         onWillPop: () async {
-          if (_currentView == 3) {
-            setState(() {
-              _currentView = 0;
-            });
-          }
+          setState(() {
+            _currentView = 0;
+          });
 
           return false;
         });
@@ -495,11 +594,9 @@ class _Page1State extends State<Page1> {
                         setModalState(() => isSelected
                             ? selectedMechanics.remove(bgMechanic)
                             : selectedMechanics.add(bgMechanic));
-
-                        print("selectedMechanics, ${selectedMechanics.length}");
                       },
                       title: Text(
-                        bgMechanic,
+                        bgMechanic.capitalize(),
                         style: style,
                       ),
                       trailing: isSelected
@@ -511,10 +608,11 @@ class _Page1State extends State<Page1> {
                   }).toList()),
             ),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size.fromHeight(40), // NEW
+              ),
               child: const Text("Apply", style: TextStyle(color: Colors.white)),
               onPressed: () async {
-                // Navigator.of(context).pop();
-
                 setState(() {
                   _currentView = 3;
                 });
@@ -523,11 +621,211 @@ class _Page1State extends State<Page1> {
           ]),
         ),
         onWillPop: () async {
-          if (_currentView == 4) {
-            setState(() {
-              _currentView = 3;
-            });
-          }
+          setState(() {
+            _currentView = 3;
+          });
+
+          return false;
+        });
+  }
+
+  Widget _showGameThemes(StateSetter setModalState) {
+    return WillPopScope(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            Text("Themes",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            SizedBox(height: 16),
+            LimitedBox(
+              maxHeight: 300.0,
+              child: ListView(
+                  shrinkWrap: true,
+                  children: Utils.bgThemesList.map((theme) {
+                    final isSelected = selectedThemes.contains(theme);
+
+                    final selectedColor = Theme.of(context).primaryColor;
+                    final style = isSelected
+                        ? TextStyle(
+                            fontSize: 18,
+                            color: selectedColor,
+                            fontWeight: FontWeight.bold,
+                          )
+                        : TextStyle(fontSize: 18);
+
+                    return ListTile(
+                      onTap: () {
+                        final isSelected = selectedThemes.contains(theme);
+
+                        setModalState(() => isSelected
+                            ? widget.defaultThemes.remove(theme)
+                            : widget.defaultThemes.add(theme));
+                      },
+                      title: Text(
+                        theme.capitalize(),
+                        style: style,
+                      ),
+                      trailing: isSelected
+                          ? Icon(Icons.radio_button_checked,
+                              color: selectedColor, size: 26)
+                          : Icon(Icons.radio_button_unchecked,
+                              color: selectedColor, size: 26),
+                    );
+                  }).toList()),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size.fromHeight(40), // NEW
+              ),
+              child: const Text("Apply", style: TextStyle(color: Colors.white)),
+              onPressed: () async {
+                setState(() {
+                  _currentView = 3;
+                });
+              },
+            )
+          ]),
+        ),
+        onWillPop: () async {
+          setState(() {
+            _currentView = 3;
+          });
+
+          return false;
+        });
+  }
+
+  Widget _showLanguages(StateSetter setModalState) {
+    return WillPopScope(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            Text("Languages",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            SizedBox(height: 16),
+            LimitedBox(
+              maxHeight: 300.0,
+              child: ListView(
+                  shrinkWrap: true,
+                  children: Utils.languages.map((language) {
+                    final isSelected = selectedLanguages.contains(language);
+
+                    final selectedColor = Theme.of(context).primaryColor;
+                    final style = isSelected
+                        ? TextStyle(
+                            fontSize: 18,
+                            color: selectedColor,
+                            fontWeight: FontWeight.bold,
+                          )
+                        : TextStyle(fontSize: 18);
+
+                    return ListTile(
+                      onTap: () {
+                        final isSelected = selectedLanguages.contains(language);
+
+                        setModalState(() => isSelected
+                            ? widget.defaultLanguages.remove(language)
+                            : widget.defaultLanguages.add(language));
+                      },
+                      title: Text(
+                        language.capitalize(),
+                        style: style,
+                      ),
+                      trailing: isSelected
+                          ? Icon(Icons.radio_button_checked,
+                              color: selectedColor, size: 26)
+                          : Icon(Icons.radio_button_unchecked,
+                              color: selectedColor, size: 26),
+                    );
+                  }).toList()),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size.fromHeight(40), // NEW
+              ),
+              child: const Text("Apply", style: TextStyle(color: Colors.white)),
+              onPressed: () async {
+                setState(() {
+                  _currentView = 3;
+                });
+              },
+            )
+          ]),
+        ),
+        onWillPop: () async {
+          setState(() {
+            _currentView = 3;
+          });
+
+          return false;
+        });
+  }
+
+  Widget _showLocalities(StateSetter setModalState) {
+    return WillPopScope(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            Text("Locality",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            SizedBox(height: 16),
+            LimitedBox(
+              maxHeight: 300.0,
+              child: ListView(
+                  shrinkWrap: true,
+                  children: Utils.localities.map((locality) {
+                    final isSelected = selectedLocalities.contains(locality);
+
+                    final selectedColor = Theme.of(context).primaryColor;
+                    final style = isSelected
+                        ? TextStyle(
+                            fontSize: 18,
+                            color: selectedColor,
+                            fontWeight: FontWeight.bold,
+                          )
+                        : TextStyle(fontSize: 18);
+
+                    return ListTile(
+                      onTap: () {
+                        final isSelected =
+                            selectedLocalities.contains(locality);
+
+                        setModalState(() => isSelected
+                            ? widget.defaultLocality.remove(locality)
+                            : widget.defaultLocality.add(locality));
+                      },
+                      title: Text(
+                        locality.capitalize(),
+                        style: style,
+                      ),
+                      trailing: isSelected
+                          ? Icon(Icons.radio_button_checked,
+                              color: selectedColor, size: 26)
+                          : Icon(Icons.radio_button_unchecked,
+                              color: selectedColor, size: 26),
+                    );
+                  }).toList()),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size.fromHeight(40), // NEW
+              ),
+              child: const Text("Apply", style: TextStyle(color: Colors.white)),
+              onPressed: () async {
+                setState(() {
+                  _currentView = 3;
+                });
+              },
+            )
+          ]),
+        ),
+        onWillPop: () async {
+          setState(() {
+            _currentView = 3;
+          });
 
           return false;
         });
@@ -725,6 +1023,14 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
   }
 
   void callback() {
+    print("LOG query $defaultSelectedGender");
+    print("LOG query $defaultMinAgeValue");
+    print("LOG query $defaultMaxAgeValue");
+    print("LOG query $defaultMechanics");
+    print("LOG query $defaultThemes");
+    print("LOG query $defaultLanguages");
+    print("LOG query $defaultLocality");
+
     debugPrint('>>> my callback triggered');
   }
 
@@ -744,13 +1050,6 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
         builder: (context) {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setModalState) {
-            // pages = [
-            //   page1(),
-            //   _showGendersPage(setState) // 1
-            // ];
-
-            // return pages[_currentView];
-
             return Page1(
               callback: callback,
               themeContext: context,

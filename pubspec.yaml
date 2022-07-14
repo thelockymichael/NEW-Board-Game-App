@@ -57,6 +57,7 @@ dependencies:
   async: ^2.8.2
   cloud_functions: ^3.3.1
   cached_network_image: ^3.2.1
+  modal_bottom_sheet: ^2.1.0
 
 
 dev_dependencies:

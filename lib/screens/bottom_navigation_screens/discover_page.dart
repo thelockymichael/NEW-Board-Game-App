@@ -1,5 +1,5 @@
 // ignore_for_file: prefer_function_declarations_over_variables
-
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/api/get_nearest_users_api.dart';
 import 'package:flutter_demo_01/components/discover/discover_card.dart';
@@ -19,32 +19,128 @@ import 'package:cloud_functions/cloud_functions.dart';
 class Page1 extends StatefulWidget {
   final VoidCallback callback;
 
-  const Page1({
-    Key? key,
-    required this.callback,
-  }) : super(key: key);
+  final BuildContext themeContext;
+  final StateSetter setModalState;
+
+  // 1. Gender
+
+  final List<String> defaultSelectedGender;
+
+  // 2. Min Age Value
+  final List<int> defaultMinAgeValue;
+  // END
+
+  // 2. Max Age Value
+  final List<int> defaultMaxAgeValue;
+  // END
+
+  // 3. Default Selected Bg Mechanics
+  final List<String> defaultMechanics;
+  // END
+
+  // 3. Default Selected Bg Themes
+  final List<String> defaultThemes;
+  // END
+
+  // 4. Default Selected Languages
+  final List<String> defaultLanguages;
+  // END
+
+  // 5. Default Selected Locality
+  final List<String> defaultLocality;
+  // END
+
+  const Page1(
+      {Key? key,
+      required this.callback,
+      required this.themeContext,
+      required this.setModalState,
+      required this.defaultSelectedGender,
+      required this.defaultMinAgeValue,
+      required this.defaultMaxAgeValue,
+      required this.defaultMechanics,
+      required this.defaultThemes,
+      required this.defaultLanguages,
+      required this.defaultLocality})
+      : super(key: key);
 
   @override
   _Page1State createState() => _Page1State();
 }
 
 class _Page1State extends State<Page1> {
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
   int _currentView = 0;
+
+  /* 1. Gender Select */
+
+  List<String> availableGenders = ["everyone", "men", "women", "other"];
+
+  late List<String> selectedGender;
+
+  /** 1. END Gender Select END */
+
+  /* 2. Select Age Range */
+  late List<int> selectedMinAge;
+  late List<int> selectedMaxAge;
+  /* 2. END Select Age Range */
+
+  /* 3. Mechanics Select */
+  late List<String> selectedMechanics;
+  /* 3. END Select Mechanics Select */
+
+  /* 4. Themes Select */
+  late List<String> selectedThemes;
+  /* 4. END Select Themes Select */
+
+  /* 5. Languages Select */
+  late List<String> selectedLanguages;
+  /* 5. END Select Languages Select */
+
+  /* 6. Localities Select */
+  late List<String> selectedLocalities;
+  /* 6. END Select Localities Select */
+
   late List<Widget> pages;
 
   @override
   void initState() {
-    pages = [
-      page1(),
-      page2(),
-    ];
+    // 1. Set initial gender
+    selectedGender = widget.defaultSelectedGender;
+
+    // 2. Set initial ages
+    selectedMinAge = widget.defaultMinAgeValue;
+    selectedMaxAge = widget.defaultMaxAgeValue;
+
+    // 3. Set initial mechanics
+    selectedMechanics = widget.defaultMechanics;
+
+    // 4. Set initial themes
+    selectedThemes = widget.defaultThemes;
+
+    // 5. Set inital languages
+    selectedLanguages = widget.defaultLanguages;
+
+    // 6. Set initial locality
+    selectedLocalities = widget.defaultLocality;
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    print("LOG build _currentView ${_currentView}");
-    return pages[_currentView];
+    return StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+      pages = [
+        page1(),
+        _showGendersPage(setState), // 1. Gender
+        _showAgePage(setState), // 2. Age
+        _showMoreOptions(setState), // 3. Show more options
+        _showGameMechanics(setState), // 4. Show more options
+      ];
+
+      return pages[_currentView];
+    });
   }
 
   @override
@@ -56,57 +152,382 @@ class _Page1State extends State<Page1> {
   }
 
   Widget page1() {
-    return Container(
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-              topRight: Radius.circular(60), topLeft: Radius.circular(60))),
-      height: 400,
-      width: double.maxFinite,
-      child: Center(
-          child: Column(
-        children: [
-          Text("Hsajfoas"),
-          ElevatedButton(
-            onPressed: () {
-              setState(() {
-                _currentView = 1;
-                print("LOG page1 _currentView ${_currentView}");
-              });
-            },
-            child: Text("click to navigate"),
-          ),
-        ],
-      )),
-    );
-  }
-
-  Widget page2() {
-    return WillPopScope(
-        child: Container(
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(60), topLeft: Radius.circular(60))),
-          height: 400,
-          width: double.maxFinite,
-          child: Center(
-            child: InkWell(
+    return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: SizedBox(
+                  height: 100,
+                  width: 100,
+                  child: Text("Show me",
+                      style: TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.bold))),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(selectedGender[0].capitalize(),
+                      style: TextStyle(fontSize: 20)),
+                  SizedBox(width: 12),
+                  const Icon(CustomIcons.right_open)
+                ],
+              ),
               onTap: () {
                 setState(() {
-                  _currentView = 0;
-                  print("LOG page2 _currentView ${_currentView}");
+                  _currentView = 1;
+                  print("LOG page1 _currentView ${_currentView}");
                 });
               },
-              child: Text("click to navigate"),
             ),
-          ),
+            ListTile(
+              leading: SizedBox(
+                  height: 100,
+                  width: 100,
+                  child: Text("Age range",
+                      style: TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.bold))),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text("${selectedMinAge[0]} - ${selectedMaxAge[0]}",
+                      style: TextStyle(fontSize: 20)),
+                  SizedBox(width: 12),
+                  const Icon(CustomIcons.right_open)
+                ],
+              ),
+              onTap: () {
+                setState(() {
+                  _currentView = 2;
+                  print("LOG n _currentView ${_currentView}");
+                });
+              },
+            ),
+            ListTile(
+              leading: SizedBox(
+                  height: 100,
+                  width: 100,
+                  child: Text("More options",
+                      style: TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.bold))),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(width: 12),
+                  const Icon(CustomIcons.right_open)
+                ],
+              ),
+              onTap: () {
+                setState(() {
+                  _currentView = 3;
+                  print("LOG page1 _currentView ${_currentView}");
+                });
+                // Navigator.of(context).pop();
+                // _showMoreOptions(context);
+              },
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size.fromHeight(40), // NEW
+              ),
+              child: const Text("Apply filters",
+                  style: TextStyle(color: Colors.white)),
+              onPressed: () async {
+                // List<UserQuery> updateUserQuery = [
+                //   UserQuery("gender", "isEqualToGender",
+                //       selectedGender[0]),
+                //   UserQuery("currentLocation",
+                //       "isEqualToCurrentLocation", defaultLocality)
+                // ];
+
+                // this.setState(() {
+                //   userQuery = updateUserQuery;
+                // });
+
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        ));
+  }
+
+  // TODO Gender Modal X
+  // TODO Age Modal
+  // TODO More Modal
+// More Options
+  // TODO Game Mechanics
+  // TODO Game Themes
+  // TODO Languages
+  // TODO Locality
+
+  Widget _showGendersPage(StateSetter setModalState) {
+    return WillPopScope(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            Text("Show me",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            SizedBox(height: 16),
+            Text(
+              "Who would you like to see?",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 18, color: Colors.black54),
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            LimitedBox(
+                maxHeight: 300.0,
+                child: ListView(
+                    shrinkWrap: true,
+                    children: availableGenders.map((gender) {
+                      final isSelected = selectedGender.contains(gender);
+
+                      final selectedColor =
+                          Theme.of(widget.themeContext).primaryColor;
+
+                      final style = isSelected
+                          ? TextStyle(
+                              fontSize: 18,
+                              color: selectedColor,
+                              fontWeight: FontWeight.bold,
+                            )
+                          : TextStyle(fontSize: 18);
+
+                      return ListTile(
+                        onTap: () {
+                          selectedGender.clear();
+
+                          final isSelected = selectedGender.contains(gender);
+
+                          setModalState(() {
+                            isSelected
+                                ? widget.defaultSelectedGender.remove(gender)
+                                : widget.defaultSelectedGender.add(gender);
+
+                            _currentView = 0;
+                          });
+                        },
+                        title: Text(
+                          gender.capitalize(),
+                          style: style,
+                        ),
+                        trailing: isSelected
+                            ? Icon(Icons.radio_button_checked,
+                                color: selectedColor, size: 26)
+                            : Icon(Icons.radio_button_unchecked,
+                                color: selectedColor, size: 26),
+                      );
+                    }).toList()))
+          ]),
         ),
         onWillPop: () async {
-          setState(() {
-            _currentView = 0;
-            print("LOG page2 _currentView ${_currentView}");
-          });
+          if (_currentView == 1) {
+            setState(() {
+              _currentView = 0;
+            });
+          }
+
+          return false;
+        });
+  }
+
+  Widget _showAgePage(StateSetter setModalState) {
+    return WillPopScope(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            Text("Age range",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            SizedBox(
+              height: 16,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                NumberPicker(
+                  value: selectedMinAge[0],
+                  minValue: 0,
+                  maxValue: 100,
+                  step: 1,
+                  haptics: true,
+                  onChanged: (value) =>
+                      setState(() => selectedMinAge[0] = value),
+                ),
+                NumberPicker(
+                  value: selectedMaxAge[0],
+                  minValue: 0,
+                  maxValue: 100,
+                  step: 1,
+                  haptics: true,
+                  onChanged: (value) =>
+                      setState(() => selectedMaxAge[0] = value),
+                ),
+              ],
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size.fromHeight(40), // NEW
+              ),
+              child: const Text("Apply", style: TextStyle(color: Colors.white)),
+              onPressed: () async {
+                // Navigator.of(context).pop();
+
+                setModalState(() {
+                  widget.defaultMinAgeValue[0] = selectedMinAge[0];
+                  widget.defaultMaxAgeValue[0] = selectedMaxAge[0];
+
+                  _currentView = 0;
+                  print("LOG n $selectedMinAge");
+                  print("LOG n $selectedMaxAge");
+                  print(
+                      "LOG n defaultMinAgeValue ${widget.defaultMinAgeValue}");
+                  print(
+                      "LOG n defaultMaxAgeValue ${widget.defaultMaxAgeValue}");
+                });
+              },
+            )
+          ]),
+        ),
+        onWillPop: () async {
+          if (_currentView == 2) {
+            setState(() {
+              _currentView = 0;
+            });
+          }
+
+          return false;
+        });
+  }
+
+  Widget _showMoreOptions(StateSetter setModalState) {
+    return WillPopScope(
+        child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ListTile(
+                  leading: SizedBox(
+                      width: 300,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Mechanics",
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            selectedMechanics.isNotEmpty
+                                ? "You're seeing: ${selectedMechanics.map((mechanic) => "$mechanic")}"
+                                : "What game mechanics do they like?",
+                            style: TextStyle(fontSize: 14),
+                          )
+                        ],
+                      )),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(width: 12),
+                      const Icon(CustomIcons.right_open)
+                    ],
+                  ),
+                  onTap: () {
+                    // TODO Show mechanics
+
+                    setState(() {
+                      _currentView = 4;
+                      print("LOG page1 _currentView ${_currentView}");
+                    });
+                  },
+                )
+              ],
+            )),
+        onWillPop: () async {
+          if (_currentView == 3) {
+            setState(() {
+              _currentView = 0;
+            });
+          }
+
+          return false;
+        });
+  }
+
+  Widget _showGameMechanics(StateSetter setModalState) {
+    return WillPopScope(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            Text("Mechanics",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            SizedBox(height: 16),
+            LimitedBox(
+              maxHeight: 300.0,
+              child: ListView(
+                  shrinkWrap: true,
+                  children: Utils.bgMechanicsList.map((bgMechanic) {
+                    final isSelected = selectedMechanics.contains(bgMechanic);
+
+                    final selectedColor = Theme.of(context).primaryColor;
+                    final style = isSelected
+                        ? TextStyle(
+                            fontSize: 18,
+                            color: selectedColor,
+                            fontWeight: FontWeight.bold,
+                          )
+                        : TextStyle(fontSize: 18);
+
+                    return ListTile(
+                      onTap: () {
+                        final isSelected =
+                            selectedMechanics.contains(bgMechanic);
+
+                        setModalState(() => isSelected
+                            ? selectedMechanics.remove(bgMechanic)
+                            : selectedMechanics.add(bgMechanic));
+
+                        print("selectedMechanics, ${selectedMechanics.length}");
+                      },
+                      title: Text(
+                        bgMechanic,
+                        style: style,
+                      ),
+                      trailing: isSelected
+                          ? Icon(Icons.radio_button_checked,
+                              color: selectedColor, size: 26)
+                          : Icon(Icons.radio_button_unchecked,
+                              color: selectedColor, size: 26),
+                    );
+                  }).toList()),
+            ),
+            ElevatedButton(
+              child: const Text("Apply", style: TextStyle(color: Colors.white)),
+              onPressed: () async {
+                // Navigator.of(context).pop();
+
+                setState(() {
+                  _currentView = 3;
+                });
+              },
+            )
+          ]),
+        ),
+        onWillPop: () async {
+          if (_currentView == 4) {
+            setState(() {
+              _currentView = 3;
+            });
+          }
 
           return false;
         });
@@ -133,11 +554,11 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
   // END
 
   // 2. Min Age Value
-  int defaultMinAgeValue = 17;
+  List<int> defaultMinAgeValue = [17];
   // END
 
   // 2. Max Age Value
-  int defaultMaxAgeValue = 27;
+  List<int> defaultMaxAgeValue = [27];
   // END
 
   // 3. Default Selected Bg Mechanics
@@ -174,8 +595,6 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
     _userList = <ResultAppUser>[];
 
     cardProvider = Provider.of<CardProvider>(context, listen: false);
-
-    // initControllers();
   }
 
   @override
@@ -311,16 +730,40 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
 
   void _filterSwipableUsersModalBottomSheet() {
     showModalBottomSheet(
+        isScrollControlled: true,
         context: (context),
         enableDrag: true,
         isDismissible: true,
         barrierColor: Colors.black54,
         elevation: 5,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0),
+          borderRadius: BorderRadius.only(
+              topLeft: const Radius.circular(12),
+              topRight: const Radius.circular(12)),
         ),
         builder: (context) {
-          return Page1(callback: callback);
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setModalState) {
+            // pages = [
+            //   page1(),
+            //   _showGendersPage(setState) // 1
+            // ];
+
+            // return pages[_currentView];
+
+            return Page1(
+              callback: callback,
+              themeContext: context,
+              setModalState: setModalState,
+              defaultSelectedGender: defaultSelectedGender,
+              defaultMinAgeValue: defaultMinAgeValue,
+              defaultMaxAgeValue: defaultMaxAgeValue,
+              defaultMechanics: defaultMechanics,
+              defaultThemes: defaultThemes,
+              defaultLanguages: defaultLanguages,
+              defaultLocality: defaultLocality,
+            );
+          });
         });
   }
 
@@ -415,782 +858,776 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
   }
 }
 
+// void _showGendersModal(BuildContext filterContext,
+//     List<String> availableGenders, List<String> selectedGender) {
+//   showModalBottomSheet(
+//     barrierColor: Colors.black54,
+//     transitionAnimationController: genderMenuController,
+//     elevation: 5,
+//     shape: RoundedRectangleBorder(
+//       borderRadius: BorderRadius.circular(12.0),
+//     ),
+//     context: filterContext,
+//     builder: (BuildContext context) {
+//       return StatefulBuilder(builder: (BuildContext context, setState) {
+//         return Padding(
+//             padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+//             child: Column(
+//               children: [
+//                 Text("Show me",
+//                     textAlign: TextAlign.center,
+//                     style:
+//                         TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+//                 SizedBox(height: 16),
+//                 Text("Distance",
+//                     textAlign: TextAlign.center,
+//                     style:
+//                         TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+//                 SizedBox(height: 16),
+//                 Text("Which genders(s) would you like to see?",
+//                     textAlign: TextAlign.center,
+//                     style: TextStyle(fontSize: 18, color: Colors.black54)),
+//                 SizedBox(height: 16),
+//                 Expanded(
+//                     child: ListView(
+//                         children: availableGenders.map((gender) {
+//                   final isSelected = selectedGender.contains(gender);
 
- // void _showGendersModal(BuildContext filterContext,
-  //     List<String> availableGenders, List<String> selectedGender) {
-  //   showModalBottomSheet(
-  //     barrierColor: Colors.black54,
-  //     transitionAnimationController: genderMenuController,
-  //     elevation: 5,
-  //     shape: RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.circular(12.0),
-  //     ),
-  //     context: filterContext,
-  //     builder: (BuildContext context) {
-  //       return StatefulBuilder(builder: (BuildContext context, setState) {
-  //         return Padding(
-  //             padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-  //             child: Column(
-  //               children: [
-  //                 Text("Show me",
-  //                     textAlign: TextAlign.center,
-  //                     style:
-  //                         TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-  //                 SizedBox(height: 16),
-  //                 Text("Distance",
-  //                     textAlign: TextAlign.center,
-  //                     style:
-  //                         TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-  //                 SizedBox(height: 16),
-  //                 Text("Which genders(s) would you like to see?",
-  //                     textAlign: TextAlign.center,
-  //                     style: TextStyle(fontSize: 18, color: Colors.black54)),
-  //                 SizedBox(height: 16),
-  //                 Expanded(
-  //                     child: ListView(
-  //                         children: availableGenders.map((gender) {
-  //                   final isSelected = selectedGender.contains(gender);
+//                   final selectedColor = Theme.of(context).primaryColor;
+//                   final style = isSelected
+//                       ? TextStyle(
+//                           fontSize: 18,
+//                           color: selectedColor,
+//                           fontWeight: FontWeight.bold,
+//                         )
+//                       : TextStyle(fontSize: 18);
 
-  //                   final selectedColor = Theme.of(context).primaryColor;
-  //                   final style = isSelected
-  //                       ? TextStyle(
-  //                           fontSize: 18,
-  //                           color: selectedColor,
-  //                           fontWeight: FontWeight.bold,
-  //                         )
-  //                       : TextStyle(fontSize: 18);
+//                   return ListTile(
+//                     onTap: () {
+//                       Navigator.of(context).pop();
 
-  //                   return ListTile(
-  //                     onTap: () {
-  //                       Navigator.of(context).pop();
+//                       selectedGender.clear();
 
-  //                       selectedGender.clear();
+//                       final isSelected = selectedGender.contains(gender);
 
-  //                       final isSelected = selectedGender.contains(gender);
+//                       setState(() => isSelected
+//                           ? this.defaultSelectedGender.remove(gender)
+//                           : this.defaultSelectedGender.add(gender));
 
-  //                       setState(() => isSelected
-  //                           ? this.defaultSelectedGender.remove(gender)
-  //                           : this.defaultSelectedGender.add(gender));
+//                       print("selectedGender, ${selectedGender[0]}");
 
-  //                       print("selectedGender, ${selectedGender[0]}");
+//                       _filterSwipableUsersModalBottomSheet(
+//                           context, filterMenuController);
 
-  //                       _filterSwipableUsersModalBottomSheet(
-  //                           context, filterMenuController);
+//                       /*
+//                         _filterSwipableUsersModalBottomSheet(
+//                         context, selectedGender[0], controller);
+//                       */
+//                     },
+//                     title: Text(
+//                       gender.capitalize(),
+//                       style: style,
+//                     ),
+//                     trailing: isSelected
+//                         ? Icon(Icons.radio_button_checked,
+//                             color: selectedColor, size: 26)
+//                         : Icon(Icons.radio_button_unchecked,
+//                             color: selectedColor, size: 26),
+//                   );
+//                 }).toList()))
+//               ],
+//             ));
+//       });
+//     },
+//   );
+// }
 
-  //                       /*
-  //                         _filterSwipableUsersModalBottomSheet(
-  //                         context, selectedGender[0], controller);
-  //                       */
-  //                     },
-  //                     title: Text(
-  //                       gender.capitalize(),
-  //                       style: style,
-  //                     ),
-  //                     trailing: isSelected
-  //                         ? Icon(Icons.radio_button_checked,
-  //                             color: selectedColor, size: 26)
-  //                         : Icon(Icons.radio_button_unchecked,
-  //                             color: selectedColor, size: 26),
-  //                   );
-  //                 }).toList()))
-  //               ],
-  //             ));
-  //       });
-  //     },
-  //   );
-  // }
+// void _showLocalityModal(
+//     BuildContext localityContext, List<String> selectedLocality) {
+//   showModalBottomSheet(
+//     barrierColor: Colors.black54,
+//     transitionAnimationController: localityController,
+//     elevation: 5,
+//     shape: RoundedRectangleBorder(
+//       borderRadius: BorderRadius.circular(12.0),
+//     ),
+//     context: localityContext,
+//     builder: (BuildContext context) {
+//       return StatefulBuilder(builder: (BuildContext context, setState) {
+//         return Padding(
+//             padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+//             child: Column(
+//               children: [
+//                 Text("Show me",
+//                     textAlign: TextAlign.center,
+//                     style:
+//                         TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+//                 SizedBox(height: 16),
+//                 Text("Which genders(s) would you like to see?",
+//                     textAlign: TextAlign.center,
+//                     style: TextStyle(fontSize: 18, color: Colors.black54)),
+//                 SizedBox(height: 16),
+//                 Expanded(
+//                     child: ListView(
+//                         children: Utils.localities.map((locality) {
+//                   final isSelected = selectedLocality.contains(locality);
 
-  // void _showLocalityModal(
-  //     BuildContext localityContext, List<String> selectedLocality) {
-  //   showModalBottomSheet(
-  //     barrierColor: Colors.black54,
-  //     transitionAnimationController: localityController,
-  //     elevation: 5,
-  //     shape: RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.circular(12.0),
-  //     ),
-  //     context: localityContext,
-  //     builder: (BuildContext context) {
-  //       return StatefulBuilder(builder: (BuildContext context, setState) {
-  //         return Padding(
-  //             padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-  //             child: Column(
-  //               children: [
-  //                 Text("Show me",
-  //                     textAlign: TextAlign.center,
-  //                     style:
-  //                         TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-  //                 SizedBox(height: 16),
-  //                 Text("Which genders(s) would you like to see?",
-  //                     textAlign: TextAlign.center,
-  //                     style: TextStyle(fontSize: 18, color: Colors.black54)),
-  //                 SizedBox(height: 16),
-  //                 Expanded(
-  //                     child: ListView(
-  //                         children: Utils.localities.map((locality) {
-  //                   final isSelected = selectedLocality.contains(locality);
+//                   final selectedColor = Theme.of(context).primaryColor;
+//                   final style = isSelected
+//                       ? TextStyle(
+//                           fontSize: 18,
+//                           color: selectedColor,
+//                           fontWeight: FontWeight.bold,
+//                         )
+//                       : TextStyle(fontSize: 18);
 
-  //                   final selectedColor = Theme.of(context).primaryColor;
-  //                   final style = isSelected
-  //                       ? TextStyle(
-  //                           fontSize: 18,
-  //                           color: selectedColor,
-  //                           fontWeight: FontWeight.bold,
-  //                         )
-  //                       : TextStyle(fontSize: 18);
+//                   return ListTile(
+//                     onTap: () {
+//                       Navigator.of(context).pop();
 
-  //                   return ListTile(
-  //                     onTap: () {
-  //                       Navigator.of(context).pop();
+//                       selectedLocality.clear();
 
-  //                       selectedLocality.clear();
+//                       final isSelected = selectedLocality.contains(locality);
 
-  //                       final isSelected = selectedLocality.contains(locality);
+//                       setState(() => isSelected
+//                           ? this.defaultLocality.remove(locality)
+//                           : this.defaultLocality.add(locality));
 
-  //                       setState(() => isSelected
-  //                           ? this.defaultLocality.remove(locality)
-  //                           : this.defaultLocality.add(locality));
+//                       print("selectedLocality, ${selectedLocality[0]}");
 
-  //                       print("selectedLocality, ${selectedLocality[0]}");
+//                       _filterSwipableUsersModalBottomSheet(
+//                           context, filterMenuController);
 
-  //                       _filterSwipableUsersModalBottomSheet(
-  //                           context, filterMenuController);
+//                       /*
+//                         _filterSwipableUsersModalBottomSheet(
+//                         context, selectedlocality[0], controller);
+//                       */
+//                     },
+//                     title: Text(
+//                       locality.capitalize(),
+//                       style: style,
+//                     ),
+//                     trailing: isSelected
+//                         ? Icon(Icons.radio_button_checked,
+//                             color: selectedColor, size: 26)
+//                         : Icon(Icons.radio_button_unchecked,
+//                             color: selectedColor, size: 26),
+//                   );
+//                 }).toList()))
+//               ],
+//             ));
+//       });
+//     },
+//   );
+// }
 
-  //                       /*
-  //                         _filterSwipableUsersModalBottomSheet(
-  //                         context, selectedlocality[0], controller);
-  //                       */
-  //                     },
-  //                     title: Text(
-  //                       locality.capitalize(),
-  //                       style: style,
-  //                     ),
-  //                     trailing: isSelected
-  //                         ? Icon(Icons.radio_button_checked,
-  //                             color: selectedColor, size: 26)
-  //                         : Icon(Icons.radio_button_unchecked,
-  //                             color: selectedColor, size: 26),
-  //                   );
-  //                 }).toList()))
-  //               ],
-  //             ));
-  //       });
-  //     },
-  //   );
-  // }
+// void _showAgeModal(
+//     BuildContext ageContext, int selectedMinAge, int selectedMaxAge) {
+//   showModalBottomSheet(
+//     barrierColor: Colors.black54,
+//     transitionAnimationController: ageMenuController,
+//     elevation: 5,
+//     shape: RoundedRectangleBorder(
+//       borderRadius: BorderRadius.circular(12.0),
+//     ),
+//     context: ageContext,
+//     builder: (BuildContext context) {
+//       return StatefulBuilder(builder: (BuildContext context, setState) {
+//         return Padding(
+//             padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+//             child: Column(
+//               children: [
+//                 Text("Age range",
+//                     textAlign: TextAlign.center,
+//                     style:
+//                         TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+//                 SizedBox(height: 16),
+//                 Row(
+//                   mainAxisAlignment: MainAxisAlignment.center,
+//                   children: [
+//                     NumberPicker(
+//                       value: selectedMinAge,
+//                       minValue: 0,
+//                       maxValue: 100,
+//                       step: 1,
+//                       haptics: true,
+//                       onChanged: (value) =>
+//                           setState(() => selectedMinAge = value),
+//                     ),
+//                     NumberPicker(
+//                       value: selectedMaxAge,
+//                       minValue: 0,
+//                       maxValue: 100,
+//                       step: 1,
+//                       haptics: true,
+//                       onChanged: (value) =>
+//                           setState(() => selectedMaxAge = value),
+//                     )
+//                   ],
+//                 ),
+//                 ElevatedButton(
+//                   child: const Text("Apply",
+//                       style: TextStyle(color: Colors.white)),
+//                   onPressed: () async {
+//                     Navigator.of(context).pop();
+//                     print("VMK $selectedMinAge");
+//                     print("VMK $selectedMaxAge");
 
-  // void _showAgeModal(
-  //     BuildContext ageContext, int selectedMinAge, int selectedMaxAge) {
-  //   showModalBottomSheet(
-  //     barrierColor: Colors.black54,
-  //     transitionAnimationController: ageMenuController,
-  //     elevation: 5,
-  //     shape: RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.circular(12.0),
-  //     ),
-  //     context: ageContext,
-  //     builder: (BuildContext context) {
-  //       return StatefulBuilder(builder: (BuildContext context, setState) {
-  //         return Padding(
-  //             padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-  //             child: Column(
-  //               children: [
-  //                 Text("Age range",
-  //                     textAlign: TextAlign.center,
-  //                     style:
-  //                         TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-  //                 SizedBox(height: 16),
-  //                 Row(
-  //                   mainAxisAlignment: MainAxisAlignment.center,
-  //                   children: [
-  //                     NumberPicker(
-  //                       value: selectedMinAge,
-  //                       minValue: 0,
-  //                       maxValue: 100,
-  //                       step: 1,
-  //                       haptics: true,
-  //                       onChanged: (value) =>
-  //                           setState(() => selectedMinAge = value),
-  //                     ),
-  //                     NumberPicker(
-  //                       value: selectedMaxAge,
-  //                       minValue: 0,
-  //                       maxValue: 100,
-  //                       step: 1,
-  //                       haptics: true,
-  //                       onChanged: (value) =>
-  //                           setState(() => selectedMaxAge = value),
-  //                     )
-  //                   ],
-  //                 ),
-  //                 ElevatedButton(
-  //                   child: const Text("Apply",
-  //                       style: TextStyle(color: Colors.white)),
-  //                   onPressed: () async {
-  //                     Navigator.of(context).pop();
-  //                     print("VMK $selectedMinAge");
-  //                     print("VMK $selectedMaxAge");
+//                     setState(() {
+//                       this.defaultMinAgeValue = selectedMinAge;
+//                       this.defaultMaxAgeValue = selectedMaxAge;
+//                     });
 
-  //                     setState(() {
-  //                       this.defaultMinAgeValue = selectedMinAge;
-  //                       this.defaultMaxAgeValue = selectedMaxAge;
-  //                     });
+//                     _filterSwipableUsersModalBottomSheet(
+//                         context, filterMenuController);
+//                   },
+//                 )
+//               ],
+//             ));
+//       });
+//     },
+//   );
+// }
 
-  //                     _filterSwipableUsersModalBottomSheet(
-  //                         context, filterMenuController);
-  //                   },
-  //                 )
-  //               ],
-  //             ));
-  //       });
-  //     },
-  //   );
-  // }
+// void _showGameMechanics(
+//     BuildContext mechanicsContext, List<String> selectedMechanics) {
+//   showModalBottomSheet(
+//     barrierColor: Colors.black54,
+//     transitionAnimationController: mechanicsController,
+//     elevation: 5,
+//     shape: RoundedRectangleBorder(
+//       borderRadius: BorderRadius.circular(12.0),
+//     ),
+//     context: mechanicsContext,
+//     builder: (BuildContext context) {
+//       return StatefulBuilder(builder: (BuildContext context, setState) {
+//         return Padding(
+//             padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+//             child: Column(
+//               children: [
+//                 Text("Mechanics",
+//                     textAlign: TextAlign.center,
+//                     style:
+//                         TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+//                 SizedBox(height: 16),
+//                 Expanded(
+//                   child: ListView(
+//                       children: Utils.bgMechanicsList.map((bgMechanic) {
+//                     final isSelected = selectedMechanics.contains(bgMechanic);
 
-  // void _showGameMechanics(
-  //     BuildContext mechanicsContext, List<String> selectedMechanics) {
-  //   showModalBottomSheet(
-  //     barrierColor: Colors.black54,
-  //     transitionAnimationController: mechanicsController,
-  //     elevation: 5,
-  //     shape: RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.circular(12.0),
-  //     ),
-  //     context: mechanicsContext,
-  //     builder: (BuildContext context) {
-  //       return StatefulBuilder(builder: (BuildContext context, setState) {
-  //         return Padding(
-  //             padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-  //             child: Column(
-  //               children: [
-  //                 Text("Mechanics",
-  //                     textAlign: TextAlign.center,
-  //                     style:
-  //                         TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-  //                 SizedBox(height: 16),
-  //                 Expanded(
-  //                   child: ListView(
-  //                       children: Utils.bgMechanicsList.map((bgMechanic) {
-  //                     final isSelected = selectedMechanics.contains(bgMechanic);
+//                     final selectedColor = Theme.of(context).primaryColor;
+//                     final style = isSelected
+//                         ? TextStyle(
+//                             fontSize: 18,
+//                             color: selectedColor,
+//                             fontWeight: FontWeight.bold,
+//                           )
+//                         : TextStyle(fontSize: 18);
 
-  //                     final selectedColor = Theme.of(context).primaryColor;
-  //                     final style = isSelected
-  //                         ? TextStyle(
-  //                             fontSize: 18,
-  //                             color: selectedColor,
-  //                             fontWeight: FontWeight.bold,
-  //                           )
-  //                         : TextStyle(fontSize: 18);
+//                     return ListTile(
+//                       onTap: () {
+//                         final isSelected =
+//                             selectedMechanics.contains(bgMechanic);
 
-  //                     return ListTile(
-  //                       onTap: () {
-  //                         final isSelected =
-  //                             selectedMechanics.contains(bgMechanic);
+//                         setState(() => isSelected
+//                             ? selectedMechanics.remove(bgMechanic)
+//                             : selectedMechanics.add(bgMechanic));
 
-  //                         setState(() => isSelected
-  //                             ? selectedMechanics.remove(bgMechanic)
-  //                             : selectedMechanics.add(bgMechanic));
+//                         print(
+//                             "selectedMechanics, ${selectedMechanics.length}");
+//                       },
+//                       title: Text(
+//                         bgMechanic,
+//                         style: style,
+//                       ),
+//                       trailing: isSelected
+//                           ? Icon(Icons.check, color: selectedColor, size: 26)
+//                           : null,
+//                     );
+//                   }).toList()),
+//                 ),
+//                 ElevatedButton(
+//                   child: const Text("Apply",
+//                       style: TextStyle(color: Colors.white)),
+//                   onPressed: () async {
+//                     Navigator.of(context).pop();
 
-  //                         print(
-  //                             "selectedMechanics, ${selectedMechanics.length}");
-  //                       },
-  //                       title: Text(
-  //                         bgMechanic,
-  //                         style: style,
-  //                       ),
-  //                       trailing: isSelected
-  //                           ? Icon(Icons.check, color: selectedColor, size: 26)
-  //                           : null,
-  //                     );
-  //                   }).toList()),
-  //                 ),
-  //                 ElevatedButton(
-  //                   child: const Text("Apply",
-  //                       style: TextStyle(color: Colors.white)),
-  //                   onPressed: () async {
-  //                     Navigator.of(context).pop();
+//                     setState(() {
+//                       this.defaultMechanics = selectedMechanics;
+//                     });
 
-  //                     setState(() {
-  //                       this.defaultMechanics = selectedMechanics;
-  //                     });
+//                     print("VMK defaultMechanics: ${this.defaultMechanics}");
 
-  //                     print("VMK defaultMechanics: ${this.defaultMechanics}");
+//                     // _showMoreOptions(context);
+//                   },
+//                 )
+//               ],
+//             ));
+//       });
+//     },
+//   );
+// }
 
-  //                     // _showMoreOptions(context);
-  //                   },
-  //                 )
-  //               ],
-  //             ));
-  //       });
-  //     },
-  //   );
-  // }
+// void _showGameThemes(
+//     BuildContext themesContext, List<String> selectedThemes) {
+//   showModalBottomSheet(
+//     barrierColor: Colors.black54,
+//     transitionAnimationController: themesController,
+//     elevation: 5,
+//     shape: RoundedRectangleBorder(
+//       borderRadius: BorderRadius.circular(12.0),
+//     ),
+//     context: themesContext,
+//     builder: (BuildContext context) {
+//       return StatefulBuilder(builder: (BuildContext context, setState) {
+//         return Padding(
+//             padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+//             child: Column(
+//               children: [
+//                 Text("Themes",
+//                     textAlign: TextAlign.center,
+//                     style:
+//                         TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+//                 SizedBox(height: 16),
+//                 Expanded(
+//                   child: ListView(
+//                       children: Utils.bgThemesList.map((bgTheme) {
+//                     final isSelected = selectedThemes.contains(bgTheme);
 
-  // void _showGameThemes(
-  //     BuildContext themesContext, List<String> selectedThemes) {
-  //   showModalBottomSheet(
-  //     barrierColor: Colors.black54,
-  //     transitionAnimationController: themesController,
-  //     elevation: 5,
-  //     shape: RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.circular(12.0),
-  //     ),
-  //     context: themesContext,
-  //     builder: (BuildContext context) {
-  //       return StatefulBuilder(builder: (BuildContext context, setState) {
-  //         return Padding(
-  //             padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-  //             child: Column(
-  //               children: [
-  //                 Text("Themes",
-  //                     textAlign: TextAlign.center,
-  //                     style:
-  //                         TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-  //                 SizedBox(height: 16),
-  //                 Expanded(
-  //                   child: ListView(
-  //                       children: Utils.bgThemesList.map((bgTheme) {
-  //                     final isSelected = selectedThemes.contains(bgTheme);
+//                     final selectedColor = Theme.of(context).primaryColor;
+//                     final style = isSelected
+//                         ? TextStyle(
+//                             fontSize: 18,
+//                             color: selectedColor,
+//                             fontWeight: FontWeight.bold,
+//                           )
+//                         : TextStyle(fontSize: 18);
 
-  //                     final selectedColor = Theme.of(context).primaryColor;
-  //                     final style = isSelected
-  //                         ? TextStyle(
-  //                             fontSize: 18,
-  //                             color: selectedColor,
-  //                             fontWeight: FontWeight.bold,
-  //                           )
-  //                         : TextStyle(fontSize: 18);
+//                     return ListTile(
+//                       onTap: () {
+//                         final isSelected = selectedThemes.contains(bgTheme);
 
-  //                     return ListTile(
-  //                       onTap: () {
-  //                         final isSelected = selectedThemes.contains(bgTheme);
+//                         setState(() => isSelected
+//                             ? selectedThemes.remove(bgTheme)
+//                             : selectedThemes.add(bgTheme));
 
-  //                         setState(() => isSelected
-  //                             ? selectedThemes.remove(bgTheme)
-  //                             : selectedThemes.add(bgTheme));
+//                         print("selectedThemes, ${selectedThemes.length}");
+//                       },
+//                       title: Text(
+//                         bgTheme,
+//                         style: style,
+//                       ),
+//                       trailing: isSelected
+//                           ? Icon(Icons.check, color: selectedColor, size: 26)
+//                           : null,
+//                     );
+//                   }).toList()),
+//                 ),
+//                 ElevatedButton(
+//                   child: const Text("Apply",
+//                       style: TextStyle(color: Colors.white)),
+//                   onPressed: () async {
+//                     Navigator.of(context).pop();
 
-  //                         print("selectedThemes, ${selectedThemes.length}");
-  //                       },
-  //                       title: Text(
-  //                         bgTheme,
-  //                         style: style,
-  //                       ),
-  //                       trailing: isSelected
-  //                           ? Icon(Icons.check, color: selectedColor, size: 26)
-  //                           : null,
-  //                     );
-  //                   }).toList()),
-  //                 ),
-  //                 ElevatedButton(
-  //                   child: const Text("Apply",
-  //                       style: TextStyle(color: Colors.white)),
-  //                   onPressed: () async {
-  //                     Navigator.of(context).pop();
+//                     setState(() {
+//                       this.defaultThemes = selectedThemes;
+//                     });
 
-  //                     setState(() {
-  //                       this.defaultThemes = selectedThemes;
-  //                     });
+//                     print("VMK defaultThemes: ${this.defaultThemes}");
 
-  //                     print("VMK defaultThemes: ${this.defaultThemes}");
+//                     // _showMoreOptions(context);
+//                   },
+//                 )
+//               ],
+//             ));
+//       });
+//     },
+//   );
+// }
 
-  //                     // _showMoreOptions(context);
-  //                   },
-  //                 )
-  //               ],
-  //             ));
-  //       });
-  //     },
-  //   );
-  // }
+// void _showLanguages(
+//     BuildContext languagesContext, List<String> selectedLanguages) {
+//   showModalBottomSheet(
+//     barrierColor: Colors.black54,
+//     transitionAnimationController: languagesController,
+//     elevation: 5,
+//     shape: RoundedRectangleBorder(
+//       borderRadius: BorderRadius.circular(12.0),
+//     ),
+//     context: languagesContext,
+//     builder: (BuildContext context) {
+//       return StatefulBuilder(builder: (BuildContext context, setState) {
+//         return Padding(
+//             padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+//             child: Column(
+//               children: [
+//                 Text("Languages",
+//                     textAlign: TextAlign.center,
+//                     style:
+//                         TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+//                 SizedBox(height: 16),
+//                 Expanded(
+//                   child: ListView(
+//                       children: Utils.languages.map((language) {
+//                     final isSelected = selectedLanguages.contains(language);
 
-  // void _showLanguages(
-  //     BuildContext languagesContext, List<String> selectedLanguages) {
-  //   showModalBottomSheet(
-  //     barrierColor: Colors.black54,
-  //     transitionAnimationController: languagesController,
-  //     elevation: 5,
-  //     shape: RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.circular(12.0),
-  //     ),
-  //     context: languagesContext,
-  //     builder: (BuildContext context) {
-  //       return StatefulBuilder(builder: (BuildContext context, setState) {
-  //         return Padding(
-  //             padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-  //             child: Column(
-  //               children: [
-  //                 Text("Languages",
-  //                     textAlign: TextAlign.center,
-  //                     style:
-  //                         TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-  //                 SizedBox(height: 16),
-  //                 Expanded(
-  //                   child: ListView(
-  //                       children: Utils.languages.map((language) {
-  //                     final isSelected = selectedLanguages.contains(language);
+//                     final selectedColor = Theme.of(context).primaryColor;
+//                     final style = isSelected
+//                         ? TextStyle(
+//                             fontSize: 18,
+//                             color: selectedColor,
+//                             fontWeight: FontWeight.bold,
+//                           )
+//                         : TextStyle(fontSize: 18);
 
-  //                     final selectedColor = Theme.of(context).primaryColor;
-  //                     final style = isSelected
-  //                         ? TextStyle(
-  //                             fontSize: 18,
-  //                             color: selectedColor,
-  //                             fontWeight: FontWeight.bold,
-  //                           )
-  //                         : TextStyle(fontSize: 18);
+//                     return ListTile(
+//                       onTap: () {
+//                         final isSelected =
+//                             selectedLanguages.contains(language);
 
-  //                     return ListTile(
-  //                       onTap: () {
-  //                         final isSelected =
-  //                             selectedLanguages.contains(language);
+//                         setState(() => isSelected
+//                             ? selectedLanguages.remove(language)
+//                             : selectedLanguages.add(language));
 
-  //                         setState(() => isSelected
-  //                             ? selectedLanguages.remove(language)
-  //                             : selectedLanguages.add(language));
+//                         print(
+//                             "selectedLanguages, ${selectedLanguages.length}");
+//                       },
+//                       title: Text(
+//                         language.capitalize(),
+//                         style: style,
+//                       ),
+//                       trailing: isSelected
+//                           ? Icon(Icons.check, color: selectedColor, size: 26)
+//                           : null,
+//                     );
+//                   }).toList()),
+//                 ),
+//                 ElevatedButton(
+//                   child: const Text("Apply",
+//                       style: TextStyle(color: Colors.white)),
+//                   onPressed: () async {
+//                     Navigator.of(context).pop();
 
-  //                         print(
-  //                             "selectedLanguages, ${selectedLanguages.length}");
-  //                       },
-  //                       title: Text(
-  //                         language.capitalize(),
-  //                         style: style,
-  //                       ),
-  //                       trailing: isSelected
-  //                           ? Icon(Icons.check, color: selectedColor, size: 26)
-  //                           : null,
-  //                     );
-  //                   }).toList()),
-  //                 ),
-  //                 ElevatedButton(
-  //                   child: const Text("Apply",
-  //                       style: TextStyle(color: Colors.white)),
-  //                   onPressed: () async {
-  //                     Navigator.of(context).pop();
+//                     setState(() {
+//                       this.defaultLanguages = selectedLanguages;
+//                     });
 
-  //                     setState(() {
-  //                       this.defaultLanguages = selectedLanguages;
-  //                     });
+//                     print("VMK defaultLanguages: ${this.defaultLanguages}");
 
-  //                     print("VMK defaultLanguages: ${this.defaultLanguages}");
+//                     _showMoreOptions(context);
+//                   },
+//                 )
+//               ],
+//             ));
+//       });
+//     },
+//   );
+// }
 
-  //                     _showMoreOptions(context);
-  //                   },
-  //                 )
-  //               ],
-  //             ));
-  //       });
-  //     },
-  //   );
-  // }
+// void _showMoreOptions(BuildContext moreOptionsContext) {
+//   showModalBottomSheet(
+//     barrierColor: Colors.black54,
+//     transitionAnimationController: moreOptionsController,
+//     elevation: 5,
+//     shape: RoundedRectangleBorder(
+//       borderRadius: BorderRadius.circular(12.0),
+//     ),
+//     context: moreOptionsContext,
+//     builder: (BuildContext context) {
+//       return StatefulBuilder(builder: (BuildContext context, setState) {
+//         return Padding(
+//             padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+//             child: Column(
+//               children: [
+//                 Align(
+//                   alignment: Alignment.topRight,
+//                   child: ElevatedButton(
 
-  // void _showMoreOptions(BuildContext moreOptionsContext) {
-  //   showModalBottomSheet(
-  //     barrierColor: Colors.black54,
-  //     transitionAnimationController: moreOptionsController,
-  //     elevation: 5,
-  //     shape: RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.circular(12.0),
-  //     ),
-  //     context: moreOptionsContext,
-  //     builder: (BuildContext context) {
-  //       return StatefulBuilder(builder: (BuildContext context, setState) {
-  //         return Padding(
-  //             padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-  //             child: Column(
-  //               children: [
-  //                 Align(
-  //                   alignment: Alignment.topRight,
-  //                   child: ElevatedButton(
+//                       // CLEAR FILTERS
+//                       onPressed: this.defaultMechanics.isNotEmpty ||
+//                               this.defaultThemes.isNotEmpty ||
+//                               this.defaultLanguages.isNotEmpty ||
+//                               this.defaultLocality.isNotEmpty
+//                           ? () => setState((() {
+//                                 this.defaultMechanics = [];
+//                                 this.defaultThemes = [];
+//                                 this.defaultLanguages = [];
+//                                 this.defaultLocality = [];
+//                               }))
+//                           : null,
+//                       child: Text("Clear all")),
+//                 ),
+//                 Expanded(
+//                   child: ListView(
+//                     children: [
+//                       ListTile(
+//                         leading: Column(
+//                           crossAxisAlignment: CrossAxisAlignment.start,
+//                           children: [
+//                             Text(
+//                               "Mechanics",
+//                               textAlign: TextAlign.start,
+//                               style: TextStyle(
+//                                 fontSize: 24,
+//                                 fontWeight: FontWeight.bold,
+//                               ),
+//                             ),
+//                             Text(
+//                                 defaultMechanics.isNotEmpty
+//                                     ? "You're seeing: ${defaultMechanics.map((mechanic) => "$mechanic")}"
+//                                     : "What game mechanics do they like?",
+//                                 style: TextStyle(
+//                                   fontSize: 14,
+//                                 )),
+//                           ],
+//                         ),
+//                         trailing: Row(
+//                           mainAxisSize: MainAxisSize.min,
+//                           children: [
+//                             SizedBox(width: 12),
+//                             const Icon(CustomIcons.right_open)
+//                           ],
+//                         ),
+//                         onTap: () {
+//                           Navigator.of(context).pop();
 
-  //                       // CLEAR FILTERS
-  //                       onPressed: this.defaultMechanics.isNotEmpty ||
-  //                               this.defaultThemes.isNotEmpty ||
-  //                               this.defaultLanguages.isNotEmpty ||
-  //                               this.defaultLocality.isNotEmpty
-  //                           ? () => setState((() {
-  //                                 this.defaultMechanics = [];
-  //                                 this.defaultThemes = [];
-  //                                 this.defaultLanguages = [];
-  //                                 this.defaultLocality = [];
-  //                               }))
-  //                           : null,
-  //                       child: Text("Clear all")),
-  //                 ),
-  //                 Expanded(
-  //                   child: ListView(
-  //                     children: [
-  //                       ListTile(
-  //                         leading: Column(
-  //                           crossAxisAlignment: CrossAxisAlignment.start,
-  //                           children: [
-  //                             Text(
-  //                               "Mechanics",
-  //                               textAlign: TextAlign.start,
-  //                               style: TextStyle(
-  //                                 fontSize: 24,
-  //                                 fontWeight: FontWeight.bold,
-  //                               ),
-  //                             ),
-  //                             Text(
-  //                                 defaultMechanics.isNotEmpty
-  //                                     ? "You're seeing: ${defaultMechanics.map((mechanic) => "$mechanic")}"
-  //                                     : "What game mechanics do they like?",
-  //                                 style: TextStyle(
-  //                                   fontSize: 14,
-  //                                 )),
-  //                           ],
-  //                         ),
-  //                         trailing: Row(
-  //                           mainAxisSize: MainAxisSize.min,
-  //                           children: [
-  //                             SizedBox(width: 12),
-  //                             const Icon(CustomIcons.right_open)
-  //                           ],
-  //                         ),
-  //                         onTap: () {
-  //                           Navigator.of(context).pop();
+//                           _showGameMechanics(context, this.defaultMechanics);
+//                         },
+//                       ),
+//                       ListTile(
+//                         leading: Column(
+//                           crossAxisAlignment: CrossAxisAlignment.start,
+//                           children: [
+//                             Text(
+//                               "Themes",
+//                               textAlign: TextAlign.start,
+//                               style: TextStyle(
+//                                 fontSize: 24,
+//                                 fontWeight: FontWeight.bold,
+//                               ),
+//                             ),
+//                             Text(
+//                                 defaultThemes.isNotEmpty
+//                                     ? "You're seeing: ${defaultThemes.map((mechanic) => "$mechanic")}"
+//                                     : "What game themes do they like?",
+//                                 style: TextStyle(
+//                                   fontSize: 14,
+//                                 )),
+//                           ],
+//                         ),
+//                         trailing: Row(
+//                           mainAxisSize: MainAxisSize.min,
+//                           children: [
+//                             SizedBox(width: 12),
+//                             const Icon(CustomIcons.right_open)
+//                           ],
+//                         ),
+//                         onTap: () {
+//                           Navigator.of(context).pop();
 
-  //                           _showGameMechanics(context, this.defaultMechanics);
-  //                         },
-  //                       ),
-  //                       ListTile(
-  //                         leading: Column(
-  //                           crossAxisAlignment: CrossAxisAlignment.start,
-  //                           children: [
-  //                             Text(
-  //                               "Themes",
-  //                               textAlign: TextAlign.start,
-  //                               style: TextStyle(
-  //                                 fontSize: 24,
-  //                                 fontWeight: FontWeight.bold,
-  //                               ),
-  //                             ),
-  //                             Text(
-  //                                 defaultThemes.isNotEmpty
-  //                                     ? "You're seeing: ${defaultThemes.map((mechanic) => "$mechanic")}"
-  //                                     : "What game themes do they like?",
-  //                                 style: TextStyle(
-  //                                   fontSize: 14,
-  //                                 )),
-  //                           ],
-  //                         ),
-  //                         trailing: Row(
-  //                           mainAxisSize: MainAxisSize.min,
-  //                           children: [
-  //                             SizedBox(width: 12),
-  //                             const Icon(CustomIcons.right_open)
-  //                           ],
-  //                         ),
-  //                         onTap: () {
-  //                           Navigator.of(context).pop();
+//                           _showGameThemes(context, this.defaultThemes);
+//                         },
+//                       ),
+//                       ListTile(
+//                         leading: Column(
+//                           crossAxisAlignment: CrossAxisAlignment.start,
+//                           children: [
+//                             Text(
+//                               "Languages",
+//                               textAlign: TextAlign.start,
+//                               style: TextStyle(
+//                                 fontSize: 24,
+//                                 fontWeight: FontWeight.bold,
+//                               ),
+//                             ),
+//                             Text(
+//                                 defaultLanguages.isNotEmpty
+//                                     ? "You're seeing: ${defaultLanguages.map((language) => "${language.capitalize()}")}"
+//                                     : "Will you understand each other?",
+//                                 style: TextStyle(
+//                                   fontSize: 14,
+//                                 )),
+//                           ],
+//                         ),
+//                         trailing: Row(
+//                           mainAxisSize: MainAxisSize.min,
+//                           children: [
+//                             SizedBox(width: 12),
+//                             const Icon(CustomIcons.right_open)
+//                           ],
+//                         ),
+//                         onTap: () {
+//                           Navigator.of(context).pop();
 
-  //                           _showGameThemes(context, this.defaultThemes);
-  //                         },
-  //                       ),
-  //                       ListTile(
-  //                         leading: Column(
-  //                           crossAxisAlignment: CrossAxisAlignment.start,
-  //                           children: [
-  //                             Text(
-  //                               "Languages",
-  //                               textAlign: TextAlign.start,
-  //                               style: TextStyle(
-  //                                 fontSize: 24,
-  //                                 fontWeight: FontWeight.bold,
-  //                               ),
-  //                             ),
-  //                             Text(
-  //                                 defaultLanguages.isNotEmpty
-  //                                     ? "You're seeing: ${defaultLanguages.map((language) => "${language.capitalize()}")}"
-  //                                     : "Will you understand each other?",
-  //                                 style: TextStyle(
-  //                                   fontSize: 14,
-  //                                 )),
-  //                           ],
-  //                         ),
-  //                         trailing: Row(
-  //                           mainAxisSize: MainAxisSize.min,
-  //                           children: [
-  //                             SizedBox(width: 12),
-  //                             const Icon(CustomIcons.right_open)
-  //                           ],
-  //                         ),
-  //                         onTap: () {
-  //                           Navigator.of(context).pop();
+//                           _showLanguages(context, this.defaultLanguages);
+//                         },
+//                       ),
+//                       ListTile(
+//                         leading: Column(
+//                           crossAxisAlignment: CrossAxisAlignment.start,
+//                           children: [
+//                             Text(
+//                               "Locality",
+//                               textAlign: TextAlign.start,
+//                               style: TextStyle(
+//                                 fontSize: 24,
+//                                 fontWeight: FontWeight.bold,
+//                               ),
+//                             ),
+//                             Text(
+//                                 defaultLocality.isNotEmpty
+//                                     ? "You're seeing: ${defaultLocality[0].capitalize()}"
+//                                     : "Where are they based?",
+//                                 style: TextStyle(
+//                                   fontSize: 14,
+//                                 )),
+//                           ],
+//                         ),
+//                         trailing: Row(
+//                           mainAxisSize: MainAxisSize.min,
+//                           children: [
+//                             SizedBox(width: 12),
+//                             const Icon(CustomIcons.right_open)
+//                           ],
+//                         ),
+//                         onTap: () {
+//                           Navigator.of(context).pop();
 
-  //                           _showLanguages(context, this.defaultLanguages);
-  //                         },
-  //                       ),
-  //                       ListTile(
-  //                         leading: Column(
-  //                           crossAxisAlignment: CrossAxisAlignment.start,
-  //                           children: [
-  //                             Text(
-  //                               "Locality",
-  //                               textAlign: TextAlign.start,
-  //                               style: TextStyle(
-  //                                 fontSize: 24,
-  //                                 fontWeight: FontWeight.bold,
-  //                               ),
-  //                             ),
-  //                             Text(
-  //                                 defaultLocality.isNotEmpty
-  //                                     ? "You're seeing: ${defaultLocality[0].capitalize()}"
-  //                                     : "Where are they based?",
-  //                                 style: TextStyle(
-  //                                   fontSize: 14,
-  //                                 )),
-  //                           ],
-  //                         ),
-  //                         trailing: Row(
-  //                           mainAxisSize: MainAxisSize.min,
-  //                           children: [
-  //                             SizedBox(width: 12),
-  //                             const Icon(CustomIcons.right_open)
-  //                           ],
-  //                         ),
-  //                         onTap: () {
-  //                           Navigator.of(context).pop();
+//                           // _showLocalityModal(context, this.defaultLocality);
+//                         },
+//                       ),
+//                       ElevatedButton(
+//                         child: const Text("Apply",
+//                             style: TextStyle(color: Colors.white)),
+//                         onPressed: () async {
+//                           // this.setState(() {
+//                           //   userQuery = updateUserQuery;
+//                           // });
 
-  //                           // _showLocalityModal(context, this.defaultLocality);
-  //                         },
-  //                       ),
-  //                       ElevatedButton(
-  //                         child: const Text("Apply",
-  //                             style: TextStyle(color: Colors.white)),
-  //                         onPressed: () async {
-  //                           // this.setState(() {
-  //                           //   userQuery = updateUserQuery;
-  //                           // });
+//                           Navigator.of(context).pop();
 
-  //                           Navigator.of(context).pop();
+//                           // _filterSwipableUsersModalBottomSheet(
+//                           //     context, filterMenuController);
+//                         },
+//                       )
+//                     ],
+//                   ),
+//                 )
+//               ],
+//             ));
+//       });
+//     },
+//   );
+// }
 
-  //                           // _filterSwipableUsersModalBottomSheet(
-  //                           //     context, filterMenuController);
-  //                         },
-  //                       )
-  //                     ],
-  //                   ),
-  //                 )
-  //               ],
-  //             ));
-  //       });
-  //     },
-  //   );
-  // }
-
-
-
-
-  /**
+/**
    * 
    * FILTER SWIPABLE MODAL 
    */
 
-        // return StatefulBuilder(builder: (BuildContext context, setState) {
-          //   /* 1. Gender Select */
-          //   // List<String> availableGenders = [
-          //   //   "everyone",
-          //   //   "men",
-          //   //   "women",
-          //   //   "other"
-          //   // ];
+// return StatefulBuilder(builder: (BuildContext context, setState) {
+//   /* 1. Gender Select */
+//   // List<String> availableGenders = [
+//   //   "everyone",
+//   //   "men",
+//   //   "women",
+//   //   "other"
+//   // ];
 
-          //   // List<String> selectedGender = defaultSelectedGender;
-          //   // /** 1. END Gender Select END */
+//   // List<String> selectedGender = defaultSelectedGender;
+//   // /** 1. END Gender Select END */
 
-          //   // /* 2. Select Age Range */
-          //   // int selectedMinAge = defaultMinAgeValue;
-          //   // int selectedMaxAge = defaultMaxAgeValue;
-          //   // /* 2. END Select Age Range */
+//   // /* 2. Select Age Range */
+//   // int selectedMinAge = defaultMinAgeValue;
+//   // int selectedMaxAge = defaultMaxAgeValue;
+//   // /* 2. END Select Age Range */
 
-          //   return Padding(
-          //       padding:
-          //           const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-          //       child: Column(
-          //         children: [
-          //           Expanded(
-          //             child: ListView(
-          //               children: [
-          //                 ListTile(
-          //                   leading: Text("Show me",
-          //                       style: TextStyle(
-          //                           fontSize: 24, fontWeight: FontWeight.bold)),
-          //                   trailing: Row(
-          //                     mainAxisSize: MainAxisSize.min,
-          //                     children: [
-          //                       Text("selectedGender[0].capitalize()",
-          //                           style: TextStyle(fontSize: 20)),
-          //                       SizedBox(width: 12),
-          //                       const Icon(CustomIcons.right_open)
-          //                     ],
-          //                   ),
-          //                   onTap: () {
-          //                     Navigator.of(context).pop();
+//   return Padding(
+//       padding:
+//           const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+//       child: Column(
+//         children: [
+//           Expanded(
+//             child: ListView(
+//               children: [
+//                 ListTile(
+//                   leading: Text("Show me",
+//                       style: TextStyle(
+//                           fontSize: 24, fontWeight: FontWeight.bold)),
+//                   trailing: Row(
+//                     mainAxisSize: MainAxisSize.min,
+//                     children: [
+//                       Text("selectedGender[0].capitalize()",
+//                           style: TextStyle(fontSize: 20)),
+//                       SizedBox(width: 12),
+//                       const Icon(CustomIcons.right_open)
+//                     ],
+//                   ),
+//                   onTap: () {
+//                     Navigator.of(context).pop();
 
-          //                     // _showGendersModal(
-          //                     //     context, availableGenders, selectedGender);
-          //                   },
-          //                 ),
-          //                 ListTile(
-          //                   leading: Text("Age range",
-          //                       style: TextStyle(
-          //                           fontSize: 24, fontWeight: FontWeight.bold)),
-          //                   trailing: Row(
-          //                     mainAxisSize: MainAxisSize.min,
-          //                     children: [
-          //                       Text("fasfa",
-          //                           // Text(""$selectedMinAge - $selectedMaxAge"",
-          //                           style: TextStyle(fontSize: 20)),
-          //                       SizedBox(width: 12),
-          //                       const Icon(CustomIcons.right_open)
-          //                     ],
-          //                   ),
-          //                   onTap: () {
-          //                     Navigator.of(context).pop();
+//                     // _showGendersModal(
+//                     //     context, availableGenders, selectedGender);
+//                   },
+//                 ),
+//                 ListTile(
+//                   leading: Text("Age range",
+//                       style: TextStyle(
+//                           fontSize: 24, fontWeight: FontWeight.bold)),
+//                   trailing: Row(
+//                     mainAxisSize: MainAxisSize.min,
+//                     children: [
+//                       Text("fasfa",
+//                           // Text(""$selectedMinAge - $selectedMaxAge"",
+//                           style: TextStyle(fontSize: 20)),
+//                       SizedBox(width: 12),
+//                       const Icon(CustomIcons.right_open)
+//                     ],
+//                   ),
+//                   onTap: () {
+//                     Navigator.of(context).pop();
 
-          //                     // _showAgeModal(
-          //                     //     context, selectedMinAge, selectedMaxAge);
-          //                   },
-          //                 ),
-          //                 ListTile(
-          //                   leading: Text("More options",
-          //                       style: TextStyle(
-          //                           fontSize: 24, fontWeight: FontWeight.bold)),
-          //                   trailing: Row(
-          //                     mainAxisSize: MainAxisSize.min,
-          //                     children: [
-          //                       SizedBox(width: 12),
-          //                       const Icon(CustomIcons.right_open)
-          //                     ],
-          //                   ),
-          //                   onTap: () {
-          //                     Navigator.of(context).pop();
-          //                     // _showMoreOptions(context);
-          //                   },
-          //                 ),
-          //                 ElevatedButton(
-          //                   child: const Text("Apply filters",
-          //                       style: TextStyle(color: Colors.white)),
-          //                   onPressed: () async {
-          //                     // List<UserQuery> updateUserQuery = [
-          //                     //   UserQuery("gender", "isEqualToGender",
-          //                     //       selectedGender[0]),
-          //                     //   UserQuery("currentLocation",
-          //                     //       "isEqualToCurrentLocation", defaultLocality)
-          //                     // ];
+//                     // _showAgeModal(
+//                     //     context, selectedMinAge, selectedMaxAge);
+//                   },
+//                 ),
+//                 ListTile(
+//                   leading: Text("More options",
+//                       style: TextStyle(
+//                           fontSize: 24, fontWeight: FontWeight.bold)),
+//                   trailing: Row(
+//                     mainAxisSize: MainAxisSize.min,
+//                     children: [
+//                       SizedBox(width: 12),
+//                       const Icon(CustomIcons.right_open)
+//                     ],
+//                   ),
+//                   onTap: () {
+//                     Navigator.of(context).pop();
+//                     // _showMoreOptions(context);
+//                   },
+//                 ),
+//                 ElevatedButton(
+//                   child: const Text("Apply filters",
+//                       style: TextStyle(color: Colors.white)),
+//                   onPressed: () async {
+//                     // List<UserQuery> updateUserQuery = [
+//                     //   UserQuery("gender", "isEqualToGender",
+//                     //       selectedGender[0]),
+//                     //   UserQuery("currentLocation",
+//                     //       "isEqualToCurrentLocation", defaultLocality)
+//                     // ];
 
-          //                     // this.setState(() {
-          //                     //   userQuery = updateUserQuery;
-          //                     // });
+//                     // this.setState(() {
+//                     //   userQuery = updateUserQuery;
+//                     // });
 
-          //                     Navigator.of(context).pop();
-          //                   },
-          //                 )
-          //               ],
-          //             ),
-          //           )
-          //         ],
-          //       ));
-          // });
-      
-      
+//                     Navigator.of(context).pop();
+//                   },
+//                 )
+//               ],
+//             ),
+//           )
+//         ],
+//       ));
+// });

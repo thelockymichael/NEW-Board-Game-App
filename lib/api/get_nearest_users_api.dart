@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
@@ -10,7 +11,23 @@ class GetNearestUsers {
   Future<List<ResultAppUser>> getNearestUsers(
       {required int limit,
       required AppUser myUser,
+      // TODO gender
+      required String gender,
+      // TODO age range
+      required int minAge,
+      required int maxAge,
+      // TODO distance
       required String distance,
+
+      // MORE OPTIONS
+      // TODO mechanics
+      required List<String> mechanics,
+      // TODO themes
+      required List<String> themes,
+      // TODO languages
+      required List<String> languages,
+      // TODO localities
+      required List<String> localities,
       required List<String> ignoreSwipeIds}) async {
     // TODO git ignore my cloud function URL STRING !
     // TODO ignoreId
@@ -26,11 +43,16 @@ class GetNearestUsers {
         host: "us-central1-board-game-app-c1a95.cloudfunctions.net",
         path: "/getNearestUsers",
         queryParameters: {
+          "gender": gender.toString(),
+          "minAge": minAge.toString(),
+          "maxAge": maxAge.toString(),
           "distance": distance.toString(),
           "limit": limit.toString(),
           "lat": myUser.currentGeoLocation.latitude.toString(),
           "long": myUser.currentGeoLocation.longitude.toString(),
-          "ignoreId": ignoreSwipeIds
+          "ignoreId": ignoreSwipeIds,
+          // More Options
+          // "bgMechanics": mechanics
         });
 
     print("LOG guf juk ${uri}");

@@ -226,7 +226,7 @@ class _Page1State extends State<Page1> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                      "${selectedDistance[0].contains("Whole country") ? "Whole country" : "${selectedDistance[0]} km"}",
+                      "${selectedDistance[0].contains("whole country") ? "Whole country" : "${selectedDistance[0]} km"}",
                       style: TextStyle(fontSize: 20)),
                   SizedBox(width: 12),
                   const Icon(CustomIcons.right_open)
@@ -432,7 +432,7 @@ class _Page1State extends State<Page1> {
                 itemExtent: 30,
                 backgroundColor: Colors.white,
                 scrollController: FixedExtentScrollController(
-                    initialItem: selectedDistance[0].contains("Whole country")
+                    initialItem: selectedDistance[0].contains("whole country")
                         ? 158
                         : int.parse(selectedDistance[0]) + 3),
                 children: Utils.userDistance.map((item) {
@@ -445,7 +445,7 @@ class _Page1State extends State<Page1> {
 
                   if (valueToSet == 158) {
                     setState(() {
-                      selectedDistance[0] = "Whole country";
+                      selectedDistance[0] = "whole country";
                     });
                   } else {
                     var sum = value + 3;
@@ -960,12 +960,12 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
   // END
 
   // 2. Min Age Value
-  List<int> defaultMinAgeValue = [17];
-  List<int> defaultMaxAgeValue = [27];
+  List<int> defaultMinAgeValue = [1];
+  List<int> defaultMaxAgeValue = [66];
   // END
 
   // 3. Default Distance
-  List<String> defaultDistance = ["Whole country"];
+  List<String> defaultDistance = ["whole country"];
   // END
 
   // 4. Default Selected Bg Mechanics
@@ -1031,8 +1031,18 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
       // TODO !!! userQuery (e.g. distance, gender, age range, mechanics, themes, languages, locality) !!!
       limit: 10,
       myUser: _myUser,
-      distance: "200",
-      ignoreSwipeIds: _ignoreSwipeIds,
+      gender: defaultSelectedGender[0],
+      minAge: defaultMinAgeValue[0],
+      maxAge: defaultMaxAgeValue[0],
+      distance: defaultDistance[0],
+      // More Options
+      mechanics: defaultMechanics,
+      themes: defaultThemes,
+      languages: defaultLanguages,
+      localities: defaultLocality,
+      ignoreSwipeIds: [],
+
+      // ignoreSwipeIds: _ignoreSwipeIds,
     );
 
     if (res.isNotEmpty) {
@@ -1132,14 +1142,16 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
   }
 
   void callback() {
-    print("LOG query defaultSelectedGender $defaultSelectedGender");
-    print("LOG query defaultMinAgeValue $defaultMinAgeValue");
-    print("LOG query defaultMaxAgeValue $defaultMaxAgeValue");
-    print("LOG query defaultDistance $defaultDistance");
-    print("LOG query defaultMechanics $defaultMechanics");
-    print("LOG query defaultThemes $defaultThemes");
-    print("LOG query defaultLanguages $defaultLanguages");
-    print("LOG query defaultLocality $defaultLocality");
+    setState(() {
+      print("LOG query defaultSelectedGender $defaultSelectedGender");
+      print("LOG query defaultMinAgeValue $defaultMinAgeValue");
+      print("LOG query defaultMaxAgeValue $defaultMaxAgeValue");
+      print("LOG query defaultDistance $defaultDistance");
+      print("LOG query defaultMechanics $defaultMechanics");
+      print("LOG query defaultThemes $defaultThemes");
+      print("LOG query defaultLanguages $defaultLanguages");
+      print("LOG query defaultLocality $defaultLocality");
+    });
 
     debugPrint('>>> my callback triggered');
   }

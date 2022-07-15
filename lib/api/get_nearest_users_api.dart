@@ -10,7 +10,7 @@ class GetNearestUsers {
   Future<List<ResultAppUser>> getNearestUsers(
       {required int limit,
       required AppUser myUser,
-      required int distance,
+      required String distance,
       required List<String> ignoreSwipeIds}) async {
     // TODO git ignore my cloud function URL STRING !
     // TODO ignoreId

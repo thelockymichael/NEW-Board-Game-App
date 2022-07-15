@@ -1,4 +1,5 @@
 // ignore_for_file: prefer_function_declarations_over_variables
+import 'package:flutter/cupertino.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/api/get_nearest_users_api.dart';
@@ -27,26 +28,28 @@ class Page1 extends StatefulWidget {
   final List<String> defaultSelectedGender;
 
   // 2. Min Age Value
-  final List<int> defaultMinAgeValue;
-  // END
-
   // 2. Max Age Value
+  final List<int> defaultMinAgeValue;
   final List<int> defaultMaxAgeValue;
   // END
 
   // 3. Default Selected Bg Mechanics
+  final List<String> defaultDistance;
+  // END
+
+  // 4. Default Selected Bg Mechanics
   final List<String> defaultMechanics;
   // END
 
-  // 3. Default Selected Bg Themes
+  // 5. Default Selected Bg Themes
   final List<String> defaultThemes;
   // END
 
-  // 4. Default Selected Languages
+  // 6. Default Selected Languages
   final List<String> defaultLanguages;
   // END
 
-  // 5. Default Selected Locality
+  // 7. Default Selected Locality
   final List<String> defaultLocality;
   // END
 
@@ -58,6 +61,7 @@ class Page1 extends StatefulWidget {
       required this.defaultSelectedGender,
       required this.defaultMinAgeValue,
       required this.defaultMaxAgeValue,
+      required this.defaultDistance,
       required this.defaultMechanics,
       required this.defaultThemes,
       required this.defaultLanguages,
@@ -85,21 +89,25 @@ class _Page1State extends State<Page1> {
   late List<int> selectedMaxAge;
   /* 2. END Select Age Range */
 
-  /* 3. Mechanics Select */
+  /* 3. Select Age Range */
+  late List<String> selectedDistance;
+  /* 3. END Select Age Range */
+
+  /* 4. Mechanics Select */
   late List<String> selectedMechanics;
-  /* 3. END Select Mechanics Select */
+  /* 4. END Select Mechanics Select */
 
-  /* 4. Themes Select */
+  /* 55. Themes Select */
   late List<String> selectedThemes;
-  /* 4. END Select Themes Select */
+  /* 55. END Select Themes Select */
 
-  /* 5. Languages Select */
+  /* 6. Languages Select */
   late List<String> selectedLanguages;
-  /* 5. END Select Languages Select */
+  /* 6. END Select Languages Select */
 
-  /* 6. Localities Select */
+  /* 7. Localities Select */
   late List<String> selectedLocalities;
-  /* 6. END Select Localities Select */
+  /* 7. END Select Localities Select */
 
   late List<Widget> pages;
 
@@ -111,6 +119,9 @@ class _Page1State extends State<Page1> {
     // 2. Set initial ages
     selectedMinAge = widget.defaultMinAgeValue;
     selectedMaxAge = widget.defaultMaxAgeValue;
+
+    // 2. Set initial ages
+    selectedDistance = widget.defaultDistance;
 
     // 3. Set initial mechanics
     selectedMechanics = widget.defaultMechanics;
@@ -135,11 +146,12 @@ class _Page1State extends State<Page1> {
         page1(),
         _showGendersPage(setState), // 1. Gender
         _showAgePage(setState), // 2. Age
-        _showMoreOptions(setState), // 3. Show more options
-        _showGameMechanics(setState),
-        _showGameThemes(setState), // 4. Show more options
-        _showLanguages(setState), // 5. Show more options
-        _showLocalities(setState), // 4. Show more options
+        _showDistancePage(setState), // 3. Show distance
+        _showMoreOptions(setState), // 4. Show more options
+        _showGameMechanics(setState), // 5. Show game mechanics
+        _showGameThemes(setState), // 6. Show game themes
+        _showLanguages(setState), // 7. Show more options
+        _showLocalities(setState), // 8. Show more options
       ];
 
       return pages[_currentView];
@@ -207,6 +219,29 @@ class _Page1State extends State<Page1> {
             ListTile(
               leading: SizedBox(
                   width: 200,
+                  child: Text("Distance (km)",
+                      style: TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.bold))),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                      "${selectedDistance[0].contains("Whole country") ? "Whole country" : "${selectedDistance[0]} km"}",
+                      style: TextStyle(fontSize: 20)),
+                  SizedBox(width: 12),
+                  const Icon(CustomIcons.right_open)
+                ],
+              ),
+              onTap: () {
+                setState(() {
+                  _currentView = 3;
+                  print("LOG page1 _currentView ${_currentView}");
+                });
+              },
+            ),
+            ListTile(
+              leading: SizedBox(
+                  width: 200,
                   child: Text("More options",
                       style: TextStyle(
                           fontSize: 24, fontWeight: FontWeight.bold))),
@@ -219,11 +254,9 @@ class _Page1State extends State<Page1> {
               ),
               onTap: () {
                 setState(() {
-                  _currentView = 3;
+                  _currentView = 4;
                   print("LOG page1 _currentView ${_currentView}");
                 });
-                // Navigator.of(context).pop();
-                // _showMoreOptions(context);
               },
             ),
             ElevatedButton(
@@ -378,6 +411,81 @@ class _Page1State extends State<Page1> {
         });
   }
 
+  Widget _showDistancePage(StateSetter setModalState) {
+    return WillPopScope(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            Text("Distance (km)",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            SizedBox(
+              height: 16,
+            ),
+            Text("How far away would you like to search?",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 18, color: Colors.black54)),
+            SizedBox(height: 16),
+            SizedBox(
+              height: 300,
+              child: CupertinoPicker(
+                itemExtent: 30,
+                backgroundColor: Colors.white,
+                scrollController: FixedExtentScrollController(
+                    initialItem: selectedDistance[0].contains("Whole country")
+                        ? 158
+                        : int.parse(selectedDistance[0]) + 3),
+                children: Utils.userDistance.map((item) {
+                  return Text(item);
+                }).toList(),
+                onSelectedItemChanged: (value) {
+                  print("LOG n $value");
+
+                  var valueToSet = value;
+
+                  if (valueToSet == 158) {
+                    setState(() {
+                      selectedDistance[0] = "Whole country";
+                    });
+                  } else {
+                    var sum = value + 3;
+                    setState(() {
+                      selectedDistance[0] = sum.toString();
+                    });
+                  }
+                },
+              ),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size.fromHeight(40), // NEW
+              ),
+              child: const Text("Apply", style: TextStyle(color: Colors.white)),
+              onPressed: () async {
+                setModalState(() {
+                  widget.defaultDistance[0] = selectedDistance[0];
+
+                  print("LOG n $selectedDistance");
+                  print(
+                      "LOG n defaultMaxAgeValue ${widget.defaultDistance[0]}");
+                });
+
+                setState(() {
+                  _currentView = 0;
+                });
+              },
+            )
+          ]),
+        ),
+        onWillPop: () async {
+          setState(() {
+            _currentView = 0;
+          });
+
+          return false;
+        });
+  }
+
   Widget _showMoreOptions(StateSetter setModalState) {
     return WillPopScope(
         child: Padding(
@@ -437,7 +545,7 @@ class _Page1State extends State<Page1> {
                     // TODO Show mechanics
 
                     setState(() {
-                      _currentView = 4;
+                      _currentView = 5;
                       print("LOG page1 _currentView ${_currentView}");
                     });
                   },
@@ -473,7 +581,7 @@ class _Page1State extends State<Page1> {
                   ),
                   onTap: () {
                     setState(() {
-                      _currentView = 5;
+                      _currentView = 6;
                       print("LOG page1 _currentView ${_currentView}");
                     });
                   },
@@ -509,7 +617,7 @@ class _Page1State extends State<Page1> {
                   ),
                   onTap: () {
                     setState(() {
-                      _currentView = 6;
+                      _currentView = 7;
                       print("LOG page1 _currentView ${_currentView}");
                     });
                   },
@@ -545,7 +653,7 @@ class _Page1State extends State<Page1> {
                   ),
                   onTap: () {
                     setState(() {
-                      _currentView = 7;
+                      _currentView = 8;
                       print("LOG page1 _currentView ${_currentView}");
                     });
                   },
@@ -614,7 +722,7 @@ class _Page1State extends State<Page1> {
               child: const Text("Apply", style: TextStyle(color: Colors.white)),
               onPressed: () async {
                 setState(() {
-                  _currentView = 3;
+                  _currentView = 4;
                 });
               },
             )
@@ -622,7 +730,7 @@ class _Page1State extends State<Page1> {
         ),
         onWillPop: () async {
           setState(() {
-            _currentView = 3;
+            _currentView = 4;
           });
 
           return false;
@@ -681,7 +789,7 @@ class _Page1State extends State<Page1> {
               child: const Text("Apply", style: TextStyle(color: Colors.white)),
               onPressed: () async {
                 setState(() {
-                  _currentView = 3;
+                  _currentView = 4;
                 });
               },
             )
@@ -689,7 +797,7 @@ class _Page1State extends State<Page1> {
         ),
         onWillPop: () async {
           setState(() {
-            _currentView = 3;
+            _currentView = 4;
           });
 
           return false;
@@ -748,7 +856,7 @@ class _Page1State extends State<Page1> {
               child: const Text("Apply", style: TextStyle(color: Colors.white)),
               onPressed: () async {
                 setState(() {
-                  _currentView = 3;
+                  _currentView = 4;
                 });
               },
             )
@@ -756,7 +864,7 @@ class _Page1State extends State<Page1> {
         ),
         onWillPop: () async {
           setState(() {
-            _currentView = 3;
+            _currentView = 4;
           });
 
           return false;
@@ -816,7 +924,7 @@ class _Page1State extends State<Page1> {
               child: const Text("Apply", style: TextStyle(color: Colors.white)),
               onPressed: () async {
                 setState(() {
-                  _currentView = 3;
+                  _currentView = 4;
                 });
               },
             )
@@ -824,7 +932,7 @@ class _Page1State extends State<Page1> {
         ),
         onWillPop: () async {
           setState(() {
-            _currentView = 3;
+            _currentView = 4;
           });
 
           return false;
@@ -853,25 +961,26 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
 
   // 2. Min Age Value
   List<int> defaultMinAgeValue = [17];
-  // END
-
-  // 2. Max Age Value
   List<int> defaultMaxAgeValue = [27];
   // END
 
-  // 3. Default Selected Bg Mechanics
+  // 3. Default Distance
+  List<String> defaultDistance = ["Whole country"];
+  // END
+
+  // 4. Default Selected Bg Mechanics
   List<String> defaultMechanics = [];
   // END
 
-  // 3. Default Selected Bg Themes
+  // 5. Default Selected Bg Themes
   List<String> defaultThemes = [];
   // END
 
-  // 4. Default Selected Languages
+  // 6. Default Selected Languages
   List<String> defaultLanguages = [];
   // END
 
-  // 5. Default Selected Locality
+  // 7. Default Selected Locality
   List<String> defaultLocality = [];
   // END
 
@@ -922,7 +1031,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
       // TODO !!! userQuery (e.g. distance, gender, age range, mechanics, themes, languages, locality) !!!
       limit: 10,
       myUser: _myUser,
-      distance: 2000,
+      distance: "200",
       ignoreSwipeIds: _ignoreSwipeIds,
     );
 
@@ -1023,13 +1132,14 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
   }
 
   void callback() {
-    print("LOG query $defaultSelectedGender");
-    print("LOG query $defaultMinAgeValue");
-    print("LOG query $defaultMaxAgeValue");
-    print("LOG query $defaultMechanics");
-    print("LOG query $defaultThemes");
-    print("LOG query $defaultLanguages");
-    print("LOG query $defaultLocality");
+    print("LOG query defaultSelectedGender $defaultSelectedGender");
+    print("LOG query defaultMinAgeValue $defaultMinAgeValue");
+    print("LOG query defaultMaxAgeValue $defaultMaxAgeValue");
+    print("LOG query defaultDistance $defaultDistance");
+    print("LOG query defaultMechanics $defaultMechanics");
+    print("LOG query defaultThemes $defaultThemes");
+    print("LOG query defaultLanguages $defaultLanguages");
+    print("LOG query defaultLocality $defaultLocality");
 
     debugPrint('>>> my callback triggered');
   }
@@ -1057,6 +1167,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
               defaultSelectedGender: defaultSelectedGender,
               defaultMinAgeValue: defaultMinAgeValue,
               defaultMaxAgeValue: defaultMaxAgeValue,
+              defaultDistance: defaultDistance,
               defaultMechanics: defaultMechanics,
               defaultThemes: defaultThemes,
               defaultLanguages: defaultLanguages,

@@ -1,12 +1,9 @@
-// interface ResultAppUserPromise {
-//   results:
-// }
-
 interface ResultAppUser {
   id: string,
   distance: number,
   setupIsCompleted: boolean,
   email: string,
+  name: string,
   age: number,
   gender: string,
   bggName: string,

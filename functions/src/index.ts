@@ -47,7 +47,10 @@ exports.getNearestUsers = functions.https.onRequest(
   async (req: Request, res: Response) => {
     const lat = req.query.lat as unknown as number
     const long = req.query.long as unknown as number
-    const distance = req.query.distance as unknown as number
+    const gender = req.query.gender as unknown as string
+    const minAge = req.query.minAge as unknown as number
+    const maxAge = req.query.maxAge as unknown as number
+    const distance = req.query.distance as unknown as string
     const limit = parseInt(req.query.limit as unknown as string, 10)
     let ignoreIds = req.query.ignoreId as unknown as Array<string>
 
@@ -55,10 +58,21 @@ exports.getNearestUsers = functions.https.onRequest(
       ignoreIds = [ignoreIds]
     }
 
+    // TODO UserQuery
+    // TODO gender MUST ALWAYS BE INCLUDED
+    // TODO age MUST ALWAYS BE INCLUDED
+    // TODO distance MUST ALWAYS BE INCLUDED
+    // TODO mechanics
+    // TODO themes
+    // TODO locality
+    // TODO languages
+
     const usersRef: admin.firestore.Query<admin.firestore.DocumentData> = db
       .collection('users')
       .limit(limit)
       .orderBy('updatedAt', 'desc')
+
+    // TODO prioritize DISTANCE
 
     const users = await usersRef.get()
 
@@ -97,26 +111,59 @@ exports.getNearestUsers = functions.https.onRequest(
           otherLong,
         )
 
-        // tmpUsers.push(distanceFromMyUser)
-        tmpUsers.push({
-          ...user,
-          distance: distanceFromMyUser,
-        })
-        // tmpUsers.push({
+        // TODO gender MUST ALWAYS BE INCLUDED
+        // TODO age MUST ALWAYS BE INCLUDED
+        // TODO distance MUST ALWAYS BE INCLUDED
 
-        //   user,
-        //   distance: distanceFromMyUser,
-        // })
+        // TODO gender
+        // If query gender equals to user gender
+        // => then add user to tmpUsers
+
+        // TODO minAge
+
+        // TODO maxAge
+        const date = new Date(0)
+        date.setMilliseconds(user.age)
+
+        const userAge = new Date().getFullYear() - date.getFullYear()
+
+        // Check if user's age is in range.
+        if (userAge >= minAge && userAge <= maxAge) {
+          // Check if user's gender is in range
+
+          // TODO Mechanic
+          // TODO Theme
+          // TODO Languages
+          // TODO Locality
+          // If array includes any
+
+          if (user.gender === gender) {
+            tmpUsers.push({
+              ...user,
+              distance: distanceFromMyUser,
+            })
+          } else if (gender === 'everyone') {
+            tmpUsers.push({
+              ...user,
+              distance: distanceFromMyUser,
+            })
+          }
+        }
 
         tmpUsers.sort((a, b) => ((a.distance > b.distance) ? 1 : -1))
       })
 
-      const newDistance = distance as unknown as number
       // Filter all users that are NOT within radius of e.g. 20 km
-      const shortestDistances = tmpUsers.filter((item) => item.distance < newDistance)
+      let shortestDistances = []
 
-      // TODO Remove deciamls from distances
+      if (distance === 'whole country') {
+        // Magic num for whole country
+        shortestDistances = tmpUsers.filter((item) => item.distance < 2000)
+      } else {
+        shortestDistances = tmpUsers.filter((item) => item.distance < parseInt(distance, 10))
+      }
 
+      // TODO Remove decimals from distances
       const removeDecimals: Array<ResultAppUser> = []
       shortestDistances.forEach((element) => {
         removeDecimals.push({

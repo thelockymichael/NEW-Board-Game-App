@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable arrow-body-style */
 /* eslint-disable no-multi-spaces */
 /* eslint-disable import/no-import-module-exports */
@@ -35,6 +36,35 @@ function getDistanceFromLatLonInKm(lat1: number, lon1: number, lat2: number, lon
   return d
 }
 
+// Function call
+function findCommonElements(arr1: Array<string>, arr2: Array<string>) {
+  // Create an empty object
+  const obj: any = {}
+
+  // Loop through the first array
+  for (let i = 0; i < arr1.length; i++) {
+    // Check if element from first array
+    // already exist in object or not
+    if (!obj[arr1[i]]) {
+      // If it doesn't exist assign the
+      // properties equals to the
+      // elements in the array
+      const element = arr1[i]
+      obj[element] = true
+    }
+  }
+
+  // Loop through the second array
+  for (let j = 0; j < arr2.length; j++) {
+    // Check elements from second array exist
+    // in the created object or not
+    if (obj[arr2[j]]) {
+      return true
+    }
+  }
+  return false
+}
+
 function roundNearest10(num: number) {
   return Math.round(num / 10) * 10
 }
@@ -52,12 +82,39 @@ exports.getNearestUsers = functions.https.onRequest(
     const maxAge = req.query.maxAge as unknown as number
     const distance = req.query.distance as unknown as string
     const limit = parseInt(req.query.limit as unknown as string, 10)
+
+    // TODO More Options
+    let bgMechanics = req.query.bgMechanics  as unknown as Array<string>
+    let bgThemes = req.query.bgThemes  as unknown as Array<string>
+    let languages = req.query.languages  as unknown as Array<string>
+    let localities = req.query.localities  as unknown as Array<string>
+    // const bgThemes = req.query.bgThemes as unknown as Array<string>
+    // const languages = req.query.languages as unknown as Array<string>
+    // const localities = req.query.localities as unknown as Array<string>
+
+    // TODO If any of them even exist
+
     let ignoreIds = req.query.ignoreId as unknown as Array<string>
 
     if (!Array.isArray(ignoreIds)) {
       ignoreIds = [ignoreIds]
     }
 
+    if (bgMechanics !== undefined && !Array.isArray(bgMechanics)) {
+      bgMechanics = [bgMechanics]
+    }
+
+    if (bgThemes !== undefined && !Array.isArray(bgThemes)) {
+      bgThemes = [bgThemes]
+    }
+
+    if (languages !== undefined && !Array.isArray(languages)) {
+      languages = [languages]
+    }
+
+    if (localities !== undefined && !Array.isArray(localities)) {
+      localities = [localities]
+    }
     // TODO UserQuery
     // TODO gender MUST ALWAYS BE INCLUDED
     // TODO age MUST ALWAYS BE INCLUDED
@@ -137,7 +194,90 @@ exports.getNearestUsers = functions.https.onRequest(
           // TODO Locality
           // If array includes any
 
-          if (user.gender === gender) {
+          // const newBgMechanics = []
+          let containsMechanics = false
+          let containsThemes = false
+          let containsLanguages = false
+          let containsLocalities = false
+
+          if (bgMechanics) {
+            console.log('LOG bgMechanic IS NOT EMPTY')
+            console.log('LOG bgMechanic IS NOT EMPTY', bgMechanics)
+            containsMechanics = findCommonElements(user.favBgMechanics, bgMechanics)
+          } else {
+            console.log('LOG bgMechanic IS EMPTY')
+            console.log('LOG bgMechanic IS EMPTY', bgMechanics)
+          }
+
+          if (bgThemes) {
+            console.log('LOG bgThemes IS NOT EMPTY')
+            console.log('LOG bgThemes IS NOT EMPTY', bgThemes)
+            containsThemes = findCommonElements(user.favBgThemes, bgThemes)
+          } else {
+            console.log('LOG bgThemes IS EMPTY')
+            console.log('LOG bgThemes IS EMPTY', bgThemes)
+          }
+
+          if (languages) {
+            console.log('LOG languages IS NOT EMPTY')
+            console.log('LOG languages IS NOT EMPTY', languages)
+            containsLanguages = findCommonElements(user.languages, languages)
+          } else {
+            console.log('LOG languages IS EMPTY')
+            console.log('LOG languages IS EMPTY', languages)
+          }
+
+          if (localities) {
+            console.log('LOG localities IS NOT EMPTY')
+            console.log('LOG localities IS NOT EMPTY', localities)
+            containsLocalities = findCommonElements([user.currentLocation], localities)
+          } else {
+            console.log('LOG localities IS EMPTY')
+            console.log('LOG localities IS EMPTY', localities)
+          }
+
+          // TODO Another if-else statements
+
+          if (bgMechanics || bgThemes || languages || localities) {
+            console.log('LOG  TODO Another if-else statements bgThemes IS NOT EMPTY')
+            console.log('LOG  TODO Another if-else statements bgThemes IS NOT EMPTY', bgThemes)
+
+            console.log('LOG  TODO Another if-else statements bgThemes IS NOT EMPTY')
+            console.log('LOG  TODO Another if-else statements bgThemes IS NOT EMPTY', bgThemes)
+
+            if (containsMechanics) {
+              containsMechanics = findCommonElements(user.favBgMechanics, bgMechanics)
+            }
+
+            if (containsThemes) {
+              containsThemes = findCommonElements(user.favBgThemes, bgThemes)
+            }
+
+            if (containsLanguages) {
+              containsThemes = findCommonElements(user.languages, languages)
+            }
+
+            if (containsLocalities) {
+              containsLocalities = findCommonElements([user.currentLocation], localities)
+            }
+
+            // IF 'More Options' DO exist (bgMechanics, bgThemes, localities, localities)
+            if (containsMechanics || containsThemes || containsLanguages || containsLocalities) {
+              if (user.gender === gender) {
+                tmpUsers.push({
+                  ...user,
+                  distance: distanceFromMyUser,
+                })
+              } else if (gender === 'everyone') {
+                tmpUsers.push({
+                  ...user,
+                  distance: distanceFromMyUser,
+                })
+              }
+            }
+
+            // IF 'More Options' DO NOT exist (bgMechanics, bgThemes, languages, localities)
+          } else if (user.gender === gender) {
             tmpUsers.push({
               ...user,
               distance: distanceFromMyUser,
@@ -149,6 +289,19 @@ exports.getNearestUsers = functions.https.onRequest(
             })
           }
         }
+
+        // const containsMechanics = findCommonElements(user.favBgMechanics, bgMechanics)
+
+        // bgMechanics
+
+        // const containsThemes = findCommonElements(user.favBgThemes, bgThemes)
+        // const containsLanguages = findCommonElements(user.languages, languages)
+        // const containsLocalities = findCommonElements([
+        //   user.currentLocation.toLowerCase()], localities)
+
+        // if (containsMechanics) {
+
+        // }
 
         tmpUsers.sort((a, b) => ((a.distance > b.distance) ? 1 : -1))
       })

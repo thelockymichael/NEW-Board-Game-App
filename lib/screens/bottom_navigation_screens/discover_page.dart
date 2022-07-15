@@ -1,4 +1,3 @@
-// ignore_for_file: prefer_function_declarations_over_variables
 import 'package:flutter/cupertino.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:flutter/material.dart';
@@ -23,35 +22,20 @@ class Page1 extends StatefulWidget {
   final BuildContext themeContext;
   final StateSetter setModalState;
 
-  // 1. Gender
-
   final List<String> defaultSelectedGender;
 
-  // 2. Min Age Value
-  // 2. Max Age Value
   final List<int> defaultMinAgeValue;
   final List<int> defaultMaxAgeValue;
-  // END
 
-  // 3. Default Selected Bg Mechanics
   final List<String> defaultDistance;
-  // END
 
-  // 4. Default Selected Bg Mechanics
   final List<String> defaultMechanics;
-  // END
 
-  // 5. Default Selected Bg Themes
   final List<String> defaultThemes;
-  // END
 
-  // 6. Default Selected Languages
   final List<String> defaultLanguages;
-  // END
 
-  // 7. Default Selected Locality
   final List<String> defaultLocality;
-  // END
 
   const Page1(
       {Key? key,
@@ -113,26 +97,19 @@ class _Page1State extends State<Page1> {
 
   @override
   void initState() {
-    // 1. Set initial gender
     selectedGender = widget.defaultSelectedGender;
 
-    // 2. Set initial ages
     selectedMinAge = widget.defaultMinAgeValue;
     selectedMaxAge = widget.defaultMaxAgeValue;
 
-    // 2. Set initial ages
     selectedDistance = widget.defaultDistance;
 
-    // 3. Set initial mechanics
     selectedMechanics = widget.defaultMechanics;
 
-    // 4. Set initial themes
     selectedThemes = widget.defaultThemes;
 
-    // 5. Set inital languages
     selectedLanguages = widget.defaultLanguages;
 
-    // 6. Set initial locality
     selectedLocalities = widget.defaultLocality;
 
     super.initState();
@@ -144,14 +121,14 @@ class _Page1State extends State<Page1> {
         builder: (BuildContext context, StateSetter setState) {
       pages = [
         page1(),
-        _showGendersPage(setState), // 1. Gender
-        _showAgePage(setState), // 2. Age
-        _showDistancePage(setState), // 3. Show distance
-        _showMoreOptions(setState), // 4. Show more options
-        _showGameMechanics(setState), // 5. Show game mechanics
-        _showGameThemes(setState), // 6. Show game themes
-        _showLanguages(setState), // 7. Show more options
-        _showLocalities(setState), // 8. Show more options
+        _showGendersPage(setState),
+        _showAgePage(setState),
+        _showDistancePage(setState),
+        _showMoreOptions(setState),
+        _showGameMechanics(setState),
+        _showGameThemes(setState),
+        _showLanguages(setState),
+        _showLocalities(setState),
       ];
 
       return pages[_currentView];
@@ -160,9 +137,7 @@ class _Page1State extends State<Page1> {
 
   @override
   void deactivate() {
-    debugPrint('>>> bottom sheet closing');
-    widget
-        .callback(); // This will be trigger when the bottom sheet finishes closing
+    widget.callback();
     super.deactivate();
   }
 
@@ -190,7 +165,6 @@ class _Page1State extends State<Page1> {
               onTap: () {
                 setState(() {
                   _currentView = 1;
-                  print("LOG page1 _currentView ${_currentView}");
                 });
               },
             ),
@@ -212,7 +186,6 @@ class _Page1State extends State<Page1> {
               onTap: () {
                 setState(() {
                   _currentView = 2;
-                  print("LOG n _currentView ${_currentView}");
                 });
               },
             ),
@@ -235,7 +208,6 @@ class _Page1State extends State<Page1> {
               onTap: () {
                 setState(() {
                   _currentView = 3;
-                  print("LOG page1 _currentView ${_currentView}");
                 });
               },
             ),
@@ -255,13 +227,12 @@ class _Page1State extends State<Page1> {
               onTap: () {
                 setState(() {
                   _currentView = 4;
-                  print("LOG page1 _currentView ${_currentView}");
                 });
               },
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(40), // NEW
+                minimumSize: const Size.fromHeight(40),
               ),
               child: const Text("Apply filters",
                   style: TextStyle(color: Colors.white)),
@@ -380,23 +351,15 @@ class _Page1State extends State<Page1> {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(40), // NEW
+                minimumSize: const Size.fromHeight(40),
               ),
               child: const Text("Apply", style: TextStyle(color: Colors.white)),
               onPressed: () async {
-                // Navigator.of(context).pop();
-
                 setModalState(() {
                   widget.defaultMinAgeValue[0] = selectedMinAge[0];
                   widget.defaultMaxAgeValue[0] = selectedMaxAge[0];
 
                   _currentView = 0;
-                  print("LOG n $selectedMinAge");
-                  print("LOG n $selectedMaxAge");
-                  print(
-                      "LOG n defaultMinAgeValue ${widget.defaultMinAgeValue}");
-                  print(
-                      "LOG n defaultMaxAgeValue ${widget.defaultMaxAgeValue}");
                 });
               },
             )
@@ -439,8 +402,6 @@ class _Page1State extends State<Page1> {
                   return Text(item);
                 }).toList(),
                 onSelectedItemChanged: (value) {
-                  print("LOG n $value");
-
                   var valueToSet = value;
 
                   if (valueToSet == 158) {
@@ -458,16 +419,12 @@ class _Page1State extends State<Page1> {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(40), // NEW
+                minimumSize: const Size.fromHeight(40),
               ),
               child: const Text("Apply", style: TextStyle(color: Colors.white)),
               onPressed: () async {
                 setModalState(() {
                   widget.defaultDistance[0] = selectedDistance[0];
-
-                  print("LOG n $selectedDistance");
-                  print(
-                      "LOG n defaultMaxAgeValue ${widget.defaultDistance[0]}");
                 });
 
                 setState(() {
@@ -498,7 +455,6 @@ class _Page1State extends State<Page1> {
                 Align(
                     alignment: Alignment.topRight,
                     child: ElevatedButton(
-                      // CLEAR FILTERS
                       onPressed: widget.defaultMechanics.isNotEmpty ||
                               widget.defaultThemes.isNotEmpty ||
                               widget.defaultLanguages.isNotEmpty ||
@@ -542,11 +498,8 @@ class _Page1State extends State<Page1> {
                     ],
                   ),
                   onTap: () {
-                    // TODO Show mechanics
-
                     setState(() {
                       _currentView = 5;
-                      print("LOG page1 _currentView ${_currentView}");
                     });
                   },
                 ),
@@ -582,7 +535,6 @@ class _Page1State extends State<Page1> {
                   onTap: () {
                     setState(() {
                       _currentView = 6;
-                      print("LOG page1 _currentView ${_currentView}");
                     });
                   },
                 ),
@@ -618,7 +570,6 @@ class _Page1State extends State<Page1> {
                   onTap: () {
                     setState(() {
                       _currentView = 7;
-                      print("LOG page1 _currentView ${_currentView}");
                     });
                   },
                 ),
@@ -654,7 +605,6 @@ class _Page1State extends State<Page1> {
                   onTap: () {
                     setState(() {
                       _currentView = 8;
-                      print("LOG page1 _currentView ${_currentView}");
                     });
                   },
                 )
@@ -717,7 +667,7 @@ class _Page1State extends State<Page1> {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(40), // NEW
+                minimumSize: const Size.fromHeight(40),
               ),
               child: const Text("Apply", style: TextStyle(color: Colors.white)),
               onPressed: () async {
@@ -784,7 +734,7 @@ class _Page1State extends State<Page1> {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(40), // NEW
+                minimumSize: const Size.fromHeight(40),
               ),
               child: const Text("Apply", style: TextStyle(color: Colors.white)),
               onPressed: () async {
@@ -851,7 +801,7 @@ class _Page1State extends State<Page1> {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(40), // NEW
+                minimumSize: const Size.fromHeight(40),
               ),
               child: const Text("Apply", style: TextStyle(color: Colors.white)),
               onPressed: () async {
@@ -919,7 +869,7 @@ class _Page1State extends State<Page1> {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(40), // NEW
+                minimumSize: const Size.fromHeight(40),
               ),
               child: const Text("Apply", style: TextStyle(color: Colors.white)),
               onPressed: () async {
@@ -955,34 +905,20 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
   late List<String> _ignoreSwipeIds;
   late List<ResultAppUser> _userList;
 
-  // 1. Default Selected Gender
   List<String> defaultSelectedGender = ["everyone"];
-  // END
 
-  // 2. Min Age Value
   List<int> defaultMinAgeValue = [1];
   List<int> defaultMaxAgeValue = [66];
-  // END
 
-  // 3. Default Distance
   List<String> defaultDistance = ["whole country"];
-  // END
 
-  // 4. Default Selected Bg Mechanics
   List<String> defaultMechanics = [];
-  // END
 
-  // 5. Default Selected Bg Themes
   List<String> defaultThemes = [];
-  // END
 
-  // 6. Default Selected Languages
   List<String> defaultLanguages = [];
-  // END
 
-  // 7. Default Selected Locality
   List<String> defaultLocality = [];
-  // END
 
   late CardProvider cardProvider;
 
@@ -994,17 +930,11 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    // getFunction();
 
     _ignoreSwipeIds = <String>[];
     _userList = <ResultAppUser>[];
 
     cardProvider = Provider.of<CardProvider>(context, listen: false);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   Future<List<ResultAppUser>?> loadUsers() async {
@@ -1024,131 +954,30 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
     }
     _ignoreSwipeIds.add(_myUser.id);
 
-    // BACKUP 11.7.22
     var res = await GetNearestUsers().getNearestUsers(
-      // TODO !!! userQuery (e.g. distance, gender, age range, mechanics, themes, languages, locality) !!!
       limit: 50,
       myUser: _myUser,
       gender: defaultSelectedGender[0],
       minAge: defaultMinAgeValue[0],
       maxAge: defaultMaxAgeValue[0],
       distance: defaultDistance[0],
-      // More Options
       mechanics: defaultMechanics,
       themes: defaultThemes,
       languages: defaultLanguages,
       localities: defaultLocality,
       ignoreSwipeIds: _ignoreSwipeIds,
-
-      // ignoreSwipeIds: _ignoreSwipeIds,
     );
 
     if (res.isNotEmpty) {
-      print("LOG guf juk ${res}");
-      //   for (var element in res.docs) {
-      //     _userList.add(AppUser.fromSnapshot(element));
-      //   }
-
-      // print("LOG gufus ${res[0].distance}");
-      // print("LOG gufus ${res[0].user.name}");
-      // print("LOG gufus ${res[0].distance}");
       cardProvider.setUsers(res.reversed.toList());
 
       return _userList.reversed.toList();
     }
 
-    // var res = await _databaseSource.getPersonsToMatchWith(
-    //     100, _ignoreSwipeIds, userQuery);
-
-    // if (res.docs.isNotEmpty) {
-    //   for (var element in res.docs) {
-    //     _userList.add(AppUser.fromSnapshot(element));
-    //   }
-
-    //   print("CVB MIN: $defaultMinAgeValue");
-    //   print("CVB MAX: $defaultMaxAgeValue");
-
-    //   // 1. Age Range
-    //   // _userList.removeWhere(((element) =>
-    //   //     element.age < defaultMinAgeValue ||
-    //   //     element.age > defaultMaxAgeValue));
-
-    //   // END 1. Age Range
-
-    //   // 2. Bg Mechanics
-    //   List<AppUser> _usersToRemove = [];
-
-    //   if (defaultMechanics.isNotEmpty) {
-    //     for (var i = 0; i < _userList.length; i++) {
-    //       for (var j = 0; j < defaultMechanics.length; j++) {
-    //         bool doesExist =
-    //             _userList[i].favBgMechanics.contains(defaultMechanics[j]);
-
-    //         if (doesExist == false) {
-    //           _usersToRemove.add(_userList[i]);
-    //         }
-    //       }
-    //     }
-    //   }
-    //   // END 2. Bg Mechanics
-
-    //   // 3. Bg Themes
-    //   if (defaultThemes.isNotEmpty) {
-    //     for (var i = 0; i < _userList.length; i++) {
-    //       for (var j = 0; j < defaultThemes.length; j++) {
-    //         bool doesExist =
-    //             _userList[i].favBgThemes.contains(defaultThemes[j]);
-
-    //         if (doesExist == false) {
-    //           _usersToRemove.add(_userList[i]);
-    //         }
-    //       }
-    //     }
-    //   }
-    //   // END 3. Bg Themes
-
-    //   // 4. Languages
-    //   if (defaultLanguages.isNotEmpty) {
-    //     for (var i = 0; i < _userList.length; i++) {
-    //       for (var j = 0; j < defaultLanguages.length; j++) {
-    //         bool doesExist =
-    //             _userList[i].languages.contains(defaultLanguages[j]);
-
-    //         if (doesExist == false) {
-    //           _usersToRemove.add(_userList[i]);
-    //         }
-    //       }
-    //     }
-    //   }
-    //   // END 4. Languages
-
-    //   _usersToRemove.forEach((element) {
-    //     _userList.remove(element);
-    //   });
-
-    //   print("VMK FINAL ${_userList.length}");
-
-    //   print(
-    //       "VMK !!LOAD PERSON!! length of users ${_userList.reversed.toList().length}");
-
-    //   cardProvider.setUsers(_userList.reversed.toList());
-
-    //   return _userList.reversed.toList();
-    // }
-
     return null;
   }
 
   void callback() {
-    print("LOG query defaultSelectedGender $defaultSelectedGender");
-    print("LOG query defaultMinAgeValue $defaultMinAgeValue");
-    print("LOG query defaultMaxAgeValue $defaultMaxAgeValue");
-    print("LOG query defaultDistance $defaultDistance");
-    print("LOG query defaultMechanics $defaultMechanics");
-    print("LOG query defaultThemes $defaultThemes");
-    print("LOG query defaultLanguages $defaultLanguages");
-    print("LOG query defaultLocality $defaultLocality");
-
     setState(() {
       _userList = [];
     });
@@ -1211,20 +1040,18 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
         body: FutureBuilder<List<ResultAppUser>?>(
             future: loadUsers(),
             builder: (context, snapshot) {
-              print("LOG dsa ${snapshot.hasData}");
-
-              if (!snapshot.hasData) {
-                return CustomModalProgressHUD(
-                  inAsyncCall: true,
-                  child: Container(),
-                );
-              }
-
               if (snapshot.connectionState == ConnectionState.done &&
                   !snapshot.hasData) {
                 return Center(
                   child: Text('No users found.',
                       style: Theme.of(context).textTheme.headline4),
+                );
+              }
+
+              if (!snapshot.hasData) {
+                return CustomModalProgressHUD(
+                  inAsyncCall: true,
+                  child: Container(),
                 );
               }
 
@@ -1280,777 +1107,3 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
     return MaterialStateProperty.resolveWith(getBorder);
   }
 }
-
-// void _showGendersModal(BuildContext filterContext,
-//     List<String> availableGenders, List<String> selectedGender) {
-//   showModalBottomSheet(
-//     barrierColor: Colors.black54,
-//     transitionAnimationController: genderMenuController,
-//     elevation: 5,
-//     shape: RoundedRectangleBorder(
-//       borderRadius: BorderRadius.circular(12.0),
-//     ),
-//     context: filterContext,
-//     builder: (BuildContext context) {
-//       return StatefulBuilder(builder: (BuildContext context, setState) {
-//         return Padding(
-//             padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-//             child: Column(
-//               children: [
-//                 Text("Show me",
-//                     textAlign: TextAlign.center,
-//                     style:
-//                         TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-//                 SizedBox(height: 16),
-//                 Text("Distance",
-//                     textAlign: TextAlign.center,
-//                     style:
-//                         TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-//                 SizedBox(height: 16),
-//                 Text("Which genders(s) would you like to see?",
-//                     textAlign: TextAlign.center,
-//                     style: TextStyle(fontSize: 18, color: Colors.black54)),
-//                 SizedBox(height: 16),
-//                 Expanded(
-//                     child: ListView(
-//                         children: availableGenders.map((gender) {
-//                   final isSelected = selectedGender.contains(gender);
-
-//                   final selectedColor = Theme.of(context).primaryColor;
-//                   final style = isSelected
-//                       ? TextStyle(
-//                           fontSize: 18,
-//                           color: selectedColor,
-//                           fontWeight: FontWeight.bold,
-//                         )
-//                       : TextStyle(fontSize: 18);
-
-//                   return ListTile(
-//                     onTap: () {
-//                       Navigator.of(context).pop();
-
-//                       selectedGender.clear();
-
-//                       final isSelected = selectedGender.contains(gender);
-
-//                       setState(() => isSelected
-//                           ? this.defaultSelectedGender.remove(gender)
-//                           : this.defaultSelectedGender.add(gender));
-
-//                       print("selectedGender, ${selectedGender[0]}");
-
-//                       _filterSwipableUsersModalBottomSheet(
-//                           context, filterMenuController);
-
-//                       /*
-//                         _filterSwipableUsersModalBottomSheet(
-//                         context, selectedGender[0], controller);
-//                       */
-//                     },
-//                     title: Text(
-//                       gender.capitalize(),
-//                       style: style,
-//                     ),
-//                     trailing: isSelected
-//                         ? Icon(Icons.radio_button_checked,
-//                             color: selectedColor, size: 26)
-//                         : Icon(Icons.radio_button_unchecked,
-//                             color: selectedColor, size: 26),
-//                   );
-//                 }).toList()))
-//               ],
-//             ));
-//       });
-//     },
-//   );
-// }
-
-// void _showLocalityModal(
-//     BuildContext localityContext, List<String> selectedLocality) {
-//   showModalBottomSheet(
-//     barrierColor: Colors.black54,
-//     transitionAnimationController: localityController,
-//     elevation: 5,
-//     shape: RoundedRectangleBorder(
-//       borderRadius: BorderRadius.circular(12.0),
-//     ),
-//     context: localityContext,
-//     builder: (BuildContext context) {
-//       return StatefulBuilder(builder: (BuildContext context, setState) {
-//         return Padding(
-//             padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-//             child: Column(
-//               children: [
-//                 Text("Show me",
-//                     textAlign: TextAlign.center,
-//                     style:
-//                         TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-//                 SizedBox(height: 16),
-//                 Text("Which genders(s) would you like to see?",
-//                     textAlign: TextAlign.center,
-//                     style: TextStyle(fontSize: 18, color: Colors.black54)),
-//                 SizedBox(height: 16),
-//                 Expanded(
-//                     child: ListView(
-//                         children: Utils.localities.map((locality) {
-//                   final isSelected = selectedLocality.contains(locality);
-
-//                   final selectedColor = Theme.of(context).primaryColor;
-//                   final style = isSelected
-//                       ? TextStyle(
-//                           fontSize: 18,
-//                           color: selectedColor,
-//                           fontWeight: FontWeight.bold,
-//                         )
-//                       : TextStyle(fontSize: 18);
-
-//                   return ListTile(
-//                     onTap: () {
-//                       Navigator.of(context).pop();
-
-//                       selectedLocality.clear();
-
-//                       final isSelected = selectedLocality.contains(locality);
-
-//                       setState(() => isSelected
-//                           ? this.defaultLocality.remove(locality)
-//                           : this.defaultLocality.add(locality));
-
-//                       print("selectedLocality, ${selectedLocality[0]}");
-
-//                       _filterSwipableUsersModalBottomSheet(
-//                           context, filterMenuController);
-
-//                       /*
-//                         _filterSwipableUsersModalBottomSheet(
-//                         context, selectedlocality[0], controller);
-//                       */
-//                     },
-//                     title: Text(
-//                       locality.capitalize(),
-//                       style: style,
-//                     ),
-//                     trailing: isSelected
-//                         ? Icon(Icons.radio_button_checked,
-//                             color: selectedColor, size: 26)
-//                         : Icon(Icons.radio_button_unchecked,
-//                             color: selectedColor, size: 26),
-//                   );
-//                 }).toList()))
-//               ],
-//             ));
-//       });
-//     },
-//   );
-// }
-
-// void _showAgeModal(
-//     BuildContext ageContext, int selectedMinAge, int selectedMaxAge) {
-//   showModalBottomSheet(
-//     barrierColor: Colors.black54,
-//     transitionAnimationController: ageMenuController,
-//     elevation: 5,
-//     shape: RoundedRectangleBorder(
-//       borderRadius: BorderRadius.circular(12.0),
-//     ),
-//     context: ageContext,
-//     builder: (BuildContext context) {
-//       return StatefulBuilder(builder: (BuildContext context, setState) {
-//         return Padding(
-//             padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-//             child: Column(
-//               children: [
-//                 Text("Age range",
-//                     textAlign: TextAlign.center,
-//                     style:
-//                         TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-//                 SizedBox(height: 16),
-//                 Row(
-//                   mainAxisAlignment: MainAxisAlignment.center,
-//                   children: [
-//                     NumberPicker(
-//                       value: selectedMinAge,
-//                       minValue: 0,
-//                       maxValue: 100,
-//                       step: 1,
-//                       haptics: true,
-//                       onChanged: (value) =>
-//                           setState(() => selectedMinAge = value),
-//                     ),
-//                     NumberPicker(
-//                       value: selectedMaxAge,
-//                       minValue: 0,
-//                       maxValue: 100,
-//                       step: 1,
-//                       haptics: true,
-//                       onChanged: (value) =>
-//                           setState(() => selectedMaxAge = value),
-//                     )
-//                   ],
-//                 ),
-//                 ElevatedButton(
-//                   child: const Text("Apply",
-//                       style: TextStyle(color: Colors.white)),
-//                   onPressed: () async {
-//                     Navigator.of(context).pop();
-//                     print("VMK $selectedMinAge");
-//                     print("VMK $selectedMaxAge");
-
-//                     setState(() {
-//                       this.defaultMinAgeValue = selectedMinAge;
-//                       this.defaultMaxAgeValue = selectedMaxAge;
-//                     });
-
-//                     _filterSwipableUsersModalBottomSheet(
-//                         context, filterMenuController);
-//                   },
-//                 )
-//               ],
-//             ));
-//       });
-//     },
-//   );
-// }
-
-// void _showGameMechanics(
-//     BuildContext mechanicsContext, List<String> selectedMechanics) {
-//   showModalBottomSheet(
-//     barrierColor: Colors.black54,
-//     transitionAnimationController: mechanicsController,
-//     elevation: 5,
-//     shape: RoundedRectangleBorder(
-//       borderRadius: BorderRadius.circular(12.0),
-//     ),
-//     context: mechanicsContext,
-//     builder: (BuildContext context) {
-//       return StatefulBuilder(builder: (BuildContext context, setState) {
-//         return Padding(
-//             padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-//             child: Column(
-//               children: [
-//                 Text("Mechanics",
-//                     textAlign: TextAlign.center,
-//                     style:
-//                         TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-//                 SizedBox(height: 16),
-//                 Expanded(
-//                   child: ListView(
-//                       children: Utils.bgMechanicsList.map((bgMechanic) {
-//                     final isSelected = selectedMechanics.contains(bgMechanic);
-
-//                     final selectedColor = Theme.of(context).primaryColor;
-//                     final style = isSelected
-//                         ? TextStyle(
-//                             fontSize: 18,
-//                             color: selectedColor,
-//                             fontWeight: FontWeight.bold,
-//                           )
-//                         : TextStyle(fontSize: 18);
-
-//                     return ListTile(
-//                       onTap: () {
-//                         final isSelected =
-//                             selectedMechanics.contains(bgMechanic);
-
-//                         setState(() => isSelected
-//                             ? selectedMechanics.remove(bgMechanic)
-//                             : selectedMechanics.add(bgMechanic));
-
-//                         print(
-//                             "selectedMechanics, ${selectedMechanics.length}");
-//                       },
-//                       title: Text(
-//                         bgMechanic,
-//                         style: style,
-//                       ),
-//                       trailing: isSelected
-//                           ? Icon(Icons.check, color: selectedColor, size: 26)
-//                           : null,
-//                     );
-//                   }).toList()),
-//                 ),
-//                 ElevatedButton(
-//                   child: const Text("Apply",
-//                       style: TextStyle(color: Colors.white)),
-//                   onPressed: () async {
-//                     Navigator.of(context).pop();
-
-//                     setState(() {
-//                       this.defaultMechanics = selectedMechanics;
-//                     });
-
-//                     print("VMK defaultMechanics: ${this.defaultMechanics}");
-
-//                     // _showMoreOptions(context);
-//                   },
-//                 )
-//               ],
-//             ));
-//       });
-//     },
-//   );
-// }
-
-// void _showGameThemes(
-//     BuildContext themesContext, List<String> selectedThemes) {
-//   showModalBottomSheet(
-//     barrierColor: Colors.black54,
-//     transitionAnimationController: themesController,
-//     elevation: 5,
-//     shape: RoundedRectangleBorder(
-//       borderRadius: BorderRadius.circular(12.0),
-//     ),
-//     context: themesContext,
-//     builder: (BuildContext context) {
-//       return StatefulBuilder(builder: (BuildContext context, setState) {
-//         return Padding(
-//             padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-//             child: Column(
-//               children: [
-//                 Text("Themes",
-//                     textAlign: TextAlign.center,
-//                     style:
-//                         TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-//                 SizedBox(height: 16),
-//                 Expanded(
-//                   child: ListView(
-//                       children: Utils.bgThemesList.map((bgTheme) {
-//                     final isSelected = selectedThemes.contains(bgTheme);
-
-//                     final selectedColor = Theme.of(context).primaryColor;
-//                     final style = isSelected
-//                         ? TextStyle(
-//                             fontSize: 18,
-//                             color: selectedColor,
-//                             fontWeight: FontWeight.bold,
-//                           )
-//                         : TextStyle(fontSize: 18);
-
-//                     return ListTile(
-//                       onTap: () {
-//                         final isSelected = selectedThemes.contains(bgTheme);
-
-//                         setState(() => isSelected
-//                             ? selectedThemes.remove(bgTheme)
-//                             : selectedThemes.add(bgTheme));
-
-//                         print("selectedThemes, ${selectedThemes.length}");
-//                       },
-//                       title: Text(
-//                         bgTheme,
-//                         style: style,
-//                       ),
-//                       trailing: isSelected
-//                           ? Icon(Icons.check, color: selectedColor, size: 26)
-//                           : null,
-//                     );
-//                   }).toList()),
-//                 ),
-//                 ElevatedButton(
-//                   child: const Text("Apply",
-//                       style: TextStyle(color: Colors.white)),
-//                   onPressed: () async {
-//                     Navigator.of(context).pop();
-
-//                     setState(() {
-//                       this.defaultThemes = selectedThemes;
-//                     });
-
-//                     print("VMK defaultThemes: ${this.defaultThemes}");
-
-//                     // _showMoreOptions(context);
-//                   },
-//                 )
-//               ],
-//             ));
-//       });
-//     },
-//   );
-// }
-
-// void _showLanguages(
-//     BuildContext languagesContext, List<String> selectedLanguages) {
-//   showModalBottomSheet(
-//     barrierColor: Colors.black54,
-//     transitionAnimationController: languagesController,
-//     elevation: 5,
-//     shape: RoundedRectangleBorder(
-//       borderRadius: BorderRadius.circular(12.0),
-//     ),
-//     context: languagesContext,
-//     builder: (BuildContext context) {
-//       return StatefulBuilder(builder: (BuildContext context, setState) {
-//         return Padding(
-//             padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-//             child: Column(
-//               children: [
-//                 Text("Languages",
-//                     textAlign: TextAlign.center,
-//                     style:
-//                         TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-//                 SizedBox(height: 16),
-//                 Expanded(
-//                   child: ListView(
-//                       children: Utils.languages.map((language) {
-//                     final isSelected = selectedLanguages.contains(language);
-
-//                     final selectedColor = Theme.of(context).primaryColor;
-//                     final style = isSelected
-//                         ? TextStyle(
-//                             fontSize: 18,
-//                             color: selectedColor,
-//                             fontWeight: FontWeight.bold,
-//                           )
-//                         : TextStyle(fontSize: 18);
-
-//                     return ListTile(
-//                       onTap: () {
-//                         final isSelected =
-//                             selectedLanguages.contains(language);
-
-//                         setState(() => isSelected
-//                             ? selectedLanguages.remove(language)
-//                             : selectedLanguages.add(language));
-
-//                         print(
-//                             "selectedLanguages, ${selectedLanguages.length}");
-//                       },
-//                       title: Text(
-//                         language.capitalize(),
-//                         style: style,
-//                       ),
-//                       trailing: isSelected
-//                           ? Icon(Icons.check, color: selectedColor, size: 26)
-//                           : null,
-//                     );
-//                   }).toList()),
-//                 ),
-//                 ElevatedButton(
-//                   child: const Text("Apply",
-//                       style: TextStyle(color: Colors.white)),
-//                   onPressed: () async {
-//                     Navigator.of(context).pop();
-
-//                     setState(() {
-//                       this.defaultLanguages = selectedLanguages;
-//                     });
-
-//                     print("VMK defaultLanguages: ${this.defaultLanguages}");
-
-//                     _showMoreOptions(context);
-//                   },
-//                 )
-//               ],
-//             ));
-//       });
-//     },
-//   );
-// }
-
-// void _showMoreOptions(BuildContext moreOptionsContext) {
-//   showModalBottomSheet(
-//     barrierColor: Colors.black54,
-//     transitionAnimationController: moreOptionsController,
-//     elevation: 5,
-//     shape: RoundedRectangleBorder(
-//       borderRadius: BorderRadius.circular(12.0),
-//     ),
-//     context: moreOptionsContext,
-//     builder: (BuildContext context) {
-//       return StatefulBuilder(builder: (BuildContext context, setState) {
-//         return Padding(
-//             padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-//             child: Column(
-//               children: [
-//                 Align(
-//                   alignment: Alignment.topRight,
-//                   child: ElevatedButton(
-
-//                       // CLEAR FILTERS
-//                       onPressed: this.defaultMechanics.isNotEmpty ||
-//                               this.defaultThemes.isNotEmpty ||
-//                               this.defaultLanguages.isNotEmpty ||
-//                               this.defaultLocality.isNotEmpty
-//                           ? () => setState((() {
-//                                 this.defaultMechanics = [];
-//                                 this.defaultThemes = [];
-//                                 this.defaultLanguages = [];
-//                                 this.defaultLocality = [];
-//                               }))
-//                           : null,
-//                       child: Text("Clear all")),
-//                 ),
-//                 Expanded(
-//                   child: ListView(
-//                     children: [
-//                       ListTile(
-//                         leading: Column(
-//                           crossAxisAlignment: CrossAxisAlignment.start,
-//                           children: [
-//                             Text(
-//                               "Mechanics",
-//                               textAlign: TextAlign.start,
-//                               style: TextStyle(
-//                                 fontSize: 24,
-//                                 fontWeight: FontWeight.bold,
-//                               ),
-//                             ),
-//                             Text(
-//                                 defaultMechanics.isNotEmpty
-//                                     ? "You're seeing: ${defaultMechanics.map((mechanic) => "$mechanic")}"
-//                                     : "What game mechanics do they like?",
-//                                 style: TextStyle(
-//                                   fontSize: 14,
-//                                 )),
-//                           ],
-//                         ),
-//                         trailing: Row(
-//                           mainAxisSize: MainAxisSize.min,
-//                           children: [
-//                             SizedBox(width: 12),
-//                             const Icon(CustomIcons.right_open)
-//                           ],
-//                         ),
-//                         onTap: () {
-//                           Navigator.of(context).pop();
-
-//                           _showGameMechanics(context, this.defaultMechanics);
-//                         },
-//                       ),
-//                       ListTile(
-//                         leading: Column(
-//                           crossAxisAlignment: CrossAxisAlignment.start,
-//                           children: [
-//                             Text(
-//                               "Themes",
-//                               textAlign: TextAlign.start,
-//                               style: TextStyle(
-//                                 fontSize: 24,
-//                                 fontWeight: FontWeight.bold,
-//                               ),
-//                             ),
-//                             Text(
-//                                 defaultThemes.isNotEmpty
-//                                     ? "You're seeing: ${defaultThemes.map((mechanic) => "$mechanic")}"
-//                                     : "What game themes do they like?",
-//                                 style: TextStyle(
-//                                   fontSize: 14,
-//                                 )),
-//                           ],
-//                         ),
-//                         trailing: Row(
-//                           mainAxisSize: MainAxisSize.min,
-//                           children: [
-//                             SizedBox(width: 12),
-//                             const Icon(CustomIcons.right_open)
-//                           ],
-//                         ),
-//                         onTap: () {
-//                           Navigator.of(context).pop();
-
-//                           _showGameThemes(context, this.defaultThemes);
-//                         },
-//                       ),
-//                       ListTile(
-//                         leading: Column(
-//                           crossAxisAlignment: CrossAxisAlignment.start,
-//                           children: [
-//                             Text(
-//                               "Languages",
-//                               textAlign: TextAlign.start,
-//                               style: TextStyle(
-//                                 fontSize: 24,
-//                                 fontWeight: FontWeight.bold,
-//                               ),
-//                             ),
-//                             Text(
-//                                 defaultLanguages.isNotEmpty
-//                                     ? "You're seeing: ${defaultLanguages.map((language) => "${language.capitalize()}")}"
-//                                     : "Will you understand each other?",
-//                                 style: TextStyle(
-//                                   fontSize: 14,
-//                                 )),
-//                           ],
-//                         ),
-//                         trailing: Row(
-//                           mainAxisSize: MainAxisSize.min,
-//                           children: [
-//                             SizedBox(width: 12),
-//                             const Icon(CustomIcons.right_open)
-//                           ],
-//                         ),
-//                         onTap: () {
-//                           Navigator.of(context).pop();
-
-//                           _showLanguages(context, this.defaultLanguages);
-//                         },
-//                       ),
-//                       ListTile(
-//                         leading: Column(
-//                           crossAxisAlignment: CrossAxisAlignment.start,
-//                           children: [
-//                             Text(
-//                               "Locality",
-//                               textAlign: TextAlign.start,
-//                               style: TextStyle(
-//                                 fontSize: 24,
-//                                 fontWeight: FontWeight.bold,
-//                               ),
-//                             ),
-//                             Text(
-//                                 defaultLocality.isNotEmpty
-//                                     ? "You're seeing: ${defaultLocality[0].capitalize()}"
-//                                     : "Where are they based?",
-//                                 style: TextStyle(
-//                                   fontSize: 14,
-//                                 )),
-//                           ],
-//                         ),
-//                         trailing: Row(
-//                           mainAxisSize: MainAxisSize.min,
-//                           children: [
-//                             SizedBox(width: 12),
-//                             const Icon(CustomIcons.right_open)
-//                           ],
-//                         ),
-//                         onTap: () {
-//                           Navigator.of(context).pop();
-
-//                           // _showLocalityModal(context, this.defaultLocality);
-//                         },
-//                       ),
-//                       ElevatedButton(
-//                         child: const Text("Apply",
-//                             style: TextStyle(color: Colors.white)),
-//                         onPressed: () async {
-//                           // this.setState(() {
-//                           //   userQuery = updateUserQuery;
-//                           // });
-
-//                           Navigator.of(context).pop();
-
-//                           // _filterSwipableUsersModalBottomSheet(
-//                           //     context, filterMenuController);
-//                         },
-//                       )
-//                     ],
-//                   ),
-//                 )
-//               ],
-//             ));
-//       });
-//     },
-//   );
-// }
-
-/**
-   * 
-   * FILTER SWIPABLE MODAL 
-   */
-
-// return StatefulBuilder(builder: (BuildContext context, setState) {
-//   /* 1. Gender Select */
-//   // List<String> availableGenders = [
-//   //   "everyone",
-//   //   "men",
-//   //   "women",
-//   //   "other"
-//   // ];
-
-//   // List<String> selectedGender = defaultSelectedGender;
-//   // /** 1. END Gender Select END */
-
-//   // /* 2. Select Age Range */
-//   // int selectedMinAge = defaultMinAgeValue;
-//   // int selectedMaxAge = defaultMaxAgeValue;
-//   // /* 2. END Select Age Range */
-
-//   return Padding(
-//       padding:
-//           const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-//       child: Column(
-//         children: [
-//           Expanded(
-//             child: ListView(
-//               children: [
-//                 ListTile(
-//                   leading: Text("Show me",
-//                       style: TextStyle(
-//                           fontSize: 24, fontWeight: FontWeight.bold)),
-//                   trailing: Row(
-//                     mainAxisSize: MainAxisSize.min,
-//                     children: [
-//                       Text("selectedGender[0].capitalize()",
-//                           style: TextStyle(fontSize: 20)),
-//                       SizedBox(width: 12),
-//                       const Icon(CustomIcons.right_open)
-//                     ],
-//                   ),
-//                   onTap: () {
-//                     Navigator.of(context).pop();
-
-//                     // _showGendersModal(
-//                     //     context, availableGenders, selectedGender);
-//                   },
-//                 ),
-//                 ListTile(
-//                   leading: Text("Age range",
-//                       style: TextStyle(
-//                           fontSize: 24, fontWeight: FontWeight.bold)),
-//                   trailing: Row(
-//                     mainAxisSize: MainAxisSize.min,
-//                     children: [
-//                       Text("fasfa",
-//                           // Text(""$selectedMinAge - $selectedMaxAge"",
-//                           style: TextStyle(fontSize: 20)),
-//                       SizedBox(width: 12),
-//                       const Icon(CustomIcons.right_open)
-//                     ],
-//                   ),
-//                   onTap: () {
-//                     Navigator.of(context).pop();
-
-//                     // _showAgeModal(
-//                     //     context, selectedMinAge, selectedMaxAge);
-//                   },
-//                 ),
-//                 ListTile(
-//                   leading: Text("More options",
-//                       style: TextStyle(
-//                           fontSize: 24, fontWeight: FontWeight.bold)),
-//                   trailing: Row(
-//                     mainAxisSize: MainAxisSize.min,
-//                     children: [
-//                       SizedBox(width: 12),
-//                       const Icon(CustomIcons.right_open)
-//                     ],
-//                   ),
-//                   onTap: () {
-//                     Navigator.of(context).pop();
-//                     // _showMoreOptions(context);
-//                   },
-//                 ),
-//                 ElevatedButton(
-//                   child: const Text("Apply filters",
-//                       style: TextStyle(color: Colors.white)),
-//                   onPressed: () async {
-//                     // List<UserQuery> updateUserQuery = [
-//                     //   UserQuery("gender", "isEqualToGender",
-//                     //       selectedGender[0]),
-//                     //   UserQuery("currentLocation",
-//                     //       "isEqualToCurrentLocation", defaultLocality)
-//                     // ];
-
-//                     // this.setState(() {
-//                     //   userQuery = updateUserQuery;
-//                     // });
-
-//                     Navigator.of(context).pop();
-//                   },
-//                 )
-//               ],
-//             ),
-//           )
-//         ],
-//       ));
-// });

@@ -69,10 +69,6 @@ function roundNearest10(num: number) {
   return Math.round(num / 10) * 10
 }
 
-// app.get('/api/getNearestUsers', async (req: Request, res: Response) => {
-// TODO get query, 1. lat, 2. long and 3. distance
-// exports.getNearestUsers = functions.https.onRequest(app)
-
 exports.getNearestUsers = functions.https.onRequest(
   async (req: Request, res: Response) => {
     const lat = req.query.lat as unknown as number
@@ -83,16 +79,10 @@ exports.getNearestUsers = functions.https.onRequest(
     const distance = req.query.distance as unknown as string
     const limit = parseInt(req.query.limit as unknown as string, 10)
 
-    // TODO More Options
     let bgMechanics = req.query.bgMechanics  as unknown as Array<string>
     let bgThemes = req.query.bgThemes  as unknown as Array<string>
     let languages = req.query.languages  as unknown as Array<string>
     let localities = req.query.localities  as unknown as Array<string>
-    // const bgThemes = req.query.bgThemes as unknown as Array<string>
-    // const languages = req.query.languages as unknown as Array<string>
-    // const localities = req.query.localities as unknown as Array<string>
-
-    // TODO If any of them even exist
 
     let ignoreIds = req.query.ignoreId as unknown as Array<string>
 
@@ -115,21 +105,11 @@ exports.getNearestUsers = functions.https.onRequest(
     if (localities !== undefined && !Array.isArray(localities)) {
       localities = [localities]
     }
-    // TODO UserQuery
-    // TODO gender MUST ALWAYS BE INCLUDED
-    // TODO age MUST ALWAYS BE INCLUDED
-    // TODO distance MUST ALWAYS BE INCLUDED
-    // TODO mechanics
-    // TODO themes
-    // TODO locality
-    // TODO languages
 
     const usersRef: admin.firestore.Query<admin.firestore.DocumentData> = db
       .collection('users')
       .limit(limit)
       .orderBy('updatedAt', 'desc')
-
-    // TODO prioritize DISTANCE
 
     const users = await usersRef.get()
 
@@ -139,27 +119,17 @@ exports.getNearestUsers = functions.https.onRequest(
       users.docs.forEach((doc) => {
         const user = doc.data() as ResultAppUser
 
-        // if (ignoreId === user.id) {
-        //   return
-        // }
-        // IF ignoreId exists
         const ignoreIdExists = ignoreIds.some((ignoreId) => user.id === ignoreId)
         if (ignoreIdExists) {
           return
         }
-        // tmpUsers.push(doc.data().currentGeoLocation.longitude)
+
         // 1. My user
         const myUserLat: number = lat as unknown as number
         const myUserLong: number = long as unknown as number
         // 2. Other user
         const otherLat = user.currentGeoLocation.latitude
         const otherLong = user.currentGeoLocation.longitude
-
-        // TODO req: contains user's geo location and distance in km
-        // TODO IGNORE SWIPE IDs
-
-        // TODO push all user's that are within the radius of e.g. 50 km
-        // TODO GET all users by updatedAt
 
         const distanceFromMyUser = getDistanceFromLatLonInKm(
           myUserLat,
@@ -168,17 +138,6 @@ exports.getNearestUsers = functions.https.onRequest(
           otherLong,
         )
 
-        // TODO gender MUST ALWAYS BE INCLUDED
-        // TODO age MUST ALWAYS BE INCLUDED
-        // TODO distance MUST ALWAYS BE INCLUDED
-
-        // TODO gender
-        // If query gender equals to user gender
-        // => then add user to tmpUsers
-
-        // TODO minAge
-
-        // TODO maxAge
         const date = new Date(0)
         date.setMilliseconds(user.age)
 
@@ -186,65 +145,12 @@ exports.getNearestUsers = functions.https.onRequest(
 
         // Check if user's age is in range.
         if (userAge >= minAge && userAge <= maxAge) {
-          // Check if user's gender is in range
-
-          // TODO Mechanic
-          // TODO Theme
-          // TODO Languages
-          // TODO Locality
-          // If array includes any
-
-          // const newBgMechanics = []
           let containsMechanics = false
           let containsThemes = false
-          let containsLanguages = false
+          const containsLanguages = false
           let containsLocalities = false
 
-          if (bgMechanics) {
-            console.log('LOG bgMechanic IS NOT EMPTY')
-            console.log('LOG bgMechanic IS NOT EMPTY', bgMechanics)
-            containsMechanics = findCommonElements(user.favBgMechanics, bgMechanics)
-          } else {
-            console.log('LOG bgMechanic IS EMPTY')
-            console.log('LOG bgMechanic IS EMPTY', bgMechanics)
-          }
-
-          if (bgThemes) {
-            console.log('LOG bgThemes IS NOT EMPTY')
-            console.log('LOG bgThemes IS NOT EMPTY', bgThemes)
-            containsThemes = findCommonElements(user.favBgThemes, bgThemes)
-          } else {
-            console.log('LOG bgThemes IS EMPTY')
-            console.log('LOG bgThemes IS EMPTY', bgThemes)
-          }
-
-          if (languages) {
-            console.log('LOG languages IS NOT EMPTY')
-            console.log('LOG languages IS NOT EMPTY', languages)
-            containsLanguages = findCommonElements(user.languages, languages)
-          } else {
-            console.log('LOG languages IS EMPTY')
-            console.log('LOG languages IS EMPTY', languages)
-          }
-
-          if (localities) {
-            console.log('LOG localities IS NOT EMPTY')
-            console.log('LOG localities IS NOT EMPTY', localities)
-            containsLocalities = findCommonElements([user.currentLocation], localities)
-          } else {
-            console.log('LOG localities IS EMPTY')
-            console.log('LOG localities IS EMPTY', localities)
-          }
-
-          // TODO Another if-else statements
-
           if (bgMechanics || bgThemes || languages || localities) {
-            console.log('LOG  TODO Another if-else statements bgThemes IS NOT EMPTY')
-            console.log('LOG  TODO Another if-else statements bgThemes IS NOT EMPTY', bgThemes)
-
-            console.log('LOG  TODO Another if-else statements bgThemes IS NOT EMPTY')
-            console.log('LOG  TODO Another if-else statements bgThemes IS NOT EMPTY', bgThemes)
-
             if (containsMechanics) {
               containsMechanics = findCommonElements(user.favBgMechanics, bgMechanics)
             }
@@ -290,19 +196,6 @@ exports.getNearestUsers = functions.https.onRequest(
           }
         }
 
-        // const containsMechanics = findCommonElements(user.favBgMechanics, bgMechanics)
-
-        // bgMechanics
-
-        // const containsThemes = findCommonElements(user.favBgThemes, bgThemes)
-        // const containsLanguages = findCommonElements(user.languages, languages)
-        // const containsLocalities = findCommonElements([
-        //   user.currentLocation.toLowerCase()], localities)
-
-        // if (containsMechanics) {
-
-        // }
-
         tmpUsers.sort((a, b) => ((a.distance > b.distance) ? 1 : -1))
       })
 
@@ -325,13 +218,10 @@ exports.getNearestUsers = functions.https.onRequest(
         })
       })
 
-      // TODO for each user's currentLocation
-      // TODO Display the distance
       resolve(removeDecimals)
     })
 
     res.json({
-      // count: newPromise.results.length,
       count: newPromise.length,
       results: newPromise,
     })

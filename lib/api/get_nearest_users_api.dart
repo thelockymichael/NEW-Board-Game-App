@@ -52,7 +52,10 @@ class GetNearestUsers {
           "long": myUser.currentGeoLocation.longitude.toString(),
           "ignoreId": ignoreSwipeIds,
           // More Options
-          // "bgMechanics": mechanics
+          "bgMechanics": mechanics,
+          "bgThemes": themes,
+          "languages": languages,
+          "localities": localities
         });
 
     print("LOG guf juk ${uri}");

@@ -984,8 +984,6 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
   List<String> defaultLocality = [];
   // END
 
-  List<UserQuery> userQuery = [];
-
   late CardProvider cardProvider;
 
   AppUser _myUser = Utils.user;
@@ -1009,7 +1007,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  Future<List<ResultAppUser>?> loadUsers(List<UserQuery> userQuery) async {
+  Future<List<ResultAppUser>?> loadUsers() async {
     String? id = await SharedPreferencesUtil.getUserId();
 
     if (id != null) {
@@ -1029,7 +1027,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
     // BACKUP 11.7.22
     var res = await GetNearestUsers().getNearestUsers(
       // TODO !!! userQuery (e.g. distance, gender, age range, mechanics, themes, languages, locality) !!!
-      limit: 10,
+      limit: 50,
       myUser: _myUser,
       gender: defaultSelectedGender[0],
       minAge: defaultMinAgeValue[0],
@@ -1040,7 +1038,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
       themes: defaultThemes,
       languages: defaultLanguages,
       localities: defaultLocality,
-      ignoreSwipeIds: [],
+      ignoreSwipeIds: _ignoreSwipeIds,
 
       // ignoreSwipeIds: _ignoreSwipeIds,
     );
@@ -1142,18 +1140,18 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
   }
 
   void callback() {
-    setState(() {
-      print("LOG query defaultSelectedGender $defaultSelectedGender");
-      print("LOG query defaultMinAgeValue $defaultMinAgeValue");
-      print("LOG query defaultMaxAgeValue $defaultMaxAgeValue");
-      print("LOG query defaultDistance $defaultDistance");
-      print("LOG query defaultMechanics $defaultMechanics");
-      print("LOG query defaultThemes $defaultThemes");
-      print("LOG query defaultLanguages $defaultLanguages");
-      print("LOG query defaultLocality $defaultLocality");
-    });
+    print("LOG query defaultSelectedGender $defaultSelectedGender");
+    print("LOG query defaultMinAgeValue $defaultMinAgeValue");
+    print("LOG query defaultMaxAgeValue $defaultMaxAgeValue");
+    print("LOG query defaultDistance $defaultDistance");
+    print("LOG query defaultMechanics $defaultMechanics");
+    print("LOG query defaultThemes $defaultThemes");
+    print("LOG query defaultLanguages $defaultLanguages");
+    print("LOG query defaultLocality $defaultLocality");
 
-    debugPrint('>>> my callback triggered');
+    setState(() {
+      _userList = [];
+    });
   }
 
   void _filterSwipableUsersModalBottomSheet() {
@@ -1211,19 +1209,22 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
         ),
         key: _scaffoldKey,
         body: FutureBuilder<List<ResultAppUser>?>(
-            future: loadUsers(userQuery),
+            future: loadUsers(),
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done &&
-                  !snapshot.hasData) {
-                return Center(
-                  child: Text('No more users to swipe',
-                      style: Theme.of(context).textTheme.headline4),
-                );
-              }
+              print("LOG dsa ${snapshot.hasData}");
+
               if (!snapshot.hasData) {
                 return CustomModalProgressHUD(
                   inAsyncCall: true,
                   child: Container(),
+                );
+              }
+
+              if (snapshot.connectionState == ConnectionState.done &&
+                  !snapshot.hasData) {
+                return Center(
+                  child: Text('No users found.',
+                      style: Theme.of(context).textTheme.headline4),
                 );
               }
 

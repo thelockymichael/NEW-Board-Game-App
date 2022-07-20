@@ -65,13 +65,49 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-            body: Padding(
-                padding: kDefaultPadding,
-                child: Center(
-                  child: Text(
-                    "Welcome to Board Game Friends",
-                    style: TextStyle(fontSize: 32),
-                  ),
-                ))));
+            body: Stack(children: [
+      SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: Container(
+          decoration: BoxDecoration(
+              image: DecorationImage(
+            image: AssetImage(
+              'assets/images/splash-screen.jpg',
+            ),
+            fit: BoxFit.cover,
+          )),
+        ),
+      ),
+      Positioned(
+          child: Padding(
+              padding: kDefaultPadding,
+              child: Center(
+                  child: Container(
+                padding: EdgeInsets.fromLTRB(0, 40, 0, 40),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    color: Colors.black),
+                child: Text(
+                  "Board Match",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 50),
+                ),
+              ))))
+    ])
+
+            //  Padding(
+            //     padding: kDefaultPadding,
+            //     child: Center(
+            //       child: Text(
+            //         "Board Match",
+            //         textAlign: TextAlign.center,
+            //         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50),
+            //       ),
+            //     ))
+            ));
   }
 }

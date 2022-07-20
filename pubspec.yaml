@@ -79,6 +79,9 @@ dev_dependencies:
 # The following section is specific to Flutter.
 flutter:
 
+  assets:
+    - assets/images/splash-screen.jpg
+
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -88,6 +91,11 @@ flutter:
    - family: CustomIcons
      fonts: 
       - asset: fonts/CustomIcons.ttf
+   - family: Montserrat
+     fonts: 
+        - asset: fonts/Montserrat-Regular.ttf
+        - asset: fonts/Montserrat-Bold.ttf
+          weight: 700
 
   # To add assets to your application, add an assets section, like this:
   # assets:

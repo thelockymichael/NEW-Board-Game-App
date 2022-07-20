@@ -60,6 +60,7 @@ class MyApp extends StatelessWidget {
         ],
         child: GlobalLoaderOverlay(
             child: MaterialApp(
+          theme: ThemeData(fontFamily: 'Montserrat'),
           debugShowCheckedModeBanner: false,
           initialRoute: SplashScreen.id,
           routes: {

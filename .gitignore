@@ -10,7 +10,7 @@
 .svn/
 
 # Secret API URLs
-lib/secrets
+lib/secrets/api_urls.dart
 
 # Functions build folder
 functions/build

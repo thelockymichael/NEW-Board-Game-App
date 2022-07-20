@@ -25,13 +25,14 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+
     checkIfUserExists();
   }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
 
   Future<void> checkIfUserExists() async {
-    Timer(Duration(seconds: 2), () async {
+    Timer(Duration(milliseconds: 1000), () async {
       String? userId = await SharedPreferencesUtil.getUserId();
 
       print("LOG signup checkIfUserExists splasScreen $userId");
@@ -61,53 +62,75 @@ class _SplashScreenState extends State<SplashScreen> {
     });
   }
 
+  Future cacheImage(BuildContext context, String urlImage) {
+    return precacheImage(new AssetImage(urlImage), context);
+  }
+
+  // @override
+  // Widget build(BuildContext context) {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-            body: Stack(children: [
-      SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: Container(
-          decoration: BoxDecoration(
-              image: DecorationImage(
-            image: AssetImage(
-              'assets/images/splash-screen.jpg',
-            ),
-            fit: BoxFit.cover,
-          )),
-        ),
-      ),
-      Positioned(
-          child: Padding(
-              padding: kDefaultPadding,
-              child: Center(
-                  child: Container(
-                padding: EdgeInsets.fromLTRB(0, 40, 0, 40),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    color: Colors.black),
-                child: Text(
-                  "Board Match",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 50),
-                ),
-              ))))
-    ])
+            body: FutureBuilder(
+                future: cacheImage(context, 'assets/images/splash-screen.jpg'),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.connectionState != ConnectionState.waiting)
+                    return Stack(children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                            image: AssetImage(
+                              'assets/images/splash-screen.jpg',
+                            ),
+                            fit: BoxFit.cover,
+                          )),
+                        ),
+                      ),
+                      Positioned(
+                          child: Padding(
+                              padding: kDefaultPadding,
+                              child: Center(
+                                  child: Container(
+                                padding: EdgeInsets.fromLTRB(0, 40, 0, 40),
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20)),
+                                    gradient: LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        colors: [
+                                          Colors.grey.withOpacity(0.0),
+                                          Colors.black.withOpacity(0.6)
+                                        ],
+                                        stops: const [
+                                          0.0,
+                                          1.0
+                                        ]),
+                                    color: Colors.white),
+                                child: Text(
+                                  "Board Match",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 50),
+                                ),
+                              ))))
+                    ]);
 
-            //  Padding(
-            //     padding: kDefaultPadding,
-            //     child: Center(
-            //       child: Text(
-            //         "Board Match",
-            //         textAlign: TextAlign.center,
-            //         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50),
-            //       ),
-            //     ))
-            ));
+                  ///Splash Screen
+                  else
+                    return Container();
+
+                  ///Main Screen
+                })));
+
+    // return SafeArea(
+    //     child: Scaffold(
+    //         body: ));
   }
 }

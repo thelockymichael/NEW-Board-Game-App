@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/api/recommend_games_api.dart';
 import 'package:flutter_demo_01/db/remote/firebase_database_source.dart';
@@ -23,6 +24,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class RegisterPage extends StatefulWidget {
   static const String id = 'register_screen';
@@ -408,6 +410,10 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
 
+    TextStyle defaultStyle = TextStyle(color: Colors.black, fontSize: 14.0);
+    TextStyle linkStyle =
+        TextStyle(color: Colors.blue, decoration: TextDecoration.underline);
+
     return GestureDetector(
       onTap: () {
         _focusEmail.unfocus();
@@ -513,6 +519,41 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ),
                         SizedBox(height: 16),
+                        RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            style: defaultStyle,
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text:
+                                      'By creating a profile you agree to our '),
+                              TextSpan(
+                                  text: 'Terms of Service',
+                                  style: linkStyle,
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      print("LOG signup Terms of Service");
+
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => BggWebView(
+                                                  "https://millhel.com/boardmatch-terms/",
+                                                  "Terms Of Service")));
+                                    }
+                                  // recognizer: TapGestureRecognizer()
+                                  //   ..onTap = () {
+                                  //     print('Terms of Service"');
+                                  //   }
+
+                                  ),
+                            ],
+                          ),
+                        ),
+
+                        // Terms of Service
+
+                        SizedBox(height: 16),
                         GestureDetector(
                           onTap: () {
                             Navigator.of(context).push(PageRouteBuilder(
@@ -615,4 +656,31 @@ class CreateNewUserOverlay extends StatelessWidget {
           ],
         ),
       ));
+}
+
+class BggWebView extends StatefulWidget {
+  String url;
+  String username = "";
+  BggWebView(this.url, this.username, {Key? key}) : super(key: key);
+
+  @override
+  State<BggWebView> createState() => _BggWebViewState();
+}
+
+class _BggWebViewState extends State<BggWebView> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+          title: widget.username.isEmpty
+              ? Text("Board Game Geek")
+              : Text(widget.username)),
+      body: Builder(builder: (BuildContext context) {
+        return WebView(
+          javascriptMode: JavascriptMode.unrestricted,
+          initialUrl: widget.url,
+        );
+      }),
+    );
+  }
 }

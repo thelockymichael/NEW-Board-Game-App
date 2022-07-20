@@ -3,6 +3,7 @@ import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dar
 import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/screens/login_page.dart';
+import 'package:flutter_demo_01/screens/register_page.dart';
 import 'package:provider/provider.dart';
 
 class SettingsPage extends StatefulWidget {

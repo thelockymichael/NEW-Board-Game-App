@@ -10,25 +10,23 @@ import 'package:flutter_demo_01/db/remote/response.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/navigation/bottom_navigation_bar.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
-import 'package:flutter_demo_01/screens/login_with_email.dart';
-import 'package:flutter_demo_01/screens/register_page.dart';
+import 'package:flutter_demo_01/screens/login_page.dart';
 import 'package:flutter_demo_01/screens/setup_screens/email_and_password.dart';
 import 'package:flutter_demo_01/screens/v1_register_page.dart';
 import 'package:flutter_demo_01/utils/utils.dart';
 import 'package:flutter_demo_01/utils/validator.dart';
 import 'package:provider/provider.dart';
 
-class LoginPage extends StatefulWidget {
-  static const String id = 'login_screen';
-  final Color? color;
+class RegisterPage extends StatefulWidget {
+  static const String id = 'register_screen';
 
-  const LoginPage({Key? key, this.color}) : super(key: key);
+  const RegisterPage({Key? key}) : super(key: key);
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _RegisterPageState createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   late UserProvider _userProvider;
 
@@ -402,107 +400,99 @@ class _LoginPageState extends State<LoginPage> {
     double height = MediaQuery.of(context).size.height;
 
     return GestureDetector(
-        onTap: () {
-          _focusEmail.unfocus();
-          _focusPassword.unfocus();
-        },
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(""),
-            leading: widget.color != null
-                ? new IconButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    icon: Icon(Icons.arrow_back, color: Colors.grey),
-                  )
-                : null,
+      onTap: () {
+        _focusEmail.unfocus();
+        _focusPassword.unfocus();
+      },
+      child: Scaffold(
+        body: FutureBuilder(
+          future: _initializeFirebase(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return Padding(
+                  padding: const EdgeInsets.only(left: 24.0, right: 24.0),
+                  child: SingleChildScrollView(
+                      child: SizedBox(
+                    height: height,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 24.0),
+                          child: Center(
+                              child: Text(
+                            'Board game friends',
+                            style: Theme.of(context).textTheme.headline2,
+                          )),
+                        ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(40), // NEW
+                          ),
+                          onPressed: () async {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const EmailAndPassword(),
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            'Sign up with email',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(40), // NEW
+                          ),
+                          onPressed: () async {},
+                          child: const Text(
+                            'Sign up with Google',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(PageRouteBuilder(
+                              pageBuilder: (
+                                BuildContext context,
+                                Animation<double> animation,
+                                Animation<double> secondaryAnimation,
+                              ) =>
+                                  LoginPage(color: Colors.black),
+                              transitionsBuilder: (
+                                BuildContext context,
+                                Animation<double> animation,
+                                Animation<double> secondaryAnimation,
+                                Widget child,
+                              ) =>
+                                  SlideTransition(
+                                position: Tween<Offset>(
+                                  begin: const Offset(1, 0),
+                                  end: Offset.zero,
+                                ).animate(animation),
+                                child: child,
+                              ),
+                            ));
+                          },
+                          child: Text("Already have an account? Log in here",
+                              style: TextStyle(
+                                  decoration: TextDecoration.underline)),
+                        ),
+                      ],
+                    ),
+                  )));
+            }
 
-            backgroundColor:
-                Colors.blue.withOpacity(0.0), //You can make this transparent
-            elevation: 0.0, //No
-          ),
-          body: FutureBuilder(
-            future: _initializeFirebase(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return Padding(
-                    padding: const EdgeInsets.only(left: 24.0, right: 24.0),
-                    child: SingleChildScrollView(
-                        child: SizedBox(
-                      height: height,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 24.0),
-                            child: Center(
-                                child: Text(
-                              'Board game friends',
-                              style: Theme.of(context).textTheme.headline2,
-                            )),
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              minimumSize: const Size.fromHeight(40), // NEW
-                            ),
-                            onPressed: () async {
-                              Navigator.of(context).push(PageRouteBuilder(
-                                pageBuilder: (
-                                  BuildContext context,
-                                  Animation<double> animation,
-                                  Animation<double> secondaryAnimation,
-                                ) =>
-                                    LoginWithEmail(color: Colors.black),
-                                transitionsBuilder: (
-                                  BuildContext context,
-                                  Animation<double> animation,
-                                  Animation<double> secondaryAnimation,
-                                  Widget child,
-                                ) =>
-                                    SlideTransition(
-                                  position: Tween<Offset>(
-                                    begin: const Offset(1, 0),
-                                    end: Offset.zero,
-                                  ).animate(animation),
-                                  child: child,
-                                ),
-                              ));
-                            },
-                            child: const Text(
-                              'Log in with email',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              minimumSize: const Size.fromHeight(40), // NEW
-                            ),
-                            onPressed: () async {},
-                            child: const Text(
-                              'Log in with Google',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamedAndRemoveUntil(
-                                  context, RegisterPage.id, (route) => false);
-                            },
-                            child: Text("Don't have an account? Sign up here",
-                                style: TextStyle(
-                                    decoration: TextDecoration.underline)),
-                          ),
-                        ],
-                      ),
-                    )));
-              }
-
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            },
-          ),
-        ));
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          },
+        ),
+      ),
+    );
   }
 }

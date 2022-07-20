@@ -8,16 +8,16 @@ import 'package:flutter_demo_01/utils/validator.dart';
 import 'package:provider/provider.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 
-class RegisterPage extends StatefulWidget {
-  static const String id = 'register_page';
+class EmailAndPassword extends StatefulWidget {
+  static const String id = 'email_and_password';
 
-  const RegisterPage({Key? key}) : super(key: key);
+  const EmailAndPassword({Key? key}) : super(key: key);
 
   @override
-  _RegisterPageState createState() => _RegisterPageState();
+  _EmailAndPasswordState createState() => _EmailAndPasswordState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _EmailAndPasswordState extends State<EmailAndPassword> {
   final UserRegistration _userRegistration = UserRegistration();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 

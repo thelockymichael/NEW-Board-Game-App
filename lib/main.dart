@@ -8,6 +8,8 @@ import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/profile_page_edit.dart';
 import 'package:flutter_demo_01/screens/chat_screen.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/discover_page.dart';
+import 'package:flutter_demo_01/screens/login_page.dart';
+import 'package:flutter_demo_01/screens/login_with_email.dart';
 import 'package:flutter_demo_01/screens/matched_screen.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/profile_page.dart';
 import 'package:flutter_demo_01/screens/setup_screens/add_photos_page.dart';
@@ -15,13 +17,13 @@ import 'package:flutter_demo_01/screens/setup_screens/date_of_birth_page.dart';
 import 'package:flutter_demo_01/screens/setup_screens/enable_location_page.dart';
 import 'package:flutter_demo_01/screens/setup_screens/first_name_bgg_page.dart';
 import 'package:flutter_demo_01/screens/setup_screens/gender_page.dart';
-import 'package:flutter_demo_01/screens/setup_screens/register_page.dart';
+import 'package:flutter_demo_01/screens/setup_screens/email_and_password.dart';
 import 'package:flutter_demo_01/screens/v1_register_page.dart';
 import 'package:flutter_demo_01/screens/settings_page.dart';
 import 'package:flutter_demo_01/screens/splash_screen.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
-import 'screens/login_page.dart';
+import 'screens/register_page.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 void main() async {
@@ -60,11 +62,13 @@ class MyApp extends StatelessWidget {
           routes: {
             SplashScreen.id: (context) => const SplashScreen(),
             LoginPage.id: (context) => const LoginPage(),
+            LoginWithEmail.id: (context) => const LoginWithEmail(),
+            RegisterPage.id: (context) => const RegisterPage(),
             DiscoverPage.id: (context) => const DiscoverPage(),
             ProfilePage.id: (context) => const ProfilePage(),
             ProfilePageEdit.id: (context) => const ProfilePageEdit(),
             SettingsPage.id: (context) => const SettingsPage(),
-            RegisterPage.id: (context) => const RegisterPage(),
+            EmailAndPassword.id: (context) => const EmailAndPassword(),
             FirstNameBggPage.id: (context) => const FirstNameBggPage(),
             DateOfBirthPage.id: (context) => const DateOfBirthPage(),
             GenderPage.id: (context) => GenderPage(

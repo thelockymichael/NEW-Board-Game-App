@@ -4,9 +4,11 @@ import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dar
 import 'package:flutter_demo_01/db/remote/response.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/model/user_registration.dart';
+import 'package:flutter_demo_01/provider/google_sign_in.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/screens/setup_screens/date_of_birth_page.dart';
 import 'package:flutter_demo_01/utils/validator.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:flutter_demo_01/utils/utils.dart';

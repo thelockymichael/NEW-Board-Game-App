@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/firebase_options.dart';
 import 'package:flutter_demo_01/navigation/bottom_navigation_bar.dart';
 import 'package:flutter_demo_01/provider/card_provider.dart';
+import 'package:flutter_demo_01/provider/google_sign_in.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/profile_page_edit.dart';
 import 'package:flutter_demo_01/screens/chat_screen.dart';
@@ -28,6 +29,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -54,6 +56,7 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (context) => CardProvider()),
           ChangeNotifierProvider(create: (context) => UserProvider()),
+          ChangeNotifierProvider(create: (context) => GoogleSignInProvider())
         ],
         child: GlobalLoaderOverlay(
             child: MaterialApp(

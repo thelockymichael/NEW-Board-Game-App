@@ -230,8 +230,306 @@ exports.getNearestUsers = functions.https.onRequest(
 
 exports.newUserSignup = functions.auth.user().onCreate((user) => {
   admin.firestore().collection('users').doc(user.uid).set({
+    id: user.uid,
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
     updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    setupIsCompleted: false,
+    currentGeoLocation: new admin.firestore.GeoPoint(0.0, 0.0),
+    name: '',
+    bio: '',
+    bggName: '',
+    currentLocation: '',
+    gender: '',
+    email: '',
+    age: 0,
+    profilePhotoPaths: [
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+    ],
+    languages: [],
+    favBoardGameGenres: [],
+    favBgMechanics: [],
+    favBgThemes: [],
+    favBoardGames:
+    {
+      familyGames: [
+        {
+          rank: 1,
+          boardGame: {
+            bggId: 0,
+            imageUrl: [''],
+            name: '',
+            recRank: 0,
+            recRating: 0.0,
+            recStars: 0.0,
+            year: 0,
+          },
+        },
+
+        {
+          rank: 2,
+          boardGame: {
+            bggId: 0,
+            imageUrl: [''],
+            name: '',
+            recRank: 0,
+            recRating: 0.0,
+            recStars: 0.0,
+            year: 0,
+          },
+        },
+        {
+          rank: 3,
+          boardGame: {
+            bggId: 0,
+            imageUrl: [''],
+            name: '',
+            recRank: 0,
+            recRating: 0.0,
+            recStars: 0.0,
+            year: 0,
+          },
+        },
+      ],
+      dexterityGames: [
+        {
+          rank: 1,
+          boardGame: {
+            bggId: 0,
+            imageUrl: [''],
+            name: '',
+            recRank: 0,
+            recRating: 0.0,
+            recStars: 0.0,
+            year: 0,
+          },
+        },
+        {
+          rank: 2,
+          boardGame: {
+            bggId: 0,
+            imageUrl: [''],
+            name: '',
+            recRank: 0,
+            recRating: 0.0,
+            recStars: 0.0,
+            year: 0,
+          },
+        },
+        {
+          rank: 3,
+          boardGame: {
+            bggId: 0,
+            imageUrl: [''],
+            name: '',
+            recRank: 0,
+            recRating: 0.0,
+            recStars: 0.0,
+            year: 0,
+          },
+        },
+      ],
+      partyGames: [
+        {
+          rank: 1,
+          boardGame: {
+            bggId: 0,
+            imageUrl: [''],
+            name: '',
+            recRank: 0,
+            recRating: 0.0,
+            recStars: 0.0,
+            year: 0,
+          },
+        },
+        {
+          rank: 2,
+          boardGame: {
+            bggId: 0,
+            imageUrl: [''],
+            name: '',
+            recRank: 0,
+            recRating: 0.0,
+            recStars: 0.0,
+            year: 0,
+          },
+        },
+        {
+
+          rank: 3,
+          boardGame: {
+            bggId: 0,
+            imageUrl: [''],
+            name: '',
+            recRank: 0,
+            recRating: 0.0,
+            recStars: 0.0,
+            year: 0,
+          },
+        },
+      ],
+      thematicGames: [
+        {
+          rank: 1,
+          boardGame: {
+            bggId: 0,
+            imageUrl: [''],
+            name: '',
+            recRank: 0,
+            recRating: 0.0,
+            recStars: 0.0,
+            year: 0,
+          },
+        },
+        {
+
+          rank: 2,
+          boardGame: {
+            bggId: 0,
+            imageUrl: [''],
+            name: '',
+            recRank: 0,
+            recRating: 0.0,
+            recStars: 0.0,
+            year: 0,
+          },
+        },
+        {
+
+          rank: 3,
+          boardGame: {
+            bggId: 0,
+            imageUrl: [''],
+            name: '',
+            recRank: 0,
+            recRating: 0.0,
+            recStars: 0.0,
+            year: 0,
+          },
+        },
+      ],
+      strategyGames: [
+        {
+          rank: 1,
+          boardGame: {
+            bggId: 0,
+            imageUrl: [''],
+            name: '',
+            recRank: 0,
+            recRating: 0.0,
+            recStars: 0.0,
+            year: 0,
+          },
+        },
+        {
+          rank: 2,
+          boardGame: {
+            bggId: 0,
+            imageUrl: [''],
+            name: '',
+            recRank: 0,
+            recRating: 0.0,
+            recStars: 0.0,
+            year: 0,
+          },
+        },
+        {
+          rank: 3,
+          boardGame: {
+            bggId: 0,
+            imageUrl: [''],
+            name: '',
+            recRank: 0,
+            recRating: 0.0,
+            recStars: 0.0,
+            year: 0,
+          },
+        },
+      ],
+      abstractGames: [
+        {
+          rank: 1,
+          boardGame: {
+            bggId: 0,
+            imageUrl: [''],
+            name: '',
+            recRank: 0,
+            recRating: 0.0,
+            recStars: 0.0,
+            year: 0,
+          },
+        },
+        {
+
+          rank: 2,
+          boardGame: {
+            bggId: 0,
+            imageUrl: [''],
+            name: '',
+            recRank: 0,
+            recRating: 0.0,
+            recStars: 0.0,
+            year: 0,
+          },
+        },
+        {
+          rank: 3,
+          boardGame: {
+            bggId: 0,
+            imageUrl: [''],
+            name: '',
+            recRank: 0,
+            recRating: 0.0,
+            recStars: 0.0,
+            year: 0,
+          },
+        },
+      ],
+      warGames: [
+        {
+          rank: 1,
+          boardGame: {
+            bggId: 0,
+            imageUrl: [''],
+            name: '',
+            recRank: 0,
+            recRating: 0.0,
+            recStars: 0.0,
+            year: 0,
+          },
+        },
+        {
+          rank: 2,
+          boardGame: {
+            bggId: 0,
+            imageUrl: [''],
+            name: '',
+            recRank: 0,
+            recRating: 0.0,
+            recStars: 0.0,
+            year: 0,
+          },
+
+        },
+        {
+          rank: 3,
+          boardGame: {
+            bggId: 0,
+            imageUrl: [''],
+            name: '',
+            recRank: 0,
+            recRating: 0.0,
+            recStars: 0.0,
+            year: 0,
+          },
+        },
+
+      ],
+    },
   }, { merge: true })
 })
 

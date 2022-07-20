@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
+import 'package:flutter_demo_01/provider/google_sign_in.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/screens/login_page.dart';
 import 'package:flutter_demo_01/screens/register_page.dart';
@@ -20,8 +21,10 @@ class _SettingsPageState extends State<SettingsPage> {
 
   bool _isSigningOut = false;
 
-  void logoutPressed(UserProvider userProvider, BuildContext context) async {
+  void logoutPressed(UserProvider userProvider,
+      GoogleSignInProvider googleProvider, BuildContext context) async {
     await userProvider.logoutUser();
+    await googleProvider.logout();
     Navigator.pushNamedAndRemoveUntil(context, LoginPage.id, (route) => false);
   }
 
@@ -40,8 +43,8 @@ class _SettingsPageState extends State<SettingsPage> {
             horizontal: 18.0,
           ),
           margin: const EdgeInsets.only(bottom: 40),
-          child:
-              Consumer<UserProvider>(builder: (context, userProvider, child) {
+          child: Consumer2<UserProvider, GoogleSignInProvider>(
+              builder: (context, userProvider, googleProvider, child) {
             return FutureBuilder<AppUser>(
               future: userProvider.user,
               builder: (context, userSnapshot) {
@@ -79,7 +82,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                         setState(() {
                                           _isSigningOut = true;
                                         });
-                                        logoutPressed(userProvider, context);
+                                        logoutPressed(userProvider,
+                                            googleProvider, context);
                                       },
                                       child: const Text("Sign Out",
                                           style:

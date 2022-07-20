@@ -34,15 +34,23 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(Duration(seconds: 2), () async {
       String? userId = await SharedPreferencesUtil.getUserId();
 
+      print("LOG signup checkIfUserExists splasScreen $userId");
+
       if (userId != null) {
         var _snapshotUser = await _databaseSource.getUser(userId);
 
         AppUser _user = AppUser.fromSnapshot(_snapshotUser);
 
         if (_user.setupIsCompleted) {
-          Navigator.pushNamed(context, MainNavigation.id);
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (_) => MainNavigation()),
+              (route) => false);
         } else {
-          Navigator.pushNamed(context, FirstNameBggPage.id);
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (_) => FirstNameBggPage()),
+              (route) => false);
         }
       } else {
         Navigator.pushAndRemoveUntil(

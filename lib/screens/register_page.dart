@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,13 +10,19 @@ import 'package:flutter_demo_01/db/remote/firebase_database_source.dart';
 import 'package:flutter_demo_01/db/remote/response.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/navigation/bottom_navigation_bar.dart';
+import 'package:flutter_demo_01/provider/google_sign_in.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/screens/login_page.dart';
 import 'package:flutter_demo_01/screens/setup_screens/email_and_password.dart';
+import 'package:flutter_demo_01/screens/setup_screens/first_name_bgg_page.dart';
 import 'package:flutter_demo_01/screens/v1_register_page.dart';
+import 'package:flutter_demo_01/utils/shared_preferences_utils.dart';
 import 'package:flutter_demo_01/utils/utils.dart';
 import 'package:flutter_demo_01/utils/validator.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 
 class RegisterPage extends StatefulWidget {
   static const String id = 'register_screen';
@@ -39,6 +46,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final _focusPassword = FocusNode();
 
   bool _isProcessing = false;
+
+  bool _isLoaderVisible = false;
 
   final FirebaseDatabaseSource _databaseSource = FirebaseDatabaseSource();
 
@@ -443,12 +452,62 @@ class _RegisterPageState extends State<RegisterPage> {
                             style: TextStyle(color: Colors.white),
                           ),
                         ),
-                        ElevatedButton(
+                        ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
                             minimumSize: const Size.fromHeight(40), // NEW
                           ),
-                          onPressed: () async {},
-                          child: const Text(
+                          onPressed: () async {
+                            context.loaderOverlay
+                                .show(widget: CreateNewUserOverlay());
+
+                            setState(() {
+                              _isLoaderVisible = context.loaderOverlay.visible;
+                            });
+
+                            final provider = Provider.of<GoogleSignInProvider>(
+                                context,
+                                listen: false);
+
+                            await provider
+                                .googleRegister()
+                                .then((response) async {
+                              if (response is Success) {
+                                UserCredential userCreds = response.value;
+                                String id = userCreds.user!.uid;
+                                print(
+                                    "LOG signup register uid ${userCreds.user!.uid}");
+
+                                await SharedPreferencesUtil.setUserId(id);
+
+                                Timer(Duration(seconds: 10), () async {
+                                  if (_isLoaderVisible) {
+                                    context.loaderOverlay.hide();
+                                  }
+                                  var _snapshot =
+                                      await _databaseSource.getUser(id);
+                                  AppUser appUser =
+                                      AppUser.fromSnapshot(_snapshot);
+
+                                  if (appUser.setupIsCompleted) {
+                                    Navigator.pop(context);
+                                    Navigator.pushNamedAndRemoveUntil(context,
+                                        MainNavigation.id, (route) => false);
+                                  } else {
+                                    Navigator.pop(context);
+                                    Navigator.pushNamedAndRemoveUntil(context,
+                                        FirstNameBggPage.id, (route) => false);
+                                  }
+                                });
+                              } else {
+                                if (_isLoaderVisible) {
+                                  context.loaderOverlay.hide();
+                                }
+                              }
+                            });
+                          },
+                          icon: FaIcon(FontAwesomeIcons.google,
+                              color: Colors.red),
+                          label: const Text(
                             'Sign up with Google',
                             style: TextStyle(color: Colors.white),
                           ),
@@ -495,4 +554,65 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
     );
   }
+
+  Future<void> signUpWithGoogle() async {
+    final FirebaseAuth auth = FirebaseAuth.instance;
+
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+
+    final GoogleSignInAccount? googleSignInAccount =
+        await googleSignIn.signIn();
+
+    if (googleSignInAccount != null) {
+      final GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount.authentication;
+
+      final AuthCredential authCredential = GoogleAuthProvider.credential(
+          idToken: googleSignInAuthentication.idToken,
+          accessToken: googleSignInAuthentication.accessToken);
+
+      // Getting users credentials
+      UserCredential result = await auth.signInWithCredential(authCredential);
+
+      User? user = result.user;
+
+      if (result != null) {
+        print("LOG register google GREAT SUCCESS!");
+      }
+    }
+  }
+}
+
+class CreateNewUserOverlay extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => Center(
+          child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20), color: Colors.blue[300]),
+        height: 100,
+        margin: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(
+              width: 12,
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Logging in to Google',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  'Please wait...',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ],
+            )
+          ],
+        ),
+      ));
 }

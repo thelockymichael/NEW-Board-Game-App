@@ -81,6 +81,8 @@ flutter:
 
   assets:
     - assets/images/splash-screen.jpg
+    - assets/images/register-login.jpg
+    - assets/images/google-logo.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

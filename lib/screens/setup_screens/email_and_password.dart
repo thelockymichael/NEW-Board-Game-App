@@ -49,7 +49,17 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
           _confirmFocusPassword.unfocus();
         },
         child: Scaffold(
-          appBar: AppBar(),
+          appBar: AppBar(
+            title: Text(""),
+            leading: new IconButton(
+              onPressed: () => Navigator.of(context).pop(),
+              icon:
+                  Icon(Icons.arrow_back_rounded, size: 40, color: Colors.black),
+            ),
+            backgroundColor: Colors.redAccent
+                .withOpacity(0.0), //You can make this transparent
+            elevation: 0.0, //No
+          ),
           body: Stack(
             children: [
               Padding(

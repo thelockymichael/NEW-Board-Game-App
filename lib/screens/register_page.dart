@@ -60,8 +60,6 @@ class _RegisterPageState extends State<RegisterPage> {
       min + source.nextInt(max - min);
 
   Future createFiftyUsers() async {
-    // print("LOG ${doubleInRange(random, 20, 60)}");
-
     int amount = 50;
 
     List<String> randomNames = [
@@ -78,12 +76,6 @@ class _RegisterPageState extends State<RegisterPage> {
     ];
 
     for (var i = 0; i <= amount; i++) {
-      // TODO 1. Random name
-      // TODO 2. Random currentGeoLocation, latitude & longitude
-
-      // Timestamp
-
-// 1. DateTime
       Random intRandom = Random();
 
       int year = intInRange(intRandom, 1981, 2021);
@@ -400,200 +392,288 @@ class _RegisterPageState extends State<RegisterPage> {
     _userProvider = Provider.of(context, listen: false);
   }
 
-  Future<FirebaseApp> _initializeFirebase() async {
-    FirebaseApp firebaseApp = await Firebase.initializeApp();
+  // Future<FirebaseApp> _initializeFirebase() async {
+  //   FirebaseApp firebaseApp = await Firebase.initializeApp();
 
-    return firebaseApp;
+  //   return firebaseApp;
+  // }
+
+  Future cacheImage(BuildContext context, String urlImage) {
+    return precacheImage(new AssetImage(urlImage), context);
   }
 
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
 
-    TextStyle defaultStyle = TextStyle(color: Colors.black, fontSize: 14.0);
-    TextStyle linkStyle =
-        TextStyle(color: Colors.blue, decoration: TextDecoration.underline);
+    TextStyle defaultStyle = TextStyle(color: Colors.white, fontSize: 14.0);
+    TextStyle linkStyle = TextStyle(
+        color: Colors.lightBlue, decoration: TextDecoration.underline);
 
     return GestureDetector(
-      onTap: () {
-        _focusEmail.unfocus();
-        _focusPassword.unfocus();
-      },
-      child: Scaffold(
-        body: FutureBuilder(
-          future: _initializeFirebase(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return Padding(
-                  padding: const EdgeInsets.only(left: 24.0, right: 24.0),
-                  child: SingleChildScrollView(
-                      child: SizedBox(
-                    height: height,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 24.0),
-                          child: Center(
-                              child: Text(
-                            'Board game friends',
-                            style: Theme.of(context).textTheme.headline2,
-                          )),
-                        ),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size.fromHeight(40), // NEW
-                          ),
-                          onPressed: () async {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => const EmailAndPassword(),
+        onTap: () {
+          _focusEmail.unfocus();
+          _focusPassword.unfocus();
+        },
+        child: SafeArea(
+          child: Scaffold(
+            body: FutureBuilder(
+              future: cacheImage(context, 'assets/images/register-login.jpg'),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return Stack(children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.grey.withOpacity(0.0),
+                                  Colors.black.withOpacity(0.6)
+                                ],
+                                stops: const [
+                                  0.0,
+                                  1.0
+                                ]),
+                            image: DecorationImage(
+                              image: AssetImage(
+                                'assets/images/register-login.jpg',
                               ),
-                            );
-                          },
-                          child: const Text(
-                            'Sign up with email',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size.fromHeight(40), // NEW
-                          ),
-                          onPressed: () async {
-                            context.loaderOverlay
-                                .show(widget: CreateNewUserOverlay());
+                              fit: BoxFit.cover,
+                            )),
+                      ),
+                    ),
+                    Padding(
+                        padding: const EdgeInsets.only(left: 24.0, right: 24.0),
+                        child: SizedBox(
+                          height: height,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 48, bottom: 24.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          textAlign: TextAlign.center,
+                                          'BoardMatch',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 50),
+                                        ),
+                                      )
+                                    ],
+                                  )),
+                              Spacer(),
+                              Padding(
+                                  padding: EdgeInsets.only(bottom: 48),
+                                  child: Column(
+                                    children: [
+                                      ElevatedButton.icon(
+                                        style: ElevatedButton.styleFrom(
+                                          minimumSize:
+                                              const Size.fromHeight(40), // NEW
+                                        ),
+                                        onPressed: () async {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const EmailAndPassword(),
+                                            ),
+                                          );
+                                        },
+                                        icon: Icon(Icons.email), //
 
-                            setState(() {
-                              _isLoaderVisible = context.loaderOverlay.visible;
-                            });
+                                        label: Padding(
+                                            padding: EdgeInsets.all(16),
+                                            child: Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: const Text(
+                                                'Sign up with email',
+                                                textAlign: TextAlign.start,
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.white),
+                                              ),
+                                            )),
+                                      ),
+                                      SizedBox(height: 16),
+                                      ElevatedButton.icon(
+                                        style: ElevatedButton.styleFrom(
+                                          minimumSize:
+                                              const Size.fromHeight(40), // NEW
+                                        ),
+                                        onPressed: () async {
+                                          context.loaderOverlay.show(
+                                              widget: CreateNewUserOverlay());
 
-                            final provider = Provider.of<GoogleSignInProvider>(
-                                context,
-                                listen: false);
+                                          setState(() {
+                                            _isLoaderVisible =
+                                                context.loaderOverlay.visible;
+                                          });
 
-                            await provider
-                                .googleRegister()
-                                .then((response) async {
-                              if (response is Success) {
-                                UserCredential userCreds = response.value;
-                                String id = userCreds.user!.uid;
-                                print(
-                                    "LOG signup register uid ${userCreds.user!.uid}");
+                                          final provider =
+                                              Provider.of<GoogleSignInProvider>(
+                                                  context,
+                                                  listen: false);
 
-                                await SharedPreferencesUtil.setUserId(id);
+                                          await provider
+                                              .googleRegister()
+                                              .then((response) async {
+                                            if (response is Success) {
+                                              UserCredential userCreds =
+                                                  response.value;
+                                              String id = userCreds.user!.uid;
+                                              print(
+                                                  "LOG signup register uid ${userCreds.user!.uid}");
 
-                                Timer(Duration(seconds: 10), () async {
-                                  if (_isLoaderVisible) {
-                                    context.loaderOverlay.hide();
-                                  }
-                                  var _snapshot =
-                                      await _databaseSource.getUser(id);
-                                  AppUser appUser =
-                                      AppUser.fromSnapshot(_snapshot);
+                                              await SharedPreferencesUtil
+                                                  .setUserId(id);
 
-                                  if (appUser.setupIsCompleted) {
-                                    Navigator.pop(context);
-                                    Navigator.pushNamedAndRemoveUntil(context,
-                                        MainNavigation.id, (route) => false);
-                                  } else {
-                                    Navigator.pop(context);
-                                    Navigator.pushNamedAndRemoveUntil(context,
-                                        FirstNameBggPage.id, (route) => false);
-                                  }
-                                });
-                              } else {
-                                if (_isLoaderVisible) {
-                                  context.loaderOverlay.hide();
-                                }
-                              }
-                            });
-                          },
-                          icon: FaIcon(FontAwesomeIcons.google,
-                              color: Colors.red),
-                          label: const Text(
-                            'Sign up with Google',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        SizedBox(height: 16),
-                        RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(
-                            style: defaultStyle,
-                            children: <TextSpan>[
-                              TextSpan(
-                                  text:
-                                      'By creating a profile you agree to our '),
-                              TextSpan(
-                                  text: 'Terms of Service',
-                                  style: linkStyle,
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      print("LOG signup Terms of Service");
+                                              Timer(Duration(seconds: 10),
+                                                  () async {
+                                                if (_isLoaderVisible) {
+                                                  context.loaderOverlay.hide();
+                                                }
+                                                var _snapshot =
+                                                    await _databaseSource
+                                                        .getUser(id);
+                                                AppUser appUser =
+                                                    AppUser.fromSnapshot(
+                                                        _snapshot);
 
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => BggWebView(
-                                                  "https://millhel.com/boardmatch-terms/",
-                                                  "Terms Of Service")));
-                                    }
-                                  // recognizer: TapGestureRecognizer()
-                                  //   ..onTap = () {
-                                  //     print('Terms of Service"');
-                                  //   }
+                                                if (appUser.setupIsCompleted) {
+                                                  Navigator.pop(context);
+                                                  Navigator
+                                                      .pushNamedAndRemoveUntil(
+                                                          context,
+                                                          MainNavigation.id,
+                                                          (route) => false);
+                                                } else {
+                                                  Navigator.pop(context);
+                                                  Navigator
+                                                      .pushNamedAndRemoveUntil(
+                                                          context,
+                                                          FirstNameBggPage.id,
+                                                          (route) => false);
+                                                }
+                                              });
+                                            } else {
+                                              if (_isLoaderVisible) {
+                                                context.loaderOverlay.hide();
+                                              }
+                                            }
+                                          });
+                                        },
+                                        icon: Image.asset(
+                                          'assets/images/google-logo.png',
+                                          height: 30,
+                                          width: 30,
+                                        ),
+                                        label: Padding(
+                                            padding: EdgeInsets.all(16),
+                                            child: Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: const Text(
+                                                'Sign up with Google',
+                                                textAlign: TextAlign.start,
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.white),
+                                              ),
+                                            )),
+                                      ),
+                                      SizedBox(height: 12),
+                                      RichText(
+                                        text: TextSpan(
+                                          style: defaultStyle,
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                                text:
+                                                    'By creating a profile you agree to our '),
+                                            TextSpan(
+                                                text: 'Terms of Service',
+                                                style: linkStyle,
+                                                recognizer:
+                                                    TapGestureRecognizer()
+                                                      ..onTap = () {
+                                                        print(
+                                                            "LOG signup Terms of Service");
 
-                                  ),
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder: (context) =>
+                                                                    BggWebView(
+                                                                        "https://millhel.com/boardmatch-terms/",
+                                                                        "Terms Of Service")));
+                                                      }),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(height: 20),
+                                      GestureDetector(
+                                        behavior: HitTestBehavior.translucent,
+                                        onTap: () {
+                                          Navigator.of(context)
+                                              .push(PageRouteBuilder(
+                                            pageBuilder: (
+                                              BuildContext context,
+                                              Animation<double> animation,
+                                              Animation<double>
+                                                  secondaryAnimation,
+                                            ) =>
+                                                LoginPage(color: Colors.white),
+                                            transitionsBuilder: (
+                                              BuildContext context,
+                                              Animation<double> animation,
+                                              Animation<double>
+                                                  secondaryAnimation,
+                                              Widget child,
+                                            ) =>
+                                                SlideTransition(
+                                              position: Tween<Offset>(
+                                                begin: const Offset(1, 0),
+                                                end: Offset.zero,
+                                              ).animate(animation),
+                                              child: child,
+                                            ),
+                                          ));
+                                        },
+                                        child: Container(
+                                          height: 60,
+                                          color:
+                                              Colors.redAccent.withOpacity(0.0),
+                                          padding: const EdgeInsets.all(8),
+                                          child: Text(
+                                              "Already have an account? Log in here",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  decoration: TextDecoration
+                                                      .underline)),
+                                        ),
+                                      ),
+                                    ],
+                                  ))
                             ],
                           ),
-                        ),
+                        ))
+                  ]);
+                }
 
-                        // Terms of Service
-
-                        SizedBox(height: 16),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(PageRouteBuilder(
-                              pageBuilder: (
-                                BuildContext context,
-                                Animation<double> animation,
-                                Animation<double> secondaryAnimation,
-                              ) =>
-                                  LoginPage(color: Colors.black),
-                              transitionsBuilder: (
-                                BuildContext context,
-                                Animation<double> animation,
-                                Animation<double> secondaryAnimation,
-                                Widget child,
-                              ) =>
-                                  SlideTransition(
-                                position: Tween<Offset>(
-                                  begin: const Offset(1, 0),
-                                  end: Offset.zero,
-                                ).animate(animation),
-                                child: child,
-                              ),
-                            ));
-                          },
-                          child: Text("Already have an account? Log in here",
-                              style: TextStyle(
-                                  decoration: TextDecoration.underline)),
-                        ),
-                      ],
-                    ),
-                  )));
-            }
-
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          },
-        ),
-      ),
-    );
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
+            ),
+          ),
+        ));
   }
 
   Future<void> signUpWithGoogle() async {

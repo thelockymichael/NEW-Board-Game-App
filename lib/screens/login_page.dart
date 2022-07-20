@@ -405,6 +405,10 @@ class _LoginPageState extends State<LoginPage> {
     return firebaseApp;
   }
 
+  Future cacheImage(BuildContext context, String urlImage) {
+    return precacheImage(new AssetImage(urlImage), context);
+  }
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -414,174 +418,271 @@ class _LoginPageState extends State<LoginPage> {
           _focusEmail.unfocus();
           _focusPassword.unfocus();
         },
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(""),
-            leading: widget.color != null
-                ? new IconButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    icon: Icon(Icons.arrow_back, color: Colors.grey),
-                  )
-                : null,
+        child: SafeArea(
+          child: Scaffold(
+            extendBodyBehindAppBar: true,
+            appBar: AppBar(
+              title: Text(""),
+              leading: widget.color != null
+                  ? new IconButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      icon: Icon(Icons.arrow_back_rounded,
+                          size: 40, color: widget.color),
+                    )
+                  : null,
 
-            backgroundColor:
-                Colors.blue.withOpacity(0.0), //You can make this transparent
-            elevation: 0.0, //No
-          ),
-          body: FutureBuilder(
-            future: _initializeFirebase(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return Padding(
-                    padding: const EdgeInsets.only(left: 24.0, right: 24.0),
-                    child: SingleChildScrollView(
-                        child: SizedBox(
-                      height: height,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 24.0),
-                            child: Center(
-                                child: Text(
-                              'Board game friends',
-                              style: Theme.of(context).textTheme.headline2,
+              backgroundColor: Colors.redAccent
+                  .withOpacity(0.0), //You can make this transparent
+              elevation: 0.0, //No
+            ),
+            body: FutureBuilder(
+              future: cacheImage(context, 'assets/images/register-login.jpg'),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return Stack(children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.grey.withOpacity(0.0),
+                                  Colors.black.withOpacity(0.6)
+                                ],
+                                stops: const [
+                                  0.0,
+                                  1.0
+                                ]),
+                            image: DecorationImage(
+                              image: AssetImage(
+                                'assets/images/register-login.jpg',
+                              ),
+                              fit: BoxFit.cover,
                             )),
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              minimumSize: const Size.fromHeight(40), // NEW
-                            ),
-                            onPressed: () async {
-                              Navigator.of(context).push(PageRouteBuilder(
-                                pageBuilder: (
-                                  BuildContext context,
-                                  Animation<double> animation,
-                                  Animation<double> secondaryAnimation,
-                                ) =>
-                                    LoginWithEmail(color: Colors.black),
-                                transitionsBuilder: (
-                                  BuildContext context,
-                                  Animation<double> animation,
-                                  Animation<double> secondaryAnimation,
-                                  Widget child,
-                                ) =>
-                                    SlideTransition(
-                                  position: Tween<Offset>(
-                                    begin: const Offset(1, 0),
-                                    end: Offset.zero,
-                                  ).animate(animation),
-                                  child: child,
-                                ),
-                              ));
-                            },
-                            child: const Text(
-                              'Log in with email',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                          ElevatedButton.icon(
-                            style: ElevatedButton.styleFrom(
-                              minimumSize: const Size.fromHeight(40), // NEW
-                            ),
-                            onPressed: () async {
-                              context.loaderOverlay
-                                  .show(widget: LoginUserOverlay());
-
-                              setState(() {
-                                _isLoaderVisible =
-                                    context.loaderOverlay.visible;
-                              });
-
-                              final provider =
-                                  Provider.of<GoogleSignInProvider>(context,
-                                      listen: false);
-
-                              await provider
-                                  .googleRegister()
-                                  .then((response) async {
-                                if (response is Success) {
-                                  final provider =
-                                      Provider.of<GoogleSignInProvider>(context,
-                                          listen: false);
-
-                                  await provider
-                                      .googleRegister()
-                                      .then((response) async {
-                                    if (response is Success) {
-                                      UserCredential userCreds = response.value;
-                                      String id = userCreds.user!.uid;
-                                      print(
-                                          "LOG signup register uid ${userCreds.user!.uid}");
-
-                                      await SharedPreferencesUtil.setUserId(id);
-
-                                      Timer(Duration(seconds: 10), () async {
-                                        if (_isLoaderVisible) {
-                                          context.loaderOverlay.hide();
-                                        }
-                                        var _snapshot =
-                                            await _databaseSource.getUser(id);
-                                        AppUser appUser =
-                                            AppUser.fromSnapshot(_snapshot);
-
-                                        if (appUser.setupIsCompleted) {
-                                          Navigator.pop(context);
-                                          Navigator.pushNamedAndRemoveUntil(
-                                              context,
-                                              MainNavigation.id,
-                                              (route) => false);
-                                        } else {
-                                          Navigator.pop(context);
-                                          Navigator.pushNamedAndRemoveUntil(
-                                              context,
-                                              FirstNameBggPage.id,
-                                              (route) => false);
-                                        }
-                                      });
-                                    } else {
-                                      if (_isLoaderVisible) {
-                                        context.loaderOverlay.hide();
-                                      }
-                                    }
-                                  });
-                                } else {
-                                  if (_isLoaderVisible) {
-                                    context.loaderOverlay.hide();
-                                  }
-                                }
-                              });
-                            },
-                            icon: FaIcon(FontAwesomeIcons.google,
-                                color: Colors.red),
-                            label: const Text(
-                              'Log in with Google',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 16,
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamedAndRemoveUntil(
-                                  context, RegisterPage.id, (route) => false);
-                            },
-                            child: Text("Don't have an account? Sign up here",
-                                style: TextStyle(
-                                    decoration: TextDecoration.underline)),
-                          ),
-                        ],
                       ),
-                    )));
-              }
+                    ),
+                    Padding(
+                        padding: const EdgeInsets.only(left: 24.0, right: 24.0),
+                        child: SizedBox(
+                          height: height,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 48, bottom: 24.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          textAlign: TextAlign.center,
+                                          'BoardMatch',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 50),
+                                        ),
+                                      )
+                                    ],
+                                  )),
+                              Spacer(),
+                              Padding(
+                                  padding: EdgeInsets.only(bottom: 48),
+                                  child: Column(
+                                    children: [
+                                      ElevatedButton.icon(
+                                        style: ElevatedButton.styleFrom(
+                                          minimumSize:
+                                              const Size.fromHeight(40), // NEW
+                                        ),
+                                        onPressed: () async {
+                                          Navigator.of(context)
+                                              .push(PageRouteBuilder(
+                                            pageBuilder: (
+                                              BuildContext context,
+                                              Animation<double> animation,
+                                              Animation<double>
+                                                  secondaryAnimation,
+                                            ) =>
+                                                LoginWithEmail(
+                                                    color: Colors.black),
+                                            transitionsBuilder: (
+                                              BuildContext context,
+                                              Animation<double> animation,
+                                              Animation<double>
+                                                  secondaryAnimation,
+                                              Widget child,
+                                            ) =>
+                                                SlideTransition(
+                                              position: Tween<Offset>(
+                                                begin: const Offset(1, 0),
+                                                end: Offset.zero,
+                                              ).animate(animation),
+                                              child: child,
+                                            ),
+                                          ));
+                                        },
+                                        icon: Icon(Icons.email), //
 
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            },
+                                        label: Padding(
+                                            padding: EdgeInsets.all(16),
+                                            child: Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: const Text(
+                                                'Log in with email',
+                                                textAlign: TextAlign.start,
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.white),
+                                              ),
+                                            )),
+                                      ),
+                                      SizedBox(height: 16),
+                                      ElevatedButton.icon(
+                                        style: ElevatedButton.styleFrom(
+                                          minimumSize:
+                                              const Size.fromHeight(40), // NEW
+                                        ),
+                                        onPressed: () async {
+                                          context
+                                              .loaderOverlay //     context.loaderOverlay
+                                              .show(widget: LoginUserOverlay());
+
+                                          setState(() {
+                                            _isLoaderVisible =
+                                                context.loaderOverlay.visible;
+                                          });
+
+                                          final provider =
+                                              Provider.of<GoogleSignInProvider>(
+                                                  context,
+                                                  listen: false);
+
+                                          await provider
+                                              .googleRegister()
+                                              .then((response) async {
+                                            if (response is Success) {
+                                              final provider = Provider.of<
+                                                      GoogleSignInProvider>(
+                                                  context,
+                                                  listen: false);
+
+                                              await provider
+                                                  .googleRegister()
+                                                  .then((response) async {
+                                                if (response is Success) {
+                                                  UserCredential userCreds =
+                                                      response.value;
+                                                  String id =
+                                                      userCreds.user!.uid;
+                                                  print(
+                                                      "LOG signup register uid ${userCreds.user!.uid}");
+
+                                                  await SharedPreferencesUtil
+                                                      .setUserId(id);
+
+                                                  Timer(Duration(seconds: 10),
+                                                      () async {
+                                                    if (_isLoaderVisible) {
+                                                      context.loaderOverlay
+                                                          .hide();
+                                                    }
+                                                    var _snapshot =
+                                                        await _databaseSource
+                                                            .getUser(id);
+                                                    AppUser appUser =
+                                                        AppUser.fromSnapshot(
+                                                            _snapshot);
+
+                                                    if (appUser
+                                                        .setupIsCompleted) {
+                                                      Navigator.pop(context);
+                                                      Navigator
+                                                          .pushNamedAndRemoveUntil(
+                                                              context,
+                                                              MainNavigation.id,
+                                                              (route) => false);
+                                                    } else {
+                                                      Navigator.pop(context);
+                                                      Navigator
+                                                          .pushNamedAndRemoveUntil(
+                                                              context,
+                                                              FirstNameBggPage
+                                                                  .id,
+                                                              (route) => false);
+                                                    }
+                                                  });
+                                                } else {
+                                                  if (_isLoaderVisible) {
+                                                    context.loaderOverlay
+                                                        .hide();
+                                                  }
+                                                }
+                                              });
+                                            } else {
+                                              if (_isLoaderVisible) {
+                                                context.loaderOverlay.hide();
+                                              }
+                                            }
+                                          });
+                                        },
+                                        icon: Image.asset(
+                                          'assets/images/google-logo.png',
+                                          height: 30,
+                                          width: 30,
+                                        ),
+                                        label: Padding(
+                                            padding: EdgeInsets.all(16),
+                                            child: Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: const Text(
+                                                'Log in with Google',
+                                                textAlign: TextAlign.start,
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.white),
+                                              ),
+                                            )),
+                                      ),
+                                      SizedBox(height: 12),
+                                      SizedBox(height: 20),
+                                      GestureDetector(
+                                        behavior: HitTestBehavior.translucent,
+                                        onTap: () {
+                                          Navigator.pushNamedAndRemoveUntil(
+                                              context,
+                                              RegisterPage.id,
+                                              (route) => false);
+                                        },
+                                        child: Container(
+                                          height: 60,
+                                          color:
+                                              Colors.redAccent.withOpacity(0.0),
+                                          padding: const EdgeInsets.all(8),
+                                          child: Text(
+                                              "Don't have an account? Sign up here",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  decoration: TextDecoration
+                                                      .underline)),
+                                        ),
+                                      ),
+                                    ],
+                                  ))
+                            ],
+                          ),
+                        ))
+                  ]);
+                }
+
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
+            ),
           ),
         ));
   }
@@ -620,3 +721,126 @@ class LoginUserOverlay extends StatelessWidget {
         ),
       ));
 }
+                          // ElevatedButton(
+                          //   style: ElevatedButton.styleFrom(
+                          //     minimumSize: const Size.fromHeight(40), // NEW
+                          //   ),
+                          //   onPressed: () async {
+                          //     Navigator.of(context).push(PageRouteBuilder(
+                          //       pageBuilder: (
+                          //         BuildContext context,
+                          //         Animation<double> animation,
+                          //         Animation<double> secondaryAnimation,
+                          //       ) =>
+                          //           LoginWithEmail(color: Colors.black),
+                          //       transitionsBuilder: (
+                          //         BuildContext context,
+                          //         Animation<double> animation,
+                          //         Animation<double> secondaryAnimation,
+                          //         Widget child,
+                          //       ) =>
+                          //           SlideTransition(
+                          //         position: Tween<Offset>(
+                          //           begin: const Offset(1, 0),
+                          //           end: Offset.zero,
+                          //         ).animate(animation),
+                          //         child: child,
+                          //       ),
+                          //     ));
+                          //   },
+                          //   child: const Text(
+                          //     'Log in with email',
+                          //     style: TextStyle(color: Colors.white),
+                          //   ),
+                          // ),
+                          // ElevatedButton.icon(
+                          //   style: ElevatedButton.styleFrom(
+                          //     minimumSize: const Size.fromHeight(40), // NEW
+                          //   ),
+                          //   onPressed: () async {
+                          //     context.loaderOverlay
+                          //         .show(widget: LoginUserOverlay());
+
+                          //     setState(() {
+                          //       _isLoaderVisible =
+                          //           context.loaderOverlay.visible;
+                          //     });
+
+                          //     final provider =
+                          //         Provider.of<GoogleSignInProvider>(context,
+                          //             listen: false);
+
+                          //     await provider
+                          //         .googleRegister()
+                          //         .then((response) async {
+                          //       if (response is Success) {
+                          //         final provider =
+                          //             Provider.of<GoogleSignInProvider>(context,
+                          //                 listen: false);
+
+                          //         await provider
+                          //             .googleRegister()
+                          //             .then((response) async {
+                          //           if (response is Success) {
+                          //             UserCredential userCreds = response.value;
+                          //             String id = userCreds.user!.uid;
+                          //             print(
+                          //                 "LOG signup register uid ${userCreds.user!.uid}");
+
+                          //             await SharedPreferencesUtil.setUserId(id);
+
+                          //             Timer(Duration(seconds: 10), () async {
+                          //               if (_isLoaderVisible) {
+                          //                 context.loaderOverlay.hide();
+                          //               }
+                          //               var _snapshot =
+                          //                   await _databaseSource.getUser(id);
+                          //               AppUser appUser =
+                          //                   AppUser.fromSnapshot(_snapshot);
+
+                          //               if (appUser.setupIsCompleted) {
+                          //                 Navigator.pop(context);
+                          //                 Navigator.pushNamedAndRemoveUntil(
+                          //                     context,
+                          //                     MainNavigation.id,
+                          //                     (route) => false);
+                          //               } else {
+                          //                 Navigator.pop(context);
+                          //                 Navigator.pushNamedAndRemoveUntil(
+                          //                     context,
+                          //                     FirstNameBggPage.id,
+                          //                     (route) => false);
+                          //               }
+                          //             });
+                          //           } else {
+                          //             if (_isLoaderVisible) {
+                          //               context.loaderOverlay.hide();
+                          //             }
+                          //           }
+                          //         });
+                          //       } else {
+                          //         if (_isLoaderVisible) {
+                          //           context.loaderOverlay.hide();
+                          //         }
+                          //       }
+                          //     });
+                          //   },
+                          //   icon: FaIcon(FontAwesomeIcons.google,
+                          //       color: Colors.red),
+                          //   label: const Text(
+                          //     'Log in with Google',
+                          //     style: TextStyle(color: Colors.white),
+                          //   ),
+                          // ),
+                          // SizedBox(
+                          //   height: 16,
+                          // ),
+                          // GestureDetector(
+                          //   onTap: () {
+                          //     Navigator.pushNamedAndRemoveUntil(
+                          //         context, RegisterPage.id, (route) => false);
+                          //   },
+                          //   child: Text("Don't have an account? Sign up here",
+                          //       style: TextStyle(
+                          //           decoration: TextDecoration.underline)),
+                          // ),

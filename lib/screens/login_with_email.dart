@@ -405,14 +405,12 @@ class _LoginWithEmailState extends State<LoginWithEmail> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(""),
-          leading: widget.color != null
-              ? new IconButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  icon: Icon(Icons.arrow_back, color: Colors.grey),
-                )
-              : null,
+          leading: new IconButton(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: Icon(Icons.arrow_back_rounded, size: 40, color: Colors.black),
+          ),
           backgroundColor:
-              Colors.blue.withOpacity(0.0), //You can make this transparent
+              Colors.redAccent.withOpacity(0.0), //You can make this transparent
           elevation: 0.0, //No
         ),
         body: FutureBuilder(

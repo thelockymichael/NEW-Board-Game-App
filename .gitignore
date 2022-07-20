@@ -34,9 +34,6 @@ android/fastlane/Fastfile
 google-services.json
 fastlane-service-account.json
 
-# Secret API keys
-lib/secrets.dart
-
 # Keystore
 upload-keystore.jks
 

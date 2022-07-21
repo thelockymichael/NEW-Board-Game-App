@@ -83,6 +83,11 @@ flutter:
     - assets/images/splash-screen.jpg
     - assets/images/register-login.jpg
     - assets/images/google-logo.png
+    - assets/images/tutorial/tutorial-like.jpg
+    - assets/images/tutorial/tutorial-skip.jpg
+    - assets/images/tutorial/tutorial-start.jpg
+    - assets/images/tutorial/tutorial-superlike.jpg
+
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

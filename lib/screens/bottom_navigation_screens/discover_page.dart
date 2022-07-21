@@ -16,7 +16,7 @@ import 'package:numberpicker/numberpicker.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
-class Page1 extends StatefulWidget {
+class SortUsers extends StatefulWidget {
   final VoidCallback callback;
 
   final BuildContext themeContext;
@@ -37,7 +37,7 @@ class Page1 extends StatefulWidget {
 
   final List<String> defaultLocality;
 
-  const Page1(
+  const SortUsers(
       {Key? key,
       required this.callback,
       required this.themeContext,
@@ -53,10 +53,10 @@ class Page1 extends StatefulWidget {
       : super(key: key);
 
   @override
-  _Page1State createState() => _Page1State();
+  _SortUsersState createState() => _SortUsersState();
 }
 
-class _Page1State extends State<Page1> {
+class _SortUsersState extends State<SortUsers> {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
   int _currentView = 0;
 
@@ -999,7 +999,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
         builder: (context) {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setModalState) {
-            return Page1(
+            return SortUsers(
               callback: callback,
               themeContext: context,
               setModalState: setModalState,

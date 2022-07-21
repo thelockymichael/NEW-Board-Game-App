@@ -240,7 +240,7 @@ exports.newUserSignup = functions.auth.user().onCreate((user) => {
     bggName: '',
     currentLocation: '',
     gender: '',
-    email: '',
+    email: user.email,
     age: 0,
     profilePhotoPaths: [
       '',

@@ -49,8 +49,6 @@ class _LoginWithEmailState extends State<LoginWithEmail> {
       min + source.nextInt(max - min);
 
   Future createFiftyUsers() async {
-    // print("LOG ${doubleInRange(random, 20, 60)}");
-
     int amount = 50;
 
     List<String> randomNames = [

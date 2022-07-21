@@ -14,6 +14,10 @@ class Utils {
       c1.name.compareTo(c2.name);
   static bool testingNewRegistration = true;
 
+  static Future cacheImage(BuildContext context, String urlImage) {
+    return precacheImage(new AssetImage(urlImage), context);
+  }
+
   static String stockUserProfileUrl =
       "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/tinder-profile-imgs%2Fman_board_game.jpeg?alt=media&token=ffba108e-93be-4617-9bbd-b723657da525";
 
@@ -827,6 +831,32 @@ DateTime convertToDateTime(int epochMs) {
   DateTime date = DateTime.fromMillisecondsSinceEpoch(epochMs);
 
   return date;
+}
+
+extension TextStyleX on TextStyle {
+  /// A method to underline a text with a customizable [distance] between the text
+  /// and underline. The [color], [thickness] and [style] can be set
+  /// as the decorations of a [TextStyle].
+  TextStyle underlined({
+    Color? color,
+    double distance = 1,
+    double thickness = 1,
+    TextDecorationStyle style = TextDecorationStyle.solid,
+  }) {
+    return copyWith(
+      shadows: [
+        Shadow(
+          color: this.color ?? Colors.black,
+          offset: Offset(0, -distance),
+        )
+      ],
+      color: Colors.transparent,
+      decoration: TextDecoration.underline,
+      decorationThickness: thickness,
+      decorationColor: color ?? this.color,
+      decorationStyle: style,
+    );
+  }
 }
 
 extension StringExtension on String {

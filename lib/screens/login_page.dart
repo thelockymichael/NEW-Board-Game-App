@@ -405,10 +405,6 @@ class _LoginPageState extends State<LoginPage> {
     return firebaseApp;
   }
 
-  Future cacheImage(BuildContext context, String urlImage) {
-    return precacheImage(new AssetImage(urlImage), context);
-  }
-
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -436,7 +432,8 @@ class _LoginPageState extends State<LoginPage> {
               elevation: 0.0, //No
             ),
             body: FutureBuilder(
-              future: cacheImage(context, 'assets/images/register-login.jpg'),
+              future:
+                  Utils.cacheImage(context, 'assets/images/register-login.jpg'),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   return Stack(children: [

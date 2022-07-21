@@ -7,8 +7,10 @@ import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/navigation/bottom_navigation_bar.dart';
 import 'package:flutter_demo_01/screens/register_page.dart';
 import 'package:flutter_demo_01/screens/setup_screens/first_name_bgg_page.dart';
+import 'package:flutter_demo_01/screens/tutorial_screens/tutorial_navigation.dart';
 import 'package:flutter_demo_01/utils/constants.dart';
 import 'package:flutter_demo_01/utils/shared_preferences_utils.dart';
+import 'package:flutter_demo_01/utils/utils.dart';
 
 class SplashScreen extends StatefulWidget {
   static const String id = 'splash_screen';
@@ -21,6 +23,8 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   FirebaseDatabaseSource _databaseSource = FirebaseDatabaseSource();
+
+  bool tutorialEnabled = true;
 
   @override
   void initState() {
@@ -43,10 +47,17 @@ class _SplashScreenState extends State<SplashScreen> {
         AppUser _user = AppUser.fromSnapshot(_snapshotUser);
 
         if (_user.setupIsCompleted) {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (_) => MainNavigation()),
-              (route) => false);
+          if (tutorialEnabled) {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (_) => TutorialNavigation()),
+                (route) => false);
+          } else {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (_) => MainNavigation()),
+                (route) => false);
+          }
         } else {
           Navigator.pushAndRemoveUntil(
               context,
@@ -62,8 +73,19 @@ class _SplashScreenState extends State<SplashScreen> {
     });
   }
 
-  Future cacheImage(BuildContext context, String urlImage) {
-    return precacheImage(new AssetImage(urlImage), context);
+  Future loadAssetImages() async {
+    List<String> assetImages = [
+      'assets/images/tutorial/tutorial-start.jpg',
+      'assets/images/tutorial/tutorial-like.jpg',
+      'assets/images/tutorial/tutorial-skip.jpg',
+      'assets/images/tutorial/tutorial-superlike.jpg',
+      'assets/images/splash-screen.jpg',
+      'assets/images/register-login.jpg',
+      'assets/images/google-logo.png',
+    ];
+
+    await Future.wait(
+        assetImages.map((image) => Utils.cacheImage(context, image)).toList());
   }
 
   // @override
@@ -73,7 +95,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return SafeArea(
         child: Scaffold(
             body: FutureBuilder(
-                future: cacheImage(context, 'assets/images/splash-screen.jpg'),
+                future: loadAssetImages(),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState != ConnectionState.waiting)
                     return Stack(children: [

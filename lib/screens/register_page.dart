@@ -392,16 +392,6 @@ class _RegisterPageState extends State<RegisterPage> {
     _userProvider = Provider.of(context, listen: false);
   }
 
-  // Future<FirebaseApp> _initializeFirebase() async {
-  //   FirebaseApp firebaseApp = await Firebase.initializeApp();
-
-  //   return firebaseApp;
-  // }
-
-  Future cacheImage(BuildContext context, String urlImage) {
-    return precacheImage(new AssetImage(urlImage), context);
-  }
-
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -418,7 +408,8 @@ class _RegisterPageState extends State<RegisterPage> {
         child: SafeArea(
           child: Scaffold(
             body: FutureBuilder(
-              future: cacheImage(context, 'assets/images/register-login.jpg'),
+              future:
+                  Utils.cacheImage(context, 'assets/images/register-login.jpg'),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   return Stack(children: [

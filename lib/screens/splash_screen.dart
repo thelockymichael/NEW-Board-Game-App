@@ -24,8 +24,6 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   FirebaseDatabaseSource _databaseSource = FirebaseDatabaseSource();
 
-  bool tutorialEnabled = true;
-
   @override
   void initState() {
     super.initState();
@@ -38,6 +36,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> checkIfUserExists() async {
     Timer(Duration(milliseconds: 1000), () async {
       String? userId = await SharedPreferencesUtil.getUserId();
+      bool? tutorialCompleted = await SharedPreferencesUtil.getTutorialState();
 
       print("LOG signup checkIfUserExists splasScreen $userId");
 
@@ -47,15 +46,28 @@ class _SplashScreenState extends State<SplashScreen> {
         AppUser _user = AppUser.fromSnapshot(_snapshotUser);
 
         if (_user.setupIsCompleted) {
-          if (tutorialEnabled) {
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (_) => TutorialNavigation()),
-                (route) => false);
+          // TODO tutorialCompleted
+          // TODO IF null => then show TUTORIAL !!
+          // TODO IF not NULL =>
+          // TODO IF FALSE => then show TUTORIAL !!
+          // TODO IF TRUE => take to MainNavigation !!
+
+          if (tutorialCompleted != null) {
+            if (tutorialCompleted) {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (_) => MainNavigation()),
+                  (route) => false);
+            } else {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (_) => TutorialNavigation()),
+                  (route) => false);
+            }
           } else {
             Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (_) => MainNavigation()),
+                MaterialPageRoute(builder: (_) => TutorialNavigation()),
                 (route) => false);
           }
         } else {

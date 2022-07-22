@@ -5,6 +5,7 @@ import 'package:flutter_demo_01/firebase_options.dart';
 import 'package:flutter_demo_01/navigation/bottom_navigation_bar.dart';
 import 'package:flutter_demo_01/provider/card_provider.dart';
 import 'package:flutter_demo_01/provider/google_sign_in.dart';
+import 'package:flutter_demo_01/provider/tutorial_card_provider.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/screens/bottom_navigation_screens/profile_page/profile_page_edit.dart';
 import 'package:flutter_demo_01/screens/chat_screen.dart';
@@ -19,6 +20,7 @@ import 'package:flutter_demo_01/screens/setup_screens/enable_location_page.dart'
 import 'package:flutter_demo_01/screens/setup_screens/first_name_bgg_page.dart';
 import 'package:flutter_demo_01/screens/setup_screens/gender_page.dart';
 import 'package:flutter_demo_01/screens/setup_screens/email_and_password.dart';
+import 'package:flutter_demo_01/screens/tutorial_screens/tutorial_navigation.dart';
 import 'package:flutter_demo_01/screens/v1_register_page.dart';
 import 'package:flutter_demo_01/screens/settings_page.dart';
 import 'package:flutter_demo_01/screens/splash_screen.dart';
@@ -56,7 +58,8 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (context) => CardProvider()),
           ChangeNotifierProvider(create: (context) => UserProvider()),
-          ChangeNotifierProvider(create: (context) => GoogleSignInProvider())
+          ChangeNotifierProvider(create: (context) => GoogleSignInProvider()),
+          ChangeNotifierProvider(create: (context) => TutorialCardProvider())
         ],
         child: GlobalLoaderOverlay(
             child: MaterialApp(
@@ -86,6 +89,7 @@ class MyApp extends StatelessWidget {
             EnableLocationPage.id: (context) => const EnableLocationPage(),
             V1RegisterPage.id: (context) => const V1RegisterPage(),
             MainNavigation.id: (context) => const MainNavigation(),
+            TutorialNavigation.id: (context) => const TutorialNavigation(),
             MatchedScreen.id: (context) => MatchedScreen(
                   myProfilePhotoPath: (ModalRoute.of(context)
                       ?.settings

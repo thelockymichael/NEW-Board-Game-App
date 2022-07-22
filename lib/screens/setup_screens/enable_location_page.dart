@@ -7,6 +7,8 @@ import 'package:flutter_demo_01/db/remote/response.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/navigation/bottom_navigation_bar.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
+import 'package:flutter_demo_01/screens/tutorial_screens/tutorial_navigation.dart';
+import 'package:flutter_demo_01/utils/shared_preferences_utils.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
@@ -198,12 +200,46 @@ class EnableLocationPageState extends State<EnableLocationPage> {
                                                           .updateSetupCompleted(
                                                               userSnapshot
                                                                   .data!,
-                                                              context);
+                                                              context)
+                                                          .asStream()
+                                                          .listen(
+                                                              (event) async {
+                                                        bool?
+                                                            tutorialCompleted =
+                                                            await SharedPreferencesUtil
+                                                                .getTutorialState();
 
-                                                      Navigator.of(context)
-                                                          .pushNamedAndRemoveUntil(
-                                                              MainNavigation.id,
+                                                        print(
+                                                            "LOG kl $tutorialCompleted");
+
+                                                        if (tutorialCompleted !=
+                                                            null) {
+                                                          if (tutorialCompleted) {
+                                                            Navigator.pushAndRemoveUntil(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                    builder: (_) =>
+                                                                        MainNavigation()),
+                                                                (route) =>
+                                                                    false);
+                                                          } else {
+                                                            Navigator.pushAndRemoveUntil(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                    builder: (_) =>
+                                                                        TutorialNavigation()),
+                                                                (route) =>
+                                                                    false);
+                                                          }
+                                                        } else {
+                                                          Navigator.pushAndRemoveUntil(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder: (_) =>
+                                                                      TutorialNavigation()),
                                                               (route) => false);
+                                                        }
+                                                      });
                                                     });
 
                                                     // await _getCurrentPosition()

@@ -11,7 +11,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 
 class TutorialNavigation extends StatefulWidget {
-  static const String id = 'main_navigation_page';
+  static const String id = 'tutorial_navigation_page';
 
   const TutorialNavigation({Key? key}) : super(key: key);
 

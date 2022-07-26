@@ -112,93 +112,12 @@ class _MainNavigation extends State<MainNavigation> {
     return true;
   }
 
-  // Future _getCurrentPosition() async {
-  //   print("LOG GET CURRENT LOCATION BUTTON WAS PRESSED");
-  //   final hasPermission = await _handleLocationPermission();
-
-  //   if (!hasPermission) {
-  //     return;
-  //   }
-
-  //   final position = await _geolocatorPlatform.getCurrentPosition();
-
-  //   print("LOG position latitude ${position.latitude.toString()}");
-  //   print("LOG position longitude ${position.longitude.toString()}");
-
-  //   _getAddressFromLatLng(position);
-  // }
-
-  // Future _myFuture(Position position, AppUser userSnapshot) async {
-  //   // await Future.delayed(const Duration(seconds: 5));
-  //   // return 'Future completed';
-
-  //   placemarkFromCoordinates(position.latitude, position.longitude,
-  //           localeIdentifier: "fi")
-  //       .asStream()
-  //       .listen((placemarks) {
-  //     Placemark place = placemarks[0];
-  //     print("LOG place ${place.locality}");
-
-  //     _userProvider.updateCurrentLocationAddress(
-  //         userSnapshot, place.locality!, context);
-
-  //     _userProvider.updateCurrentGeoLocation(userSnapshot, position, context);
-  //   });
-  // }
-
-  // Future _getAddressFromLatLng(Position? position) async {
-  //   AppUser userSnapshot = await _userProvider.user;
-
-  //   if (position != null) {
-  //     _myCancelableFuture = CancelableOperation.fromFuture(
-  //       _myFuture(position, userSnapshot),
-  //       onCancel: () => 'Future has been cancelled',
-  //     );
-  //   }
-  // }
-
-  // final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
-
   @override
   void dispose() {
     _myCancelableFuture?.cancel();
 
     super.dispose();
   }
-
-  // Future<bool> _handleLocationPermission() async {
-  //   bool serviceEnabled;
-  //   LocationPermission permission;
-
-  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
-
-  //   if (!serviceEnabled) {
-  //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-  //       content:
-  //           Text("Location services are disabled. Please enable the services"),
-  //     ));
-  //     return false;
-  //   }
-  //   permission = await Geolocator.checkPermission();
-  //   if (permission == LocationPermission.denied) {
-  //     permission = await Geolocator.requestPermission();
-  //     if (permission == LocationPermission.denied) {
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //           const SnackBar(content: Text("Location permissions are denied")));
-  //       return false;
-  //     }
-  //   }
-
-  //   if (permission == LocationPermission.deniedForever) {
-  //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-  //       content: Text(
-  //           "Location permissions have been denied. We cannot provide you the nearest users."),
-  //     ));
-  //     return false;
-  //   }
-
-  //   return true;
-  // }
 
   @override
   Widget build(BuildContext context) {

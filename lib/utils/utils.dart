@@ -1,15 +1,19 @@
 // ignore_for_file: deprecated_member_use
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/api/recommend_games_api.dart';
 import 'package:flutter_demo_01/db/entity/UserQuery.dart';
+import 'package:flutter_demo_01/db/remote/firebase_database_source.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/model/bg_mechanic.dart';
 import 'package:intl/intl.dart';
 import 'dart:math' show asin, cos, pow, sqrt;
 
 class Utils {
+  static FirebaseDatabaseSource databaseSource = FirebaseDatabaseSource();
+
   static int ascendingSort(FavBgMechanicItem c1, FavBgMechanicItem c2) =>
       c1.name.compareTo(c2.name);
   static bool testingNewRegistration = true;
@@ -18,9 +22,348 @@ class Utils {
     return precacheImage(new AssetImage(urlImage), context);
   }
 
-  static String stockUserProfileUrl =
-      "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/dummy-photos%2Fuser_profile_photo.png?alt=media&token=2db07520-278e-4213-acba-a0c40c654197";
+  static Future createFiftyUsers() async {
+    // print("LOG ${doubleInRange(random, 20, 60)}");
 
+    int amount = 50;
+
+    List<String> randomNames = [
+      "Jaska",
+      "Kalle",
+      "Sanna",
+      "Suvi",
+      "Mervi",
+      "Kalevi",
+      "Elena",
+      "Mirja",
+      "Salla",
+      "Sanni"
+    ];
+
+    for (var i = 0; i <= amount; i++) {
+      // TODO 1. Random name
+      // TODO 2. Random currentGeoLocation, latitude & longitude
+
+      // Timestamp
+
+// 1. DateTime
+      Random intRandom = Random();
+
+      int year = intInRange(intRandom, 1981, 2021);
+
+      int day = intInRange(intRandom, 1, 31);
+      int month = intInRange(intRandom, 1, 12);
+
+      int createdAtYear = intInRange(intRandom, 1970, 1980);
+      int createdAtDay = intInRange(intRandom, 1, 31);
+      int createdAtMonth = intInRange(intRandom, 1, 12);
+
+      DateTime dateTime = new DateTime(
+        year,
+        month,
+        day,
+      );
+      DateTime createdAtDateTime = new DateTime(
+        createdAtYear,
+        createdAtMonth,
+        createdAtDay,
+      );
+      Timestamp timestamp = Timestamp.fromDate(dateTime);
+      Timestamp createdAtTimestamp = Timestamp.fromDate(createdAtDateTime);
+      // END Timestamp
+      Random doubleRandom = Random();
+
+      double lat = doubleInRange(doubleRandom, 20, 60);
+      double long = doubleInRange(doubleRandom, 20, 60);
+      GeoPoint point = GeoPoint(lat, long);
+
+      randomNames.shuffle();
+      AppUser user = AppUser(
+          id: "${i}",
+          createdAt: createdAtTimestamp,
+          updatedAt: timestamp,
+          setupIsCompleted: false,
+          currentGeoLocation: point,
+          name: "${randomNames[0]}",
+          email: "${randomNames[0]}@gmail.com",
+          languages: [],
+          favBoardGameGenres: [],
+          favBgMechanics: [],
+          favBgThemes: [],
+          profilePhotoPaths: ["", "", "", "", "", ""],
+          favBoardGames: FavBoardGames(familyGames: [
+            SelectedBoardGame(
+              rank: 1,
+              boardGame: BoardGameData(
+                bggId: 0,
+                imageUrl: [""],
+                name: "",
+                recRank: 0,
+                recRating: 0.0,
+                recStars: 0.0,
+                year: 0,
+              ),
+            ),
+            SelectedBoardGame(
+              rank: 2,
+              boardGame: BoardGameData(
+                bggId: 0,
+                imageUrl: [""],
+                name: "",
+                recRank: 0,
+                recRating: 0.0,
+                recStars: 0.0,
+                year: 0,
+              ),
+            ),
+            SelectedBoardGame(
+              rank: 3,
+              boardGame: BoardGameData(
+                bggId: 0,
+                imageUrl: [""],
+                name: "",
+                recRank: 0,
+                recRating: 0.0,
+                recStars: 0.0,
+                year: 0,
+              ),
+            )
+          ], dexterityGames: [
+            SelectedBoardGame(
+              rank: 1,
+              boardGame: BoardGameData(
+                bggId: 0,
+                imageUrl: [""],
+                name: "",
+                recRank: 0,
+                recRating: 0.0,
+                recStars: 0.0,
+                year: 0,
+              ),
+            ),
+            SelectedBoardGame(
+              rank: 2,
+              boardGame: BoardGameData(
+                bggId: 0,
+                imageUrl: [""],
+                name: "",
+                recRank: 0,
+                recRating: 0.0,
+                recStars: 0.0,
+                year: 0,
+              ),
+            ),
+            SelectedBoardGame(
+              rank: 3,
+              boardGame: BoardGameData(
+                bggId: 0,
+                imageUrl: [""],
+                name: "",
+                recRank: 0,
+                recRating: 0.0,
+                recStars: 0.0,
+                year: 0,
+              ),
+            )
+          ], partyGames: [
+            SelectedBoardGame(
+              rank: 1,
+              boardGame: BoardGameData(
+                bggId: 0,
+                imageUrl: [""],
+                name: "",
+                recRank: 0,
+                recRating: 0.0,
+                recStars: 0.0,
+                year: 0,
+              ),
+            ),
+            SelectedBoardGame(
+              rank: 2,
+              boardGame: BoardGameData(
+                bggId: 0,
+                imageUrl: [""],
+                name: "",
+                recRank: 0,
+                recRating: 0.0,
+                recStars: 0.0,
+                year: 0,
+              ),
+            ),
+            SelectedBoardGame(
+              rank: 3,
+              boardGame: BoardGameData(
+                bggId: 0,
+                imageUrl: [""],
+                name: "",
+                recRank: 0,
+                recRating: 0.0,
+                recStars: 0.0,
+                year: 0,
+              ),
+            )
+          ], thematicGames: [
+            SelectedBoardGame(
+              rank: 1,
+              boardGame: BoardGameData(
+                bggId: 0,
+                imageUrl: [""],
+                name: "",
+                recRank: 0,
+                recRating: 0.0,
+                recStars: 0.0,
+                year: 0,
+              ),
+            ),
+            SelectedBoardGame(
+              rank: 2,
+              boardGame: BoardGameData(
+                bggId: 0,
+                imageUrl: [""],
+                name: "",
+                recRank: 0,
+                recRating: 0.0,
+                recStars: 0.0,
+                year: 0,
+              ),
+            ),
+            SelectedBoardGame(
+              rank: 3,
+              boardGame: BoardGameData(
+                bggId: 0,
+                imageUrl: [""],
+                name: "",
+                recRank: 0,
+                recRating: 0.0,
+                recStars: 0.0,
+                year: 0,
+              ),
+            )
+          ], strategyGames: [
+            SelectedBoardGame(
+              rank: 1,
+              boardGame: BoardGameData(
+                bggId: 0,
+                imageUrl: [""],
+                name: "",
+                recRank: 0,
+                recRating: 0.0,
+                recStars: 0.0,
+                year: 0,
+              ),
+            ),
+            SelectedBoardGame(
+              rank: 2,
+              boardGame: BoardGameData(
+                bggId: 0,
+                imageUrl: [""],
+                name: "",
+                recRank: 0,
+                recRating: 0.0,
+                recStars: 0.0,
+                year: 0,
+              ),
+            ),
+            SelectedBoardGame(
+              rank: 3,
+              boardGame: BoardGameData(
+                bggId: 0,
+                imageUrl: [""],
+                name: "",
+                recRank: 0,
+                recRating: 0.0,
+                recStars: 0.0,
+                year: 0,
+              ),
+            )
+          ], abstractGames: [
+            SelectedBoardGame(
+              rank: 1,
+              boardGame: BoardGameData(
+                bggId: 0,
+                imageUrl: [""],
+                name: "",
+                recRank: 0,
+                recRating: 0.0,
+                recStars: 0.0,
+                year: 0,
+              ),
+            ),
+            SelectedBoardGame(
+              rank: 2,
+              boardGame: BoardGameData(
+                bggId: 0,
+                imageUrl: [""],
+                name: "",
+                recRank: 0,
+                recRating: 0.0,
+                recStars: 0.0,
+                year: 0,
+              ),
+            ),
+            SelectedBoardGame(
+              rank: 3,
+              boardGame: BoardGameData(
+                bggId: 0,
+                imageUrl: [""],
+                name: "",
+                recRank: 0,
+                recRating: 0.0,
+                recStars: 0.0,
+                year: 0,
+              ),
+            )
+          ], warGames: [
+            SelectedBoardGame(
+              rank: 1,
+              boardGame: BoardGameData(
+                bggId: 0,
+                imageUrl: [""],
+                name: "",
+                recRank: 0,
+                recRating: 0.0,
+                recStars: 0.0,
+                year: 0,
+              ),
+            ),
+            SelectedBoardGame(
+              rank: 2,
+              boardGame: BoardGameData(
+                bggId: 0,
+                imageUrl: [""],
+                name: "",
+                recRank: 0,
+                recRating: 0.0,
+                recStars: 0.0,
+                year: 0,
+              ),
+            ),
+            SelectedBoardGame(
+              rank: 3,
+              boardGame: BoardGameData(
+                bggId: 0,
+                imageUrl: [""],
+                name: "",
+                recRank: 0,
+                recRating: 0.0,
+                recStars: 0.0,
+                year: 0,
+              ),
+            )
+          ]));
+
+      databaseSource.addUser(user);
+    }
+  }
+
+  static double doubleInRange(Random source, num start, num end) =>
+      source.nextDouble() * (end - start) + start;
+
+  static int intInRange(Random source, int min, int max) =>
+      min + source.nextInt(max - min);
+
+  static String stockUserProfileUrl =
+      "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/dummy-photos%2Fdummy_placeholder.jpg?alt=media&token=21a05460-362d-4691-a4a9-78b6ff18228e";
   static List<String> userDistance = [
     "2",
     "3",
@@ -472,9 +815,8 @@ class Utils {
   ];
 
   // Stock User profile
-
   static String userProfileIcon =
-      "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/dummy-photos%2Fuser_profile_photo.png?alt=media&token=2db07520-278e-4213-acba-a0c40c654197";
+      "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/dummy-photos%2Fdummy_placeholder.jpg?alt=media&token=21a05460-362d-4691-a4a9-78b6ff18228e";
 
   static AppUser user = AppUser(
       id: "test id",

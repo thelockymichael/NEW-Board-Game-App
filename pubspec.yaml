@@ -60,6 +60,7 @@ dependencies:
   modal_bottom_sheet: ^2.1.0
   google_sign_in: ^5.4.0
   font_awesome_flutter: ^10.1.0
+  animations: ^2.0.3
 
 
 dev_dependencies:
@@ -81,6 +82,8 @@ flutter:
 
   assets:
     - assets/images/splash-screen.jpg
+    - assets/placeholder_image.png
+    - assets/avatar_logo.png
     - assets/images/register-login.jpg
     - assets/images/google-logo.png
     - assets/images/tutorial/tutorial-like.jpg

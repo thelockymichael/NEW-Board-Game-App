@@ -37,6 +37,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   late UserProvider _userProvider;
+  final FirebaseAuth auth = FirebaseAuth.instance;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -562,62 +563,63 @@ class _LoginPageState extends State<LoginPage> {
                                               .googleRegister()
                                               .then((response) async {
                                             if (response is Success) {
-                                              final provider = Provider.of<
-                                                      GoogleSignInProvider>(
-                                                  context,
-                                                  listen: false);
+                                              AuthCredential authCredentials =
+                                                  response.value;
 
-                                              await provider
-                                                  .googleRegister()
-                                                  .then((response) async {
-                                                if (response is Success) {
-                                                  UserCredential userCreds =
-                                                      response.value;
-                                                  String id =
-                                                      userCreds.user!.uid;
+                                              auth
+                                                  .signInWithCredential(
+                                                      authCredentials)
+                                                  .asStream()
+                                                  .listen((userCreds) async {
+                                                print(
+                                                    "LOG signup listen $userCreds");
+                                                _databaseSource
+                                                    .observeUser(
+                                                        userCreds.user!.uid)
+                                                    .listen((event) {})
+                                                    .onData((data) async {
                                                   print(
-                                                      "LOG signup register uid ${userCreds.user!.uid}");
+                                                      "LOG signup sdf whenComplete(), $data");
 
-                                                  await SharedPreferencesUtil
-                                                      .setUserId(id);
-
-                                                  Timer(Duration(seconds: 10),
-                                                      () async {
+                                                  if (data.exists) {
                                                     if (_isLoaderVisible) {
                                                       context.loaderOverlay
                                                           .hide();
-                                                    }
-                                                    var _snapshot =
-                                                        await _databaseSource
-                                                            .getUser(id);
-                                                    AppUser appUser =
-                                                        AppUser.fromSnapshot(
-                                                            _snapshot);
+                                                      AppUser appUser =
+                                                          AppUser.fromSnapshot(
+                                                              data);
+                                                      print(
+                                                          "LOG signup sdf appUser, ${appUser}");
+                                                      print(
+                                                          "LOG signup sdf appUser, ${appUser.setupIsCompleted}");
 
-                                                    if (appUser
-                                                        .setupIsCompleted) {
-                                                      Navigator.pop(context);
-                                                      Navigator
-                                                          .pushNamedAndRemoveUntil(
-                                                              context,
-                                                              MainNavigation.id,
-                                                              (route) => false);
-                                                    } else {
-                                                      Navigator.pop(context);
-                                                      Navigator
-                                                          .pushNamedAndRemoveUntil(
-                                                              context,
-                                                              FirstNameBggPage
-                                                                  .id,
-                                                              (route) => false);
+                                                      await SharedPreferencesUtil
+                                                          .setUserId(
+                                                              appUser.id);
+
+                                                      if (appUser
+                                                          .setupIsCompleted) {
+                                                        Navigator.pop(context);
+                                                        Navigator
+                                                            .pushNamedAndRemoveUntil(
+                                                                context,
+                                                                MainNavigation
+                                                                    .id,
+                                                                (route) =>
+                                                                    false);
+                                                      } else {
+                                                        Navigator.pop(context);
+                                                        Navigator
+                                                            .pushNamedAndRemoveUntil(
+                                                                context,
+                                                                FirstNameBggPage
+                                                                    .id,
+                                                                (route) =>
+                                                                    false);
+                                                      }
                                                     }
-                                                  });
-                                                } else {
-                                                  if (_isLoaderVisible) {
-                                                    context.loaderOverlay
-                                                        .hide();
                                                   }
-                                                }
+                                                });
                                               });
                                             } else {
                                               if (_isLoaderVisible) {
@@ -718,126 +720,3 @@ class LoginUserOverlay extends StatelessWidget {
         ),
       ));
 }
-                          // ElevatedButton(
-                          //   style: ElevatedButton.styleFrom(
-                          //     minimumSize: const Size.fromHeight(40), // NEW
-                          //   ),
-                          //   onPressed: () async {
-                          //     Navigator.of(context).push(PageRouteBuilder(
-                          //       pageBuilder: (
-                          //         BuildContext context,
-                          //         Animation<double> animation,
-                          //         Animation<double> secondaryAnimation,
-                          //       ) =>
-                          //           LoginWithEmail(color: Colors.black),
-                          //       transitionsBuilder: (
-                          //         BuildContext context,
-                          //         Animation<double> animation,
-                          //         Animation<double> secondaryAnimation,
-                          //         Widget child,
-                          //       ) =>
-                          //           SlideTransition(
-                          //         position: Tween<Offset>(
-                          //           begin: const Offset(1, 0),
-                          //           end: Offset.zero,
-                          //         ).animate(animation),
-                          //         child: child,
-                          //       ),
-                          //     ));
-                          //   },
-                          //   child: const Text(
-                          //     'Log in with email',
-                          //     style: TextStyle(color: Colors.white),
-                          //   ),
-                          // ),
-                          // ElevatedButton.icon(
-                          //   style: ElevatedButton.styleFrom(
-                          //     minimumSize: const Size.fromHeight(40), // NEW
-                          //   ),
-                          //   onPressed: () async {
-                          //     context.loaderOverlay
-                          //         .show(widget: LoginUserOverlay());
-
-                          //     setState(() {
-                          //       _isLoaderVisible =
-                          //           context.loaderOverlay.visible;
-                          //     });
-
-                          //     final provider =
-                          //         Provider.of<GoogleSignInProvider>(context,
-                          //             listen: false);
-
-                          //     await provider
-                          //         .googleRegister()
-                          //         .then((response) async {
-                          //       if (response is Success) {
-                          //         final provider =
-                          //             Provider.of<GoogleSignInProvider>(context,
-                          //                 listen: false);
-
-                          //         await provider
-                          //             .googleRegister()
-                          //             .then((response) async {
-                          //           if (response is Success) {
-                          //             UserCredential userCreds = response.value;
-                          //             String id = userCreds.user!.uid;
-                          //             print(
-                          //                 "LOG signup register uid ${userCreds.user!.uid}");
-
-                          //             await SharedPreferencesUtil.setUserId(id);
-
-                          //             Timer(Duration(seconds: 10), () async {
-                          //               if (_isLoaderVisible) {
-                          //                 context.loaderOverlay.hide();
-                          //               }
-                          //               var _snapshot =
-                          //                   await _databaseSource.getUser(id);
-                          //               AppUser appUser =
-                          //                   AppUser.fromSnapshot(_snapshot);
-
-                          //               if (appUser.setupIsCompleted) {
-                          //                 Navigator.pop(context);
-                          //                 Navigator.pushNamedAndRemoveUntil(
-                          //                     context,
-                          //                     MainNavigation.id,
-                          //                     (route) => false);
-                          //               } else {
-                          //                 Navigator.pop(context);
-                          //                 Navigator.pushNamedAndRemoveUntil(
-                          //                     context,
-                          //                     FirstNameBggPage.id,
-                          //                     (route) => false);
-                          //               }
-                          //             });
-                          //           } else {
-                          //             if (_isLoaderVisible) {
-                          //               context.loaderOverlay.hide();
-                          //             }
-                          //           }
-                          //         });
-                          //       } else {
-                          //         if (_isLoaderVisible) {
-                          //           context.loaderOverlay.hide();
-                          //         }
-                          //       }
-                          //     });
-                          //   },
-                          //   icon: FaIcon(FontAwesomeIcons.google,
-                          //       color: Colors.red),
-                          //   label: const Text(
-                          //     'Log in with Google',
-                          //     style: TextStyle(color: Colors.white),
-                          //   ),
-                          // ),
-                          // SizedBox(
-                          //   height: 16,
-                          // ),
-                          // GestureDetector(
-                          //   onTap: () {
-                          //     Navigator.pushNamedAndRemoveUntil(
-                          //         context, RegisterPage.id, (route) => false);
-                          //   },
-                          //   child: Text("Don't have an account? Sign up here",
-                          //       style: TextStyle(
-                          //           decoration: TextDecoration.underline)),
-                          // ),

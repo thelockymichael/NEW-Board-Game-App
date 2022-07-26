@@ -36,12 +36,9 @@ class GoogleSignInProvider extends ChangeNotifier {
 
   Future<Response> googleRegister() async {
     try {
-      print("LOG signup user did select account");
-
       GoogleSignInAccount? googleSignInUser = await googleSignIn.signIn();
 
       if (googleSignInUser == null) {
-        print("LOG signup user did not select account");
         return Response.error("No user was selected");
       } else {
         final GoogleSignInAuthentication? googleSignInAuth =
@@ -52,12 +49,7 @@ class GoogleSignInProvider extends ChangeNotifier {
               idToken: googleSignInAuth.idToken,
               accessToken: googleSignInAuth.accessToken);
 
-          UserCredential result =
-              await auth.signInWithCredential(authCredentials);
-
-          print("LOG signup result ${result}");
-
-          return Response.success(result);
+          return Response.success(authCredentials);
         }
       }
     } catch (e) {
@@ -70,9 +62,8 @@ class GoogleSignInProvider extends ChangeNotifier {
   Future logout() async {
     try {
       User? user = auth.currentUser;
-      // if (User)
+
       if (user != null) {
-        print("LOG signup logout YES if");
         await SharedPreferencesUtil.removeUserId();
 
         await googleSignIn.disconnect();

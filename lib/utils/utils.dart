@@ -19,7 +19,7 @@ class Utils {
   }
 
   static String stockUserProfileUrl =
-      "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/tinder-profile-imgs%2Fman_board_game.jpeg?alt=media&token=ffba108e-93be-4617-9bbd-b723657da525";
+      "https://firebasestorage.googleapis.com/v0/b/board-game-app-c1a95.appspot.com/o/dummy-photos%2Fuser_profile_photo.png?alt=media&token=2db07520-278e-4213-acba-a0c40c654197";
 
   static List<String> userDistance = [
     "2",

@@ -911,6 +911,43 @@ class UserProvider extends ChangeNotifier {
     return response;
   }
 
+  Future<Response> updateGeoLocationAndLocality(AppUser userSnapshot,
+      Position geoLocation, String address, BuildContext context) async {
+    GeoPoint point = GeoPoint(geoLocation.latitude, geoLocation.longitude);
+
+    print("LOG geoPoint latitude ${point.latitude}");
+    print("LOG geoPoint longitude ${point.longitude}");
+
+    AppUser user = AppUser(
+        id: userSnapshot.id,
+        createdAt: userSnapshot.createdAt,
+        updatedAt: userSnapshot.updatedAt,
+        setupIsCompleted: userSnapshot.setupIsCompleted,
+        name: userSnapshot.name,
+        bggName: userSnapshot.bggName,
+        currentLocation: address,
+        currentGeoLocation: point,
+        gender: userSnapshot.gender,
+        age: userSnapshot.age,
+        bio: userSnapshot.bio,
+        email: userSnapshot.email,
+        languages: userSnapshot.languages,
+        favBoardGameGenres: userSnapshot.favBoardGameGenres,
+        favBgMechanics: userSnapshot.favBgMechanics,
+        favBgThemes: userSnapshot.favBgThemes,
+        profilePhotoPaths: userSnapshot.profilePhotoPaths,
+        favBoardGames: userSnapshot.favBoardGames);
+
+    Response<dynamic> response = await _databaseSource.updateUser(user);
+
+    if (response is Success<String>) {
+      return Response.success(user);
+    }
+
+    if (response is Error) showSnackBar(context, response.message);
+    return response;
+  }
+
   Future<Response> updateCurrentLocationAddress(
       AppUser userSnapshot, String address, BuildContext context) async {
     AppUser user = AppUser(

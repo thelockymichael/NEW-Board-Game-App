@@ -38,6 +38,7 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   late UserProvider _userProvider;
+  final FirebaseAuth auth = FirebaseAuth.instance;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -393,6 +394,11 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
 
@@ -518,42 +524,63 @@ class _RegisterPageState extends State<RegisterPage> {
                                               .googleRegister()
                                               .then((response) async {
                                             if (response is Success) {
-                                              UserCredential userCreds =
+                                              AuthCredential authCredentials =
                                                   response.value;
-                                              String id = userCreds.user!.uid;
-                                              print(
-                                                  "LOG signup register uid ${userCreds.user!.uid}");
 
-                                              await SharedPreferencesUtil
-                                                  .setUserId(id);
+                                              auth
+                                                  .signInWithCredential(
+                                                      authCredentials)
+                                                  .asStream()
+                                                  .listen((userCreds) async {
+                                                print(
+                                                    "LOG signup listen $userCreds");
+                                                _databaseSource
+                                                    .observeUser(
+                                                        userCreds.user!.uid)
+                                                    .listen((event) {})
+                                                    .onData((data) async {
+                                                  print(
+                                                      "LOG signup sdf whenComplete(), $data");
 
-                                              Timer(Duration(seconds: 10),
-                                                  () async {
-                                                if (_isLoaderVisible) {
-                                                  context.loaderOverlay.hide();
-                                                }
-                                                var _snapshot =
-                                                    await _databaseSource
-                                                        .getUser(id);
-                                                AppUser appUser =
-                                                    AppUser.fromSnapshot(
-                                                        _snapshot);
+                                                  if (data.exists) {
+                                                    if (_isLoaderVisible) {
+                                                      context.loaderOverlay
+                                                          .hide();
+                                                      AppUser appUser =
+                                                          AppUser.fromSnapshot(
+                                                              data);
+                                                      print(
+                                                          "LOG signup sdf appUser, ${appUser}");
+                                                      print(
+                                                          "LOG signup sdf appUser, ${appUser.setupIsCompleted}");
 
-                                                if (appUser.setupIsCompleted) {
-                                                  Navigator.pop(context);
-                                                  Navigator
-                                                      .pushNamedAndRemoveUntil(
-                                                          context,
-                                                          MainNavigation.id,
-                                                          (route) => false);
-                                                } else {
-                                                  Navigator.pop(context);
-                                                  Navigator
-                                                      .pushNamedAndRemoveUntil(
-                                                          context,
-                                                          FirstNameBggPage.id,
-                                                          (route) => false);
-                                                }
+                                                      await SharedPreferencesUtil
+                                                          .setUserId(
+                                                              appUser.id);
+
+                                                      if (appUser
+                                                          .setupIsCompleted) {
+                                                        Navigator.pop(context);
+                                                        Navigator
+                                                            .pushNamedAndRemoveUntil(
+                                                                context,
+                                                                MainNavigation
+                                                                    .id,
+                                                                (route) =>
+                                                                    false);
+                                                      } else {
+                                                        Navigator.pop(context);
+                                                        Navigator
+                                                            .pushNamedAndRemoveUntil(
+                                                                context,
+                                                                FirstNameBggPage
+                                                                    .id,
+                                                                (route) =>
+                                                                    false);
+                                                      }
+                                                    }
+                                                  }
+                                                });
                                               });
                                             } else {
                                               if (_isLoaderVisible) {
@@ -715,7 +742,7 @@ class CreateNewUserOverlay extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Logging in to Google',
+                  'Signing up with Google',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 Text(

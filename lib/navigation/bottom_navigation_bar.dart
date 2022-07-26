@@ -28,7 +28,7 @@ class _MainNavigation extends State<MainNavigation> {
     super.initState();
     _userProvider = Provider.of<UserProvider>(context, listen: false);
 
-    _getCurrentPosition();
+    // _getCurrentPosition();
     // 4 Different Tab Screens
     screens = [const DiscoverPage(), const ChatsScreen(), const ProfilePage()];
   }
@@ -115,7 +115,7 @@ class _MainNavigation extends State<MainNavigation> {
     if (permission == LocationPermission.deniedForever) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text(
-            "Location permissions are permanently denied, we cannot request permissions."),
+            "Location permissions have been denied. We cannot provide you the nearest users."),
       ));
       return false;
     }

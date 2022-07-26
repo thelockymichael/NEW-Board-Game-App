@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
+import 'package:flutter_demo_01/db/entity/PositionLocality.dart';
 
 import 'package:flutter_demo_01/db/remote/response.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_demo_01/navigation/bottom_navigation_bar.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/screens/tutorial_screens/tutorial_navigation.dart';
 import 'package:flutter_demo_01/utils/shared_preferences_utils.dart';
+import 'package:flutter_demo_01/utils/utils.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
@@ -54,7 +56,7 @@ class EnableLocationPageState extends State<EnableLocationPage> {
     _userProvider = Provider.of<UserProvider>(context, listen: false);
   }
 
-  Future<Response<Placemark>> _getCurrentPosition(AppUser appUser) async {
+  Future<Response> _getCurrentPosition(AppUser appUser) async {
     print("LOG GET CURRENT LOCATION BUTTON WAS PRESSED");
     final hasPermission = await _handleLocationPermission();
 
@@ -71,57 +73,24 @@ class EnableLocationPageState extends State<EnableLocationPage> {
         position.latitude, position.longitude,
         localeIdentifier: "fi");
 
-    print("LOG kl data jotaisfas");
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
 
-    // placemarkFromCoordinates(position.latitude, position.longitude,
-    //         localeIdentifier: "fi")
-    //     .asStream()
-    //     .listen((placemarks) {
-    //   Placemark place = placemarks[0];
-    //   print("LOG place ${place.locality}");
-
-    //   _userProvider.updateCurrentLocationAddress(
-    //       appUser, place.locality!, context);
-
-    //   _userProvider.updateCurrentGeoLocation(appUser, position, context);
-    // });
-
-    // _myCancelableFuture = CancelableOperation.fromFuture(
-    //   _myFuture(position, userSnapshot),
-    //   onCancel: () => 'Future has been cancelled',
-    // );
-    return Response.success(placemarks[0]);
-
-    // _getAddressFromLatLng(position);
-  }
-
-  Future _myFuture(Position position, AppUser userSnapshot) async {
-    // await Future.delayed(const Duration(seconds: 5));
-    // return 'Future completed';
-
-    placemarkFromCoordinates(position.latitude, position.longitude,
-            localeIdentifier: "fi")
-        .asStream()
-        .listen((placemarks) {
-      Placemark place = placemarks[0];
-      print("LOG place ${place.locality}");
-
-      _userProvider.updateCurrentLocationAddress(
-          userSnapshot, place.locality!, context);
-
-      _userProvider.updateCurrentGeoLocation(userSnapshot, position, context);
+    Response<dynamic> response = await userProvider
+        .updateGeoLocationAndLocality(
+            appUser, position, placemarks[0].locality!, context)
+        .then(((value) {
+      print("LOG kl successfully uploaded");
+      return Response.success(PositionLocality(position, placemarks[0]));
+    })).catchError((err) {
+      print("LOG kl error");
     });
-  }
 
-  Future _getAddressFromLatLng(Position? position) async {
-    AppUser userSnapshot = await _userProvider.user;
-
-    if (position != null) {
-      _myCancelableFuture = CancelableOperation.fromFuture(
-        _myFuture(position, userSnapshot),
-        onCancel: () => 'Future has been cancelled',
-      );
+    if (response is Success<String>) {
+      return Response.success(PositionLocality(position, placemarks[0]));
     }
+
+    if (response is Error) showSnackBar(context, response.message);
+    return response;
   }
 
   Future<bool> _handleLocationPermission() async {
@@ -157,76 +126,6 @@ class EnableLocationPageState extends State<EnableLocationPage> {
 
     return true;
   }
-
-  // Future _getCurrentPosition() async {
-  //   final hasPermission = await _handleLocationPermission();
-
-  //   if (!hasPermission) return Response.error("Permission not granted");
-
-  //   await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
-  //       .then((Position position) {
-  //     setState(() => _currentGeoLocation = position);
-
-  //     _getAddressFromLatLng(_currentGeoLocation!);
-  //   }).catchError((e) {
-  //     debugPrint(e);
-  //   });
-  // }
-
-  // Future<void> _getAddressFromLatLng(Position position) async {
-  //   AppUser userSnapshot = await _userProvider.user;
-
-  //   print("SDF ${userSnapshot.name}");
-  //   await placemarkFromCoordinates(position.latitude, position.longitude,
-  //           localeIdentifier: "fi")
-  //       .then((List<Placemark> placemarks) {
-  //     Placemark place = placemarks[0];
-
-  //     setState(() {
-  //       _currentLocation = '${place.locality}';
-  //       _userProvider.updateCurrentLocationAddress(
-  //           userSnapshot, _currentLocation!, context);
-
-  //       _userProvider.updateCurrentGeoLocation(userSnapshot, position, context);
-  //     });
-  //   }).catchError((e) {
-  //     debugPrint(e);
-  //   });
-  // }
-
-  // Future<bool> _handleLocationPermission() async {
-  //   bool serviceEnabled;
-  //   LocationPermission permission;
-
-  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
-
-  //   if (!serviceEnabled) {
-  //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-  //       content:
-  //           Text("Location services are disabled. Please enable the services"),
-  //     ));
-  //     return false;
-  //   }
-  //   permission = await Geolocator.checkPermission();
-  //   if (permission == LocationPermission.denied) {
-  //     permission = await Geolocator.requestPermission();
-  //     if (permission == LocationPermission.denied) {
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //           const SnackBar(content: Text("Location permissions are denied")));
-  //       return false;
-  //     }
-  //   }
-
-  //   if (permission == LocationPermission.deniedForever) {
-  //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-  //       content: Text(
-  //           "Location permissions are permanently denied, we cannot request permissions."),
-  //     ));
-  //     return false;
-  //   }
-
-  //   return true;
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -293,96 +192,81 @@ class EnableLocationPageState extends State<EnableLocationPage> {
                                                           .visible;
                                                     });
 
+                                                    Response<dynamic> response =
+                                                        await _getCurrentPosition(
+                                                      userSnapshot.data!,
+                                                    );
+                                                    print("LOG kl ${response}");
+
+                                                    if (response is Success<
+                                                        PositionLocality>) {
+                                                      if (_isLoaderVisible) {
+                                                        context.loaderOverlay
+                                                            .hide();
+                                                      }
+                                                      PositionLocality
+                                                          positionLocality =
+                                                          response.value;
+
+                                                      print(
+                                                          "LOG kl position ${positionLocality.position}");
+                                                      print(
+                                                          "LOG kl position ${positionLocality.placemark.locality}");
+
+                                                      await userProvider
+                                                          .updateSetupCompleted(
+                                                              true,
+                                                              positionLocality,
+                                                              userSnapshot
+                                                                  .data!,
+                                                              context);
+
+                                                      bool? tutorialCompleted =
+                                                          await SharedPreferencesUtil
+                                                              .getTutorialState();
+
+                                                      print(
+                                                          "LOG kl $tutorialCompleted");
+
+                                                      if (tutorialCompleted !=
+                                                          null) {
+                                                        if (tutorialCompleted) {
+                                                          Navigator.pushAndRemoveUntil(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder: (_) =>
+                                                                      MainNavigation()),
+                                                              (route) => false);
+                                                        } else {
+                                                          Navigator.pushAndRemoveUntil(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder: (_) =>
+                                                                      TutorialNavigation()),
+                                                              (route) => false);
+                                                        }
+                                                      } else {
+                                                        Navigator.pushAndRemoveUntil(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder: (_) =>
+                                                                    TutorialNavigation()),
+                                                            (route) => false);
+                                                      }
+
+                                                      Navigator.pop(context);
+                                                      Navigator
+                                                          .pushNamedAndRemoveUntil(
+                                                              context,
+                                                              MainNavigation.id,
+                                                              (route) => false);
+                                                    }
+
                                                     // TODO Enable location
                                                     // TODO Get Response message
                                                     // TODO IF not -> cancel page route to MAIN
 
                                                     print("LOG kl data");
-                                                    subscription =
-                                                        _getCurrentPosition(
-                                                                userSnapshot
-                                                                    .data!)
-                                                            .asStream()
-                                                            .listen((event) {});
-
-                                                    subscription.onData((data) {
-                                                      if (_isLoaderVisible) {
-                                                        context.loaderOverlay
-                                                            .hide();
-                                                      }
-                                                      print(
-                                                          "LOG kl data $data");
-                                                    });
-
-                                                    // Timer(Duration(seconds: 1),
-                                                    //     () async {
-                                                    //   if (_isLoaderVisible) {
-                                                    //     context.loaderOverlay
-                                                    //         .hide();
-                                                    //   } //   userSnapshot.data!
-                                                    //   userSnapshot.data!
-                                                    //           .setupIsCompleted =
-                                                    //       true;
-
-                                                    //   userProvider
-                                                    //       .updateSetupCompleted(
-                                                    //           userSnapshot
-                                                    //               .data!,
-                                                    //           context)
-                                                    //       .asStream()
-                                                    //       .listen(
-                                                    //           (event) async {
-                                                    //     bool?
-                                                    //         tutorialCompleted =
-                                                    //         await SharedPreferencesUtil
-                                                    //             .getTutorialState();
-
-                                                    //     // TODO Force locations
-                                                    //     // TODO If enabled => setupIsCompleted = true
-
-                                                    //     print(
-                                                    //         "LOG kl $tutorialCompleted");
-                                                    //     subscription =
-                                                    //         _getCurrentPosition()
-                                                    //             .asStream()
-                                                    //             .listen(
-                                                    //                 (event) {});
-
-                                                    //     subscription
-                                                    //         .onData((data) {
-                                                    //       print(
-                                                    //           "LOG kl data $tutorialCompleted");
-                                                    //     });
-
-                                                    //     // if (tutorialCompleted !=
-                                                    //     //     null) {
-                                                    //     //   if (tutorialCompleted) {
-                                                    //     //     Navigator.pushAndRemoveUntil(
-                                                    //     //         context,
-                                                    //     //         MaterialPageRoute(
-                                                    //     //             builder: (_) =>
-                                                    //     //                 MainNavigation()),
-                                                    //     //         (route) =>
-                                                    //     //             false);
-                                                    //     //   } else {
-                                                    //     //     Navigator.pushAndRemoveUntil(
-                                                    //     //         context,
-                                                    //     //         MaterialPageRoute(
-                                                    //     //             builder: (_) =>
-                                                    //     //                 TutorialNavigation()),
-                                                    //     //         (route) =>
-                                                    //     //             false);
-                                                    //     //   }
-                                                    //     // } else {
-                                                    //     //   Navigator.pushAndRemoveUntil(
-                                                    //     //       context,
-                                                    //     //       MaterialPageRoute(
-                                                    //     //           builder: (_) =>
-                                                    //     //               TutorialNavigation()),
-                                                    //     //       (route) => false);
-                                                    //     // }
-                                                    //   });
-                                                    // });
                                                   },
                                                   child: const Text(
                                                     'ENABLE LOCATION',

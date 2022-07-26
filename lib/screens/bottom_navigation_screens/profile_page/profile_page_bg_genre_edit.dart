@@ -147,7 +147,7 @@ class _ProfilePageBgGenreEditState extends State<ProfilePageBgGenreEdit> {
             : InkWell(
                 onTap: () {
                   _userProvider.updateFavouriteBoardGameGenres(
-                      userSnapshot!, selectedList, errorScaffoldKey);
+                      userSnapshot!, selectedList, context);
 
                   widget.notifyParent();
 

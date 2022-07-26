@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/api/recommend_games_api.dart';
+import 'package:flutter_demo_01/db/entity/PositionLocality.dart';
 import 'package:flutter_demo_01/db/entity/chat.dart';
 import 'package:flutter_demo_01/db/entity/FavGenreItem.dart';
 import 'package:flutter_demo_01/db/entity/match.dart';
@@ -987,7 +988,6 @@ class UserProvider extends ChangeNotifier {
     print("LOG geoPoint latitude ${point.latitude}");
     print("LOG geoPoint longitude ${point.longitude}");
 
-// point.data
     AppUser user = AppUser(
         id: userSnapshot.id,
         createdAt: userSnapshot.createdAt,
@@ -1019,11 +1019,34 @@ class UserProvider extends ChangeNotifier {
   }
 
   Future<Response> updateSetupCompleted(
-      AppUser userSnapshot, BuildContext context) async {
-    // final updateFavBoardGames = _returnFavBoardGames(
-    //     userSnapshot, boardGameData, boardGameRank, boardGameGenre);
+      bool setupIsCompleted,
+      PositionLocality positionLocality,
+      AppUser appUser,
+      BuildContext context) async {
+    GeoPoint point = GeoPoint(positionLocality.position.latitude,
+        positionLocality.position.longitude);
 
-    Response<dynamic> response = await _databaseSource.updateUser(userSnapshot);
+    AppUser user = AppUser(
+        id: appUser.id,
+        createdAt: appUser.createdAt,
+        updatedAt: appUser.updatedAt,
+        setupIsCompleted: setupIsCompleted,
+        name: appUser.name,
+        bggName: appUser.bggName,
+        currentLocation: positionLocality.placemark.locality!,
+        currentGeoLocation: point,
+        gender: appUser.gender,
+        age: appUser.age,
+        bio: appUser.bio,
+        email: appUser.email,
+        languages: appUser.languages,
+        favBoardGameGenres: appUser.favBoardGameGenres,
+        favBgMechanics: appUser.favBgMechanics,
+        favBgThemes: appUser.favBgThemes,
+        profilePhotoPaths: appUser.profilePhotoPaths,
+        favBoardGames: appUser.favBoardGames);
+
+    Response<dynamic> response = await _databaseSource.updateUser(user);
 
     if (response is Success<String>) {
       return Response.success(user);

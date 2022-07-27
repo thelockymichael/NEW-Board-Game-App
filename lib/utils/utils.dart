@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/api/recommend_games_api.dart';
@@ -20,6 +21,10 @@ class Utils {
 
   static Future cacheImage(BuildContext context, String urlImage) {
     return precacheImage(new AssetImage(urlImage), context);
+  }
+
+  static Future cacheNetworkImage(BuildContext context, String urlImage) {
+    return precacheImage(CachedNetworkImageProvider(urlImage), context);
   }
 
   static Future createFiftyUsers() async {

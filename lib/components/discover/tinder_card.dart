@@ -3,7 +3,9 @@
 import 'dart:math';
 import 'package:animations/animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_demo_01/api/get_nearest_users_api.dart';
+import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
 import "package:flutter_demo_01/utils/utils.dart";
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
@@ -187,6 +189,30 @@ class _TinderCardState extends State<TinderCard> {
                     stops: [0, 0.2, 0.8, 1],
                   ),
                 )),
+            Positioned(
+                right: 0,
+                top: 0,
+                bottom: 0,
+                child: GestureDetector(
+                    onTap: () {
+                      print("LOG yui right");
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.50 - 16,
+                      color: Colors.transparent,
+                    ))),
+            Positioned(
+                left: 0,
+                top: 0,
+                bottom: 0,
+                child: GestureDetector(
+                    onTap: () {
+                      print("LOG yui left");
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.50 - 16,
+                      color: Colors.transparent,
+                    )))
           ]));
         },
       ));
@@ -345,58 +371,6 @@ class _BggWebViewState extends State<BggWebView> {
   }
 }
 
-class _ExampleCard extends StatelessWidget {
-  const _ExampleCard({required this.openContainer, required this.userSnapshot});
-
-  final VoidCallback openContainer;
-  final ResultAppUser userSnapshot;
-
-  Widget recentlyActive() => Row(
-        children: [
-          const Icon(Icons.circle, size: 8, color: Colors.green),
-          const SizedBox(width: 8),
-          Text("Recently active",
-              style: const TextStyle(
-                fontSize: 20,
-                color: Colors.white,
-              )),
-          const SizedBox(width: 8),
-          const Icon(Icons.info_rounded, color: Colors.white),
-        ],
-      );
-
-  Widget userDistance() {
-    final geoLocation = userSnapshot.currentGeoLocation;
-    if (geoLocation.latitude == 0 && geoLocation.longitude == 0) {
-      return Container();
-    }
-
-    return Row(
-      children: [
-        Text("${userSnapshot.distance.toString()} kilometers away",
-            style: const TextStyle(
-              fontSize: 20,
-              color: Colors.white,
-            )),
-      ],
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _InkWellOverlay(
-        openContainer: openContainer,
-        child: Container(
-            decoration: BoxDecoration(color: Colors.red),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Align(
-                child: Column(children: [recentlyActive(), userDistance()]),
-              ),
-            )));
-  }
-}
-
 class _OpenContainerWrapper extends StatelessWidget {
   const _OpenContainerWrapper(
       {required this.closedBuilder,
@@ -416,7 +390,7 @@ class _OpenContainerWrapper extends StatelessWidget {
     return OpenContainer<bool>(
       transitionType: transitionType,
       openBuilder: (BuildContext context, VoidCallback _) {
-        return _DetailsPage(userSnapshot: userSnapshot, context: context);
+        return DetailsPage(userSnapshot: userSnapshot, context: context);
       },
       onClosed: onClosed,
       tappable: false,
@@ -425,11 +399,30 @@ class _OpenContainerWrapper extends StatelessWidget {
   }
 }
 
-class _DetailsPage extends StatelessWidget {
-  _DetailsPage({required this.userSnapshot, required this.context});
-
+class DetailsPage extends StatefulWidget {
   final ResultAppUser userSnapshot;
   final BuildContext context;
+
+  const DetailsPage(
+      {Key? key, required this.userSnapshot, required this.context})
+      : super(key: key);
+
+  @override
+  _DetailsPageState createState() => _DetailsPageState();
+}
+
+class _DetailsPageState extends State<DetailsPage> {
+  // _DetailsPage({required this.userSnapshot, required this.context});
+
+  // IMAGES
+  int indexOfItem = 0;
+
+  List<String> imgList = [];
+  final CarouselController _controller = CarouselController();
+  // END IMAGES
+
+  // LOADING
+  bool isLoading = true;
 
   final List<String> listHeader = [
     'Family Games',
@@ -447,56 +440,130 @@ class _DetailsPage extends StatelessWidget {
   ];
 
   @override
+  void initState() {
+    super.initState();
+
+    final profilePhotoPaths = widget.userSnapshot.profilePhotoPaths;
+
+    // TODO Remove ALL IMAGES THAT DON'T EXIST
+    for (var i = 0; i < profilePhotoPaths.length; i++) {
+      if (profilePhotoPaths[i].isEmpty) continue;
+      imgList.add(profilePhotoPaths[i]);
+    }
+
+    print("LOG poi ${imgList.length}");
+
+    WidgetsBinding.instance
+        .addPostFrameCallback((timeStamp) => precacheNetworkImages());
+  }
+
+  void onPageChange(int index, CarouselPageChangedReason changeReason) {
+    setState(() {
+      indexOfItem = index;
+    });
+
+    print("LOG indexOfItem $indexOfItem");
+  }
+
+  Future precacheNetworkImages() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    await Future.wait(imgList.map((e) => Utils.cacheNetworkImage(context, e)));
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  Widget buildImages() {
+    final double height = MediaQuery.of(context).size.height * 0.6;
+    print("LOG poi $isLoading");
+    if (imgList.length == 0) {
+      return Container();
+    }
+
+    if (isLoading) {
+      return Container();
+    }
+
+    return CarouselSlider(
+        options: CarouselOptions(
+            height: height,
+            viewportFraction: 1.0,
+            onPageChanged: onPageChange,
+            enableInfiniteScroll: false,
+            initialPage: indexOfItem),
+        carouselController: _controller,
+        items: imgList
+            .map((item) => CachedNetworkImage(
+                  imageUrl: item,
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      CustomModalProgressHUD(
+                          inAsyncCall: true, child: Container()),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                ))
+            .toList());
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-            body: SingleChildScrollView(
-                child: Column(
-      children: [
-        CachedNetworkImage(
-          alignment: Alignment.center,
-          height: 300,
-          imageUrl: userSnapshot.profilePhotoPaths[0].isEmpty
-              ? Utils.stockUserProfileUrl
-              : userSnapshot.profilePhotoPaths[0],
-          imageBuilder: (context, imageProvider) => Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: imageProvider,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-        ),
-        // In what city or place user is currently located
-        buildLocality(),
+            body: isLoading
+                ? CustomModalProgressHUD(
+                    inAsyncCall: true,
+                    child: Container(),
+                  )
+                : SingleChildScrollView(
+                    child: Column(
+                    children: [
+                      buildImages(),
+                      // CachedNetworkImage(
+                      //   alignment: Alignment.center,
+                      //   height: MediaQuery.of(context).size.height,
+                      //   imageUrl: userSnapshot.profilePhotoPaths[0].isEmpty
+                      //       ? Utils.stockUserProfileUrl
+                      //       : userSnapshot.profilePhotoPaths[0],
+                      //   imageBuilder: (context, imageProvider) => Container(
+                      //     decoration: BoxDecoration(
+                      //       image: DecorationImage(
+                      //         image: imageProvider,
+                      //         fit: BoxFit.fitHeight,
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
+                      // In what city or place user is currently located
+                      buildLocality(),
 
-        // How far away is the user
-        buildUserDistance(),
+                      // How far away is the user
+                      buildUserDistance(),
 
-        // Board Game Geek Username
-        buildBggName(),
+                      // Board Game Geek Username
+                      buildBggName(),
 
-        // BIO
-        buildBio(),
+                      // BIO
+                      buildBio(),
 
-        // BOARD GAME GENRES
-        buildFavGameGenres(),
+                      // BOARD GAME GENRES
+                      buildFavGameGenres(),
 
-        // BOARD GAME MECHANICS
-        buildBgMechanics(),
+                      // BOARD GAME MECHANICS
+                      buildBgMechanics(),
 
-        // BOARD GAME THEMES
-        buildBgThemes(),
+                      // BOARD GAME THEMES
+                      buildBgThemes(),
 
-        // FAVOURITE BOARD GAMES
-        buildFavBoardGames(),
-      ],
-    ))));
+                      // FAVOURITE BOARD GAMES
+                      buildFavBoardGames(),
+                    ],
+                  ))));
   }
 
   Widget buildLocality() {
-    final geoLocation = userSnapshot.currentLocation;
+    final geoLocation = widget.userSnapshot.currentLocation;
 
     if (geoLocation.isEmpty) {
       return Container();
@@ -535,7 +602,7 @@ class _DetailsPage extends StatelessWidget {
   }
 
   Widget buildUserDistance() {
-    final geoLocation = userSnapshot.currentGeoLocation;
+    final geoLocation = widget.userSnapshot.currentGeoLocation;
 
     if (geoLocation.latitude == 0 && geoLocation.longitude == 0) {
       return Container();
@@ -559,7 +626,7 @@ class _DetailsPage extends StatelessWidget {
                   const Icon(Icons.pin_drop, color: Colors.black),
                   const SizedBox(width: 8),
                   Text(
-                    "${userSnapshot.distance.toString()} kilometers away",
+                    "${widget.userSnapshot.distance.toString()} kilometers away",
                     style: const TextStyle(
                       fontSize: 20,
                     ),
@@ -574,7 +641,7 @@ class _DetailsPage extends StatelessWidget {
   }
 
   Widget buildBggName() {
-    final bggName = userSnapshot.bggName;
+    final bggName = widget.userSnapshot.bggName;
 
     if (bggName.isEmpty) {
       return Container();
@@ -636,7 +703,7 @@ class _DetailsPage extends StatelessWidget {
   }
 
   Widget buildBio() {
-    final bio = userSnapshot.bio;
+    final bio = widget.userSnapshot.bio;
 
     if (bio.isEmpty) {
       return Container();
@@ -676,7 +743,7 @@ class _DetailsPage extends StatelessWidget {
   }
 
   Widget buildFavGameGenres() {
-    final favBoardGameGenres = userSnapshot.favBoardGameGenres;
+    final favBoardGameGenres = widget.userSnapshot.favBoardGameGenres;
 
     if (favBoardGameGenres.isEmpty) {
       return Container();
@@ -733,7 +800,7 @@ class _DetailsPage extends StatelessWidget {
   }
 
   Widget buildBgMechanics() {
-    final favBgMechanics = userSnapshot.favBgMechanics;
+    final favBgMechanics = widget.userSnapshot.favBgMechanics;
 
     if (favBgMechanics.isEmpty) {
       return Container();
@@ -791,7 +858,7 @@ class _DetailsPage extends StatelessWidget {
   }
 
   Widget buildBgThemes() {
-    final favBgThemes = userSnapshot.favBgThemes;
+    final favBgThemes = widget.userSnapshot.favBgThemes;
 
     if (favBgThemes.isEmpty) {
       return Container();
@@ -849,7 +916,7 @@ class _DetailsPage extends StatelessWidget {
   }
 
   Widget buildFavBoardGames() {
-    final favBoardGames = userSnapshot.favBoardGames;
+    final favBoardGames = widget.userSnapshot.favBoardGames;
 
     // 2.
     bool isFamGamesEmpty = favBoardGames.familyGames
@@ -915,50 +982,50 @@ class _DetailsPage extends StatelessWidget {
                           switch (listHeader[index]) {
                             case "Family Games":
                               if (!isFamGamesEmpty)
-                                tempBoardGames =
-                                    userSnapshot.favBoardGames.familyGames;
+                                tempBoardGames = widget
+                                    .userSnapshot.favBoardGames.familyGames;
                               break;
 
                             case "Dexterity Games":
                               if (!isDexGamesEmpty)
-                                tempBoardGames =
-                                    userSnapshot.favBoardGames.dexterityGames;
+                                tempBoardGames = widget
+                                    .userSnapshot.favBoardGames.dexterityGames;
                               break;
 
                             case "Party Games":
                               if (!isPartyGamesEmpty)
-                                tempBoardGames =
-                                    userSnapshot.favBoardGames.partyGames;
+                                tempBoardGames = widget
+                                    .userSnapshot.favBoardGames.partyGames;
                               break;
 
                             case "Abstracts":
                               if (!isAbstrGamesEmpty)
-                                tempBoardGames =
-                                    userSnapshot.favBoardGames.abstractGames;
+                                tempBoardGames = widget
+                                    .userSnapshot.favBoardGames.abstractGames;
                               break;
 
                             case "Thematic":
                               if (!isThemGamesEmpty)
-                                tempBoardGames =
-                                    userSnapshot.favBoardGames.thematicGames;
+                                tempBoardGames = widget
+                                    .userSnapshot.favBoardGames.thematicGames;
                               break;
 
                             case "Strategy":
                               if (!isStratGamesEmpty)
-                                tempBoardGames =
-                                    userSnapshot.favBoardGames.strategyGames;
+                                tempBoardGames = widget
+                                    .userSnapshot.favBoardGames.strategyGames;
                               break;
 
                             case "Wargames":
                               if (!isWargamesEmpty)
                                 tempBoardGames =
-                                    userSnapshot.favBoardGames.warGames;
+                                    widget.userSnapshot.favBoardGames.warGames;
                               break;
 
                             default:
                               if (!isFamGamesEmpty)
-                                tempBoardGames =
-                                    userSnapshot.favBoardGames.familyGames;
+                                tempBoardGames = widget
+                                    .userSnapshot.favBoardGames.familyGames;
                               break;
                           }
                           return tempBoardGames.isEmpty

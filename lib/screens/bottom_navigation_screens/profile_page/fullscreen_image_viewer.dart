@@ -29,8 +29,6 @@ class FullScreenImageViewer extends StatefulWidget {
 class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
   late List<String> imgList = [];
 
-  String reason = '';
-
   int indexOfItem = 0;
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -43,7 +41,6 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
     super.initState();
 
     // TODO Remove ALL IMAGES THAT DON'T EXIST
-
     for (var i = 0; i < widget.profilePhotoPaths.length; i++) {
       if (widget.profilePhotoPaths[i].isEmpty) continue;
       imgList.add(widget.profilePhotoPaths[i]);
@@ -54,7 +51,6 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
 
   void onPageChange(int index, CarouselPageChangedReason changeReason) {
     setState(() {
-      reason = changeReason.toString();
       indexOfItem = index;
     });
 
@@ -187,11 +183,6 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
                                                         fontWeight:
                                                             FontWeight.bold)),
                                                 onTap: () async {
-                                                  // print("LOG indexOf ${widget.profilePhotoPaths.indexOf(item)}");
-                                                  // int indexOfItem = imgList.indexOf(item);
-                                                  // setState(() {
-                                                  //   imgList[indexOfItem] = "";
-                                                  // });
                                                   int deleteImageNum =
                                                       userSnapshot.data!
                                                           .profilePhotoPaths
@@ -208,19 +199,13 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
                                                       .then((response) {
                                                     if (response is Success) {
                                                       // TODO userProvider.isLoading
-                                                      // setState(() {
-                                                      //   imgList[indexOfItem] =
-                                                      //       response.value;
-                                                      // });
+
                                                       Navigator.of(context)
                                                           .pop();
 
                                                       print(
                                                           "LOG jotain deleteUserProfilePhoto ${response.value}");
                                                       // TODO Remove ALL IMAGES THAT DON'T EXIST
-                                                      // for (var i = 0; i < userSnapshot.data!.profilePhotoPaths.length; i++) {
-
-                                                      // }
 
                                                       setState(() {
                                                         imgList[indexOfItem] =

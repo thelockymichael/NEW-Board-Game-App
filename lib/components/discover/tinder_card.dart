@@ -59,6 +59,12 @@ class _InkWellOverlay extends StatelessWidget {
 class _TinderCardState extends State<TinderCard> {
   ContainerTransitionType _transitionType = ContainerTransitionType.fade;
 
+  // IMAGES
+  int indexOfItem = 0;
+  List<String> imgList = [];
+  final CarouselController _controller = CarouselController();
+  // END IMAGES
+
   void _showMarkedAsDoneSnackbar(bool? isMarkedAsDone) {
     if (isMarkedAsDone ?? false)
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -69,6 +75,15 @@ class _TinderCardState extends State<TinderCard> {
   @override
   void initState() {
     super.initState();
+    final profilePhotoPaths = widget.user!.profilePhotoPaths;
+
+    // TODO Remove ALL IMAGES THAT DON'T EXIST
+    for (var i = 0; i < profilePhotoPaths.length; i++) {
+      if (profilePhotoPaths[i].isEmpty) continue;
+      imgList.add(profilePhotoPaths[i]);
+    }
+
+    print("LOG yui imgList.length ${imgList.length}");
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final size = MediaQuery.of(context).size;
@@ -133,49 +148,87 @@ class _TinderCardState extends State<TinderCard> {
         closedBuilder: (BuildContext _, VoidCallback openContainer) {
           return _InkWellOverlay(
               child: Stack(children: [
-            CachedNetworkImage(
-              alignment: Alignment.center,
-              height: MediaQuery.of(context).size.height,
-              imageUrl: widget.user!.profilePhotoPaths[0].isEmpty
-                  // TODO Use the first profilePhoto URL user has in array
-                  ? Utils.stockUserProfileUrl
-                  : widget.user!.profilePhotoPaths[0],
-              imageBuilder: (context, imageProvider) => Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: imageProvider,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              placeholder: (context, url) => CircularProgressIndicator(),
-              errorWidget: (context, url, error) => Icon(Icons.error),
-            ),
+            CarouselSlider(
+                options: CarouselOptions(
+                    viewportFraction: 1.0,
+                    enableInfiniteScroll: false,
+                    initialPage: indexOfItem,
+                    height: MediaQuery.of(context).size.height),
+                carouselController: _controller,
+                items: imgList
+                    .map((item) => CachedNetworkImage(
+                          imageUrl: item,
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) =>
+                                  CustomModalProgressHUD(
+                                      inAsyncCall: true, child: Container()),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
+                        ))
+                    .toList()),
             Container(
                 child: Align(
-                    child: Column(children: [
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: buildName(),
-                  ),
-                  Spacer(),
-                  GestureDetector(
-                      onTap: () {
-                        openContainer();
-                        print("LOG yui onTap");
-                      },
-                      child: Container(
-                          height: 180,
-                          decoration: BoxDecoration(color: Colors.transparent),
-                          child: Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: Align(
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [recentlyActive(), userDistance()]),
-                            ),
-                          ))),
-                ])),
+                    child: Stack(
+                  children: [
+                    Positioned(
+                        right: 0,
+                        top: 0,
+                        bottom: 0,
+                        child: GestureDetector(
+                            onTap: () {
+                              print("LOG yui right");
+                              _controller.nextPage();
+                            },
+                            child: Container(
+                              width:
+                                  MediaQuery.of(context).size.width * 0.50 - 16,
+                              color: Colors.transparent,
+                            ))),
+                    Positioned(
+                        left: 0,
+                        top: 0,
+                        bottom: 0,
+                        child: GestureDetector(
+                            onTap: () {
+                              print("LOG yui left");
+
+                              print("LOG yui indexOfItem ${indexOfItem}");
+                              _controller.previousPage();
+                            },
+                            child: Container(
+                              width:
+                                  MediaQuery.of(context).size.width * 0.50 - 16,
+                              color: Colors.transparent,
+                            ))),
+                    Column(children: [
+                      Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: buildName(),
+                      ),
+                      Spacer(),
+                      GestureDetector(
+                          onTap: () {
+                            openContainer();
+                            print("LOG yui onTap");
+                          },
+                          child: Container(
+                              height: 180,
+                              decoration:
+                                  BoxDecoration(color: Colors.transparent),
+                              child: Padding(
+                                padding: const EdgeInsets.all(20),
+                                child: Align(
+                                  child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        recentlyActive(),
+                                        userDistance()
+                                      ]),
+                                ),
+                              ))),
+                    ])
+                  ],
+                )),
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
@@ -189,30 +242,34 @@ class _TinderCardState extends State<TinderCard> {
                     stops: [0, 0.2, 0.8, 1],
                   ),
                 )),
-            Positioned(
-                right: 0,
-                top: 0,
-                bottom: 0,
-                child: GestureDetector(
-                    onTap: () {
-                      print("LOG yui right");
-                    },
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.50 - 16,
-                      color: Colors.transparent,
-                    ))),
-            Positioned(
-                left: 0,
-                top: 0,
-                bottom: 0,
-                child: GestureDetector(
-                    onTap: () {
-                      print("LOG yui left");
-                    },
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.50 - 16,
-                      color: Colors.transparent,
-                    )))
+            // Positioned(
+            //     right: 0,
+            //     top: 0,
+            //     bottom: 0,
+            //     child: GestureDetector(
+            //         onTap: () {
+            //           print("LOG yui right");
+            //           _controller.nextPage();
+            //         },
+            //         child: Container(
+            //           width: MediaQuery.of(context).size.width * 0.50 - 16,
+            //           color: Colors.red[500],
+            //         ))),
+            // Positioned(
+            //     left: 0,
+            //     top: 0,
+            //     bottom: 0,
+            //     child: GestureDetector(
+            //         onTap: () {
+            //           print("LOG yui left");
+
+            //           print("LOG yui indexOfItem ${indexOfItem}");
+            //           _controller.previousPage();
+            //         },
+            //         child: Container(
+            //           width: MediaQuery.of(context).size.width * 0.50 - 16,
+            //           color: Colors.green[500],
+            //         )))
           ]));
         },
       ));
@@ -423,6 +480,7 @@ class _DetailsPageState extends State<DetailsPage> {
 
   // LOADING
   bool isLoading = true;
+  // END LOADING
 
   final List<String> listHeader = [
     'Family Games',

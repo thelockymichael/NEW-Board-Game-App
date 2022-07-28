@@ -181,30 +181,6 @@ class AddPhotosPageState extends State<AddPhotosPage> {
                                                             ),
                                                           ),
                                                         ),
-
-                                                        // Container(
-                                                        //   width: 100,
-                                                        //   height: 100,
-                                                        //   decoration: BoxDecoration(
-                                                        //       borderRadius:
-                                                        //           BorderRadius
-                                                        //               .circular(
-                                                        //                   12),
-                                                        //       color: Colors
-                                                        //           .blue[200],
-                                                        //       image: userSnapshot
-                                                        //               .data!
-                                                        //               .profilePhotoPaths[
-                                                        //                   index]
-                                                        //               .isEmpty
-                                                        //           ? null
-                                                        //           : DecorationImage(
-                                                        //               fit: BoxFit
-                                                        //                   .contain,
-                                                        //               image: NetworkImage(userSnapshot
-                                                        //                   .data!
-                                                        //                   .profilePhotoPaths[index]))),
-                                                        // ),
                                                       ],
                                                     ));
                                               }),

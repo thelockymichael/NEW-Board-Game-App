@@ -154,6 +154,11 @@ class _TinderCardState extends State<TinderCard> {
                     viewportFraction: 1.0,
                     enableInfiniteScroll: false,
                     initialPage: indexOfItem,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        indexOfItem = index;
+                      });
+                    },
                     height: MediaQuery.of(context).size.height),
                 carouselController: _controller,
                 items: imgList
@@ -202,9 +207,31 @@ class _TinderCardState extends State<TinderCard> {
                               color: Colors.transparent,
                             ))),
                     Column(children: [
-                      Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: buildName(),
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: imgList.asMap().entries.map((entry) {
+                            return GestureDetector(
+                              onTap: () => _controller.animateToPage(entry.key),
+                              child: Container(
+                                width: 12.0,
+                                height: 12.0,
+                                margin: EdgeInsets.symmetric(
+                                    vertical: 20, horizontal: 4.0),
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: (Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.white
+                                            : Colors.black)
+                                        .withOpacity(indexOfItem == entry.key
+                                            ? 0.9
+                                            : 0.4)),
+                              ),
+                            );
+                          }).toList(),
+                        ),
                       ),
                       Spacer(),
                       GestureDetector(
@@ -222,6 +249,11 @@ class _TinderCardState extends State<TinderCard> {
                                   child: Column(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(bottom: 20),
+                                          child: buildName(),
+                                        ),
                                         recentlyActive(),
                                         userDistance()
                                       ]),
@@ -236,41 +268,13 @@ class _TinderCardState extends State<TinderCard> {
                       Colors.black,
                       Colors.transparent,
                       Colors.transparent,
-                      Colors.black
+                      Colors.black54
                     ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    stops: [0, 0.2, 0.8, 1],
+                    stops: [0, 0, 0.4, 1],
                   ),
                 )),
-            // Positioned(
-            //     right: 0,
-            //     top: 0,
-            //     bottom: 0,
-            //     child: GestureDetector(
-            //         onTap: () {
-            //           print("LOG yui right");
-            //           _controller.nextPage();
-            //         },
-            //         child: Container(
-            //           width: MediaQuery.of(context).size.width * 0.50 - 16,
-            //           color: Colors.red[500],
-            //         ))),
-            // Positioned(
-            //     left: 0,
-            //     top: 0,
-            //     bottom: 0,
-            //     child: GestureDetector(
-            //         onTap: () {
-            //           print("LOG yui left");
-
-            //           print("LOG yui indexOfItem ${indexOfItem}");
-            //           _controller.previousPage();
-            //         },
-            //         child: Container(
-            //           width: MediaQuery.of(context).size.width * 0.50 - 16,
-            //           color: Colors.green[500],
-            //         )))
           ]));
         },
       ));
@@ -308,21 +312,17 @@ class _TinderCardState extends State<TinderCard> {
 
   Widget buildName() => Row(
         children: [
-          const Icon(Icons.check_circle, color: Colors.blue),
-          const SizedBox(width: 8),
+          // const Icon(Icons.check_circle, color: Colors.blue),
           Text(widget.user!.name.capitalize(),
               style: const TextStyle(
                   fontSize: 32,
                   color: Colors.white,
                   fontWeight: FontWeight.bold)),
-          const Text(
-            ',',
-            style: TextStyle(fontSize: 32, color: Colors.white),
-          ),
+
           const SizedBox(width: 16),
           Text(
             convertToAge(widget.user!.age),
-            style: const TextStyle(fontSize: 32, color: Colors.white),
+            style: const TextStyle(fontSize: 26, color: Colors.white),
           ),
         ],
       );
@@ -578,6 +578,32 @@ class _DetailsPageState extends State<DetailsPage> {
                 : SingleChildScrollView(
                     child: Column(
                     children: [
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: imgList.asMap().entries.map((entry) {
+                            return GestureDetector(
+                              onTap: () => _controller.animateToPage(entry.key),
+                              child: Container(
+                                width: 12.0,
+                                height: 12.0,
+                                margin: EdgeInsets.symmetric(
+                                    vertical: 20, horizontal: 4.0),
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: (Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.white
+                                            : Colors.black)
+                                        .withOpacity(indexOfItem == entry.key
+                                            ? 0.9
+                                            : 0.4)),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
                       // Build images
                       buildImages(),
 
@@ -1166,24 +1192,6 @@ class _DetailsPageState extends State<DetailsPage> {
                                                                         .boardGame
                                                                         .imageUrl[0]),
                                                               ))),
-                                                Container(
-                                                  decoration: BoxDecoration(
-                                                      gradient: LinearGradient(
-                                                          begin: Alignment
-                                                              .topCenter,
-                                                          end: Alignment
-                                                              .bottomCenter,
-                                                          colors: [
-                                                        Colors.grey
-                                                            .withOpacity(0.0),
-                                                        Colors.black
-                                                            .withOpacity(0.6)
-                                                      ],
-                                                          stops: const [
-                                                        0.0,
-                                                        1.0
-                                                      ])),
-                                                ),
                                                 Positioned(
                                                     top: 0,
                                                     left: 0,

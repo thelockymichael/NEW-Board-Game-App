@@ -10,8 +10,10 @@ import "package:flutter_demo_01/utils/utils.dart";
 class ProfilePageFavBoardGamesEdit extends StatefulWidget {
   static const String id = 'profile_page_fav_board_games_edit';
   final AppUser? userSnapshot;
+  final VoidCallback notifyParent;
 
-  const ProfilePageFavBoardGamesEdit({Key? key, this.userSnapshot})
+  const ProfilePageFavBoardGamesEdit(
+      {Key? key, this.userSnapshot, required this.notifyParent})
       : super(key: key);
 
   @override
@@ -60,6 +62,12 @@ class _ProfilePageFavBoardGamesEditState
         7,
         false)
   ];
+
+  @override
+  void deactivate() {
+    widget.notifyParent();
+    super.deactivate();
+  }
 
   @override
   Widget build(BuildContext context) {

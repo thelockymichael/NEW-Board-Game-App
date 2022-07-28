@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/api/recommend_games_api.dart';
 import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
@@ -12,11 +13,11 @@ class ProfilePageFavTopBoardGamesEdit extends StatefulWidget {
   final String gameGenre;
   final AppUser? userSnapshot;
 
-  const ProfilePageFavTopBoardGamesEdit(
-      {Key? key, this.userSnapshot, required this.gameGenre
-      // required this.notifyParent
-      })
-      : super(key: key);
+  const ProfilePageFavTopBoardGamesEdit({
+    Key? key,
+    this.userSnapshot,
+    required this.gameGenre,
+  }) : super(key: key);
 
   @override
   _ProfilePageFavTopBoardGamesEditState createState() =>
@@ -99,9 +100,12 @@ class _ProfilePageFavTopBoardGamesEditState
                   child: userSnapshot.hasData
                       ? Column(children: [
                           SizedBox(height: 26),
-                          Text("Choose your top 3 board games",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 24)),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: Text("Choose your top 3 board games",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 24)),
+                          ),
                           SizedBox(height: 26),
                           Expanded(
                               child: ListView(
@@ -299,18 +303,38 @@ class _ProfilePageFavTopBoardGamesEditState
                               },
                               hintText: 'Search for a board game',
                             ),
-                            Row(
-                              children: [
-                                Text("Powered by ",
-                                    style: TextStyle(
-                                        color: Colors.black54,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w500)),
-                                Text("Recommend.Games API",
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w400)),
-                              ],
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 24),
+                              child: Row(
+                                children: [
+                                  Flexible(
+                                      child: Padding(
+                                    padding: EdgeInsets.only(left: 24),
+                                    child: RichText(
+                                      text: TextSpan(
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 16),
+                                        children: <TextSpan>[
+                                          TextSpan(text: 'Powered by '),
+                                          TextSpan(
+                                              text: 'Recommend.Games API',
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: 16),
+                                              recognizer: TapGestureRecognizer()
+                                                ..onTap = () {
+                                                  print(
+                                                      "LOG signup Terms of Service");
+                                                }),
+                                        ],
+                                      ),
+                                    ),
+                                  ))
+                                ],
+                              ),
                             ),
                             Expanded(
                                 child: snapshot.data!.isEmpty

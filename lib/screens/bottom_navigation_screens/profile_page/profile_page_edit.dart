@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:async/async.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
@@ -822,12 +821,12 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                     const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
                 child: Column(
                   children: [
-                    Text("Show me",
+                    Text("Change gender",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 24, fontWeight: FontWeight.bold)),
                     SizedBox(height: 16),
-                    Text("Which genders(s) would you like to see?",
+                    Text("Select a different gender",
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 18, color: Colors.black54)),
                     SizedBox(height: 16),
@@ -836,6 +835,8 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                             children: availableGenders.map((gender) {
                       final isSelected =
                           this.defaultSelectedGender.contains(gender);
+
+                      print("LOG nml isSelected ${isSelected} ${gender}");
 
                       print(
                           "LOG defaultSelectedGender ${this.defaultSelectedGender}");
@@ -863,8 +864,8 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
 
                           setModalState(() {
                             isSelected
-                                ? defaultSelectedGender.remove(gender)
-                                : defaultSelectedGender.add(gender);
+                                ? this.defaultSelectedGender.remove(gender)
+                                : this.defaultSelectedGender.add(gender);
 
                             _genderTextController = TextEditingController(
                                 text: defaultSelectedGender[0].capitalize());
@@ -955,11 +956,8 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                       TextFormField(
                         controller: _bggNameTextController,
                         focusNode: _focusBggName,
-                        validator: (value) => Validator.validateName(
-                          name: value,
-                        ),
                         decoration: InputDecoration(
-                          labelText: "BGG Name",
+                          labelText: "BGG Name (Optional)",
                           hintText: "BGG Name",
                           errorBorder: UnderlineInputBorder(
                             borderRadius: BorderRadius.circular(6.0),
@@ -1169,7 +1167,8 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                 Animation<double> animation,
                 Animation<double> secondaryAnimation,
               ) =>
-                  ProfilePageFavBoardGamesEdit(userSnapshot: user),
+                  ProfilePageFavBoardGamesEdit(
+                      userSnapshot: user, notifyParent: refresh),
               transitionsBuilder: (
                 BuildContext context,
                 Animation<double> animation,
@@ -1219,7 +1218,8 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
               Animation<double> animation,
               Animation<double> secondaryAnimation,
             ) =>
-                ProfilePageFavBoardGamesEdit(userSnapshot: user),
+                ProfilePageFavBoardGamesEdit(
+                    userSnapshot: user, notifyParent: refresh),
             transitionsBuilder: (
               BuildContext context,
               Animation<double> animation,
@@ -1519,50 +1519,19 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                   },
                   child: Stack(
                     children: [
-                      CachedNetworkImage(
-                        imageUrl: user.profilePhotoPaths[0],
-                        imageBuilder: (context, imageProvider) => Container(
-                          decoration: BoxDecoration(
+                      Container(
+                        decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
                             color: Colors.blue[200],
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        placeholder: (context, url) => CustomModalProgressHUD(
-                            inAsyncCall: true, child: Container()),
-                        errorWidget: (context, url, error) => Container(
-                          child: Center(
-                              child: Icon(
-                            Icons.add_a_photo,
-                            color: Colors.white,
-                            size: 40,
-                          )),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Colors.blue[200],
-                          ),
-                        ),
+                            image: user.profilePhotoPaths[0].isEmpty
+                                ? null
+                                : DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(
+                                        user.profilePhotoPaths[0]))),
                       ),
                     ],
                   ),
-                  // child: Stack(
-                  //   children: [
-                  //     Container(
-                  //       decoration: BoxDecoration(
-                  //           borderRadius: BorderRadius.circular(12),
-                  //           color: Colors.blue[200],
-                  //           image: user.profilePhotoPaths[0].isEmpty
-                  //               ? null
-                  //               : DecorationImage(
-                  //                   fit: BoxFit.cover,
-                  //                   image: NetworkImage(
-                  //                       user.profilePhotoPaths[0]))),
-                  //     ),
-                  //   ],
-                  // ),
                 )),
             StaggeredGridTile.count(
                 crossAxisCellCount: 1,
@@ -1591,32 +1560,16 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                   },
                   child: Stack(
                     children: [
-                      CachedNetworkImage(
-                        imageUrl: user.profilePhotoPaths[1],
-                        imageBuilder: (context, imageProvider) => Container(
-                          decoration: BoxDecoration(
+                      Container(
+                        decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
                             color: Colors.blue[200],
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        placeholder: (context, url) => CustomModalProgressHUD(
-                            inAsyncCall: true, child: Container()),
-                        errorWidget: (context, url, error) => Container(
-                          child: Center(
-                              child: Icon(
-                            Icons.add_a_photo,
-                            color: Colors.white,
-                            size: 40,
-                          )),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Colors.blue[200],
-                          ),
-                        ),
+                            image: user.profilePhotoPaths[1].isEmpty
+                                ? null
+                                : DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(
+                                        user.profilePhotoPaths[1]))),
                       ),
                     ],
                   ),
@@ -1651,32 +1604,16 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                   },
                   child: Stack(
                     children: [
-                      CachedNetworkImage(
-                        imageUrl: user.profilePhotoPaths[2],
-                        imageBuilder: (context, imageProvider) => Container(
-                          decoration: BoxDecoration(
+                      Container(
+                        decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
                             color: Colors.blue[200],
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        placeholder: (context, url) => CustomModalProgressHUD(
-                            inAsyncCall: true, child: Container()),
-                        errorWidget: (context, url, error) => Container(
-                          child: Center(
-                              child: Icon(
-                            Icons.add_a_photo,
-                            color: Colors.white,
-                            size: 30,
-                          )),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Colors.blue[200],
-                          ),
-                        ),
+                            image: user.profilePhotoPaths[2].isEmpty
+                                ? null
+                                : DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(
+                                        user.profilePhotoPaths[2]))),
                       ),
                     ],
                   ),
@@ -1708,32 +1645,16 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                   },
                   child: Stack(
                     children: [
-                      CachedNetworkImage(
-                        imageUrl: user.profilePhotoPaths[3],
-                        imageBuilder: (context, imageProvider) => Container(
-                          decoration: BoxDecoration(
+                      Container(
+                        decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
                             color: Colors.blue[200],
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        placeholder: (context, url) => CustomModalProgressHUD(
-                            inAsyncCall: true, child: Container()),
-                        errorWidget: (context, url, error) => Container(
-                          child: Center(
-                              child: Icon(
-                            Icons.add_a_photo,
-                            color: Colors.white,
-                            size: 30,
-                          )),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Colors.blue[200],
-                          ),
-                        ),
+                            image: user.profilePhotoPaths[3].isEmpty
+                                ? null
+                                : DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(
+                                        user.profilePhotoPaths[3]))),
                       ),
                     ],
                   ),
@@ -1765,32 +1686,16 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                   },
                   child: Stack(
                     children: [
-                      CachedNetworkImage(
-                        imageUrl: user.profilePhotoPaths[4],
-                        imageBuilder: (context, imageProvider) => Container(
-                          decoration: BoxDecoration(
+                      Container(
+                        decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
                             color: Colors.blue[200],
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        placeholder: (context, url) => CustomModalProgressHUD(
-                            inAsyncCall: true, child: Container()),
-                        errorWidget: (context, url, error) => Container(
-                          child: Center(
-                              child: Icon(
-                            Icons.add_a_photo,
-                            color: Colors.white,
-                            size: 30,
-                          )),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Colors.blue[200],
-                          ),
-                        ),
+                            image: user.profilePhotoPaths[4].isEmpty
+                                ? null
+                                : DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(
+                                        user.profilePhotoPaths[4]))),
                       ),
                     ],
                   ),
@@ -1822,32 +1727,16 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                   },
                   child: Stack(
                     children: [
-                      CachedNetworkImage(
-                        imageUrl: user.profilePhotoPaths[5],
-                        imageBuilder: (context, imageProvider) => Container(
-                          decoration: BoxDecoration(
+                      Container(
+                        decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
                             color: Colors.blue[200],
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        placeholder: (context, url) => CustomModalProgressHUD(
-                            inAsyncCall: true, child: Container()),
-                        errorWidget: (context, url, error) => Container(
-                          child: Center(
-                              child: Icon(
-                            Icons.add_a_photo,
-                            color: Colors.white,
-                            size: 30,
-                          )),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Colors.blue[200],
-                          ),
-                        ),
+                            image: user.profilePhotoPaths[5].isEmpty
+                                ? null
+                                : DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(
+                                        user.profilePhotoPaths[5]))),
                       ),
                     ],
                   ),

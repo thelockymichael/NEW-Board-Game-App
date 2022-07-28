@@ -1211,7 +1211,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
                           children: [
                             Text(
                               textAlign: TextAlign.center,
-                              "You have swiped all users!",
+                              "No users were found.",
                               style: Theme.of(context).textTheme.headline4,
                             ),
                             Padding(
@@ -1225,23 +1225,6 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
                           ],
                         )));
               }
-
-              // TODO if all filter criterias are open
-              // TODO You have swiped ALL USERS
-              // if (snapshot.connectionState == ConnectionState.done &&
-              //     !snapshot.hasData) {
-              //   return Center(
-              //     child: Text('No users found.',
-              //         style: Theme.of(context).textTheme.headline4),
-              //   );
-              // }
-
-              // if (!snapshot.hasData) {
-              //   return CustomModalProgressHUD(
-              //     inAsyncCall: true,
-              //     child: Container(),
-              //   );
-              // }
 
               return DiscoverCard(
                 myUser: _myUser,

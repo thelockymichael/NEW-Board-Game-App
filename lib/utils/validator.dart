@@ -41,11 +41,29 @@ class Validator {
   }
 
   static String? validateFirstName({required String? firstName}) {
+    String errors = "";
+
+    RegExp nameRegExp = RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]');
+
+    // TODO Must have no special characters !!
+
     if (firstName == null) {
       return null;
     }
+
     if (firstName.isEmpty) {
       return 'First name can\'t be empty';
+    }
+    print("LOG val LENGTH: ${firstName.length} > 1");
+
+    if (firstName.length == 1) {
+      print("LOG val length > 1");
+      return "First name must be longer than 1 letter";
+    }
+
+    if (nameRegExp.hasMatch(firstName)) {
+      print("LOG val nameRegExp.hasMatch(firstName");
+      return "First name can't contain numbers or special characters";
     }
 
     return null;

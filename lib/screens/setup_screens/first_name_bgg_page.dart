@@ -88,6 +88,8 @@ class FirstNameBggPageState extends State<FirstNameBggPage> {
                                                                 .capitalize() ??
                                                             "",
                                                   focusNode: _focusFirstName,
+                                                  autovalidateMode:
+                                                      AutovalidateMode.always,
                                                   validator: (value) =>
                                                       Validator
                                                           .validateFirstName(
@@ -109,7 +111,7 @@ class FirstNameBggPageState extends State<FirstNameBggPage> {
                                                 ),
                                                 const SizedBox(height: 16.0),
                                                 Text(
-                                                  "Board Game Geek username",
+                                                  "Board Game Geek Username (Optional)",
                                                   style:
                                                       TextStyle(fontSize: 32),
                                                 ),
@@ -121,11 +123,12 @@ class FirstNameBggPageState extends State<FirstNameBggPage> {
                                                                 .capitalize() ??
                                                             "",
                                                   focusNode: _focusBggUsername,
-                                                  validator: (value) =>
-                                                      Validator
-                                                          .validateBggUsername(
-                                                              bggUsername:
-                                                                  value),
+                                                  // OPTIONAL
+                                                  // validator: (value) =>
+                                                  //     Validator
+                                                  //         .validateBggUsername(
+                                                  //             bggUsername:
+                                                  //                 value),
                                                   decoration: InputDecoration(
                                                     hintText: "BGG username",
                                                     errorBorder:

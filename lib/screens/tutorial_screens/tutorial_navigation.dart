@@ -22,17 +22,13 @@ class TutorialNavigation extends StatefulWidget {
 class _TutorialNavigation extends State<TutorialNavigation> {
   var screens = [];
   int currentIndex = 0;
-  late UserProvider _userProvider;
 
   @override
   void initState() {
     super.initState();
-    _userProvider = Provider.of<UserProvider>(context, listen: false);
 
     screens = [const TutorialStart(), Container(), Container()];
   }
-
-  CancelableOperation? _myCancelableFuture;
 
   @override
   Widget build(BuildContext context) {

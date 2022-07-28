@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_demo_01/api/get_nearest_users_api.dart';
 import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
+import 'package:flutter_demo_01/utils/constants.dart';
 import "package:flutter_demo_01/utils/utils.dart";
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
@@ -577,42 +578,64 @@ class _DetailsPageState extends State<DetailsPage> {
                 : SingleChildScrollView(
                     child: Column(
                     children: [
+                      // Build images
                       buildImages(),
-                      // CachedNetworkImage(
-                      //   alignment: Alignment.center,
-                      //   height: MediaQuery.of(context).size.height,
-                      //   imageUrl: userSnapshot.profilePhotoPaths[0].isEmpty
-                      //       ? Utils.stockUserProfileUrl
-                      //       : userSnapshot.profilePhotoPaths[0],
-                      //   imageBuilder: (context, imageProvider) => Container(
-                      //     decoration: BoxDecoration(
-                      //       image: DecorationImage(
-                      //         image: imageProvider,
-                      //         fit: BoxFit.fitHeight,
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
+
                       // In what city or place user is currently located
                       buildLocality(),
 
                       // How far away is the user
                       buildUserDistance(),
+                      Divider(
+                        color: Colors.grey[200],
+                        thickness: 1,
+                        height: 0,
+                      ),
 
                       // Board Game Geek Username
                       buildBggName(),
 
+                      Divider(
+                        color: Colors.grey[200],
+                        thickness: 1,
+                        height: 0,
+                      ),
+
                       // BIO
                       buildBio(),
+
+                      Divider(
+                        color: Colors.grey[200],
+                        thickness: 1,
+                        height: 0,
+                      ),
 
                       // BOARD GAME GENRES
                       buildFavGameGenres(),
 
+                      Divider(
+                        color: Colors.grey[200],
+                        thickness: 1,
+                        height: 0,
+                      ),
+
                       // BOARD GAME MECHANICS
                       buildBgMechanics(),
 
+                      Divider(
+                        color: Colors.grey[200],
+                        thickness: 1,
+                        height: 0,
+                      ),
+
                       // BOARD GAME THEMES
                       buildBgThemes(),
+
+                      Divider(
+                        color: Colors.grey[200],
+                        thickness: 1,
+                        height: 0,
+                      ),
 
                       // FAVOURITE BOARD GAMES
                       buildFavBoardGames(),
@@ -630,7 +653,7 @@ class _DetailsPageState extends State<DetailsPage> {
     // TODO Calculate user's distance from other user
 
     return Container(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.fromLTRB(8, 20, 0, 0),
       color: Colors.white,
       width: double.infinity,
       child: Column(
@@ -639,7 +662,6 @@ class _DetailsPageState extends State<DetailsPage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
             child: Column(children: [
-              const SizedBox(height: 20),
               Row(
                 children: [
                   const Icon(Icons.location_city, color: Colors.black),
@@ -669,7 +691,7 @@ class _DetailsPageState extends State<DetailsPage> {
     // TODO Calculate user's distance from other user
 
     return Container(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.fromLTRB(8, 8, 0, 20),
       color: Colors.white,
       width: double.infinity,
       child: Column(
@@ -706,7 +728,7 @@ class _DetailsPageState extends State<DetailsPage> {
     }
 
     return Container(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.fromLTRB(8, 0, 0, 20),
       color: Colors.white,
       width: double.infinity,
       child: Column(
@@ -720,7 +742,10 @@ class _DetailsPageState extends State<DetailsPage> {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "Board Game Geek User",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
+                  style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.w300),
                 ),
               ),
               const SizedBox(height: 20),
@@ -775,14 +800,17 @@ class _DetailsPageState extends State<DetailsPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+            padding: const EdgeInsets.fromLTRB(20, 0, 0, 20),
             child: Column(children: [
               const SizedBox(height: 20),
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "About me",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
+                  style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.w300),
                 ),
               ),
               const SizedBox(height: 20),
@@ -808,7 +836,7 @@ class _DetailsPageState extends State<DetailsPage> {
     }
 
     return Container(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.fromLTRB(8, 8, 0, 20),
         color: Colors.white,
         width: double.infinity,
         child: Column(
@@ -865,7 +893,7 @@ class _DetailsPageState extends State<DetailsPage> {
     }
 
     return Container(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.fromLTRB(8, 8, 0, 20),
       color: Colors.white,
       width: double.infinity,
       child: Column(
@@ -879,7 +907,10 @@ class _DetailsPageState extends State<DetailsPage> {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "My favourite game mechanics",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
+                  style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.w300),
                 ),
               ),
               const SizedBox(height: 20),

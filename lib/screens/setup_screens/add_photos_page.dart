@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/components/widgets/custom_modal_progress_hud.dart';
 import 'package:flutter_demo_01/components/widgets/rounded_icon_button.dart';
@@ -70,10 +71,12 @@ class AddPhotosPageState extends State<AddPhotosPage> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        "Add Photos",
-                                        style: TextStyle(fontSize: 32),
-                                      ),
+                                      Padding(
+                                          padding: EdgeInsets.only(bottom: 20),
+                                          child: Text(
+                                            "Add Photos",
+                                            style: TextStyle(fontSize: 32),
+                                          )),
                                       Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -121,42 +124,87 @@ class AddPhotosPageState extends State<AddPhotosPage> {
                                                     },
                                                     child: Stack(
                                                       children: [
-                                                        Container(
-                                                          width: 100,
-                                                          height: 100,
-                                                          decoration: BoxDecoration(
+                                                        CachedNetworkImage(
+                                                          imageUrl: userSnapshot
+                                                                  .data!
+                                                                  .profilePhotoPaths[
+                                                              index],
+                                                          imageBuilder: (context,
+                                                                  imageProvider) =>
+                                                              Container(
+                                                            width: 100,
+                                                            height: 100,
+                                                            decoration:
+                                                                BoxDecoration(
                                                               borderRadius:
                                                                   BorderRadius
                                                                       .circular(
                                                                           12),
                                                               color: Colors
                                                                   .blue[200],
-                                                              image: userSnapshot
-                                                                      .data!
-                                                                      .profilePhotoPaths[
-                                                                          index]
-                                                                      .isEmpty
-                                                                  ? null
-                                                                  : DecorationImage(
-                                                                      fit: BoxFit
-                                                                          .contain,
-                                                                      image: NetworkImage(userSnapshot
-                                                                          .data!
-                                                                          .profilePhotoPaths[index]))),
+                                                              image:
+                                                                  DecorationImage(
+                                                                image:
+                                                                    imageProvider,
+                                                                fit: BoxFit
+                                                                    .contain,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          placeholder: (context,
+                                                                  url) =>
+                                                              CustomModalProgressHUD(
+                                                                  inAsyncCall:
+                                                                      true,
+                                                                  child:
+                                                                      Container()),
+                                                          errorWidget: (context,
+                                                                  url, error) =>
+                                                              Container(
+                                                            width: 100,
+                                                            height: 100,
+                                                            child: Center(
+                                                                child: Icon(
+                                                              Icons.add_a_photo,
+                                                              color:
+                                                                  Colors.white,
+                                                              size: 30,
+                                                            )),
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          12),
+                                                              color: Colors
+                                                                  .blue[200],
+                                                            ),
+                                                          ),
                                                         ),
-                                                        Positioned(
-                                                            top: 1.0,
-                                                            right: 1.0,
-                                                            child:
-                                                                RoundedIconButton(
-                                                              onPressed:
-                                                                  () async {},
-                                                              iconData:
-                                                                  Icons.add,
-                                                              iconSize: 18,
-                                                              buttonColor:
-                                                                  Colors.blue,
-                                                            ))
+
+                                                        // Container(
+                                                        //   width: 100,
+                                                        //   height: 100,
+                                                        //   decoration: BoxDecoration(
+                                                        //       borderRadius:
+                                                        //           BorderRadius
+                                                        //               .circular(
+                                                        //                   12),
+                                                        //       color: Colors
+                                                        //           .blue[200],
+                                                        //       image: userSnapshot
+                                                        //               .data!
+                                                        //               .profilePhotoPaths[
+                                                        //                   index]
+                                                        //               .isEmpty
+                                                        //           ? null
+                                                        //           : DecorationImage(
+                                                        //               fit: BoxFit
+                                                        //                   .contain,
+                                                        //               image: NetworkImage(userSnapshot
+                                                        //                   .data!
+                                                        //                   .profilePhotoPaths[index]))),
+                                                        // ),
                                                       ],
                                                     ));
                                               }),

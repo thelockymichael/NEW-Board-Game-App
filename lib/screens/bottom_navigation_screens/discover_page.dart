@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/api/get_nearest_users_api.dart';
@@ -25,10 +26,9 @@ import 'container_transition.dart';
 // import 'shared_axis_transition.dart';
 
 class SortUsers extends StatefulWidget {
-  final VoidCallback callback;
+  final Function callback;
 
   final BuildContext themeContext;
-  final StateSetter setModalState;
 
   final List<String> defaultSelectedGender;
 
@@ -45,11 +45,10 @@ class SortUsers extends StatefulWidget {
 
   final List<String> defaultLocality;
 
-  const SortUsers(
+  SortUsers(
       {Key? key,
       required this.callback,
       required this.themeContext,
-      required this.setModalState,
       required this.defaultSelectedGender,
       required this.defaultMinAgeValue,
       required this.defaultMaxAgeValue,
@@ -105,47 +104,75 @@ class _SortUsersState extends State<SortUsers> {
 
   @override
   void initState() {
-    selectedGender = widget.defaultSelectedGender;
+    selectedGender = [];
 
-    selectedMinAge = widget.defaultMinAgeValue;
-    selectedMaxAge = widget.defaultMaxAgeValue;
+    widget.defaultSelectedGender.forEach((gender) {
+      selectedGender.add(gender);
+    });
 
-    selectedDistance = widget.defaultDistance;
+    selectedMinAge = [];
+    selectedMaxAge = [];
 
-    selectedMechanics = widget.defaultMechanics;
+    widget.defaultMinAgeValue.forEach((age) {
+      selectedMinAge.add(age);
+    });
 
-    selectedThemes = widget.defaultThemes;
+    widget.defaultMaxAgeValue.forEach((age) {
+      selectedMaxAge.add(age);
+    });
 
-    selectedLanguages = widget.defaultLanguages;
+    selectedDistance = [];
+    widget.defaultDistance.forEach((distance) {
+      selectedDistance.add(distance);
+    });
 
-    selectedLocalities = widget.defaultLocality;
+    selectedMechanics = [];
+    widget.defaultMechanics.forEach((element) {
+      selectedMechanics.add(element);
+    });
+
+    selectedThemes = [];
+    widget.defaultThemes.forEach((theme) {
+      selectedThemes.add(theme);
+    });
+    print("LOG plk selectedThemes initState ${selectedThemes}");
+
+    selectedLanguages = [];
+    widget.defaultLanguages.forEach((language) {
+      selectedLanguages.add(language);
+    });
+    print("LOG plk selectedLanguages initState ${selectedThemes}");
+
+    selectedLocalities = [];
+    widget.defaultLocality.forEach((locality) {
+      selectedLocalities.add(locality);
+    });
+    print("LOG plk defaultLocality initState ${selectedLocalities}");
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return StatefulBuilder(
-        builder: (BuildContext context, StateSetter setState) {
-      pages = [
-        page1(),
-        _showGendersPage(setState),
-        _showAgePage(setState),
-        _showDistancePage(setState),
-        _showMoreOptions(setState),
-        _showGameMechanics(setState),
-        _showGameThemes(setState),
-        _showLanguages(setState),
-        _showLocalities(setState),
-      ];
+    pages = [
+      page1(),
+      _showGendersPage(),
+      _showAgePage(),
+      _showDistancePage(),
+      _showMoreOptions(setState),
+      _showGameMechanics(),
+      _showGameThemes(),
+      _showLanguages(),
+      _showLocalities(),
+    ];
 
-      return pages[_currentView];
-    });
+    return pages[_currentView];
   }
 
   @override
   void deactivate() {
-    widget.callback();
+    print("LOG plk deactivate");
+
     super.deactivate();
   }
 
@@ -157,7 +184,7 @@ class _SortUsersState extends State<SortUsers> {
           children: [
             ListTile(
               leading: SizedBox(
-                  width: 100,
+                  width: 120,
                   child: Text("Show me",
                       style: TextStyle(
                           fontSize: 24, fontWeight: FontWeight.bold))),
@@ -165,7 +192,7 @@ class _SortUsersState extends State<SortUsers> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(selectedGender[0].capitalize(),
-                      style: TextStyle(fontSize: 20)),
+                      style: TextStyle(fontSize: 16)),
                   SizedBox(width: 12),
                   const Icon(CustomIcons.right_open)
                 ],
@@ -186,7 +213,7 @@ class _SortUsersState extends State<SortUsers> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text("${selectedMinAge[0]} - ${selectedMaxAge[0]}",
-                      style: TextStyle(fontSize: 20)),
+                      style: TextStyle(fontSize: 16)),
                   SizedBox(width: 12),
                   const Icon(CustomIcons.right_open)
                 ],
@@ -207,8 +234,8 @@ class _SortUsersState extends State<SortUsers> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                      "${selectedDistance[0].contains("whole country") ? "Whole country" : "${selectedDistance[0]} km"}",
-                      style: TextStyle(fontSize: 20)),
+                      "${selectedDistance[0].contains("Whole country") ? "Whole country" : "${selectedDistance[0]} km"}",
+                      style: TextStyle(fontSize: 16)),
                   SizedBox(width: 12),
                   const Icon(CustomIcons.right_open)
                 ],
@@ -238,21 +265,38 @@ class _SortUsersState extends State<SortUsers> {
                 });
               },
             ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(40),
-              ),
-              child: const Text("Apply filters",
-                  style: TextStyle(color: Colors.white)),
-              onPressed: () async {
-                Navigator.of(context).pop();
-              },
-            )
+            Padding(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    minimumSize: const Size.fromHeight(40),
+                  ),
+                  child: const Text("Apply filters",
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w600)),
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+
+                    widget.callback(
+                      selectedGender,
+                      selectedMinAge,
+                      selectedMaxAge,
+                      selectedDistance,
+                      // More Options
+                      selectedMechanics,
+                      selectedThemes,
+                      selectedLanguages,
+                      selectedLocalities,
+                    );
+                  },
+                ))
           ],
         ));
   }
 
-  Widget _showGendersPage(StateSetter setModalState) {
+  Widget _showGendersPage() {
     return WillPopScope(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
@@ -293,10 +337,14 @@ class _SortUsersState extends State<SortUsers> {
 
                           final isSelected = selectedGender.contains(gender);
 
-                          setModalState(() {
+                          setState(() {
+                            // isSelected
+                            //     ? widget.defaultSelectedGender.remove(gender)
+                            //     : widget.defaultSelectedGender.add(gender);
+
                             isSelected
-                                ? widget.defaultSelectedGender.remove(gender)
-                                : widget.defaultSelectedGender.add(gender);
+                                ? selectedGender.remove(gender)
+                                : selectedGender.add(gender);
 
                             _currentView = 0;
                           });
@@ -323,7 +371,7 @@ class _SortUsersState extends State<SortUsers> {
         });
   }
 
-  Widget _showAgePage(StateSetter setModalState) {
+  Widget _showAgePage() {
     return WillPopScope(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
@@ -359,14 +407,13 @@ class _SortUsersState extends State<SortUsers> {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)),
                 minimumSize: const Size.fromHeight(40),
               ),
               child: const Text("Apply", style: TextStyle(color: Colors.white)),
               onPressed: () async {
-                setModalState(() {
-                  widget.defaultMinAgeValue[0] = selectedMinAge[0];
-                  widget.defaultMaxAgeValue[0] = selectedMaxAge[0];
-
+                setState(() {
                   _currentView = 0;
                 });
               },
@@ -382,7 +429,7 @@ class _SortUsersState extends State<SortUsers> {
         });
   }
 
-  Widget _showDistancePage(StateSetter setModalState) {
+  Widget _showDistancePage() {
     return WillPopScope(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
@@ -393,7 +440,7 @@ class _SortUsersState extends State<SortUsers> {
             SizedBox(
               height: 16,
             ),
-            Text("How far away would you like to search?",
+            Text("How far are you willing to go?",
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 18, color: Colors.black54)),
             SizedBox(height: 16),
@@ -403,7 +450,7 @@ class _SortUsersState extends State<SortUsers> {
                 itemExtent: 30,
                 backgroundColor: Colors.white,
                 scrollController: FixedExtentScrollController(
-                    initialItem: selectedDistance[0].contains("whole country")
+                    initialItem: selectedDistance[0].contains("Whole country")
                         ? 158
                         : int.parse(selectedDistance[0]) + 3),
                 children: Utils.userDistance.map((item) {
@@ -414,7 +461,7 @@ class _SortUsersState extends State<SortUsers> {
 
                   if (valueToSet == 158) {
                     setState(() {
-                      selectedDistance[0] = "whole country";
+                      selectedDistance[0] = "Whole country";
                     });
                   } else {
                     var sum = value + 3;
@@ -427,14 +474,12 @@ class _SortUsersState extends State<SortUsers> {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)),
                 minimumSize: const Size.fromHeight(40),
               ),
               child: const Text("Apply", style: TextStyle(color: Colors.white)),
               onPressed: () async {
-                setModalState(() {
-                  widget.defaultDistance[0] = selectedDistance[0];
-                });
-
                 setState(() {
                   _currentView = 0;
                 });
@@ -463,15 +508,15 @@ class _SortUsersState extends State<SortUsers> {
                 Align(
                     alignment: Alignment.topRight,
                     child: ElevatedButton(
-                      onPressed: widget.defaultMechanics.isNotEmpty ||
-                              widget.defaultThemes.isNotEmpty ||
-                              widget.defaultLanguages.isNotEmpty ||
-                              widget.defaultLocality.isNotEmpty
+                      onPressed: selectedMechanics.isNotEmpty ||
+                              selectedThemes.isNotEmpty ||
+                              selectedLanguages.isNotEmpty ||
+                              selectedLocalities.isNotEmpty
                           ? () => setModalState((() {
-                                widget.defaultMechanics.clear();
-                                widget.defaultThemes.clear();
-                                widget.defaultLanguages.clear();
-                                widget.defaultLocality.clear();
+                                selectedMechanics.clear();
+                                selectedThemes.clear();
+                                selectedLanguages.clear();
+                                selectedLocalities.clear();
                               }))
                           : null,
                       child: Text("Clear all"),
@@ -491,6 +536,7 @@ class _SortUsersState extends State<SortUsers> {
                                 fontSize: 24, fontWeight: FontWeight.bold),
                           ),
                           Text(
+                            overflow: TextOverflow.ellipsis,
                             selectedMechanics.isNotEmpty
                                 ? "You're seeing: ${selectedMechanics.map((mechanic) => "${mechanic.capitalize()}")}"
                                 : "What game mechanics do they like?",
@@ -526,6 +572,7 @@ class _SortUsersState extends State<SortUsers> {
                                 fontSize: 24, fontWeight: FontWeight.bold),
                           ),
                           Text(
+                            overflow: TextOverflow.ellipsis,
                             selectedThemes.isNotEmpty
                                 ? "You're seeing: ${selectedThemes.map((theme) => "${theme.capitalize()}")}"
                                 : "What game themes do they like?",
@@ -561,6 +608,7 @@ class _SortUsersState extends State<SortUsers> {
                                 fontSize: 24, fontWeight: FontWeight.bold),
                           ),
                           Text(
+                            overflow: TextOverflow.ellipsis,
                             selectedLanguages.isNotEmpty
                                 ? "You're seeing: ${selectedLanguages.map((language) => "${language.capitalize()}")}"
                                 : "Will you understand each other?",
@@ -596,6 +644,7 @@ class _SortUsersState extends State<SortUsers> {
                                 fontSize: 24, fontWeight: FontWeight.bold),
                           ),
                           Text(
+                            overflow: TextOverflow.ellipsis,
                             selectedLocalities.isNotEmpty
                                 ? "You're seeing: ${selectedLocalities.map((locality) => "${locality.capitalize()}")}"
                                 : "Where are they based?",
@@ -627,7 +676,7 @@ class _SortUsersState extends State<SortUsers> {
         });
   }
 
-  Widget _showGameMechanics(StateSetter setModalState) {
+  Widget _showGameMechanics() {
     return WillPopScope(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
@@ -657,33 +706,41 @@ class _SortUsersState extends State<SortUsers> {
                         final isSelected =
                             selectedMechanics.contains(bgMechanic);
 
-                        setModalState(() => isSelected
+                        setState(() => isSelected
                             ? selectedMechanics.remove(bgMechanic)
                             : selectedMechanics.add(bgMechanic));
+
+                        print(
+                            "LOG plk ListTile selectedMechanics ${selectedMechanics}");
                       },
                       title: Text(
                         bgMechanic.capitalize(),
                         style: style,
                       ),
                       trailing: isSelected
-                          ? Icon(Icons.radio_button_checked,
+                          ? Icon(Icons.check_box_rounded,
                               color: selectedColor, size: 26)
-                          : Icon(Icons.radio_button_unchecked,
+                          : Icon(Icons.check_box_outline_blank_rounded,
                               color: selectedColor, size: 26),
                     );
                   }).toList()),
             ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(40),
-              ),
-              child: const Text("Apply", style: TextStyle(color: Colors.white)),
-              onPressed: () async {
-                setState(() {
-                  _currentView = 4;
-                });
-              },
-            )
+            Padding(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    minimumSize: const Size.fromHeight(40),
+                  ),
+                  child: const Text("Apply",
+                      style: TextStyle(color: Colors.white)),
+                  onPressed: () async {
+                    setState(() {
+                      _currentView = 4;
+                    });
+                  },
+                ))
           ]),
         ),
         onWillPop: () async {
@@ -695,7 +752,7 @@ class _SortUsersState extends State<SortUsers> {
         });
   }
 
-  Widget _showGameThemes(StateSetter setModalState) {
+  Widget _showGameThemes() {
     return WillPopScope(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
@@ -724,33 +781,38 @@ class _SortUsersState extends State<SortUsers> {
                       onTap: () {
                         final isSelected = selectedThemes.contains(theme);
 
-                        setModalState(() => isSelected
-                            ? widget.defaultThemes.remove(theme)
-                            : widget.defaultThemes.add(theme));
+                        setState(() => isSelected
+                            ? selectedThemes.remove(theme)
+                            : selectedThemes.add(theme));
                       },
                       title: Text(
                         theme.capitalize(),
                         style: style,
                       ),
                       trailing: isSelected
-                          ? Icon(Icons.radio_button_checked,
+                          ? Icon(Icons.check_box_rounded,
                               color: selectedColor, size: 26)
-                          : Icon(Icons.radio_button_unchecked,
+                          : Icon(Icons.check_box_outline_blank_rounded,
                               color: selectedColor, size: 26),
                     );
                   }).toList()),
             ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(40),
-              ),
-              child: const Text("Apply", style: TextStyle(color: Colors.white)),
-              onPressed: () async {
-                setState(() {
-                  _currentView = 4;
-                });
-              },
-            )
+            Padding(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    minimumSize: const Size.fromHeight(40),
+                  ),
+                  child: const Text("Apply",
+                      style: TextStyle(color: Colors.white)),
+                  onPressed: () async {
+                    setState(() {
+                      _currentView = 4;
+                    });
+                  },
+                ))
           ]),
         ),
         onWillPop: () async {
@@ -762,7 +824,7 @@ class _SortUsersState extends State<SortUsers> {
         });
   }
 
-  Widget _showLanguages(StateSetter setModalState) {
+  Widget _showLanguages() {
     return WillPopScope(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
@@ -791,33 +853,38 @@ class _SortUsersState extends State<SortUsers> {
                       onTap: () {
                         final isSelected = selectedLanguages.contains(language);
 
-                        setModalState(() => isSelected
-                            ? widget.defaultLanguages.remove(language)
-                            : widget.defaultLanguages.add(language));
+                        setState(() => isSelected
+                            ? selectedLanguages.remove(language)
+                            : selectedLanguages.add(language));
                       },
                       title: Text(
                         language.capitalize(),
                         style: style,
                       ),
                       trailing: isSelected
-                          ? Icon(Icons.radio_button_checked,
+                          ? Icon(Icons.check_box_rounded,
                               color: selectedColor, size: 26)
-                          : Icon(Icons.radio_button_unchecked,
+                          : Icon(Icons.check_box_outline_blank,
                               color: selectedColor, size: 26),
                     );
                   }).toList()),
             ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(40),
-              ),
-              child: const Text("Apply", style: TextStyle(color: Colors.white)),
-              onPressed: () async {
-                setState(() {
-                  _currentView = 4;
-                });
-              },
-            )
+            Padding(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    minimumSize: const Size.fromHeight(40),
+                  ),
+                  child: const Text("Apply",
+                      style: TextStyle(color: Colors.white)),
+                  onPressed: () async {
+                    setState(() {
+                      _currentView = 4;
+                    });
+                  },
+                ))
           ]),
         ),
         onWillPop: () async {
@@ -829,7 +896,7 @@ class _SortUsersState extends State<SortUsers> {
         });
   }
 
-  Widget _showLocalities(StateSetter setModalState) {
+  Widget _showLocalities() {
     return WillPopScope(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
@@ -859,33 +926,38 @@ class _SortUsersState extends State<SortUsers> {
                         final isSelected =
                             selectedLocalities.contains(locality);
 
-                        setModalState(() => isSelected
-                            ? widget.defaultLocality.remove(locality)
-                            : widget.defaultLocality.add(locality));
+                        setState(() => isSelected
+                            ? selectedLocalities.remove(locality)
+                            : selectedLocalities.add(locality));
                       },
                       title: Text(
                         locality.capitalize(),
                         style: style,
                       ),
                       trailing: isSelected
-                          ? Icon(Icons.radio_button_checked,
+                          ? Icon(Icons.check_box_rounded,
                               color: selectedColor, size: 26)
-                          : Icon(Icons.radio_button_unchecked,
+                          : Icon(Icons.check_box_outline_blank,
                               color: selectedColor, size: 26),
                     );
                   }).toList()),
             ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(40),
-              ),
-              child: const Text("Apply", style: TextStyle(color: Colors.white)),
-              onPressed: () async {
-                setState(() {
-                  _currentView = 4;
-                });
-              },
-            )
+            Padding(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    minimumSize: const Size.fromHeight(40),
+                  ),
+                  child: const Text("Apply",
+                      style: TextStyle(color: Colors.white)),
+                  onPressed: () async {
+                    setState(() {
+                      _currentView = 4;
+                    });
+                  },
+                ))
           ]),
         ),
         onWillPop: () async {
@@ -918,7 +990,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
   List<int> defaultMinAgeValue = [1];
   List<int> defaultMaxAgeValue = [66];
 
-  List<String> defaultDistance = ["whole country"];
+  List<String> defaultDistance = ["Whole country"];
 
   List<String> defaultMechanics = [];
 
@@ -935,7 +1007,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
 
   late List<Widget> pages;
 
-  bool _slowAnimations = false;
+  bool usingFilterCriteria = false;
 
   @override
   void initState() {
@@ -965,6 +1037,8 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
     }
     _ignoreSwipeIds.add(_myUser.id);
 
+    print("LOG plk Load USERS ${defaultSelectedGender}");
+
     var res = await GetNearestUsers().getNearestUsers(
       limit: 50,
       myUser: _myUser,
@@ -980,17 +1054,43 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
     );
 
     if (res.isNotEmpty) {
+      print("LOG hjk NO ${res.length}");
+
       cardProvider.setUsers(res.reversed.toList());
 
       return _userList.reversed.toList();
     }
 
+    print("LOG hjk YES");
+
     return null;
   }
 
-  void callback() {
+  void callback([
+    List<String>? selectedGender,
+    List<int>? selectedMinAge,
+    List<int>? selectedMaxAge,
+    List<String>? selectedDistance,
+    List<String>? selectedMechanics,
+    List<String>? selectedThemes,
+    List<String>? selectedLanguages,
+    List<String>? selectedLocality,
+  ]) {
     setState(() {
-      _userList = [];
+      defaultSelectedGender = selectedGender!;
+      defaultMinAgeValue = selectedMinAge!;
+      defaultMaxAgeValue = selectedMaxAge!;
+      defaultDistance = selectedDistance!;
+
+      // More Options
+      defaultMechanics = selectedMechanics!;
+      defaultThemes = selectedThemes!;
+      defaultLanguages = selectedLanguages!;
+      defaultLocality = selectedLocality!;
+
+      usingFilterCriteria = true;
+
+      _userList.clear();
     });
   }
 
@@ -1008,22 +1108,18 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
               topRight: const Radius.circular(12)),
         ),
         builder: (context) {
-          return StatefulBuilder(
-              builder: (BuildContext context, StateSetter setModalState) {
-            return SortUsers(
-              callback: callback,
-              themeContext: context,
-              setModalState: setModalState,
-              defaultSelectedGender: defaultSelectedGender,
-              defaultMinAgeValue: defaultMinAgeValue,
-              defaultMaxAgeValue: defaultMaxAgeValue,
-              defaultDistance: defaultDistance,
-              defaultMechanics: defaultMechanics,
-              defaultThemes: defaultThemes,
-              defaultLanguages: defaultLanguages,
-              defaultLocality: defaultLocality,
-            );
-          });
+          return SortUsers(
+            callback: callback,
+            themeContext: context,
+            defaultSelectedGender: defaultSelectedGender,
+            defaultMinAgeValue: defaultMinAgeValue,
+            defaultMaxAgeValue: defaultMaxAgeValue,
+            defaultDistance: defaultDistance,
+            defaultMechanics: defaultMechanics,
+            defaultThemes: defaultThemes,
+            defaultLanguages: defaultLanguages,
+            defaultLocality: defaultLocality,
+          );
         });
   }
 
@@ -1051,20 +1147,101 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
         body: FutureBuilder<List<ResultAppUser>?>(
             future: loadUsers(),
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done &&
-                  !snapshot.hasData) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CustomModalProgressHUD(
+                    inAsyncCall: true, child: Container());
+              } else if (snapshot.connectionState == ConnectionState.done &&
+                  !snapshot.hasData &&
+                  usingFilterCriteria) {
                 return Center(
-                  child: Text('No users found.',
-                      style: Theme.of(context).textTheme.headline4),
-                );
+                    child: Padding(
+                        padding: EdgeInsets.all(20),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              textAlign: TextAlign.center,
+                              "No results match your search criteria",
+                              style: Theme.of(context).textTheme.headline4,
+                            ),
+                            Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.all(20),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                  ),
+                                  child: const Text("Search for all users?",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 24,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold)),
+                                  onPressed: () async {
+                                    setState(() {
+                                      // Filter Criteria OFF
+                                      usingFilterCriteria = false;
+
+                                      defaultSelectedGender = ["everyone"];
+                                      defaultMinAgeValue = [1];
+                                      defaultMaxAgeValue = [99];
+                                      defaultDistance = ["Whole country"];
+
+                                      // More Options
+                                      defaultMechanics = [];
+                                      defaultThemes = [];
+                                      defaultLanguages = [];
+                                      defaultLocality = [];
+                                    });
+                                  },
+                                ))
+                          ],
+                        )));
+              } else if (snapshot.connectionState == ConnectionState.done &&
+                  !snapshot.hasData &&
+                  !usingFilterCriteria) {
+                return Center(
+                    child: Padding(
+                        padding: EdgeInsets.all(20),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              textAlign: TextAlign.center,
+                              "You have swiped all users!",
+                              style: Theme.of(context).textTheme.headline4,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                              child: Text(
+                                textAlign: TextAlign.center,
+                                "Come back later.",
+                                style: Theme.of(context).textTheme.headline4,
+                              ),
+                            )
+                          ],
+                        )));
               }
 
-              if (!snapshot.hasData) {
-                return CustomModalProgressHUD(
-                  inAsyncCall: true,
-                  child: Container(),
-                );
-              }
+              // TODO if all filter criterias are open
+              // TODO You have swiped ALL USERS
+              // if (snapshot.connectionState == ConnectionState.done &&
+              //     !snapshot.hasData) {
+              //   return Center(
+              //     child: Text('No users found.',
+              //         style: Theme.of(context).textTheme.headline4),
+              //   );
+              // }
+
+              // if (!snapshot.hasData) {
+              //   return CustomModalProgressHUD(
+              //     inAsyncCall: true,
+              //     child: Container(),
+              //   );
+              // }
 
               return DiscoverCard(
                 myUser: _myUser,

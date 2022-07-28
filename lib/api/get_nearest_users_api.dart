@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/secrets/api_urls.dart';
+import 'package:flutter_demo_01/utils/utils.dart';
 import 'package:http/http.dart' as http;
 
 class GetNearestUsers {
@@ -37,38 +38,31 @@ class GetNearestUsers {
     // TODO distance e.g. 20 km
 
     print("LOG guf juk ${ignoreSwipeIds}");
+    print("LOG guf juk defaultMechanics ${mechanics}");
 
     var uri = Uri(
         scheme: "https",
         host: "us-central1-board-game-app-c1a95.cloudfunctions.net",
         path: "/getNearestUsers",
         queryParameters: {
-          "gender": gender.toString(),
+          "gender": Utils.getGender(gender.toString().toLowerCase()),
           "minAge": minAge.toString(),
           "maxAge": maxAge.toString(),
-          "distance": distance.toString(),
+          "distance": distance.toString().toLowerCase(),
           "limit": limit.toString(),
           "lat": myUser.currentGeoLocation.latitude.toString(),
           "long": myUser.currentGeoLocation.longitude.toString(),
           "ignoreId": ignoreSwipeIds,
           // More Options
-          "bgMechanics": mechanics,
-          "bgThemes": themes,
-          "languages": languages,
-          "localities": localities
+          "bgMechanics": mechanics.map((e) => e.toLowerCase()),
+          "bgThemes": themes.map((e) => e.toLowerCase()),
+          "languages": languages.map((e) => e.toLowerCase()),
+          "localities": localities.map((e) => e.toLowerCase())
         });
 
     print("LOG guf juk ${uri}");
 
-    print(
-        "LOG guf ${ApiUrls.getNearestUserUrl + "ignoreId=25&ignoreId=2qKKKdPcV0VZgiJqohNGCOW6Zj62&ignoreId=5&ignoreId=50&lat=${myUser.currentGeoLocation.latitude}&long=${myUser.currentGeoLocation.longitude}&distance=${distance}&limit=${limit}"}");
-    // https://us-central1-board-game-app-c1a95.cloudfunctions.net/getNearestUsers?
-
     http.Response response = await http.get(uri);
-
-    // http.Response response = await http.get(Uri.parse(ApiUrls
-    //         .getNearestUserUrl +
-    //     "ignoreId=25&ignoreId=2qKKKdPcV0VZgiJqohNGCOW6Zj62&ignoreId=5&ignoreId=50&lat=${myUser.currentGeoLocation.latitude}&long=${myUser.currentGeoLocation.longitude}&distance=${distance}&limit=${limit}"));
 
     if (response.statusCode == 200) {
       final parsedJson = json.decode(response.body);

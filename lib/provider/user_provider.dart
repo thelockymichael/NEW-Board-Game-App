@@ -358,7 +358,7 @@ class UserProvider extends ChangeNotifier {
 
       SharedPreferencesUtil.setUserId(id);
 
-      _user = _user;
+      _user = user;
       return Response.success(user);
     }
     if (response is Error) showSnackBar(context, response.message);

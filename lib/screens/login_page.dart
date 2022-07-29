@@ -156,6 +156,16 @@ class _LoginPageState extends State<LoginPage> {
                                               const Size.fromHeight(40), // NEW
                                         ),
                                         onPressed: () async {
+                                          var userId =
+                                              await SharedPreferencesUtil
+                                                  .getUserId();
+                                          var tutorialState =
+                                              await SharedPreferencesUtil
+                                                  .getTutorialState();
+
+                                          print("LOG cvb ${userId}");
+                                          print("LOG cvb ${tutorialState}");
+
                                           Navigator.of(context)
                                               .push(PageRouteBuilder(
                                             pageBuilder: (

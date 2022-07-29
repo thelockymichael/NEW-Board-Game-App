@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_demo_01/db/remote/firebase_database_source.dart';
 
 import 'package:flutter_demo_01/db/remote/response.dart';
+import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/model/user_registration.dart';
+import 'package:flutter_demo_01/navigation/bottom_navigation_bar.dart';
 import 'package:flutter_demo_01/provider/user_provider.dart';
 import 'package:flutter_demo_01/screens/setup_screens/first_name_bgg_page.dart';
+import 'package:flutter_demo_01/utils/shared_preferences_utils.dart';
 import 'package:flutter_demo_01/utils/validator.dart';
 import 'package:provider/provider.dart';
 import 'package:loader_overlay/loader_overlay.dart';
@@ -19,6 +23,8 @@ class EmailAndPassword extends StatefulWidget {
 
 class _EmailAndPasswordState extends State<EmailAndPassword> {
   final UserRegistration _userRegistration = UserRegistration();
+  final FirebaseDatabaseSource _databaseSource = FirebaseDatabaseSource();
+
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final _registerFormKey = GlobalKey<FormState>();
@@ -103,7 +109,8 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
                             Expanded(
                               child: Text(
                                 "Create new account",
-                                style: TextStyle(fontSize: 32),
+                                style: TextStyle(
+                                    fontSize: 32, color: Colors.white),
                               ),
                             )
                           ],
@@ -120,15 +127,15 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
                             ),
                             decoration: InputDecoration(
                               filled: true,
-                              labelText: "Resevior Name",
                               hintText: "Email",
-                              fillColor: Colors.blue,
-                              errorBorder: UnderlineInputBorder(
-                                borderRadius: BorderRadius.circular(6.0),
-                                borderSide: const BorderSide(
-                                  color: Colors.red,
-                                ),
+                              fillColor: Colors.blue[300],
+                              errorBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.red, width: 2),
                               ),
+                              errorStyle: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
                           const SizedBox(height: 16.0),
@@ -139,13 +146,16 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
                             validator: (value) =>
                                 Validator.validatePassword(value!),
                             decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.blue[300],
                               hintText: "Password",
-                              errorBorder: UnderlineInputBorder(
-                                borderRadius: BorderRadius.circular(999.0),
-                                borderSide: const BorderSide(
-                                  color: Colors.red,
-                                ),
+                              errorBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.red, width: 2),
                               ),
+                              errorStyle: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
                           const SizedBox(height: 16.0),
@@ -158,13 +168,16 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
                               confirmPassword: value,
                             ),
                             decoration: InputDecoration(
-                              hintText: "Confirm password",
-                              errorBorder: UnderlineInputBorder(
-                                borderRadius: BorderRadius.circular(6.0),
-                                borderSide: const BorderSide(
-                                  color: Colors.red,
-                                ),
+                              errorBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.red, width: 2),
                               ),
+                              errorStyle: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                              filled: true,
+                              fillColor: Colors.blue[300],
+                              hintText: "Confirm password",
                             ),
                           ),
                           const SizedBox(height: 32.0),
@@ -197,13 +210,46 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
                                               _userRegistration, context)
                                           .then((response) {
                                         if (response is Success) {
-                                          if (_isLoaderVisible) {
-                                            context.loaderOverlay.hide();
-                                          }
+                                          AppUser user = response.value;
 
-                                          Navigator.pop(context);
-                                          Navigator.pushNamed(
-                                              context, FirstNameBggPage.id);
+                                          // TODO observe user, when user exists =>
+                                          // TODO push new screen !
+                                          _databaseSource
+                                              .observeUser(user.id)
+                                              .listen((event) {})
+                                              .onData((data) async {
+                                            if (data.exists) {
+                                              if (_isLoaderVisible) {
+                                                context.loaderOverlay.hide();
+                                              }
+
+                                              AppUser appUser =
+                                                  AppUser.fromSnapshot(data);
+                                              print(
+                                                  "LOG signup sdf appUser, ${appUser}");
+                                              print(
+                                                  "LOG signup sdf appUser, ${appUser.setupIsCompleted}");
+
+                                              await SharedPreferencesUtil
+                                                  .setUserId(appUser.id);
+
+                                              if (appUser.setupIsCompleted) {
+                                                Navigator.pop(context);
+                                                Navigator
+                                                    .pushNamedAndRemoveUntil(
+                                                        context,
+                                                        MainNavigation.id,
+                                                        (route) => false);
+                                              } else {
+                                                Navigator.pop(context);
+                                                Navigator
+                                                    .pushNamedAndRemoveUntil(
+                                                        context,
+                                                        FirstNameBggPage.id,
+                                                        (route) => false);
+                                              }
+                                            }
+                                          });
                                         } else {
                                           if (_isLoaderVisible) {
                                             context.loaderOverlay.hide();
@@ -229,157 +275,6 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
         ]),
       )),
     );
-    return GestureDetector(
-        onTap: () {
-          _focusEmail.unfocus();
-          _focusPassword.unfocus();
-          _confirmFocusPassword.unfocus();
-        },
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(""),
-            leading: new IconButton(
-              onPressed: () => Navigator.of(context).pop(),
-              icon:
-                  Icon(Icons.arrow_back_rounded, size: 40, color: Colors.black),
-            ),
-            backgroundColor: Colors.redAccent
-                .withOpacity(0.0), //You can make this transparent
-            elevation: 0.0, //No
-          ),
-          body: Stack(
-            children: [
-              Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Create new account",
-                          style: TextStyle(fontSize: 32),
-                        ),
-                        Form(
-                          key: _registerFormKey,
-                          child: Column(
-                            children: <Widget>[
-                              TextFormField(
-                                controller: _emailTextController,
-                                focusNode: _focusEmail,
-                                validator: (value) => Validator.validateEmail(
-                                  email: value,
-                                ),
-                                decoration: InputDecoration(
-                                  hintText: "Email",
-                                  errorBorder: UnderlineInputBorder(
-                                    borderRadius: BorderRadius.circular(6.0),
-                                    borderSide: const BorderSide(
-                                      color: Colors.red,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 16.0),
-                              TextFormField(
-                                controller: _passwordTextController,
-                                focusNode: _focusPassword,
-                                obscureText: true,
-                                validator: (value) =>
-                                    Validator.validatePassword(value!),
-                                decoration: InputDecoration(
-                                  hintText: "Password",
-                                  errorBorder: UnderlineInputBorder(
-                                    borderRadius: BorderRadius.circular(999.0),
-                                    borderSide: const BorderSide(
-                                      color: Colors.red,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 16.0),
-                              TextFormField(
-                                controller: _confirmPasswordTextController,
-                                focusNode: _confirmFocusPassword,
-                                obscureText: true,
-                                validator: (value) => Validator.confirmPassword(
-                                  password: _passwordTextController.text,
-                                  confirmPassword: value,
-                                ),
-                                decoration: InputDecoration(
-                                  hintText: "Confirm password",
-                                  errorBorder: UnderlineInputBorder(
-                                    borderRadius: BorderRadius.circular(6.0),
-                                    borderSide: const BorderSide(
-                                      color: Colors.red,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 32.0),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: ElevatedButton(
-                                      onPressed: () async {
-                                        if (_registerFormKey.currentState!
-                                            .validate()) {
-                                          _userRegistration.email =
-                                              _emailTextController.text;
-
-                                          _userRegistration.password =
-                                              _passwordTextController.text;
-
-                                          _userRegistration.confirmPassword =
-                                              _confirmPasswordTextController
-                                                  .text;
-
-                                          // Loader Overlay
-                                          context.loaderOverlay.show(
-                                              widget: CreateNewUserOverlay());
-                                          setState(() {
-                                            _isLoaderVisible =
-                                                context.loaderOverlay.visible;
-                                          });
-
-                                          await _userProvider
-                                              .registerUser(
-                                                  _userRegistration, context)
-                                              .then((response) {
-                                            if (response is Success) {
-                                              if (_isLoaderVisible) {
-                                                context.loaderOverlay.hide();
-                                              }
-
-                                              Navigator.pop(context);
-                                              Navigator.pushNamed(
-                                                  context, FirstNameBggPage.id);
-                                            } else {
-                                              if (_isLoaderVisible) {
-                                                context.loaderOverlay.hide();
-                                              }
-                                            }
-                                          });
-                                        }
-                                      },
-                                      child: const Text(
-                                        'Sign up',
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  )),
-            ],
-          ),
-        ));
   }
 }
 

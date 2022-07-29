@@ -315,10 +315,12 @@ class _TutorialCardState extends State<TutorialCard> {
     });
   }
 
-  void skipTutorial() {
-    SharedPreferencesUtil.setTutorialState(true);
+  void skipTutorial() async {
+    await SharedPreferencesUtil.setTutorialState(true);
 
-    Navigator.pushAndRemoveUntil(context,
+    print("LOG cbv SKIP TUTORIAL !!!");
+
+    await Navigator.pushAndRemoveUntil(context,
         MaterialPageRoute(builder: (_) => MainNavigation()), (route) => false);
   }
 

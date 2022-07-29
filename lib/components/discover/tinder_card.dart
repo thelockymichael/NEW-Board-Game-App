@@ -364,7 +364,11 @@ class _TinderCardState extends State<TinderCard> {
           right: 50,
           child: child,
         );
+
       case CardStatus.superLike:
+        if (Utils.inDevelopment) {
+          return Container();
+        }
         final child = buildStamp(
             color: Colors.blue, text: "SUPER\nLIKE", opacity: opacity);
 

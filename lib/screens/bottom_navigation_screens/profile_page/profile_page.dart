@@ -22,7 +22,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   void logoutPressed(UserProvider userProvider, BuildContext context) async {
-    userProvider.logoutUser();
+    await userProvider.logoutUser();
     Navigator.pushNamedAndRemoveUntil(context, LoginPage.id, (route) => false);
   }
 

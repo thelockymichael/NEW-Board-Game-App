@@ -226,7 +226,7 @@ class EnableLocationPageState extends State<EnableLocationPage> {
                                                               .getTutorialState();
 
                                                       print(
-                                                          "LOG kl $tutorialCompleted");
+                                                          "LOG cvb tutorialCompleted: bool => $tutorialCompleted");
 
                                                       if (tutorialCompleted !=
                                                           null) {
@@ -253,20 +253,7 @@ class EnableLocationPageState extends State<EnableLocationPage> {
                                                                     TutorialNavigation()),
                                                             (route) => false);
                                                       }
-
-                                                      Navigator.pop(context);
-                                                      Navigator
-                                                          .pushNamedAndRemoveUntil(
-                                                              context,
-                                                              MainNavigation.id,
-                                                              (route) => false);
                                                     }
-
-                                                    // TODO Enable location
-                                                    // TODO Get Response message
-                                                    // TODO IF not -> cancel page route to MAIN
-
-                                                    print("LOG kl data");
                                                   },
                                                   child: const Text(
                                                     'ENABLE LOCATION',

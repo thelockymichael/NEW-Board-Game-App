@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/api/recommend_games_api.dart';
 import 'package:flutter_demo_01/db/entity/UserQuery.dart';
+import 'package:flutter_demo_01/db/entity/swipe.dart';
 import 'package:flutter_demo_01/db/remote/firebase_database_source.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/model/bg_mechanic.dart';
@@ -14,6 +15,12 @@ import 'dart:math' show asin, cos, pow, sqrt;
 
 class Utils {
   static FirebaseDatabaseSource databaseSource = FirebaseDatabaseSource();
+
+  // TODO 28.7.2022 IMPORTANT !!!
+  static bool appUserTesting = false;
+
+  // TODO 28.7.2022 IMPORTANT !!!
+  static bool inDevelopment = true;
 
   static int ascendingSort(FavBgMechanicItem c1, FavBgMechanicItem c2) =>
       c1.name.compareTo(c2.name);
@@ -82,7 +89,45 @@ class Utils {
       double long = doubleInRange(doubleRandom, 20, 60);
       GeoPoint point = GeoPoint(lat, long);
 
+      // TODO Generate random pictures
+      // TODO Random number
+      Random randomPics = Random();
+
+      List<String> pics = [];
+      int createPic = intInRange(randomPics, 600, 800);
+
+      for (var i = 0; i < 6; i++) {
+        pics.add("https://i.pravatar.cc/${createPic.toString()}");
+      }
+
       randomNames.shuffle();
+
+      // TODO languages
+      Random randomLanguage = Random();
+
+      List<String> languages = [];
+      int createLanguage = intInRange(randomLanguage, 0, 6);
+
+      for (var i = 0; i < 6; i++) {
+        pics.add(Utils.languages[createLanguage]);
+      }
+
+      // TODO favBoardGameGenres
+
+      Random randomGameGenre = Random();
+
+      List<String> gameGenres = [];
+      int createGameGenre = intInRange(randomGameGenre, 0, 6);
+
+      // for (var i = 0; i < 6; i++) {
+      //   pics.add(Utils[createGameGenre]);
+      // }
+
+      // TODO favBgMechanics
+
+      // TODO favBgThemes
+
+      // TODO locality
       AppUser user = AppUser(
           id: "${i}",
           createdAt: createdAtTimestamp,
@@ -95,81 +140,94 @@ class Utils {
           favBoardGameGenres: [],
           favBgMechanics: [],
           favBgThemes: [],
-          profilePhotoPaths: ["", "", "", "", "", ""],
+          profilePhotoPaths: [
+            pics[0],
+            pics[1],
+            pics[2],
+            pics[3],
+            pics[4],
+            pics[5]
+          ],
           favBoardGames: FavBoardGames(familyGames: [
             SelectedBoardGame(
               rank: 1,
               boardGame: BoardGameData(
-                bggId: 0,
-                imageUrl: [""],
-                name: "",
-                recRank: 0,
-                recRating: 0.0,
-                recStars: 0.0,
-                year: 0,
-              ),
+                  bggId: 266192,
+                  imageUrl: [
+                    "https://cf.geekdo-images.com/yLZJCVLlIx4c7eJEWUNJ7w__original/img/cI782Zis9cT66j2MjSHKJGnFPNw=/0x0/filters:format(jpeg)/pic4458123.jpg"
+                  ],
+                  name: "Wingspan",
+                  recRank: 19,
+                  recRating: 21.5874,
+                  recStars: 5.0,
+                  year: 1876),
             ),
             SelectedBoardGame(
               rank: 2,
               boardGame: BoardGameData(
-                bggId: 0,
-                imageUrl: [""],
-                name: "",
-                recRank: 0,
-                recRating: 0.0,
-                recStars: 0.0,
-                year: 0,
-              ),
+                  bggId: 266192,
+                  imageUrl: [
+                    "https://cf.geekdo-images.com/yLZJCVLlIx4c7eJEWUNJ7w__original/img/cI782Zis9cT66j2MjSHKJGnFPNw=/0x0/filters:format(jpeg)/pic4458123.jpg"
+                  ],
+                  name: "Wingspan",
+                  recRank: 19,
+                  recRating: 21.5874,
+                  recStars: 5.0,
+                  year: 1876),
             ),
             SelectedBoardGame(
               rank: 3,
               boardGame: BoardGameData(
-                bggId: 0,
-                imageUrl: [""],
-                name: "",
-                recRank: 0,
-                recRating: 0.0,
-                recStars: 0.0,
-                year: 0,
-              ),
-            )
+                  bggId: 266192,
+                  imageUrl: [
+                    "https://cf.geekdo-images.com/yLZJCVLlIx4c7eJEWUNJ7w__original/img/cI782Zis9cT66j2MjSHKJGnFPNw=/0x0/filters:format(jpeg)/pic4458123.jpg"
+                  ],
+                  name: "Wingspan",
+                  recRank: 19,
+                  recRating: 21.5874,
+                  recStars: 5.0,
+                  year: 1876),
+            ),
           ], dexterityGames: [
             SelectedBoardGame(
               rank: 1,
               boardGame: BoardGameData(
-                bggId: 0,
-                imageUrl: [""],
-                name: "",
-                recRank: 0,
-                recRating: 0.0,
-                recStars: 0.0,
-                year: 0,
-              ),
+                  bggId: 266192,
+                  imageUrl: [
+                    "https://cf.geekdo-images.com/yLZJCVLlIx4c7eJEWUNJ7w__original/img/cI782Zis9cT66j2MjSHKJGnFPNw=/0x0/filters:format(jpeg)/pic4458123.jpg"
+                  ],
+                  name: "Wingspan",
+                  recRank: 19,
+                  recRating: 21.5874,
+                  recStars: 5.0,
+                  year: 1876),
             ),
             SelectedBoardGame(
               rank: 2,
               boardGame: BoardGameData(
-                bggId: 0,
-                imageUrl: [""],
-                name: "",
-                recRank: 0,
-                recRating: 0.0,
-                recStars: 0.0,
-                year: 0,
-              ),
+                  bggId: 266192,
+                  imageUrl: [
+                    "https://cf.geekdo-images.com/yLZJCVLlIx4c7eJEWUNJ7w__original/img/cI782Zis9cT66j2MjSHKJGnFPNw=/0x0/filters:format(jpeg)/pic4458123.jpg"
+                  ],
+                  name: "Wingspan",
+                  recRank: 19,
+                  recRating: 21.5874,
+                  recStars: 5.0,
+                  year: 1876),
             ),
             SelectedBoardGame(
               rank: 3,
               boardGame: BoardGameData(
-                bggId: 0,
-                imageUrl: [""],
-                name: "",
-                recRank: 0,
-                recRating: 0.0,
-                recStars: 0.0,
-                year: 0,
-              ),
-            )
+                  bggId: 266192,
+                  imageUrl: [
+                    "https://cf.geekdo-images.com/yLZJCVLlIx4c7eJEWUNJ7w__original/img/cI782Zis9cT66j2MjSHKJGnFPNw=/0x0/filters:format(jpeg)/pic4458123.jpg"
+                  ],
+                  name: "Wingspan",
+                  recRank: 19,
+                  recRating: 21.5874,
+                  recStars: 5.0,
+                  year: 1876),
+            ),
           ], partyGames: [
             SelectedBoardGame(
               rank: 1,
@@ -356,6 +414,8 @@ class Utils {
               ),
             )
           ]));
+
+      databaseSource.addSwipedUser(user.id, Swipe("appUserTesting", true));
 
       databaseSource.addUser(user);
     }

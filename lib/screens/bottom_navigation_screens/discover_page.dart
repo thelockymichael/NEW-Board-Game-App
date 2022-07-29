@@ -983,7 +983,6 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
   final FirebaseDatabaseSource _databaseSource = FirebaseDatabaseSource();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   late List<String> _ignoreSwipeIds;
-  late List<ResultAppUser> _userList;
 
   List<String> defaultSelectedGender = ["everyone"];
 
@@ -1015,7 +1014,6 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
     // Utils.createFiftyUsers();
 
     _ignoreSwipeIds = <String>[];
-    _userList = <ResultAppUser>[];
 
     cardProvider = Provider.of<CardProvider>(context, listen: false);
   }
@@ -1028,7 +1026,6 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
     }
 
     _ignoreSwipeIds = <String>[];
-    _userList = <ResultAppUser>[];
 
     var swipes = await _databaseSource.getSwipes(_myUser.id);
     for (var i = 0; i < swipes.size; i++) {
@@ -1058,7 +1055,13 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
 
       cardProvider.setUsers(res.reversed.toList());
 
-      return _userList.reversed.toList();
+      // print("LOG fru cardProvider userList ${res.reversed.toList()[0].name}");
+      // print(
+      // "LOG fru _userList.reversed.toList ${_userList.reversed.toList()[0].name}");
+
+      // return _userList.reversed.toList();
+
+      return res.reversed.toList();
     }
 
     print("LOG hjk YES");
@@ -1090,7 +1093,7 @@ class _DiscoverPage extends State<DiscoverPage> with TickerProviderStateMixin {
 
       usingFilterCriteria = true;
 
-      _userList.clear();
+      // _userList.clear();
     });
   }
 

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_demo_01/components/discover/tinder_card.dart';
 import 'package:flutter_demo_01/model/app_user.dart';
 import 'package:flutter_demo_01/provider/card_provider.dart';
+import 'package:flutter_demo_01/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class DiscoverCard extends StatefulWidget {
@@ -98,19 +99,24 @@ class _DiscoverCard extends State<DiscoverCard> {
           },
           child: const Icon(Icons.clear, size: 46),
         ),
-        ElevatedButton(
-          style: ButtonStyle(
-              shape: MaterialStateProperty.all(const CircleBorder()),
-              minimumSize: MaterialStateProperty.all(const Size.square(80)),
-              elevation: MaterialStateProperty.all(8),
-              foregroundColor: getColor(Colors.blue, Colors.white, isSuperLike),
-              backgroundColor: getColor(Colors.white, Colors.blue, isSuperLike),
-              side: getBorder(Colors.blue, Colors.white, isSuperLike)),
-          onPressed: () {
-            provider.superLike();
-          },
-          child: const Icon(Icons.star, size: 46),
-        ),
+        Utils.inDevelopment
+            ? Container()
+            : ElevatedButton(
+                style: ButtonStyle(
+                    shape: MaterialStateProperty.all(const CircleBorder()),
+                    minimumSize:
+                        MaterialStateProperty.all(const Size.square(80)),
+                    elevation: MaterialStateProperty.all(8),
+                    foregroundColor:
+                        getColor(Colors.blue, Colors.white, isSuperLike),
+                    backgroundColor:
+                        getColor(Colors.white, Colors.blue, isSuperLike),
+                    side: getBorder(Colors.blue, Colors.white, isSuperLike)),
+                onPressed: () {
+                  provider.superLike();
+                },
+                child: const Icon(Icons.star, size: 46),
+              ),
         ElevatedButton(
           style: ButtonStyle(
               shape: MaterialStateProperty.all(const CircleBorder()),

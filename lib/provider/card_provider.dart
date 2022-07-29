@@ -39,10 +39,21 @@ class CardProvider extends ChangeNotifier {
     DocumentSnapshot swipeSnapshot =
         await _databaseSource.getSwipe(otherUser.id, myUser.id);
 
+    // TODO Get swipe from Sanna with your id
+    print("LOG FRU isMatch.id  myUser.id ${myUser.id}");
+    print("LOG FRU isMatch.id  otherUser.id ${otherUser.id}");
+
     if (swipeSnapshot.exists) {
+      // TODO If ID exists !
+      print("LOG FRU Id exists");
       Swipe swipe = Swipe.fromSnapshot(swipeSnapshot);
+      // TODO Return ID information
+      print("LOG FRU swipe information ID: ${swipe.id} LIKED: ${swipe.liked}");
 
       if (swipe.liked) {
+        print(
+            "LOG FRU !!LIKED!! swipe information ID: ${swipe.id} LIKED: ${swipe.liked}");
+
         return true;
       }
     }
@@ -82,6 +93,10 @@ class CardProvider extends ChangeNotifier {
         dislike(context, myUser, refresh);
         break;
       case CardStatus.superLike:
+        if (Utils.inDevelopment) {
+          return resetPosition();
+        }
+
         superLike();
         break;
       default:
@@ -148,8 +163,16 @@ class CardProvider extends ChangeNotifier {
     _databaseSource.addSwipedUser(myUser.id, Swipe(users.last.id, isLiked));
     _ignoreSwipeIds.add(users.last.id);
 
-    if (isLiked = true) {
+    print("LOG FRU personSwiped start");
+    print("LOG FRU personSwiped isLiked: ${isLiked}");
+    print("LOG FRU myUser.id ${myUser.id}");
+    print("LOG FRU users.last.id ${users.last.id}");
+
+    if (isLiked) {
       if (await isMatch(myUser, users.last) == true) {
+        print("LOG FRU HOW IS THIS TRUE ???");
+        print("LOG FRU users.last.id ${users.last.id}");
+
         _databaseSource.addMatch(myUser.id, Match(users.last.id));
         _databaseSource.addMatch(users.last.id, Match(myUser.id));
 

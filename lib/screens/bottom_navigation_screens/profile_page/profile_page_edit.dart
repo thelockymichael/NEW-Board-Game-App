@@ -641,7 +641,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                             "bgMechanicsSelectedList, ${bgMechanicsSelectedList.length}");
                                       },
                                       title: Text(
-                                        bgMechanic,
+                                        bgMechanic.capitalize(),
                                         style: style,
                                       ),
                                       trailing: isSelected
@@ -737,7 +737,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                             "bgThemesSelectedList, ${bgThemesSelectedList.length}");
                                       },
                                       title: Text(
-                                        bgTheme,
+                                        bgTheme.capitalize(),
                                         style: style,
                                       ),
                                       trailing: isSelected

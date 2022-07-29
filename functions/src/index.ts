@@ -6,7 +6,7 @@ import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
 import cors from 'cors'
 import express, { Request, Response } from 'express'
-import { ResultAppUser } from './types/ResultAppUser'
+import { AppUser, ResultAppUser } from './types/ResultAppUser'
 
 const app = express()
 app.use(express.json())
@@ -536,18 +536,38 @@ exports.newUserSignup = functions.auth.user().onCreate((user) => {
 exports.updatedUser = functions.firestore.document('users/{userId}')
   .onUpdate((change) => {
     // Retrieve the current and previous value
-    const data = change.after.data()
-    const previousData = change.before.data()
+    const data = change.after.data() as AppUser
+
+    const previousData = change.before.data() as AppUser
 
     // We'll only update if the name has changed.
     // This is crucial to prevent infinite loops.
+
+    // TODO If ALL of the fields have CHANGED
+
     // TODO add all other fields as well
-    if (data.name === previousData.name) {
+    if (
+      data.name === previousData.name
+      || data.gender === previousData.gender
+      || data.currentLocation === previousData.currentLocation
+      || data.email === previousData.email
+      || data.favBgMechanics === previousData.favBgMechanics
+      || data.favBgThemes === previousData.favBgThemes
+      || data.favBoardGameGenres === previousData.favBoardGameGenres
+      || data.languages === previousData.languages
+    ) {
       return null
     }
 
-    // Return a promise of a set operation to update the count
     return change.after.ref.set({
+      name: data.name.toLowerCase(),
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      currentLocation: data.currentLocation.toLowerCase(),
+      email: data.email.toLowerCase(),
+      favBgMechanics: data.favBgMechanics.map((item) => item.toLowerCase()),
+      favBgThemes: data.favBgThemes.map((item) => item.toLowerCase()),
+      favBoardGameGenres: data.favBoardGameGenres.map((item) => item.toLowerCase()),
+      gender: data.gender.toLowerCase(),
+      languages: data.languages.map((item) => item.toLowerCase()),
     }, { merge: true })
   })

@@ -452,7 +452,7 @@ class UserProvider extends ChangeNotifier {
       createdAt: userSnapshot.createdAt,
       updatedAt: userSnapshot.updatedAt,
       setupIsCompleted: userSnapshot.setupIsCompleted,
-      name: userProfile.firstName,
+      name: userProfile.firstName.toLowerCase(),
       bggName: userProfile.bggUsername,
       currentLocation: userSnapshot.currentLocation,
       currentGeoLocation: userSnapshot.currentGeoLocation,
@@ -584,7 +584,7 @@ class UserProvider extends ChangeNotifier {
     final mappedGenres = <String>[];
 
     for (var element in favBoardGameGenres) {
-      mappedGenres.add(element.name);
+      mappedGenres.add(element.name.toLowerCase());
     }
 
     AppUser user = AppUser(
@@ -623,7 +623,7 @@ class UserProvider extends ChangeNotifier {
     final mappedBgMechanics = <String>[];
 
     for (var element in favBgMechanics) {
-      mappedBgMechanics.add(element.name);
+      mappedBgMechanics.add(element.name.toLowerCase());
     }
 
     AppUser user = AppUser(
@@ -662,7 +662,7 @@ class UserProvider extends ChangeNotifier {
     final mappedBgThemes = <String>[];
 
     for (var element in favBgThemes) {
-      mappedBgThemes.add(element.name);
+      mappedBgThemes.add(element.name.toLowerCase());
     }
 
     AppUser user = AppUser(
@@ -705,11 +705,11 @@ class UserProvider extends ChangeNotifier {
     final mappedBgThemes = <String>[];
 
     for (var element in favBgMechanics) {
-      mappedBgMechanics.add(element);
+      mappedBgMechanics.add(element.toLowerCase());
     }
 
     for (var element in favBgThemes) {
-      mappedBgThemes.add(element);
+      mappedBgThemes.add(element.toLowerCase());
     }
 
     AppUser user = AppUser(
@@ -794,8 +794,6 @@ class UserProvider extends ChangeNotifier {
           boardGame: genreBoardGames[i].boardGame));
     }
     return updateBoardGames;
-    // print("whole str ${boardGameGenre}");
-    // updateFavBoardGames.familyGames = updateBoardGames;
   }
 
   // final String
@@ -926,7 +924,7 @@ class UserProvider extends ChangeNotifier {
         setupIsCompleted: userSnapshot.setupIsCompleted,
         name: userSnapshot.name,
         bggName: userSnapshot.bggName,
-        currentLocation: address,
+        currentLocation: address.toLowerCase(),
         currentGeoLocation: point,
         gender: userSnapshot.gender,
         age: userSnapshot.age,
@@ -958,7 +956,7 @@ class UserProvider extends ChangeNotifier {
         setupIsCompleted: userSnapshot.setupIsCompleted,
         name: userSnapshot.name,
         bggName: userSnapshot.bggName,
-        currentLocation: address,
+        currentLocation: address.toLowerCase(),
         currentGeoLocation: userSnapshot.currentGeoLocation,
         gender: userSnapshot.gender,
         age: userSnapshot.age,

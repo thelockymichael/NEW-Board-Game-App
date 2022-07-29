@@ -1,3 +1,24 @@
+interface AppUser {
+  id: string,
+  updatedAt: Date,
+  createdAt: Date,
+  setupIsCompleted: boolean,
+  email: string,
+  name: string,
+  age: number,
+  gender: string,
+  bggName: string,
+  currentLocation: string,
+  currentGeoLocation: CurrentGeoLocation
+  profilePhotoPaths: Array<string>
+  bio: string,
+  languages: Array<string>,
+  favBoardGameGenres: Array<string>,
+  favBgMechanics: Array<string>,
+  favBgThemes: Array<string>,
+  favBoardGames: FavBoardGames,
+}
+
 interface ResultAppUser {
   id: string,
   distance: number,
@@ -48,4 +69,4 @@ interface BoardGameData {
   name: string,
 }
 
-export type { ResultAppUser, CurrentGeoLocation }
+export type { ResultAppUser, AppUser, CurrentGeoLocation }

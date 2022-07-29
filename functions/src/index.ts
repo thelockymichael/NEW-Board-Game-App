@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-plusplus */
 /* eslint-disable arrow-body-style */
 /* eslint-disable no-multi-spaces */
@@ -6,7 +8,8 @@ import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
 import cors from 'cors'
 import express, { Request, Response } from 'express'
-import { AppUser, ResultAppUser } from './types/ResultAppUser'
+// import { isTriggerFunction, triggerFunction } from 'adv-firestore-functions'
+import { ResultAppUser } from './types/ResultAppUser'
 
 const app = express()
 app.use(express.json())
@@ -533,41 +536,86 @@ exports.newUserSignup = functions.auth.user().onCreate((user) => {
   }, { merge: true })
 })
 
+// exports.updatedUser = functions.firestore.document('users/{userId}')
+//   .onUpdate((change) => {
+//     // Retrieve the current and previous value
+//     const data = change.after.data() as AppUser
+
+//     const previousData = change.before.data() as AppUser
+
+//     // We'll only update if the name has changed.
+//     // This is crucial to prevent infinite loops.
+
+//     // TODO If ALL of the fields have CHANGED
+
+//     // TODO add all other fields as well
+//     if (data.name === previousData.name) {
+//       return null
+//     }
+
+//     // Return a promise of a set operation to update the count
+//     return change.after.ref.set({
+//       name: data.name.toLowerCase(),
+//       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+//       current: data.currentLocation.toLowerCase(),
+//       email: data.email.toLowerCase(),
+//       favBgMechanics: data.favBgMechanics.map((item) => item.toLowerCase()),
+//       favBgThemes: data.favBgThemes.map((item) => item.toLowerCase()),
+//       favBoardGameGenres: data.favBoardGameGenres.map((item) => item.toLowerCase()),
+//       gender: data.gender.toLowerCase(),
+//       languages: data.languages.map((item) => item.toLowerCase()),
+//     }, { merge: true })
+//   })
+
 exports.updatedUser = functions.firestore.document('users/{userId}')
-  .onUpdate((change) => {
-    // Retrieve the current and previous value
-    const data = change.after.data() as AppUser
+  // eslint-disable-next-line consistent-return
+  .onWrite(async (change, context) => {
+    // simplify event types
+    const createDoc = change.after.exists && !change.before.exists
+    const updateDoc = change.before.exists && change.after.exists
+    const deleteDoc = change.before.exists && !change.after.exists
 
-    const previousData = change.before.data() as AppUser
-
-    // We'll only update if the name has changed.
-    // This is crucial to prevent infinite loops.
-
-    // TODO If ALL of the fields have CHANGED
-
-    // TODO add all other fields as well
-    if (
-      data.name === previousData.name
-      || data.gender === previousData.gender
-      || data.currentLocation === previousData.currentLocation
-      || data.email === previousData.email
-      || data.favBgMechanics === previousData.favBgMechanics
-      || data.favBgThemes === previousData.favBgThemes
-      || data.favBoardGameGenres === previousData.favBoardGameGenres
-      || data.languages === previousData.languages
-    ) {
+    if (deleteDoc) {
       return null
     }
+    // simplify input data
+    const after: any = change.after.exists ? change.after.data() : null
+    const before: any = change.before.exists ? change.before.data() : null
 
-    return change.after.ref.set({
-      name: data.name.toLowerCase(),
-      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-      currentLocation: data.currentLocation.toLowerCase(),
-      email: data.email.toLowerCase(),
-      favBgMechanics: data.favBgMechanics.map((item) => item.toLowerCase()),
-      favBgThemes: data.favBgThemes.map((item) => item.toLowerCase()),
-      favBoardGameGenres: data.favBoardGameGenres.map((item) => item.toLowerCase()),
-      gender: data.gender.toLowerCase(),
-      languages: data.languages.map((item) => item.toLowerCase()),
-    }, { merge: true })
+    // prevent update loops from triggers
+    const canUpdate = () => {
+      // if update trigger
+      if (before.updatedAt && after.updatedAt) {
+        if (after.updatedAt._seconds !== before.updatedAt._seconds) {
+          return false
+        }
+      }
+      // if create trigger
+      if (!before.createdAt && after.createdAt) {
+        return false
+      }
+      return true
+    }
+
+    // add createdAt
+    if (createDoc) {
+      return change.after.ref.set({
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      }, { merge: true })
+        .catch((e: any) => {
+          console.log(e)
+          return false
+        })
+    }
+    // add updatedAt
+    if (updateDoc && canUpdate()) {
+      return change.after.ref.set({
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      }, { merge: true })
+        .catch((e: any) => {
+          console.log(e)
+          return false
+        })
+    }
+    return null
   })

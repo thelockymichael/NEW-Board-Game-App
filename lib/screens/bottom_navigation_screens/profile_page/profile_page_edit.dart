@@ -22,18 +22,6 @@ import 'package:provider/provider.dart';
 import "package:flutter_demo_01/utils/utils.dart";
 import 'package:sticky_headers/sticky_headers.dart';
 
-enum _PositionItemType {
-  log,
-  position,
-}
-
-class _PositionItem {
-  _PositionItem(this.type, this.displayValue);
-
-  final _PositionItemType type;
-  final String displayValue;
-}
-
 class ProfilePageEdit extends StatefulWidget {
   static const String id = 'profile_page_edit';
 
@@ -87,6 +75,8 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
   late List<String> defaultSelectedGender;
 
   TextEditingController _genderTextController = TextEditingController();
+
+  List<String> languagesList = Utils.languages;
 
   List<String> bgMechanicsList = Utils.bgMechanicsList;
 
@@ -183,6 +173,158 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                               ),
                                             ])),
                                   ),
+                                  GestureDetector(
+                                      onTap: () {
+                                        _showLanguagesModal(
+                                            context, userSnapshot.data!);
+                                      },
+                                      child: Container(
+                                          margin: const EdgeInsets.fromLTRB(
+                                              0, 0, 0, 12),
+                                          color: Colors.white,
+                                          width: double.infinity,
+                                          child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal: 20,
+                                                      vertical: 20),
+                                                  child: Column(
+                                                    children: [
+                                                      Align(
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          child: Text(
+                                                              "Languages",
+                                                              style: TextStyle(
+                                                                  fontSize: 32,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold))),
+                                                      Align(
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          child: userSnapshot
+                                                                  .data!
+                                                                  .languages
+                                                                  .isEmpty
+                                                              ? Text(
+                                                                  "What languages can you speak?",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          20))
+                                                              : Column(
+                                                                  children: [
+                                                                      Wrap(
+                                                                        children: userSnapshot
+                                                                            .data!
+                                                                            .languages
+                                                                            .map((language) {
+                                                                          return Container(
+                                                                            margin:
+                                                                                const EdgeInsets.only(right: 10, top: 10),
+                                                                            padding:
+                                                                                const EdgeInsets.all(8),
+                                                                            decoration:
+                                                                                const BoxDecoration(
+                                                                              color: Colors.green,
+                                                                              borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                                                                            ),
+                                                                            child:
+                                                                                Text(
+                                                                              language.capitalize(),
+                                                                              style: const TextStyle(fontSize: 20, color: Colors.white),
+                                                                            ),
+                                                                          );
+                                                                        }).toList(),
+                                                                      ),
+                                                                    ])),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ]))),
+                                  GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(context)
+                                            .push(PageRouteBuilder(
+                                          pageBuilder: (
+                                            BuildContext context,
+                                            Animation<double> animation,
+                                            Animation<double>
+                                                secondaryAnimation,
+                                          ) =>
+                                              ProfilePageBgBioEdit(
+                                                  userSnapshot:
+                                                      userSnapshot.data!,
+                                                  notifyParent: refresh),
+                                          transitionsBuilder: (
+                                            BuildContext context,
+                                            Animation<double> animation,
+                                            Animation<double>
+                                                secondaryAnimation,
+                                            Widget child,
+                                          ) =>
+                                              SlideTransition(
+                                            position: Tween<Offset>(
+                                              begin: const Offset(0, 1),
+                                              end: Offset.zero,
+                                            ).animate(animation),
+                                            child: child,
+                                          ),
+                                        ));
+                                      },
+                                      child: Container(
+                                          margin: const EdgeInsets.fromLTRB(
+                                              0, 0, 0, 12),
+                                          color: Colors.white,
+                                          width: double.infinity,
+                                          child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal: 20,
+                                                      vertical: 20),
+                                                  child: Column(
+                                                    children: [
+                                                      Align(
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          child: Text("Bio",
+                                                              style: TextStyle(
+                                                                  fontSize: 32,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold))),
+                                                      Align(
+                                                        alignment: Alignment
+                                                            .centerLeft,
+                                                        child: userSnapshot
+                                                                .data!
+                                                                .bio
+                                                                .isEmpty
+                                                            ? Text(
+                                                                "Write about your board game hobby.",
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        20))
+                                                            : Text(
+                                                                userSnapshot
+                                                                    .data!.bio,
+                                                                style:
+                                                                    const TextStyle(
+                                                                  fontSize: 20,
+                                                                )),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              ]))),
                                   GestureDetector(
                                       onTap: () {
                                         Navigator.of(context)
@@ -288,85 +430,6 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                                                 }).toList(),
                                                               ),
                                                       ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ]))),
-                                  GestureDetector(
-                                      onTap: () {
-                                        Navigator.of(context)
-                                            .push(PageRouteBuilder(
-                                          pageBuilder: (
-                                            BuildContext context,
-                                            Animation<double> animation,
-                                            Animation<double>
-                                                secondaryAnimation,
-                                          ) =>
-                                              ProfilePageBgBioEdit(
-                                                  userSnapshot:
-                                                      userSnapshot.data!,
-                                                  notifyParent: refresh),
-                                          transitionsBuilder: (
-                                            BuildContext context,
-                                            Animation<double> animation,
-                                            Animation<double>
-                                                secondaryAnimation,
-                                            Widget child,
-                                          ) =>
-                                              SlideTransition(
-                                            position: Tween<Offset>(
-                                              begin: const Offset(0, 1),
-                                              end: Offset.zero,
-                                            ).animate(animation),
-                                            child: child,
-                                          ),
-                                        ));
-                                      },
-                                      child: Container(
-                                          margin: const EdgeInsets.fromLTRB(
-                                              0, 0, 0, 12),
-                                          color: Colors.white,
-                                          width: double.infinity,
-                                          child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Padding(
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      horizontal: 20,
-                                                      vertical: 20),
-                                                  child: Column(
-                                                    children: [
-                                                      Align(
-                                                          alignment: Alignment
-                                                              .centerLeft,
-                                                          child: Text("Bio",
-                                                              style: TextStyle(
-                                                                  fontSize: 32,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold))),
-                                                      Align(
-                                                        alignment: Alignment
-                                                            .centerLeft,
-                                                        child: userSnapshot
-                                                                .data!
-                                                                .bio
-                                                                .isEmpty
-                                                            ? Text(
-                                                                "Write about your board game hobby.",
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        20))
-                                                            : Text(
-                                                                userSnapshot
-                                                                    .data!.bio,
-                                                                style:
-                                                                    const TextStyle(
-                                                                  fontSize: 20,
-                                                                )),
-                                                      )
                                                     ],
                                                   ),
                                                 ),
@@ -482,6 +545,151 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
             },
           );
         }));
+  }
+
+  void _showLanguagesModal(BuildContext context, AppUser userSnapshot) {
+    /* Board Game Mechanics  */
+    languagesList = Utils.languages;
+
+    /// Search for Game Mechanic  */
+    String languageSearchText = '';
+
+    List<String> languagesSelectedList = [];
+    for (var i = 0; i < userSnapshot.languages.length; i++) {
+      languagesSelectedList.add(userSnapshot.languages[i]);
+    }
+
+    /* END Board Game Mechanics END */
+
+    /* Filter Game Mechanics */
+    List<String> filterLanguages = [];
+    filterLanguages.addAll(Utils.languages);
+
+    print("LOG filterLanguages.isEmpty ${filterLanguages.length}");
+    /* END Filter Game Mechanics */
+
+    showModalBottomSheet(
+      elevation: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+          return DefaultTabController(
+              length: 2,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SearchWidget(
+                      text: languageSearchText,
+                      onEditingComplete: (searchStr) {
+                        print("LOG THIS IS TEXT $searchStr");
+
+                        if (searchStr.isNotEmpty) {
+                          print("LOG STR jotain $searchStr");
+                          setState(() {
+                            filterLanguages = [];
+
+                            filterLanguages.addAll(Utils.languages);
+
+                            filterLanguages.retainWhere((bgMechanic) {
+                              return bgMechanic
+                                  .toLowerCase()
+                                  .contains(searchStr.toLowerCase());
+                            });
+
+                            languagesList = filterLanguages;
+                          });
+                        }
+
+                        if (searchStr.isEmpty) {
+                          print("LOG THIS IS EMPTY TEXT");
+
+                          setState(() {
+                            languagesList = Utils.languages;
+                            filterLanguages = Utils.languages;
+                          });
+                        }
+                      },
+                      onChanged: (searchStr) {
+                        setState(() {
+                          if (searchStr.isEmpty) {
+                            print("THIS IS EMPTY searchStr");
+
+                            setState(() {
+                              languagesList = Utils.languages;
+                              filterLanguages = Utils.languages;
+                            });
+                          }
+
+                          languageSearchText = searchStr;
+                        });
+                      },
+                      hintText: 'Search for game mechanics',
+                    ),
+                    Expanded(
+                      child: filterLanguages.isEmpty
+                          ? Text("No results",
+                              style: Theme.of(context).textTheme.headline4)
+                          : ListView(
+                              children: languagesList.map((bgMechanic) {
+                              final isSelected =
+                                  languagesSelectedList.contains(bgMechanic);
+
+                              final selectedColor =
+                                  Theme.of(context).primaryColor;
+                              final style = isSelected
+                                  ? TextStyle(
+                                      fontSize: 18,
+                                      color: selectedColor,
+                                      fontWeight: FontWeight.bold,
+                                    )
+                                  : TextStyle(fontSize: 18);
+
+                              return ListTile(
+                                onTap: () {
+                                  final isSelected = languagesSelectedList
+                                      .contains(bgMechanic);
+
+                                  setState(() => isSelected
+                                      ? languagesSelectedList.remove(bgMechanic)
+                                      : languagesSelectedList.add(bgMechanic));
+
+                                  print(
+                                      "bgMechanicsSelectedList, ${languagesSelectedList.length}");
+                                },
+                                title: Text(
+                                  bgMechanic.capitalize(),
+                                  style: style,
+                                ),
+                                trailing: isSelected
+                                    ? Icon(Icons.check_box_rounded,
+                                        color: selectedColor, size: 26)
+                                    : Icon(
+                                        Icons.check_box_outline_blank_rounded,
+                                        color: selectedColor,
+                                        size: 26),
+                              );
+                            }).toList()),
+                    ),
+                  ],
+                ),
+              ));
+        });
+      },
+    ).whenComplete(() {
+      _userProvider.updateLanguages(
+          userSnapshot, languagesSelectedList, context);
+
+      refresh();
+      print('Hey there, I\'m calling after hide bottomSheet');
+    });
   }
 
   void _showBgMechanicAndThemeModal(
@@ -645,9 +853,13 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                         style: style,
                                       ),
                                       trailing: isSelected
-                                          ? Icon(Icons.check,
+                                          ? Icon(Icons.check_box_rounded,
                                               color: selectedColor, size: 26)
-                                          : null,
+                                          : Icon(
+                                              Icons
+                                                  .check_box_outline_blank_rounded,
+                                              color: selectedColor,
+                                              size: 26),
                                     );
                                   }).toList()),
                           ),
@@ -741,9 +953,13 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                                         style: style,
                                       ),
                                       trailing: isSelected
-                                          ? Icon(Icons.check,
+                                          ? Icon(Icons.check_box_rounded,
                                               color: selectedColor, size: 26)
-                                          : null,
+                                          : Icon(
+                                              Icons
+                                                  .check_box_outline_blank_rounded,
+                                              color: selectedColor,
+                                              size: 26),
                                     );
                                   }).toList()),
                           ),
@@ -1020,7 +1236,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit>
                         style: TextStyle(color: Colors.grey),
                         initialValue: userSnapshot.currentLocation.isEmpty
                             ? _currentAddress
-                            : userSnapshot.currentLocation,
+                            : userSnapshot.currentLocation.capitalize(),
                         decoration: InputDecoration(
                           labelText: "Current location",
                           hintText: "Current location",

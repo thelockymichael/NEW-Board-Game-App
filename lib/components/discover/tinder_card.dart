@@ -641,6 +641,15 @@ class _DetailsPageState extends State<DetailsPage> {
                       ),
 
                       // BOARD GAME GENRES
+                      buildLanguages(),
+
+                      Divider(
+                        color: Colors.grey[200],
+                        thickness: 1,
+                        height: 0,
+                      ),
+
+                      // BOARD GAME GENRES
                       buildFavGameGenres(),
 
                       Divider(
@@ -849,6 +858,67 @@ class _DetailsPageState extends State<DetailsPage> {
                 child: Text(
                   bio,
                   style: const TextStyle(fontSize: 20),
+                ),
+              )
+            ]),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget buildLanguages() {
+    final languages = widget.userSnapshot.languages;
+
+    if (languages.isEmpty) {
+      return Container();
+    }
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(8, 8, 0, 20),
+      color: Colors.white,
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+            child: Column(children: [
+              const SizedBox(height: 20),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "My languages",
+                  style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.w300),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Column(
+                  children: [
+                    Wrap(
+                      children: languages.map((languages) {
+                        return Container(
+                          margin: const EdgeInsets.only(right: 10, top: 10),
+                          padding: const EdgeInsets.all(8),
+                          decoration: const BoxDecoration(
+                            color: Colors.green,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12.0)),
+                          ),
+                          child: Text(
+                            languages.capitalize(),
+                            style: const TextStyle(
+                                fontSize: 20, color: Colors.white),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
                 ),
               )
             ]),

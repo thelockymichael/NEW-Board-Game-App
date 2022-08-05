@@ -696,6 +696,45 @@ class UserProvider extends ChangeNotifier {
     return response;
   }
 
+  Future<Response> updateLanguages(AppUser userSnapshot, List<String> languages,
+      BuildContext context) async {
+    final mappedLanguages = <String>[];
+
+    for (var element in languages) {
+      mappedLanguages.add(element.toLowerCase());
+    }
+
+    AppUser user = AppUser(
+      id: userSnapshot.id,
+      createdAt: userSnapshot.createdAt,
+      updatedAt: userSnapshot.updatedAt,
+      setupIsCompleted: userSnapshot.setupIsCompleted,
+      name: userSnapshot.name,
+      bggName: userSnapshot.bggName,
+      currentLocation: userSnapshot.currentLocation,
+      currentGeoLocation: userSnapshot.currentGeoLocation,
+      gender: userSnapshot.gender,
+      age: userSnapshot.age,
+      bio: userSnapshot.bio,
+      email: userSnapshot.email,
+      languages: mappedLanguages,
+      favBoardGameGenres: userSnapshot.favBoardGameGenres,
+      favBgMechanics: userSnapshot.favBgMechanics,
+      favBgThemes: userSnapshot.favBgThemes,
+      profilePhotoPaths: userSnapshot.profilePhotoPaths,
+      favBoardGames: userSnapshot.favBoardGames,
+    );
+
+    Response<dynamic> response = await _databaseSource.updateUser(user);
+
+    if (response is Success<String>) {
+      return Response.success(user);
+    }
+
+    if (response is Error) showSnackBar(context, response.message);
+    return response;
+  }
+
   Future<Response> updateBgMechanicsAndThemes(
       AppUser userSnapshot,
       List<String> favBgMechanics,
